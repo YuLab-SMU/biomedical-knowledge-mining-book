@@ -70,11 +70,11 @@ If you use the software suite in published research, please cite the most approp
 doi: [10.1007/978-1-0716-0301-7_11](https://doi.org/10.1007/978-1-0716-0301-7_11)
 2. __G Yu__^\*^. Using meshes for MeSH term enrichment and semantic analyses. __*Bioinformatics*__. 2018, 34(21):3766–3767.
 doi: [10.1093/bioinformatics/bty410](https://doi.org/10.1093/bioinformatics/bty410)
-3. __G Yu__, Qing-Yu He^\*^. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. __*Molecular BioSystems*__. 2016, 12(2):477-479.
+3. __G Yu__, QY He^\*^. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. __*Molecular BioSystems*__. 2016, 12(2):477-479.
 doi: [10.1039/C5MB00663E](https://doi.org/10.1039/C5MB00663E)
 4. __G Yu__^\*^, LG Wang, and QY He^\*^. ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization. __*Bioinformatics*__. 2015, 31(14):2382-2383.
 doi: [10.1093/bioinformatics/btv145](https://doi.org/10.1093/bioinformatics/btv145)
-5. __G Yu__^\*^, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He^\*^. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. __*Bioinformatics*__. 2015, 31(4):608-609.
+5. __G Yu__^\*^, LG Wang, GR Yan, QY He^\*^. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. __*Bioinformatics*__. 2015, 31(4):608-609.
 doi: [10.1093/bioinformatics/btu684](https://doi.org/10.1093/bioinformatics/btu684)
 6. __G Yu__, LG Wang, Y Han and QY He^\*^. clusterProfiler: an R package for comparing biological themes among gene clusters. __*OMICS: A Journal of Integrative Biology*__. 2012, 16(5):284-287.
 doi: [10.1089/omi.2011.0118](https://doi.org/10.1089/omi.2011.0118)
