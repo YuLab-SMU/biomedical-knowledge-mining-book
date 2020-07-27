@@ -1,0 +1,25 @@
+book_filename: "treedata"
+chapter_name: "Chapter "
+output_dir: docs
+delete_merged_file: true
+rmd_files: ["index.Rmd",
+  "01_overview_semantic_similarity.Rmd",
+  "02_GOSimSim.Rmd",
+  "03_DOSE_Semantic_Similarity.Rmd",
+  "04_meshes_Semantic_Similarity.Rmd",
+  "05_overview_enrichment_analysis.Rmd",
+  "06_GO.Rmd",
+  "07_KEGG.Rmd",
+  "08_Reactome.Rmd",
+  "09_DO_enrichment.Rmd",
+  "10_meshes_enrichment.Rmd",
+  "11_universal_enrichment.Rmd",
+  "12_ChIPseeker_Genomic_coordination.Rmd",  
+  "13_compareCluster.Rmd",
+  "14_enrichplot_visualization.Rmd",
+  "15_dplyr.Rmd",
+  "16_other_utilities.Rmd",
+  "A-app-faq.Rmd",
+  #"A-app-tools.Rmd",
+  #"A-app-fig-tab.Rmd",
+  "B-references.Rmd"]

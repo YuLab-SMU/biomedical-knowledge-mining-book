@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
-  <meta name="description" content="Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <title>Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="twitter:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="chapter1.html"/>
+<link rel="prev" href="chapter16.html"/>
+<link rel="next" href="faq.html"/>
 <script src="libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -113,53 +113,10 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</h1>
-<p class="author"><em>Guangchuang Yu, PhD</em></p>
-<address class="author_afil">
-Department of Bioinformatics, School of Basic Medical Sciences, Southern Medical University<br><a class="author_email" href="mailto:#"><a href="mailto:guangchuangyu@gmail.com" class="email">guangchuangyu@gmail.com</a></a>
-</address>
-<p class="date"><em>2020-07-27</em></p>
-</div>
-<div id="introduction" class="section level1 unnumbered" number="">
-<h1>Introduction</h1>
-<div id="motivation" class="section level2 unnumbered" number="">
-<h2>Motivation</h2>
-<p>The book is meant as a guide for mining biological knowledge to elucidate or interpret molecular mechanisms using a suite of R packages, including <a href="http://bioconductor.org/packages/ChIPseeker">ChIPseeker</a>, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a>, <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>. Hence, if you are starting to read this book, we assume you have a working knowledge of how to use R.</p>
-</div>
-<div id="citation" class="section level2 unnumbered" number="">
-<h2>Citation</h2>
-<p>If you use the software suite in published research, please cite the most appropriate paper(s) from this list:</p>
-<ol style="list-style-type: decimal">
-<li><strong>G Yu</strong><sup>*</sup>. Gene Ontology Semantic Similarity Analysis Using GOSemSim. In: Kidder B. (eds) Stem Cell Transcriptional Networks. <strong><em>Methods in Molecular Biology</em></strong>. 2020, 2117:207-215. Humana, New York, NY.
-doi: <a href="https://doi.org/10.1007/978-1-0716-0301-7_11">10.1007/978-1-0716-0301-7_11</a></li>
-<li><strong>G Yu</strong><sup>*</sup>. Using meshes for MeSH term enrichment and semantic analyses. <strong><em>Bioinformatics</em></strong>. 2018, 34(21):3766–3767.
-doi: <a href="https://doi.org/10.1093/bioinformatics/bty410">10.1093/bioinformatics/bty410</a></li>
-<li><strong>G Yu</strong>, Qing-Yu He<sup>*</sup>. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. <strong><em>Molecular BioSystems</em></strong>. 2016, 12(2):477-479.
-doi: <a href="https://doi.org/10.1039/C5MB00663E">10.1039/C5MB00663E</a></li>
-<li><strong>G Yu</strong><sup>*</sup>, LG Wang, and QY He<sup>*</sup>. ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization. <strong><em>Bioinformatics</em></strong>. 2015, 31(14):2382-2383.
-doi: <a href="https://doi.org/10.1093/bioinformatics/btv145">10.1093/bioinformatics/btv145</a></li>
-<li><strong>G Yu</strong><sup>*</sup>, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He<sup>*</sup>. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. <strong><em>Bioinformatics</em></strong>. 2015, 31(4):608-609.
-doi: <a href="https://doi.org/10.1093/bioinformatics/btu684">10.1093/bioinformatics/btu684</a></li>
-<li><strong>G Yu</strong>, LG Wang, Y Han and QY He<sup>*</sup>. clusterProfiler: an R package for comparing biological themes among gene clusters. <strong><em>OMICS: A Journal of Integrative Biology</em></strong>. 2012, 16(5):284-287.
-doi: <a href="https://doi.org/10.1089/omi.2011.0118">10.1089/omi.2011.0118</a></li>
-<li><strong>G Yu</strong>, F Li, Y Qin, X Bo<sup>*</sup>, Y Wu, S Wang<sup>*</sup>. GOSemSim: an R package for measuring semantic similarity among GO terms and gene products. <strong><em>Bioinformatics</em></strong>. 2010, 26(7):976-978.
-doi: <a href="https://doi.org/10.1093/bioinformatics/btq064">10.1093/bioinformatics/btq064</a></li>
-</ol>
-</div>
-<div id="book-structure" class="section level2 unnumbered" number="">
-<h2>Book structure</h2>
-<ul>
-<li>Part 1 (Semantic similarity analysis) describes <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> and <a href="http://bioconductor.org/packages/meshes">meshes</a> packages for measuring semantic similarity of genes or gene products based on Gene Ontology, Disease Ontology and Medical Subject Headings.</li>
-<li>Part 2 (Enrichment analysis) introduces over-reprensentation analysis and gene set enrichment analysis using <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> (supports GO, KEGG, MSigDb, WikiPathway, and many others via universal interface), <a href="http://bioconductor.org/packages/DOSE">DOSE</a> (DO, Disease-Gene Network, Network of Cancer Genes), <a href="http://bioconductor.org/packages/meshes">meshes</a> (MeSH), and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> (Reactome pathway). Functional enrichment analysis of Genomic coordination is supported via <a href="http://bioconductor.org/packages/ChIPseeker">ChIPseeker</a> and comparison among multiple conditions is also supported by <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>. We implemented a number of visualization methods in the <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package to help users to interpret their results.</li>
-<li>Part 3 (Miscellaneous topics) describes useful utilities including translating gene IDs and manipulating enrichment results.</li>
-</ul>
-</div>
-<div id="want-to-help" class="section level2 unnumbered" number="">
-<h2>Want to help?</h2>
-<p>The book’s source code is hosted on GitHub, at <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book" class="uri">https://github.com/YuLab-SMU/biomedical-knowledge-mining-book</a>. Any feedback on the book is very welcome. Feel free to <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new">open an issue</a> on GitHub or send me a pull request if you notice typos or other issues (I’m not a native English speaker ;) ).</p>
+<div id="chapter17" class="section level1" number="17">
+<h1><span class="header-section-number">Chapter 17</span> Useful utilities</h1>
+<p>setReadable etc.</p>
 
-</div>
 </div>
 
 
@@ -169,8 +126,8 @@ doi: <a href="https://doi.org/10.1093/bioinformatics/btq064">10.1093/bioinformat
           </div>
         </div>
       </div>
-
-<a href="chapter1.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="chapter16.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="faq.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

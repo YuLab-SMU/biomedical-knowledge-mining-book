@@ -1,0 +1,6 @@
+# bitr: Biological Id TranslatoR {#chapter16}
+
+# Useful utilities {#chapter17}
+
+setReadable etc.
+
