@@ -1,6 +1,12 @@
 # GO enrichment analysis {#clusterprofiler-go}
 
 
+GO comprises of
+three orthogonal ontologies, i.e. molecular function (MF), biological
+process (BP), and cellular component (CC).
+
+
+
 
 ```{r include=FALSE}
 library(knitr)

@@ -51,11 +51,12 @@ Githubpkg <- function (user, pkg) {
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 
+library(emojifont)
 library(org.Hs.eg.db)
 ```
 
 
-# Introduction {-}
+# `r emoji("book")` Introduction {-}
 
 
 hello
@@ -85,11 +86,11 @@ profiles among gene clusters.
 
 -->
 
-## Motivation {-}
+## `r emoji("dart")` Motivation {-}
 
 The book is meant as a guide for mining biological knowledge to elucidate or interpret molecular mechanisms using a suite of R packages, including `r Biocpkg("ChIPseeker")`, `r Biocpkg("clusterProfiler")`, `r Biocpkg("DOSE")`, `r Biocpkg("enrichplot")`, `r Biocpkg("GOSemSim")`, `r Biocpkg("meshes")` and `r Biocpkg("ReactomePA")`. Hence, if you are starting to read this book, we assume you have a working knowledge of how to use R.
 
-## Citation {-}
+## `r emoji("memo")` Citation {-}
 
 If you use the software suite in published research, please cite the most appropriate paper(s) from this list:
 
@@ -110,13 +111,13 @@ doi: [10.1093/bioinformatics/btq064](https://doi.org/10.1093/bioinformatics/btq0
 
 
 
-## Book structure {-}
+## `r emoji("books")` Book structure {-}
 
 + Part 1 (Semantic similarity analysis) describes `r Biocpkg("GOSemSim")`, `r Biocpkg("DOSE")` and `r Biocpkg("meshes")` packages for measuring semantic similarity of genes or gene products based on Gene Ontology, Disease Ontology and Medical Subject Headings.
 + Part 2 (Enrichment analysis) introduces over-reprensentation analysis and gene set enrichment analysis using `r Biocpkg("clusterProfiler")` (supports GO, KEGG, MSigDb, WikiPathway, and many others via universal interface), `r Biocpkg("DOSE")` (DO, Disease-Gene Network, Network of Cancer Genes), `r Biocpkg("meshes")` (MeSH), and `r Biocpkg("ReactomePA")` (Reactome pathway). Functional enrichment analysis of Genomic coordination is supported via `r Biocpkg("ChIPseeker")` and comparison among multiple conditions is also supported by `r Biocpkg("clusterProfiler")`. We implemented a number of visualization methods in the `r Biocpkg("enrichplot")` package to help users to interpret their results. 
 + Part 3 (Miscellaneous topics) describes useful utilities including translating gene IDs and manipulating enrichment results.
 
-## Want to help? {-}
+## `r emoji("sparkling_heart")` Want to help? {-}
 
 
 The book’s source code is hosted on GitHub, at <https://github.com/YuLab-SMU/biomedical-knowledge-mining-book>. Any feedback on the book is very welcome. Feel free to [open an issue](https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new) on GitHub or send me a pull request if you notice typos or other issues (I'm not a native English speaker ;) ).
