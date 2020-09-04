@@ -1,1 +1,130 @@
-# GO enrichment analysis {#chapter6}
+# GO enrichment analysis {#clusterprofiler-go}
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+library(clusterProfiler)
+```
+
+
+## Supported organisms
+
+GO analyses (`groupGO()`, `enrichGO()` and `gseGO()`) support organisms that have an `OrgDb` object available.
+
+Bioconductor have already provide `OrgDb` for about [20 species](http://bioconductor.org/packages/release/BiocViews.html#___OrgDb). User can query `OrgDb` online by [AnnotationHub](https://www.bioconductor.org/packages/AnnotationHub) or build their own by [AnnotationForge](https://www.bioconductor.org/packages/AnnotationForge). An example can be found in the [vignette](https://bioconductor.org/packages/devel/bioc/vignettes/GOSemSim/inst/doc/GOSemSim.html#supported-organisms) of [GOSemSim](https://www.bioconductor.org/packages/GOSemSim).
+
+If user have GO annotation data (in data.frame format with first column of gene ID and second column of GO ID), they can use `enricher()` and `gseGO()` functions to perform over-representation test and gene set enrichment analysis.
+
+If genes are annotated by direction annotation, it should also annotated by its ancestor GO nodes (indirect annation). If user only has direct annotation, they can pass their annotation to `buildGOmap` function, which will infer indirection annotation and generate a `data.frame` that suitable for both `enricher()` and `gseGO()`.
+
+## GO classification
+
+In [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler), `groupGO` is designed for gene classification based on GO distribution at a specific level. Here we use dataset `geneList` provided by [DOSE](https://www.bioconductor.org/packages/DOSE). Please refer to vignette of [DOSE](https://www.bioconductor.org/packages/DOSE) for more details.
+
+```{r warning=FALSE}
+library(clusterProfiler)
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+gene.df <- bitr(gene, fromType = "ENTREZID",
+	   	toType = c("ENSEMBL", "SYMBOL"),
+		OrgDb = org.Hs.eg.db)
+head(gene.df)
+ggo <- groupGO(gene     = gene,
+               OrgDb    = org.Hs.eg.db,
+               ont      = "CC",
+               level    = 3,
+               readable = TRUE)
+
+head(ggo)
+```
+
+The input parameters of _gene_ is a vector of gene IDs (can be any ID type that supported by corresponding `OrgDb`).
+
+If _readable_ is setting to _TRUE_, the input gene IDs will be converted to gene symbols.
+
+
+## GO over-representation test
+
+
+Over-representation test[@boyle2004] were implemented in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler). For calculation details and explanation of paramters, please refer to the vignette of [DOSE](https://www.bioconductor.org/packages/DOSE).
+
+```{r}
+ego <- enrichGO(gene          = gene,
+                universe      = names(geneList),
+                OrgDb         = org.Hs.eg.db,
+                ont           = "CC",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+		readable      = TRUE)
+head(ego)
+```
+
+As I mentioned before, any gene ID type that supported in `OrgDb` can be directly used in GO analyses. User need to specify the `keyType` parameter to specify the input gene ID type.
+
+```{r eval=FALSE}
+ego2 <- enrichGO(gene         = gene.df$ENSEMBL,
+                OrgDb         = org.Hs.eg.db,
+                keyType       = 'ENSEMBL',
+                ont           = "CC",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05)
+```
+
+Gene ID can be mapped to gene Symbol by using paramter `readable=TRUE` or `setReadable` function.
+```{r eval=FALSE}
+ego2 <- setReadable(ego2, OrgDb = org.Hs.eg.db)
+```
+
+### drop specific GO terms or level
+
+`enrichGO` test the whole GO corpus and enriched result may contains very general terms. With `dropGO` function, user can remove specific GO terms or GO level from results obtained from both `enrichGO` and `compareCluster`.
+
+
+### test GO at sepcific level
+
+`enrichGO` doesn't contain parameter to restrict the test at specific GO level. Instead, we provide a function `gofilter` to restrict the result at specific GO level. It works with results obtained from both `enrichGO` and `compareCluster`.
+
+
+### reduce redundancy of enriched GO terms
+
+
+
+GO is organized in parent-child structure, thus a parent term can be overlap with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, `r Biocpkg("clusterProfiler")` implement [`simplify`](https://github.com/GuangchuangYu/clusterProfiler/issues/28) method to reduce redundant GO terms from the outputs of `enrichGO` and `gseGO`. The function internally called `r Biocpkg("GOSemSim")` [@yu2010] to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. An example can be found in [the blog post](https://guangchuangyu.github.io/2015/10/use-simplify-to-remove-redundancy-of-enriched-go-terms/).
+
+
+## GO Gene Set Enrichment Analysis
+
+A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The enrichment analysis we demonstrated previous were based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)[@subramanian_gene_2005] directly addresses this limitation. All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. Since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.
+
+For algorithm details, please refer to the vignette of [DOSE](https://www.bioconductor.org/packages/DOSE).
+
+```{r eval=FALSE}
+ego3 <- gseGO(geneList     = geneList,
+              OrgDb        = org.Hs.eg.db,
+              ont          = "CC",
+              nPerm        = 1000,
+              minGSSize    = 100,
+              maxGSSize    = 500,
+              pvalueCutoff = 0.05,
+              verbose      = FALSE)
+```
+
+GSEA use permutation test, user can set _nPerm_ for number of permutations. Only gene Set size in `[minGSSize, maxGSSize]` will be tested.
+
+
+If you have issues in preparing your own `geneList`, please refer to the [wiki
+page](https://github.com/GuangchuangYu/DOSE/wiki/how-to-prepare-your-own-geneList).
+
+
+## GO Semantic Similarity Analysis
+
+GO semantic similarity can be calculated by [GOSemSim](https://www.bioconductor.org/packages/GOSemSim)[@yu2010]. We can use it to cluster genes/proteins into different clusters based on their functional similarity and can also use it to measure the similarities among GO terms to reduce the redundancy of GO enrichment results.
+
+
+### GO analysis for non-model organisms
+
+Both `enrichGO` and `gseGO` functions require an `OrgDb` object as background annotation. For organisms that don't have `OrgDb` provided by Bioconductor, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")` or [Blast2GO](https://www.blast2go.com/). Then using `enricher` or `GSEA` function to analyze, similar to the examples using wikiPathways and MSigDB. Another solution is to create `OrgDb` by your own using `r Biocpkg("AnnotationForge")` package.

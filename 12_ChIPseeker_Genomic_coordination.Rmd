@@ -1,1 +1,1 @@
-# Functional enrichment analysis of genomic coordinations {#chapter12}
+# Functional enrichment analysis of genomic coordinations {#chipseeker-enrichment}

@@ -1,4 +1,121 @@
 # (PART\*) Part III: Miscellaneous topics {-}
 
-# dplyr verbs for manipulating enrichment result {#chapter15}
+# dplyr verbs for manipulating enrichment result {#clusterProfiler-dplyr}
+
+
+```{r include=F}
+library(DOSE)
+library(ggplot2)
+library(forcats)
+library(enrichplot)
+theme_set(theme_grey())
+select <- clusterProfiler:::select.enrichResult
+```
+
+
+```{r}
+library(DOSE)
+data(geneList)
+de = names(geneList)[1:100]
+x = enrichDO(de)
+```
+
+## filter
+
+```{r}
+
+filter(x, p.adjust < .05, qvalue < 0.2)
+```
+
+## arrange
+```{r}
+mutate(x, geneRatio = parse_ratio(GeneRatio)) %>%
+  arrange(desc(geneRatio))
+```
+
+## select
+
+```{r}
+select(x, -geneID) %>% head
+```
+
+## mutate
+
+
+```{r dot-richfactor, fig.width=7, fig.height=7}
+y <- mutate(x, richFactor = Count / as.numeric(sub("/\\d+", "", BgRatio)))
+y
+
+library(ggplot2)
+library(forcats)
+library(enrichplot)
+
+ggplot(y, showCategory = 20, 
+  aes(richFactor, fct_reorder(Description, richFactor))) + 
+  geom_segment(aes(xend=0, yend = Description)) +
+  geom_point(aes(color=p.adjust, size = Count)) +
+  scale_color_viridis_c(guide=guide_colorbar(reverse=TRUE)) +
+  scale_size_continuous(range=c(2, 10)) +
+  theme_minimal() + 
+  xlab("rich factor") +
+  ylab(NULL) + 
+  ggtitle("Enriched Disease Ontology")
+```
+
+
+A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using `mutate` to add the fold enrichment variable is also easy:
+
+```r
+mutate(x, FoldEnrichment = parse_ratio(GeneRatio) / parse_ratio(BgRatio))
+```
+
+## slice
+
+We can use `slice` to choose rows by their ordinal position in the enrichment result. Grouped result use the ordinal position with the group.
+
+In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure \@ref(fig:sliceNES).
+
+
+(ref:sliceNESscap) Choose pathways by ordinal positions.
+
+(ref:sliceNEScap) **Choose pathways by ordinal positions.** 
+
+
+```{r sliceNES, fig.width=9, fig.height=5, fig.cap="(ref:sliceNEScap)", fig.scap="(ref:sliceNESscap)"}
+library(ReactomePA)
+data(geneList)
+x <- gsePathway(geneList)
+
+
+y <- arrange(x, abs(NES)) %>% 
+        group_by(sign(NES)) %>% 
+        slice(1:5)
+
+library(forcats)
+library(ggplot2)
+library(ggstance)
+library(enrichplot)
+
+ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalues), showCategory=10) + 
+    geom_barh(stat='identity') + 
+    scale_fill_continuous(low='red', high='blue', guide=guide_colorbar(reverse=TRUE)) + 
+    theme_minimal() + ylab(NULL)
+```
+
+
+## summarise
+
+
+```{r p-bar, fig.width=8, fig.height=5}
+pi=seq(0, 1, length.out=11)
+
+mutate(x, pp = cut(pvalue, pi)) %>%
+  group_by(pp) %>% 
+  summarise(cnt = n()) %>% 
+  ggplot(aes(pp, cnt)) + geom_col() + 
+  theme_minimal() +
+  xlab("p value intervals") +
+  ylab("Frequency") + 
+  ggtitle("p value distribution")
+```
 

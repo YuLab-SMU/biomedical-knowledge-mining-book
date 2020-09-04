@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 15 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 15 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 15 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 15 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  
+  
+  
+
+
+
+<meta name="date" content="2020-09-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="enrichplot.html"/>
+<link rel="next" href="bitr.html"/>
+<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.15/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i>Motivation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citation"><i class="fa fa-check"></i>Citation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#book-structure"><i class="fa fa-check"></i>Book structure</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#want-to-help"><i class="fa fa-check"></i>Want to help?</a></li>
+</ul></li>
+<li class="part"><span><b>Part I: Semantic Similarity Analysis</b></span></li>
+<li class="chapter" data-level="1" data-path="semantic-similarity-overview.html"><a href="semantic-similarity-overview.html"><i class="fa fa-check"></i><b>1</b> Overview of semantic similarity analysis</a></li>
+<li class="chapter" data-level="2" data-path="GOSemSim.html"><a href="GOSemSim.html"><i class="fa fa-check"></i><b>2</b> GO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
+<li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#terminology"><i class="fa fa-check"></i><b>5.1</b> Terminology</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-sets-and-pathway"><i class="fa fa-check"></i><b>5.1.1</b> Gene sets and pathway</a></li>
+<li class="chapter" data-level="5.1.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-ontology-go"><i class="fa fa-check"></i><b>5.1.2</b> Gene Ontology (GO)</a></li>
+<li class="chapter" data-level="5.1.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#kyoto-encyclopedia-of-genes-and-genomes-kegg"><i class="fa fa-check"></i><b>5.1.3</b> Kyoto Encyclopedia of Genes and Genomes (KEGG)</a></li>
+<li class="chapter" data-level="5.1.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#other-gene-sets"><i class="fa fa-check"></i><b>5.1.4</b> Other gene sets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#over-representation-analysis"><i class="fa fa-check"></i><b>5.2</b> Over Representation Analysis</a></li>
+<li class="chapter" data-level="5.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>5.3</b> Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="5.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#leading-edge-analysis-and-core-enriched-genes"><i class="fa fa-check"></i><b>5.4</b> Leading edge analysis and core enriched genes</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html"><i class="fa fa-check"></i><b>6</b> GO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#supported-organisms"><i class="fa fa-check"></i><b>6.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="6.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-classification"><i class="fa fa-check"></i><b>6.2</b> GO classification</a></li>
+<li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-over-representation-test"><i class="fa fa-check"></i><b>6.3</b> GO over-representation test</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>6.3.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="6.3.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>6.3.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="6.3.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>6.3.3</b> reduce redundancy of enriched GO terms</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-semantic-similarity-analysis"><i class="fa fa-check"></i><b>6.5</b> GO Semantic Similarity Analysis</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-analysis-for-non-model-organisms"><i class="fa fa-check"></i><b>6.5.1</b> GO analysis for non-model organisms</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-over-representation-test"><i class="fa fa-check"></i><b>7.1</b> KEGG over-representation test</a></li>
+<li class="chapter" data-level="7.2" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.2</b> KEGG Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-over-representation-test"><i class="fa fa-check"></i><b>7.3</b> KEGG Module over-representation test</a></li>
+<li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.4</b> KEGG Module Gene Set Enrichment Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="reactomepa.html"><a href="reactomepa.html"><i class="fa fa-check"></i><b>8</b> Reactome enrichment analysis</a></li>
+<li class="chapter" data-level="9" data-path="dose-enrichment.html"><a href="dose-enrichment.html"><i class="fa fa-check"></i><b>9</b> DO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdo-function"><i class="fa fa-check"></i><b>9.1</b> <code>enrichDO</code> function</a></li>
+<li class="chapter" data-level="9.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichncg-function"><i class="fa fa-check"></i><b>9.2</b> <code>enrichNCG</code> function</a></li>
+<li class="chapter" data-level="9.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>9.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="9.4" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedo-fuction"><i class="fa fa-check"></i><b>9.4</b> <code>gseDO</code> fuction</a></li>
+<li class="chapter" data-level="9.5" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsencg-fuction"><i class="fa fa-check"></i><b>9.5</b> <code>gseNCG</code> fuction</a></li>
+<li class="chapter" data-level="9.6" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedgn-fuction"><i class="fa fa-check"></i><b>9.6</b> <code>gseDGN</code> fuction</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html"><i class="fa fa-check"></i><b>10</b> MeSH enrichment analysis</a></li>
+<li class="chapter" data-level="11" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>11</b> Universal enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>11.1</b> Input data</a></li>
+<li class="chapter" data-level="11.2" data-path="universal-api.html"><a href="universal-api.html#wikipathways-analysis"><i class="fa fa-check"></i><b>11.2</b> WikiPathways analysis</a></li>
+<li class="chapter" data-level="11.3" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>11.3</b> Cell Marker</a></li>
+<li class="chapter" data-level="11.4" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>11.4</b> MSigDb analysis</a></li>
+<li class="chapter" data-level="11.5" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>11.5</b> MSigDb</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>12</b> Functional enrichment analysis of genomic coordinations</a></li>
+<li class="chapter" data-level="13" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>13</b> Biological theme comparison</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>13.1</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="13.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>13.2</b> Visualization of profile comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>14</b> Visualization of functional enrichment result</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="enrichplot.html"><a href="enrichplot.html#bar-plot"><i class="fa fa-check"></i><b>14.1</b> Bar Plot</a></li>
+<li class="chapter" data-level="14.2" data-path="enrichplot.html"><a href="enrichplot.html#dot-plot"><i class="fa fa-check"></i><b>14.2</b> Dot plot</a></li>
+<li class="chapter" data-level="14.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>14.3</b> Gene-Concept Network</a></li>
+<li class="chapter" data-level="14.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>14.4</b> Heatmap-like functional classification</a></li>
+<li class="chapter" data-level="14.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>14.5</b> Enrichment Map</a></li>
+<li class="chapter" data-level="14.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>14.6</b> UpSet Plot</a></li>
+<li class="chapter" data-level="14.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>14.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="14.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>14.8</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="14.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>14.9</b> pubmed trend of enriched terms</a></li>
+<li class="chapter" data-level="14.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>14.10</b> goplot</a></li>
+<li class="chapter" data-level="14.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>14.11</b> browseKEGG</a></li>
+<li class="chapter" data-level="14.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>14.12</b> pathview from pathview package</a></li>
+</ul></li>
+<li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
+<li class="chapter" data-level="15" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>15</b> dplyr verbs for manipulating enrichment result</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#filter"><i class="fa fa-check"></i><b>15.1</b> filter</a></li>
+<li class="chapter" data-level="15.2" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#arrange"><i class="fa fa-check"></i><b>15.2</b> arrange</a></li>
+<li class="chapter" data-level="15.3" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#select"><i class="fa fa-check"></i><b>15.3</b> select</a></li>
+<li class="chapter" data-level="15.4" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#mutate"><i class="fa fa-check"></i><b>15.4</b> mutate</a></li>
+<li class="chapter" data-level="15.5" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#slice"><i class="fa fa-check"></i><b>15.5</b> slice</a></li>
+<li class="chapter" data-level="15.6" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#summarise"><i class="fa fa-check"></i><b>15.6</b> summarise</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="bitr.html"><a href="bitr.html"><i class="fa fa-check"></i><b>16</b> bitr: Biological Id TranslatoR</a>
+<ul>
+<li class="chapter" data-level="16.0.1" data-path="bitr.html"><a href="bitr.html#bitr_kegg"><i class="fa fa-check"></i><b>16.0.1</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="other-utilities.html"><a href="other-utilities.html"><i class="fa fa-check"></i><b>17</b> Useful utilities</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="other-utilities.html"><a href="other-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.1</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="faq.html"><a href="faq.html"><i class="fa fa-check"></i><b>A</b> Frequently asked questions</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="clusterProfiler-dplyr" class="section level1" number="15">
+<h1><span class="header-section-number">Chapter 15</span> dplyr verbs for manipulating enrichment result</h1>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="clusterProfiler-dplyr.html#cb115-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb115-2"><a href="clusterProfiler-dplyr.html#cb115-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb115-3"><a href="clusterProfiler-dplyr.html#cb115-3" aria-hidden="true"></a>de =<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb115-4"><a href="clusterProfiler-dplyr.html#cb115-4" aria-hidden="true"></a>x =<span class="st"> </span><span class="kw">enrichDO</span>(de)</span></code></pre></div>
+<div id="filter" class="section level2" number="15.1">
+<h2><span class="header-section-number">15.1</span> filter</h2>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="clusterProfiler-dplyr.html#cb116-1" aria-hidden="true"></a><span class="kw">filter</span>(x, p.adjust <span class="op">&lt;</span><span class="st"> </span><span class="fl">.05</span>, qvalue <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.2</span>)</span></code></pre></div>
+<pre><code>## #
+## # over-representation test
+## #
+## #...@organism 	 Homo sapiens 
+## #...@ontology 	 DO 
+## #...@keytype 	 ENTREZID 
+## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
+## #...28 enriched terms found
+## &#39;data.frame&#39;:	28 obs. of  9 variables:
+##  $ ID         : chr  &quot;DOID:0060071&quot; &quot;DOID:5295&quot; &quot;DOID:8719&quot; &quot;DOID:3007&quot; ...
+##  $ Description: chr  &quot;pre-malignant neoplasm&quot; &quot;intestinal disease&quot; &quot;in situ carcinoma&quot; &quot;breast ductal carcinoma&quot; ...
+##  $ GeneRatio  : chr  &quot;5/77&quot; &quot;9/77&quot; &quot;4/77&quot; &quot;4/77&quot; ...
+##  $ BgRatio    : chr  &quot;22/8007&quot; &quot;157/8007&quot; &quot;18/8007&quot; &quot;29/8007&quot; ...
+##  $ pvalue     : num  1.67e-06 1.76e-05 2.18e-05 1.56e-04 2.08e-04 ...
+##  $ p.adjust   : num  0.00064 0.00279 0.00279 0.0136 0.0136 ...
+##  $ qvalue     : num  0.000461 0.002008 0.002008 0.009796 0.009796 ...
+##  $ geneID     : chr  &quot;6280/6278/10232/332/4321&quot; &quot;4312/6279/3627/10563/4283/890/366/4902/3620&quot; &quot;6280/6278/10232/332&quot; &quot;6280/6279/4751/6286&quot; ...
+##  $ Count      : int  5 9 4 4 13 6 13 5 5 6 ...
+## #...Citation
+##   Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an
+##   R/Bioconductor package for Disease Ontology Semantic and Enrichment
+##   analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
+</div>
+<div id="arrange" class="section level2" number="15.2">
+<h2><span class="header-section-number">15.2</span> arrange</h2>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="clusterProfiler-dplyr.html#cb118-1" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">geneRatio =</span> <span class="kw">parse_ratio</span>(GeneRatio)) <span class="op">%&gt;%</span></span>
+<span id="cb118-2"><a href="clusterProfiler-dplyr.html#cb118-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(geneRatio))</span></code></pre></div>
+<pre><code>## #
+## # over-representation test
+## #
+## #...@organism 	 Homo sapiens 
+## #...@ontology 	 DO 
+## #...@keytype 	 ENTREZID 
+## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
+## #...28 enriched terms found
+## &#39;data.frame&#39;:	28 obs. of  10 variables:
+##  $ ID         : chr  &quot;DOID:3908&quot; &quot;DOID:120&quot; &quot;DOID:2394&quot; &quot;DOID:3459&quot; ...
+##  $ Description: chr  &quot;non-small cell lung carcinoma&quot; &quot;female reproductive organ cancer&quot; &quot;ovarian cancer&quot; &quot;breast carcinoma&quot; ...
+##  $ GeneRatio  : chr  &quot;13/77&quot; &quot;13/77&quot; &quot;10/77&quot; &quot;10/77&quot; ...
+##  $ BgRatio    : chr  &quot;431/8007&quot; &quot;455/8007&quot; &quot;312/8007&quot; &quot;383/8007&quot; ...
+##  $ pvalue     : num  2.08e-04 3.52e-04 7.54e-04 3.48e-03 1.76e-05 ...
+##  $ p.adjust   : num  0.0136 0.01928 0.02625 0.04756 0.00279 ...
+##  $ qvalue     : num  0.0098 0.01389 0.0189 0.03424 0.00201 ...
+##  $ geneID     : chr  &quot;6280/2305/9133/6279/7153/6278/6241/11065/10232/332/6286/3002/9212&quot; &quot;4312/6279/7153/3627/820/983/10232/6362/332/6286/9212/4321/6790&quot; &quot;4312/820/983/10232/6362/332/6286/9212/4321/6790&quot; &quot;4312/6280/6279/7153/4751/890/4085/332/6286/6790&quot; ...
+##  $ Count      : int  13 13 10 10 9 7 7 6 6 6 ...
+##  $ geneRatio  : num  0.169 0.169 0.13 0.13 0.117 ...
+## #...Citation
+##   Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an
+##   R/Bioconductor package for Disease Ontology Semantic and Enrichment
+##   analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
+</div>
+<div id="select" class="section level2" number="15.3">
+<h2><span class="header-section-number">15.3</span> select</h2>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="clusterProfiler-dplyr.html#cb120-1" aria-hidden="true"></a><span class="kw">select</span>(x, <span class="op">-</span>geneID) <span class="op">%&gt;%</span><span class="st"> </span>head</span></code></pre></div>
+<pre><code>##                        ID                   Description GeneRatio  BgRatio
+## DOID:0060071 DOID:0060071        pre-malignant neoplasm      5/77  22/8007
+## DOID:5295       DOID:5295            intestinal disease      9/77 157/8007
+## DOID:8719       DOID:8719             in situ carcinoma      4/77  18/8007
+## DOID:3007       DOID:3007       breast ductal carcinoma      4/77  29/8007
+## DOID:3908       DOID:3908 non-small cell lung carcinoma     13/77 431/8007
+## DOID:0050589 DOID:0050589    inflammatory bowel disease      6/77  90/8007
+##                    pvalue     p.adjust       qvalue Count
+## DOID:0060071 1.671524e-06 0.0006401937 0.0004609887     5
+## DOID:5295    1.759049e-05 0.0027885022 0.0020079362     9
+## DOID:8719    2.184205e-05 0.0027885022 0.0020079362     4
+## DOID:3007    1.564603e-04 0.0136037018 0.0097957122     4
+## DOID:3908    2.075001e-04 0.0136037018 0.0097957122    13
+## DOID:0050589 2.131128e-04 0.0136037018 0.0097957122     6</code></pre>
+</div>
+<div id="mutate" class="section level2" number="15.4">
+<h2><span class="header-section-number">15.4</span> mutate</h2>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="clusterProfiler-dplyr.html#cb122-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">mutate</span>(x, <span class="dt">richFactor =</span> Count <span class="op">/</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">sub</span>(<span class="st">&quot;/</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;&quot;</span>, BgRatio)))</span>
+<span id="cb122-2"><a href="clusterProfiler-dplyr.html#cb122-2" aria-hidden="true"></a>y</span></code></pre></div>
+<pre><code>## #
+## # over-representation test
+## #
+## #...@organism 	 Homo sapiens 
+## #...@ontology 	 DO 
+## #...@keytype 	 ENTREZID 
+## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
+## #...28 enriched terms found
+## &#39;data.frame&#39;:	28 obs. of  10 variables:
+##  $ ID         : chr  &quot;DOID:0060071&quot; &quot;DOID:5295&quot; &quot;DOID:8719&quot; &quot;DOID:3007&quot; ...
+##  $ Description: chr  &quot;pre-malignant neoplasm&quot; &quot;intestinal disease&quot; &quot;in situ carcinoma&quot; &quot;breast ductal carcinoma&quot; ...
+##  $ GeneRatio  : chr  &quot;5/77&quot; &quot;9/77&quot; &quot;4/77&quot; &quot;4/77&quot; ...
+##  $ BgRatio    : chr  &quot;22/8007&quot; &quot;157/8007&quot; &quot;18/8007&quot; &quot;29/8007&quot; ...
+##  $ pvalue     : num  1.67e-06 1.76e-05 2.18e-05 1.56e-04 2.08e-04 ...
+##  $ p.adjust   : num  0.00064 0.00279 0.00279 0.0136 0.0136 ...
+##  $ qvalue     : num  0.000461 0.002008 0.002008 0.009796 0.009796 ...
+##  $ geneID     : chr  &quot;6280/6278/10232/332/4321&quot; &quot;4312/6279/3627/10563/4283/890/366/4902/3620&quot; &quot;6280/6278/10232/332&quot; &quot;6280/6279/4751/6286&quot; ...
+##  $ Count      : int  5 9 4 4 13 6 13 5 5 6 ...
+##  $ richFactor : num  0.2273 0.0573 0.2222 0.1379 0.0302 ...
+## #...Citation
+##   Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an
+##   R/Bioconductor package for Disease Ontology Semantic and Enrichment
+##   analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="clusterProfiler-dplyr.html#cb124-1" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb124-2"><a href="clusterProfiler-dplyr.html#cb124-2" aria-hidden="true"></a><span class="kw">library</span>(forcats)</span>
+<span id="cb124-3"><a href="clusterProfiler-dplyr.html#cb124-3" aria-hidden="true"></a><span class="kw">library</span>(enrichplot)</span>
+<span id="cb124-4"><a href="clusterProfiler-dplyr.html#cb124-4" aria-hidden="true"></a></span>
+<span id="cb124-5"><a href="clusterProfiler-dplyr.html#cb124-5" aria-hidden="true"></a><span class="kw">ggplot</span>(y, <span class="dt">showCategory =</span> <span class="dv">20</span>, </span>
+<span id="cb124-6"><a href="clusterProfiler-dplyr.html#cb124-6" aria-hidden="true"></a>  <span class="kw">aes</span>(richFactor, <span class="kw">fct_reorder</span>(Description, richFactor))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb124-7"><a href="clusterProfiler-dplyr.html#cb124-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_segment</span>(<span class="kw">aes</span>(<span class="dt">xend=</span><span class="dv">0</span>, <span class="dt">yend =</span> Description)) <span class="op">+</span></span>
+<span id="cb124-8"><a href="clusterProfiler-dplyr.html#cb124-8" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color=</span>p.adjust, <span class="dt">size =</span> Count)) <span class="op">+</span></span>
+<span id="cb124-9"><a href="clusterProfiler-dplyr.html#cb124-9" aria-hidden="true"></a><span class="st">  </span><span class="kw">scale_color_viridis_c</span>(<span class="dt">guide=</span><span class="kw">guide_colorbar</span>(<span class="dt">reverse=</span><span class="ot">TRUE</span>)) <span class="op">+</span></span>
+<span id="cb124-10"><a href="clusterProfiler-dplyr.html#cb124-10" aria-hidden="true"></a><span class="st">  </span><span class="kw">scale_size_continuous</span>(<span class="dt">range=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">10</span>)) <span class="op">+</span></span>
+<span id="cb124-11"><a href="clusterProfiler-dplyr.html#cb124-11" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb124-12"><a href="clusterProfiler-dplyr.html#cb124-12" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;rich factor&quot;</span>) <span class="op">+</span></span>
+<span id="cb124-13"><a href="clusterProfiler-dplyr.html#cb124-13" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb124-14"><a href="clusterProfiler-dplyr.html#cb124-14" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Enriched Disease Ontology&quot;</span>)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.png" width="672" /></p>
+<p>A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using <code>mutate</code> to add the fold enrichment variable is also easy:</p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="clusterProfiler-dplyr.html#cb125-1" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">FoldEnrichment =</span> <span class="kw">parse_ratio</span>(GeneRatio) <span class="op">/</span><span class="st"> </span><span class="kw">parse_ratio</span>(BgRatio))</span></code></pre></div>
+</div>
+<div id="slice" class="section level2" number="15.5">
+<h2><span class="header-section-number">15.5</span> slice</h2>
+<p>We can use <code>slice</code> to choose rows by their ordinal position in the enrichment result. Grouped result use the ordinal position with the group.</p>
+<p>In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure <a href="clusterProfiler-dplyr.html#fig:sliceNES">15.1</a>.</p>
+
+
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="clusterProfiler-dplyr.html#cb126-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
+<span id="cb126-2"><a href="clusterProfiler-dplyr.html#cb126-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb126-3"><a href="clusterProfiler-dplyr.html#cb126-3" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">gsePathway</span>(geneList)</span>
+<span id="cb126-4"><a href="clusterProfiler-dplyr.html#cb126-4" aria-hidden="true"></a></span>
+<span id="cb126-5"><a href="clusterProfiler-dplyr.html#cb126-5" aria-hidden="true"></a></span>
+<span id="cb126-6"><a href="clusterProfiler-dplyr.html#cb126-6" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">arrange</span>(x, <span class="kw">abs</span>(NES)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb126-7"><a href="clusterProfiler-dplyr.html#cb126-7" aria-hidden="true"></a><span class="st">        </span><span class="kw">group_by</span>(<span class="kw">sign</span>(NES)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb126-8"><a href="clusterProfiler-dplyr.html#cb126-8" aria-hidden="true"></a><span class="st">        </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</span>
+<span id="cb126-9"><a href="clusterProfiler-dplyr.html#cb126-9" aria-hidden="true"></a></span>
+<span id="cb126-10"><a href="clusterProfiler-dplyr.html#cb126-10" aria-hidden="true"></a><span class="kw">library</span>(forcats)</span>
+<span id="cb126-11"><a href="clusterProfiler-dplyr.html#cb126-11" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb126-12"><a href="clusterProfiler-dplyr.html#cb126-12" aria-hidden="true"></a><span class="kw">library</span>(ggstance)</span>
+<span id="cb126-13"><a href="clusterProfiler-dplyr.html#cb126-13" aria-hidden="true"></a><span class="kw">library</span>(enrichplot)</span>
+<span id="cb126-14"><a href="clusterProfiler-dplyr.html#cb126-14" aria-hidden="true"></a></span>
+<span id="cb126-15"><a href="clusterProfiler-dplyr.html#cb126-15" aria-hidden="true"></a><span class="kw">ggplot</span>(y, <span class="kw">aes</span>(NES, <span class="kw">fct_reorder</span>(Description, NES), <span class="dt">fill=</span>qvalues), <span class="dt">showCategory=</span><span class="dv">10</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb126-16"><a href="clusterProfiler-dplyr.html#cb126-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_barh</span>(<span class="dt">stat=</span><span class="st">&#39;identity&#39;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb126-17"><a href="clusterProfiler-dplyr.html#cb126-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_fill_continuous</span>(<span class="dt">low=</span><span class="st">&#39;red&#39;</span>, <span class="dt">high=</span><span class="st">&#39;blue&#39;</span>, <span class="dt">guide=</span><span class="kw">guide_colorbar</span>(<span class="dt">reverse=</span><span class="ot">TRUE</span>)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb126-18"><a href="clusterProfiler-dplyr.html#cb126-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="ot">NULL</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:sliceNES"></span>
+<img src="biomedicalKnowledge_files/figure-html/sliceNES-1.png" alt="Choose pathways by ordinal positions." width="864" />
+<p class="caption">
+Figure 15.1: <strong>Choose pathways by ordinal positions.</strong>
+</p>
+</div>
+</div>
+<div id="summarise" class="section level2" number="15.6">
+<h2><span class="header-section-number">15.6</span> summarise</h2>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="clusterProfiler-dplyr.html#cb127-1" aria-hidden="true"></a>pi=<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">11</span>)</span>
+<span id="cb127-2"><a href="clusterProfiler-dplyr.html#cb127-2" aria-hidden="true"></a></span>
+<span id="cb127-3"><a href="clusterProfiler-dplyr.html#cb127-3" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">pp =</span> <span class="kw">cut</span>(pvalue, pi)) <span class="op">%&gt;%</span></span>
+<span id="cb127-4"><a href="clusterProfiler-dplyr.html#cb127-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(pp) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb127-5"><a href="clusterProfiler-dplyr.html#cb127-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">cnt =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb127-6"><a href="clusterProfiler-dplyr.html#cb127-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pp, cnt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb127-7"><a href="clusterProfiler-dplyr.html#cb127-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb127-8"><a href="clusterProfiler-dplyr.html#cb127-8" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;p value intervals&quot;</span>) <span class="op">+</span></span>
+<span id="cb127-9"><a href="clusterProfiler-dplyr.html#cb127-9" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Frequency&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb127-10"><a href="clusterProfiler-dplyr.html#cb127-10" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;p value distribution&quot;</span>)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/p-bar-1.png" width="768" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="enrichplot.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bitr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

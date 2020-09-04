@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 10 MeSH enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 10 MeSH enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 10 MeSH enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 10 MeSH enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  
+  
+  
+
+
+
+<meta name="date" content="2020-09-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dose-enrichment.html"/>
+<link rel="next" href="universal-api.html"/>
+<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.15/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i>Motivation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citation"><i class="fa fa-check"></i>Citation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#book-structure"><i class="fa fa-check"></i>Book structure</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#want-to-help"><i class="fa fa-check"></i>Want to help?</a></li>
+</ul></li>
+<li class="part"><span><b>Part I: Semantic Similarity Analysis</b></span></li>
+<li class="chapter" data-level="1" data-path="semantic-similarity-overview.html"><a href="semantic-similarity-overview.html"><i class="fa fa-check"></i><b>1</b> Overview of semantic similarity analysis</a></li>
+<li class="chapter" data-level="2" data-path="GOSemSim.html"><a href="GOSemSim.html"><i class="fa fa-check"></i><b>2</b> GO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
+<li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#terminology"><i class="fa fa-check"></i><b>5.1</b> Terminology</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-sets-and-pathway"><i class="fa fa-check"></i><b>5.1.1</b> Gene sets and pathway</a></li>
+<li class="chapter" data-level="5.1.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-ontology-go"><i class="fa fa-check"></i><b>5.1.2</b> Gene Ontology (GO)</a></li>
+<li class="chapter" data-level="5.1.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#kyoto-encyclopedia-of-genes-and-genomes-kegg"><i class="fa fa-check"></i><b>5.1.3</b> Kyoto Encyclopedia of Genes and Genomes (KEGG)</a></li>
+<li class="chapter" data-level="5.1.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#other-gene-sets"><i class="fa fa-check"></i><b>5.1.4</b> Other gene sets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#over-representation-analysis"><i class="fa fa-check"></i><b>5.2</b> Over Representation Analysis</a></li>
+<li class="chapter" data-level="5.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>5.3</b> Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="5.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#leading-edge-analysis-and-core-enriched-genes"><i class="fa fa-check"></i><b>5.4</b> Leading edge analysis and core enriched genes</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html"><i class="fa fa-check"></i><b>6</b> GO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#supported-organisms"><i class="fa fa-check"></i><b>6.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="6.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-classification"><i class="fa fa-check"></i><b>6.2</b> GO classification</a></li>
+<li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-over-representation-test"><i class="fa fa-check"></i><b>6.3</b> GO over-representation test</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>6.3.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="6.3.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>6.3.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="6.3.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>6.3.3</b> reduce redundancy of enriched GO terms</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-semantic-similarity-analysis"><i class="fa fa-check"></i><b>6.5</b> GO Semantic Similarity Analysis</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-analysis-for-non-model-organisms"><i class="fa fa-check"></i><b>6.5.1</b> GO analysis for non-model organisms</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-over-representation-test"><i class="fa fa-check"></i><b>7.1</b> KEGG over-representation test</a></li>
+<li class="chapter" data-level="7.2" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.2</b> KEGG Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-over-representation-test"><i class="fa fa-check"></i><b>7.3</b> KEGG Module over-representation test</a></li>
+<li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.4</b> KEGG Module Gene Set Enrichment Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="reactomepa.html"><a href="reactomepa.html"><i class="fa fa-check"></i><b>8</b> Reactome enrichment analysis</a></li>
+<li class="chapter" data-level="9" data-path="dose-enrichment.html"><a href="dose-enrichment.html"><i class="fa fa-check"></i><b>9</b> DO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdo-function"><i class="fa fa-check"></i><b>9.1</b> <code>enrichDO</code> function</a></li>
+<li class="chapter" data-level="9.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichncg-function"><i class="fa fa-check"></i><b>9.2</b> <code>enrichNCG</code> function</a></li>
+<li class="chapter" data-level="9.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>9.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="9.4" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedo-fuction"><i class="fa fa-check"></i><b>9.4</b> <code>gseDO</code> fuction</a></li>
+<li class="chapter" data-level="9.5" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsencg-fuction"><i class="fa fa-check"></i><b>9.5</b> <code>gseNCG</code> fuction</a></li>
+<li class="chapter" data-level="9.6" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedgn-fuction"><i class="fa fa-check"></i><b>9.6</b> <code>gseDGN</code> fuction</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html"><i class="fa fa-check"></i><b>10</b> MeSH enrichment analysis</a></li>
+<li class="chapter" data-level="11" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>11</b> Universal enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>11.1</b> Input data</a></li>
+<li class="chapter" data-level="11.2" data-path="universal-api.html"><a href="universal-api.html#wikipathways-analysis"><i class="fa fa-check"></i><b>11.2</b> WikiPathways analysis</a></li>
+<li class="chapter" data-level="11.3" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>11.3</b> Cell Marker</a></li>
+<li class="chapter" data-level="11.4" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>11.4</b> MSigDb analysis</a></li>
+<li class="chapter" data-level="11.5" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>11.5</b> MSigDb</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>12</b> Functional enrichment analysis of genomic coordinations</a></li>
+<li class="chapter" data-level="13" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>13</b> Biological theme comparison</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>13.1</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="13.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>13.2</b> Visualization of profile comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>14</b> Visualization of functional enrichment result</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="enrichplot.html"><a href="enrichplot.html#bar-plot"><i class="fa fa-check"></i><b>14.1</b> Bar Plot</a></li>
+<li class="chapter" data-level="14.2" data-path="enrichplot.html"><a href="enrichplot.html#dot-plot"><i class="fa fa-check"></i><b>14.2</b> Dot plot</a></li>
+<li class="chapter" data-level="14.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>14.3</b> Gene-Concept Network</a></li>
+<li class="chapter" data-level="14.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>14.4</b> Heatmap-like functional classification</a></li>
+<li class="chapter" data-level="14.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>14.5</b> Enrichment Map</a></li>
+<li class="chapter" data-level="14.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>14.6</b> UpSet Plot</a></li>
+<li class="chapter" data-level="14.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>14.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="14.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>14.8</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="14.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>14.9</b> pubmed trend of enriched terms</a></li>
+<li class="chapter" data-level="14.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>14.10</b> goplot</a></li>
+<li class="chapter" data-level="14.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>14.11</b> browseKEGG</a></li>
+<li class="chapter" data-level="14.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>14.12</b> pathview from pathview package</a></li>
+</ul></li>
+<li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
+<li class="chapter" data-level="15" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>15</b> dplyr verbs for manipulating enrichment result</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#filter"><i class="fa fa-check"></i><b>15.1</b> filter</a></li>
+<li class="chapter" data-level="15.2" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#arrange"><i class="fa fa-check"></i><b>15.2</b> arrange</a></li>
+<li class="chapter" data-level="15.3" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#select"><i class="fa fa-check"></i><b>15.3</b> select</a></li>
+<li class="chapter" data-level="15.4" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#mutate"><i class="fa fa-check"></i><b>15.4</b> mutate</a></li>
+<li class="chapter" data-level="15.5" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#slice"><i class="fa fa-check"></i><b>15.5</b> slice</a></li>
+<li class="chapter" data-level="15.6" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#summarise"><i class="fa fa-check"></i><b>15.6</b> summarise</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="bitr.html"><a href="bitr.html"><i class="fa fa-check"></i><b>16</b> bitr: Biological Id TranslatoR</a>
+<ul>
+<li class="chapter" data-level="16.0.1" data-path="bitr.html"><a href="bitr.html#bitr_kegg"><i class="fa fa-check"></i><b>16.0.1</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="other-utilities.html"><a href="other-utilities.html"><i class="fa fa-check"></i><b>17</b> Useful utilities</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="other-utilities.html"><a href="other-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.1</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="faq.html"><a href="faq.html"><i class="fa fa-check"></i><b>A</b> Frequently asked questions</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="meshes-enrichment" class="section level1" number="10">
+<h1><span class="header-section-number">Chapter 10</span> MeSH enrichment analysis</h1>
+<p><code>meshes</code> supports enrichment analysis (over-representation analysis and gene set
+enrichment analysis) of gene list or whole expression profile using MeSH
+annotation. Data source from <code>gendoo</code>, <code>gene2pubmed</code> and <code>RBBH</code> are all
+supported. User can selecte interesting category to test. All 16
+categories are supported. The analysis supports &gt;70 species listed in <a href="https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb">MeSHDb BiocView</a>.</p>
+<p>For algorithm details, please refer to the vignettes of <a href="http://bioconductor.org/packages/DOSE">DOSE</a><span class="citation">(Yu et al. <a href="#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span> package.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="meshes-enrichment.html#cb44-1" aria-hidden="true"></a><span class="kw">library</span>(meshes)</span>
+<span id="cb44-2"><a href="meshes-enrichment.html#cb44-2" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb44-3"><a href="meshes-enrichment.html#cb44-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb44-4"><a href="meshes-enrichment.html#cb44-4" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichMeSH</span>(de, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database=</span><span class="st">&#39;gendoo&#39;</span>, <span class="dt">category =</span> <span class="st">&#39;C&#39;</span>)</span>
+<span id="cb44-5"><a href="meshes-enrichment.html#cb44-5" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
+<pre><code>##              ID              Description GeneRatio   BgRatio       pvalue
+## D043171 D043171  Chromosomal Instability     16/96 198/16528 2.794765e-14
+## D000782 D000782               Aneuploidy     17/96 320/16528 3.866830e-12
+## D042822 D042822      Genomic Instability     16/96 312/16528 3.007419e-11
+## D012595 D012595    Scleroderma, Systemic     11/96 279/16528 6.449334e-07
+## D009303 D009303 Nasopharyngeal Neoplasms     11/96 314/16528 2.049315e-06
+## D019698 D019698     Hepatitis C, Chronic     11/96 317/16528 2.246856e-06
+##             p.adjust       qvalue
+## D043171 2.459394e-11 1.815127e-11
+## D000782 1.701405e-09 1.255702e-09
+## D042822 8.821761e-09 6.510798e-09
+## D012595 1.418854e-04 1.047168e-04
+## D009303 3.295389e-04 2.432123e-04
+## D019698 3.295389e-04 2.432123e-04
+##                                                                                      geneID
+## D043171    4312/991/2305/1062/4605/10403/7153/55355/4751/4085/81620/332/7272/9212/1111/6790
+## D000782 4312/55143/991/1062/7153/4751/79019/55839/890/983/4085/332/7272/9212/8208/1111/6790
+## D042822     55143/991/1062/4605/7153/1381/9787/4751/10635/890/4085/81620/332/9212/1111/6790
+## D012595                              4312/6280/1062/4605/7153/3627/4283/6362/7850/3002/4321
+## D009303                                4312/7153/3627/6241/983/4085/5918/332/3002/4321/6790
+## D019698                               4312/3627/10563/6373/4283/983/6362/7850/332/3002/3620
+##         Count
+## D043171    16
+## D000782    17
+## D042822    16
+## D012595    11
+## D009303    11
+## D019698    11</code></pre>
+<p>In the over-representation analysis, we use data source from <code>gendoo</code> and <code>C</code> (Diseases) category.</p>
+<p>In the following example, we use data source from <code>gene2pubmed</code> and test category <code>G</code> (Phenomena and Processes) using GSEA.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="meshes-enrichment.html#cb46-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gseMeSH</span>(geneList, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database =</span> <span class="st">&#39;gene2pubmed&#39;</span>, <span class="dt">category =</span> <span class="st">&quot;G&quot;</span>)</span>
+<span id="cb46-2"><a href="meshes-enrichment.html#cb46-2" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
+<pre><code>##              ID            Description setSize enrichmentScore       NES
+## D006339 D006339             Heart Rate     336      -0.3640991 -1.565267
+## D049629 D049629        Waist-Hip Ratio     321      -0.3659337 -1.566436
+## D001846 D001846       Bone Development     322      -0.3722690 -1.592860
+## D055105 D055105    Waist Circumference     277      -0.4017143 -1.700715
+## D020257 D020257 Ventricular Remodeling     291      -0.3899142 -1.655773
+## D058685 D058685     Genetic Pleiotropy     240      -0.3978016 -1.655257
+##              pvalue   p.adjust    qvalues rank                   leading_edge
+## D006339 0.001300390 0.03404692 0.02518795 2405 tags=29%, list=19%, signal=24%
+## D049629 0.001317523 0.03404692 0.02518795 2176 tags=27%, list=17%, signal=23%
+## D001846 0.001319261 0.03404692 0.02518795 2100 tags=27%, list=17%, signal=23%
+## D055105 0.001328021 0.03404692 0.02518795 1625 tags=24%, list=13%, signal=21%
+## D020257 0.001329787 0.03404692 0.02518795 2622 tags=34%, list=21%, signal=28%
+## D058685 0.001351351 0.03404692 0.02518795 3048 tags=38%, list=24%, signal=29%
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                core_enrichment
+## D006339                             83478/4985/7139/8929/3784/10681/3375/154/1760/9781/5139/118/2702/6532/6416/2869/270/7157/627/2908/7138/5563/3643/1129/7779/947/1901/2034/4179/4804/64388/1621/4881/8863/5021/844/4212/11030/5797/6403/4803/84059/79789/5176/3953/5243/5468/1012/2868/5793/4023/7056/3952/5577/126/2946/3778/477/5733/4313/2944/9201/3075/9499/2273/2099/1471/857/775/5138/4306/4487/213/5350/5744/23245/2152/2697/2791/185/6863/2952/5327/80206/2200/9607/3572/150/8490/3479/2006/55259/9370/125/652/55351
+## D049629                                                 6532/8609/9563/23405/10206/7157/23314/4776/25970/627/2908/490/4057/268/3567/23429/283450/1543/3240/3174/81490/23047/55304/5099/54808/4179/2169/948/8082/4018/54465/4256/3087/5919/253461/26470/10903/1581/56172/3953/5950/5468/1012/8835/4023/594/4214/7350/3952/79068/51232/2202/6444/9369/2099/6833/3991/4016/2690/57161/79750/4915/5125/5167/8639/11188/10631/3551/2487/2697/6935/3487/367/4982/3667/4059/150/9358/1489/3479/6424/9370/4629/652/5346/7021/4239/5241
+## D001846                                                 1499/8945/7157/57798/79048/627/6500/8038/4057/860/2752/4882/3371/2915/5745/63971/54455/3791/819/57045/596/2034/54808/80781/1280/64388/2261/4054/11059/3483/9900/26234/4734/9452/4208/4322/253461/1278/7048/51280/10903/30008/7869/1277/3953/10516/10411/8835/79776/11167/2317/3485/3952/5274/54681/4488/10486/1009/2202/91851/2099/5764/23327/3339/8817/83716/6678/4915/633/658/54361/5744/165/5654/10631/3487/367/4982/3667/79971/1634/3479/114899/9370/652/8614/4969
+## D055105                                                                                                                                                                               3643/7466/181/2078/2169/948/4887/3931/4018/4212/9208/6403/3087/84059/5919/253461/2308/79789/5176/3953/5950/2166/6414/5243/5468/1012/4023/582/4214/3485/7350/3952/5577/126/585/79068/2202/4313/9369/2621/2099/1471/2690/1363/4306/174/5167/23245/10631/4886/185/9863/4982/80206/3667/9607/563/1489/3479/9370/23704/2167/5346/7021/79689/9
+## D020257 5310/7082/4317/7057/5532/57104/3915/387032/3624/7139/6385/154/5530/1238/5595/5228/1499/7157/4776/25970/408/8654/4811/94/3910/3371/6548/3082/5914/1291/7173/947/3685/80757/80781/5592/1490/1306/4314/80070/10272/4881/3875/595/7042/3912/1511/2934/4060/283/1277/7078/5549/22795/1293/2247/50507/1281/5136/11167/4319/3952/1513/6310/4313/2199/1294/2273/2099/6387/3339/7079/1462/1292/775/3908/4306/4035/633/5167/5350/11188/10418/10631/9429/1805/2487/2697/185/7043/6863/3913/4982/1634/7060/3479/7373/9370/2167/652
+## D058685                       60626/2913/472/22818/56155/7297/605/6311/55802/26052/23495/4237/53353/23067/783/4025/8434/30845/26053/83478/5071/124565/3784/368/777/144404/5087/1499/3232/7157/60468/221037/8654/4088/55576/9811/7010/4602/1027/51111/2619/3490/2823/2034/5592/11197/5737/196/26999/84159/23041/80059/3912/6584/50650/23410/10580/79987/1012/1272/8076/9778/2530/9457/4214/146691/477/5733/6444/6720/6925/2099/2674/775/64800/10129/9223/79750/2737/1264/1811/57551/3572/10451/55714/23090/652/4137/11122/10551</code></pre>
+<p>User can use visualization methods implemented in <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> (i.e.<code>barplot</code>, <code>dotplot</code>, <code>cnetplot</code>, <code>emapplot</code> and <code>gseaplot</code>) to visualize these enrichment results. With these visualization methods, it’s much easier to interpret enriched results.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="meshes-enrichment.html#cb48-1" aria-hidden="true"></a><span class="kw">dotplot</span>(x)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="meshes-enrichment.html#cb49-1" aria-hidden="true"></a><span class="kw">gseaplot</span>(y, y[<span class="dv">1</span>,<span class="dv">1</span>], <span class="dt">title=</span>y[<span class="dv">1</span>,<span class="dv">2</span>])</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-2.png" width="672" /></p>
+
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-yu_dose_2015">
+<p>Yu, Guangchuang, Li-Gen Wang, Guang-Rong Yan, and Qing-Yu He. 2015. “DOSE: An R/Bioconductor Package for Disease Ontology Semantic and Enrichment Analysis.” <em>Bioinformatics</em> 31 (4): 608–9. <a href="https://doi.org/10.1093/bioinformatics/btu684">https://doi.org/10.1093/bioinformatics/btu684</a>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dose-enrichment.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="universal-api.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

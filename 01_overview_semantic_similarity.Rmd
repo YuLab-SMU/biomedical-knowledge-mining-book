@@ -1,5 +1,5 @@
 # (PART\*) Part I: Semantic Similarity Analysis {-}
 
 
-# Overview of semantic similarity analysis {#chapter1}
+# Overview of semantic similarity analysis {#semantic-similarity-overview}
 

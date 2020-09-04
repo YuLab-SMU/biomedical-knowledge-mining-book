@@ -1,4 +1,4 @@
-book_filename: "treedata"
+book_filename: "biomedicalKnowledge"
 chapter_name: "Chapter "
 output_dir: docs
 delete_merged_file: true
@@ -20,6 +20,4 @@ rmd_files: ["index.Rmd",
   "15_dplyr.Rmd",
   "16_other_utilities.Rmd",
   "A-app-faq.Rmd",
-  #"A-app-tools.Rmd",
-  #"A-app-fig-tab.Rmd",
   "B-references.Rmd"]

@@ -1,1 +1,37 @@
-# MeSH enrichment analysis {#chapter10}
+# MeSH enrichment analysis {#meshes-enrichment}
+
+
+
+`meshes` supports enrichment analysis (over-representation analysis and gene set
+enrichment analysis) of gene list or whole expression profile using MeSH
+annotation. Data source from `gendoo`, `gene2pubmed` and `RBBH` are all
+supported. User can selecte interesting category to test. All 16
+categories are supported. The analysis supports >70 species listed in [MeSHDb BiocView](https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb).
+
+For algorithm details, please refer to the vignettes of `r Biocpkg("DOSE")`[@yu_dose_2015] package.
+
+```{r}
+library(meshes)
+data(geneList, package="DOSE")
+de <- names(geneList)[1:100]
+x <- enrichMeSH(de, MeSHDb = "MeSH.Hsa.eg.db", database='gendoo', category = 'C')
+head(x)
+```
+
+
+In the over-representation analysis, we use data source from `gendoo` and `C` (Diseases) category.
+
+In the following example, we use data source from `gene2pubmed` and test category `G` (Phenomena and Processes) using GSEA.
+
+```{r}
+y <- gseMeSH(geneList, MeSHDb = "MeSH.Hsa.eg.db", database = 'gene2pubmed', category = "G")
+head(y)
+```
+
+User can use visualization methods implemented in `r Biocpkg("enrichplot")` (i.e.`barplot`, `dotplot`, `cnetplot`, `emapplot` and `gseaplot`) to visualize these enrichment results. With these visualization methods, it's much easier to interpret enriched results.
+
+
+```{r}
+dotplot(x)
+gseaplot(y, y[1,1], title=y[1,2])
+```

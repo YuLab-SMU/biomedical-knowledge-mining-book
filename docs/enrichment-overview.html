@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  
+  
+  
+
+
+
+<meta name="date" content="2020-09-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="meshes-semantic-similarity.html"/>
+<link rel="next" href="clusterprofiler-go.html"/>
+<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.15/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i>Motivation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#citation"><i class="fa fa-check"></i>Citation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#book-structure"><i class="fa fa-check"></i>Book structure</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#want-to-help"><i class="fa fa-check"></i>Want to help?</a></li>
+</ul></li>
+<li class="part"><span><b>Part I: Semantic Similarity Analysis</b></span></li>
+<li class="chapter" data-level="1" data-path="semantic-similarity-overview.html"><a href="semantic-similarity-overview.html"><i class="fa fa-check"></i><b>1</b> Overview of semantic similarity analysis</a></li>
+<li class="chapter" data-level="2" data-path="GOSemSim.html"><a href="GOSemSim.html"><i class="fa fa-check"></i><b>2</b> GO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
+<li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#terminology"><i class="fa fa-check"></i><b>5.1</b> Terminology</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-sets-and-pathway"><i class="fa fa-check"></i><b>5.1.1</b> Gene sets and pathway</a></li>
+<li class="chapter" data-level="5.1.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-ontology-go"><i class="fa fa-check"></i><b>5.1.2</b> Gene Ontology (GO)</a></li>
+<li class="chapter" data-level="5.1.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#kyoto-encyclopedia-of-genes-and-genomes-kegg"><i class="fa fa-check"></i><b>5.1.3</b> Kyoto Encyclopedia of Genes and Genomes (KEGG)</a></li>
+<li class="chapter" data-level="5.1.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#other-gene-sets"><i class="fa fa-check"></i><b>5.1.4</b> Other gene sets</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="enrichment-overview.html"><a href="enrichment-overview.html#over-representation-analysis"><i class="fa fa-check"></i><b>5.2</b> Over Representation Analysis</a></li>
+<li class="chapter" data-level="5.3" data-path="enrichment-overview.html"><a href="enrichment-overview.html#gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>5.3</b> Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="5.4" data-path="enrichment-overview.html"><a href="enrichment-overview.html#leading-edge-analysis-and-core-enriched-genes"><i class="fa fa-check"></i><b>5.4</b> Leading edge analysis and core enriched genes</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html"><i class="fa fa-check"></i><b>6</b> GO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#supported-organisms"><i class="fa fa-check"></i><b>6.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="6.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-classification"><i class="fa fa-check"></i><b>6.2</b> GO classification</a></li>
+<li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-over-representation-test"><i class="fa fa-check"></i><b>6.3</b> GO over-representation test</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>6.3.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="6.3.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>6.3.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="6.3.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>6.3.3</b> reduce redundancy of enriched GO terms</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-semantic-similarity-analysis"><i class="fa fa-check"></i><b>6.5</b> GO Semantic Similarity Analysis</a>
+<ul>
+<li class="chapter" data-level="6.5.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-analysis-for-non-model-organisms"><i class="fa fa-check"></i><b>6.5.1</b> GO analysis for non-model organisms</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-over-representation-test"><i class="fa fa-check"></i><b>7.1</b> KEGG over-representation test</a></li>
+<li class="chapter" data-level="7.2" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.2</b> KEGG Gene Set Enrichment Analysis</a></li>
+<li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-over-representation-test"><i class="fa fa-check"></i><b>7.3</b> KEGG Module over-representation test</a></li>
+<li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#kegg-module-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>7.4</b> KEGG Module Gene Set Enrichment Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="reactomepa.html"><a href="reactomepa.html"><i class="fa fa-check"></i><b>8</b> Reactome enrichment analysis</a></li>
+<li class="chapter" data-level="9" data-path="dose-enrichment.html"><a href="dose-enrichment.html"><i class="fa fa-check"></i><b>9</b> DO enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdo-function"><i class="fa fa-check"></i><b>9.1</b> <code>enrichDO</code> function</a></li>
+<li class="chapter" data-level="9.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichncg-function"><i class="fa fa-check"></i><b>9.2</b> <code>enrichNCG</code> function</a></li>
+<li class="chapter" data-level="9.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>9.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="9.4" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedo-fuction"><i class="fa fa-check"></i><b>9.4</b> <code>gseDO</code> fuction</a></li>
+<li class="chapter" data-level="9.5" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsencg-fuction"><i class="fa fa-check"></i><b>9.5</b> <code>gseNCG</code> fuction</a></li>
+<li class="chapter" data-level="9.6" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedgn-fuction"><i class="fa fa-check"></i><b>9.6</b> <code>gseDGN</code> fuction</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html"><i class="fa fa-check"></i><b>10</b> MeSH enrichment analysis</a></li>
+<li class="chapter" data-level="11" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>11</b> Universal enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>11.1</b> Input data</a></li>
+<li class="chapter" data-level="11.2" data-path="universal-api.html"><a href="universal-api.html#wikipathways-analysis"><i class="fa fa-check"></i><b>11.2</b> WikiPathways analysis</a></li>
+<li class="chapter" data-level="11.3" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>11.3</b> Cell Marker</a></li>
+<li class="chapter" data-level="11.4" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>11.4</b> MSigDb analysis</a></li>
+<li class="chapter" data-level="11.5" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>11.5</b> MSigDb</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>12</b> Functional enrichment analysis of genomic coordinations</a></li>
+<li class="chapter" data-level="13" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>13</b> Biological theme comparison</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>13.1</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="13.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>13.2</b> Visualization of profile comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>14</b> Visualization of functional enrichment result</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="enrichplot.html"><a href="enrichplot.html#bar-plot"><i class="fa fa-check"></i><b>14.1</b> Bar Plot</a></li>
+<li class="chapter" data-level="14.2" data-path="enrichplot.html"><a href="enrichplot.html#dot-plot"><i class="fa fa-check"></i><b>14.2</b> Dot plot</a></li>
+<li class="chapter" data-level="14.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>14.3</b> Gene-Concept Network</a></li>
+<li class="chapter" data-level="14.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>14.4</b> Heatmap-like functional classification</a></li>
+<li class="chapter" data-level="14.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>14.5</b> Enrichment Map</a></li>
+<li class="chapter" data-level="14.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>14.6</b> UpSet Plot</a></li>
+<li class="chapter" data-level="14.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>14.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="14.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>14.8</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="14.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>14.9</b> pubmed trend of enriched terms</a></li>
+<li class="chapter" data-level="14.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>14.10</b> goplot</a></li>
+<li class="chapter" data-level="14.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>14.11</b> browseKEGG</a></li>
+<li class="chapter" data-level="14.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>14.12</b> pathview from pathview package</a></li>
+</ul></li>
+<li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
+<li class="chapter" data-level="15" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>15</b> dplyr verbs for manipulating enrichment result</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#filter"><i class="fa fa-check"></i><b>15.1</b> filter</a></li>
+<li class="chapter" data-level="15.2" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#arrange"><i class="fa fa-check"></i><b>15.2</b> arrange</a></li>
+<li class="chapter" data-level="15.3" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#select"><i class="fa fa-check"></i><b>15.3</b> select</a></li>
+<li class="chapter" data-level="15.4" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#mutate"><i class="fa fa-check"></i><b>15.4</b> mutate</a></li>
+<li class="chapter" data-level="15.5" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#slice"><i class="fa fa-check"></i><b>15.5</b> slice</a></li>
+<li class="chapter" data-level="15.6" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#summarise"><i class="fa fa-check"></i><b>15.6</b> summarise</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="bitr.html"><a href="bitr.html"><i class="fa fa-check"></i><b>16</b> bitr: Biological Id TranslatoR</a>
+<ul>
+<li class="chapter" data-level="16.0.1" data-path="bitr.html"><a href="bitr.html#bitr_kegg"><i class="fa fa-check"></i><b>16.0.1</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="other-utilities.html"><a href="other-utilities.html"><i class="fa fa-check"></i><b>17</b> Useful utilities</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="other-utilities.html"><a href="other-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.1</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendix</b></span></li>
+<li class="chapter" data-level="A" data-path="faq.html"><a href="faq.html"><i class="fa fa-check"></i><b>A</b> Frequently asked questions</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="enrichment-overview" class="section level1" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Overview of enrichment analysis</h1>
+<div id="terminology" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Terminology</h2>
+<div id="gene-sets-and-pathway" class="section level3" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Gene sets and pathway</h3>
+<p>A gene set is an unordered collection of genes that are functional related. A pathway can be interpreted as a gene set by ignoring functional relationships among genes.</p>
+</div>
+<div id="gene-ontology-go" class="section level3" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Gene Ontology (GO)</h3>
+<p><a href="http://www.geneontology.org/">Gene Ontology</a> defines concepts/classes used to describe gene function, and relationships between these concepts. It classifies functions along three aspects:</p>
+<ul>
+<li>MF: Molecular Function
+<ul>
+<li>molecular activities of gene products</li>
+</ul></li>
+<li>CC: Cellular Component
+<ul>
+<li>where gene products are active</li>
+</ul></li>
+<li>BP: Biological Process
+<ul>
+<li>pathways and larger processes made up of the activities of multiple gene products</li>
+</ul></li>
+</ul>
+<p>GO terms are organized in a directed acyclic graph, where edge between the terms represent parent-child relationship.</p>
+</div>
+<div id="kyoto-encyclopedia-of-genes-and-genomes-kegg" class="section level3" number="5.1.3">
+<h3><span class="header-section-number">5.1.3</span> Kyoto Encyclopedia of Genes and Genomes (KEGG)</h3>
+<p><a href="https://www.genome.jp/kegg/">KEGG</a> is a collection of manually drawn pathway maps representing molecular interaction and reaction networks. These pathways cover a wide range of biochemical processes that can be divided in 7 broad categories: metabolism, genetic and environmental information processing, cellular processes, organismal systems, human diseases, and drug development<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+</div>
+<div id="other-gene-sets" class="section level3" number="5.1.4">
+<h3><span class="header-section-number">5.1.4</span> Other gene sets</h3>
+<p>GO and KEGG are most frequently used for the functional analysis. They are typically the first choice because their long-standing curation and availability for a wide range of species.</p>
+<p>Other gene sets including but not limited to Disease Ontology (<a href="http://disease-ontology.org/">DO</a>), Disease Gene Network (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/">DisGeNET</a>), <a href="https://www.wikipathways.org">wikiPathways</a>, Molecular Signatures Database (<a href="http://software.broadinstitute.org/gsea/msigdb">MSigDb</a>).</p>
+</div>
+</div>
+<div id="over-representation-analysis" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Over Representation Analysis</h2>
+<p>Over Representation Analysis (ORA) <span class="citation">(Boyle et al. <a href="#ref-boyle2004" role="doc-biblioref">2004</a>)</span> is a widely used approach to determine whether known biological functions or processes are over-represented (= enriched) in an experimentally-derived gene list, <em>e.g.</em> a list of differentially expressed genes (DEGs).</p>
+<p>The <em>p</em>-value can be calculated by hypergeometric distribution.</p>
+<p><span class="math inline">\(p = 1 - \displaystyle\sum_{i = 0}^{k-1}\frac{{M \choose i}{{N-M} \choose {n-i}}} {{N \choose n}}\)</span></p>
+<p>In this equation, <code>N</code> is the total number of genes in the background distribution,
+<code>M</code> is the number of genes within that distribution that are annotated (either directly or indirectly) to the gene set of interest,
+<code>n</code> is the size of the list of genes of interest and <code>k</code> is the number of genes within that list which
+are annotated to the gene set. The background distribution by default is
+all the genes that have annotation. <em>P</em>-values should be adjusted for <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparison</a>.</p>
+<p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differential expressed genes, 28 are annotated to a gene set<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="enrichment-overview.html#cb1-1" aria-hidden="true"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene.not.interest=</span><span class="kw">c</span>(<span class="dv">2613</span>, <span class="dv">15310</span>), <span class="dt">gene.in.interest=</span><span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">29</span>))</span>
+<span id="cb1-2"><a href="enrichment-overview.html#cb1-2" aria-hidden="true"></a><span class="kw">row.names</span>(d) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;In_category&quot;</span>, <span class="st">&quot;not_in_category&quot;</span>)</span>
+<span id="cb1-3"><a href="enrichment-overview.html#cb1-3" aria-hidden="true"></a>d</span></code></pre></div>
+<pre><code>##                 gene.not.interest gene.in.interest
+## In_category                  2613               28
+## not_in_category             15310               29</code></pre>
+<p>whether the overlap of 25 genes are significantly over represented in the gene set can be assessed using hypergeometric distribution. This corresponding to a one-sided version of Fisher’s exact test.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="enrichment-overview.html#cb3-1" aria-hidden="true"></a><span class="kw">fisher.test</span>(d, <span class="dt">alternative =</span> <span class="st">&quot;greater&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## 	Fisher&#39;s Exact Test for Count Data
+## 
+## data:  d
+## p-value = 1
+## alternative hypothesis: true odds ratio is greater than 1
+## 95 percent confidence interval:
+##  0.110242      Inf
+## sample estimates:
+## odds ratio 
+##  0.1767937</code></pre>
+</div>
+<div id="gene-set-enrichment-analysis" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Gene Set Enrichment Analysis</h2>
+<p>A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The enrichment analysis we demonstrated in <a href="enrichmentAnalysis.html">Disease enrichment analysis</a> vignette were based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(Subramanian et al. <a href="#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span> directly addresses this limitation.
+All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. Since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.</p>
+<p>Genes are ranked based on their phenotypes. Given a priori defined set of gene <em>S</em> (e.g., genes shareing the same <em>DO</em> category), the goal of GSEA is to determine whether the members of <em>S</em> are randomly distributed throughout the ranked gene list (<em>L</em>) or primarily found at the top or bottom.</p>
+<p>There are three key elements of the GSEA method:</p>
+<ul>
+<li>Calculation of an Enrichment Score.
+<ul>
+<li>The enrichment score (<em>ES</em>) represent the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov-like statistic<span class="citation">(Subramanian et al. <a href="#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span>.</li>
+</ul></li>
+<li>Esimation of Significance Level of <em>ES</em>.
+<ul>
+<li>The <em>p</em>-value of the <em>ES</em> is calculated using permutation test. Specifically, we permute the gene labels of the gene list <em>L</em> and recompute the <em>ES</em> of the gene set for the permutated data, which generate a null distribution for the <em>ES</em>. The <em>p</em>-value of the observed <em>ES</em> is then calculated relative to this null distribution.</li>
+</ul></li>
+<li>Adjustment for Multiple Hypothesis Testing.
+<ul>
+<li>When the entire gene sets were evaluated, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> adjust the estimated significance level to account for multiple hypothesis testing and also <em>q</em>-values were calculated for FDR control.</li>
+</ul></li>
+</ul>
+<p>We implemented GSEA algorithm proposed by Subramanian<span class="citation">(Subramanian et al. <a href="#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span>. Alexey Sergushichev implemented an algorithm for fast GSEA analysis in the <a href="http://bioconductor.org/packages/fgsea">fgsea</a><span class="citation">(S., <a href="#ref-alex_fgsea" role="doc-biblioref">n.d.</a>)</span> package.</p>
+<p>In <a href="http://bioconductor.org/packages/DOSE">DOSE</a><span class="citation">(Yu et al. <a href="#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span>, user can use GSEA algorithm implemented in <code>DOSE</code> or <code>fgsea</code> by specifying the parameter <code>by="DOSE"</code> or <code>by="fgsea"</code>. By default, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> use <code>fgsea</code> since it is much more fast.</p>
+</div>
+<div id="leading-edge-analysis-and-core-enriched-genes" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Leading edge analysis and core enriched genes</h2>
+<p>Leading edge analysis reports <code>Tags</code> to indicate the percentage of genes contributing to the enrichment score, <code>List</code> to indicate where in the list the enrichment score is attained and <code>Signal</code> for enrichment signal strength.</p>
+<p>It would also be very interesting to get the core enriched genes that contribute to the enrichment.</p>
+<p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> supports leading edge analysis and report core enriched genes in GSEA analysis.</p>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-boyle2004">
+<p>Boyle, Elizabeth I, Shuai Weng, Jeremy Gollub, Heng Jin, David Botstein, J Michael Cherry, and Gavin Sherlock. 2004. “GO::TermFinder–open Source Software for Accessing Gene Ontology Information and Finding Significantly Enriched Gene Ontology Terms Associated with a List of Genes.” <em>Bioinformatics (Oxford, England)</em> 20 (18): 3710–5. <a href="https://doi.org/10.1093/bioinformatics/bth456">https://doi.org/10.1093/bioinformatics/bth456</a>.</p>
+</div>
+<div id="ref-alex_fgsea">
+<p>S., Alexey. n.d. “An Algorithm for Fast Preranked Gene Set Enrichment Analysis Using Cumulative Statistic Calculation.” <em>Biorxiv</em>. <a href="https://doi.org/10.1101/060012">https://doi.org/10.1101/060012</a>.</p>
+</div>
+<div id="ref-subramanian_gene_2005">
+<p>Subramanian, Aravind, Pablo Tamayo, Vamsi K. Mootha, Sayan Mukherjee, Benjamin L. Ebert, Michael A. Gillette, Amanda Paulovich, et al. 2005. “Gene Set Enrichment Analysis: A Knowledge-Based Approach for Interpreting Genome-Wide Expression Profiles.” <em>Proceedings of the National Academy of Sciences of the United States of America</em> 102 (43): 15545–50. <a href="https://doi.org/10.1073/pnas.0506580102">https://doi.org/10.1073/pnas.0506580102</a>.</p>
+</div>
+<div id="ref-yu_dose_2015">
+<p>Yu, Guangchuang, Li-Gen Wang, Guang-Rong Yan, and Qing-Yu He. 2015. “DOSE: An R/Bioconductor Package for Disease Ontology Semantic and Enrichment Analysis.” <em>Bioinformatics</em> 31 (4): 608–9. <a href="https://doi.org/10.1093/bioinformatics/btu684">https://doi.org/10.1093/bioinformatics/btu684</a>.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p><a href="https://pathview.uncc.edu/data/khier.tsv" class="uri">https://pathview.uncc.edu/data/khier.tsv</a><a href="enrichment-overview.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>example adopted from <a href="https://guangchuangyu.github.io/cn/2012/04/enrichment-analysis/" class="uri">https://guangchuangyu.github.io/cn/2012/04/enrichment-analysis/</a><a href="enrichment-overview.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="meshes-semantic-similarity.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="clusterprofiler-go.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

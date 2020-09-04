@@ -1,1 +1,77 @@
-# Biological theme comparison {#chapter13}
+# Biological theme comparison {#clusterprofiler-comparecluster}
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+library(clusterProfiler)
+```
+
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) was developed for biological theme comparison[@yu2012], and it provides a function, `compareCluster`, to automatically calculate enriched functional categories of each gene clusters.
+
+```{r}
+data(gcSample)
+lapply(gcSample, head)
+```
+
+The input for _geneCluster_ parameter should be a named list of gene IDs. To speed up the compilation of this document, we set `use_internal_data = TRUE`.
+
+```{r}
+ck <- compareCluster(geneCluster = gcSample, fun = "enrichKEGG")
+head(as.data.frame(ck))
+```
+
+
+## Formula interface of compareCluster
+
+`compareCluster` also supports passing a formula (the code to support formula has been contributed by Giovanni Dall'Olio) of type $Entrez \sim group$ or $Entrez \sim group + othergroup$.
+
+```{r}
+mydf <- data.frame(Entrez=names(geneList), FC=geneList)
+mydf <- mydf[abs(mydf$FC) > 1,]
+mydf$group <- "upregulated"
+mydf$group[mydf$FC < 0] <- "downregulated"
+mydf$othergroup <- "A"
+mydf$othergroup[abs(mydf$FC) > 2] <- "B"
+
+formula_res <- compareCluster(Entrez~group+othergroup, data=mydf, fun="enrichKEGG")
+
+head(as.data.frame(formula_res))
+```
+
+## Visualization of profile comparison
+
+We can visualize the result using `dotplot` method.
+
+```{r fig.height=7, fig.width=9}
+dotplot(ck)
+```
+
+```{r fig.height=6, fig.width=10}
+dotplot(formula_res)
+dotplot(formula_res, x=~group) + ggplot2::facet_grid(~othergroup)
+```
+
+
+By default, only top 5 (most significant) categories of each cluster
+was plotted. User can changes the parameter _showCategory_ to
+specify how many categories of each cluster to be plotted, and if
+_showCategory_ was set to _NULL_, the whole result will
+be plotted.
+
+The _plot_ function accepts a parameter _by_ for setting the scale of dot sizes. The default parameter _by_ is setting to "geneRatio", which corresponding to the "GeneRatio" column of the output. If it was setting to _count_, the comparison will be based on gene counts, while if setting to _rowPercentage_, the dot sizes will be normalized by _count/(sum of each row)_
+
+To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when _by_ is setting to _rowPercentage_ and number of gene clusters in each cluster label (numbers in parentheses) when _by_ is setting to _geneRatio_, as shown in Figure 3. If the dot sizes were based on _count_, the row numbers will not shown.
+
+The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding p-values. Color gradient ranging from red to blue correspond to in order of increasing p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). P-values and adjusted p-values were filtered out by the threshold giving by
+parameter _pvalueCutoff_, and FDR can be estimated by _qvalue_.
+
+User can refer to the example in Yu (2012)[@yu2012]; we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus)[@schmidt2008]. We identified 8 gene clusters from differentially expressed genes, and using `compareCluster` to compare these gene clusters by their enriched biological process.
+
+The comparison function was designed as a framework for comparing gene
+clusters of any kind of ontology associations, not only `groupGO`,
+`enrichGO`, `enrichKEGG` and `enricher` provided in this package, but
+also other biological and biomedical ontologies, for instance,
+`enrichDO` from [DOSE](https://www.bioconductor.org/packages/DOSE)[@yu_dose_2015], `enrichMeSH` from
+[meshes](https://www.bioconductor.org/packages/meshes) and `enrichPathway` from [ReactomePA](https://www.bioconductor.org/packages/ReactomePA) work fine with `compareCluster` for comparing biological themes in disease and reactome pathway perspective. More details can be found in the vignettes of [DOSE](https://www.bioconductor.org/packages/DOSE)[@yu_dose_2015] and [ReactomePA](https://www.bioconductor.org/packages/ReactomePA).

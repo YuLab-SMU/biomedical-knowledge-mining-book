@@ -1,1 +1,72 @@
-# KEGG enrichment analysis {#chapter7}
+# KEGG enrichment analysis {#clusterprofiler-kegg}
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+library(clusterProfiler)
+```
+
+The annotation package, `KEGG.db`, is not updated since 2012. It's now pretty old and in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler), `enrichKEGG` (for KEGG pathway) and `enrichMKEGG` (for KEGG module) supports downloading latest online version of KEGG data for enrichment analysis. Using `KEGG.db` is also supported by explicitly setting _use\_internal\_data_ parameter to _TRUE_, but it's not recommended.
+
+With this new feature, organism is not restricted to those supported in previous release, it can be any species that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the _organism_ parameter. The full list of KEGG supported organisms can be accessed via [http://www.genome.jp/kegg/catalog/org_list.html](http://www.genome.jp/kegg/catalog/org_list.html). 
+[KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
+
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides `search_kegg_organism()` function to help searching supported organisms.
+
+```{r}
+library(clusterProfiler)
+search_kegg_organism('ece', by='kegg_code')
+ecoli <- search_kegg_organism('Escherichia coli', by='scientific_name')
+dim(ecoli)
+head(ecoli)
+```
+
+
+## KEGG over-representation test
+
+
+```{r}
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+kk <- enrichKEGG(gene         = gene,
+                 organism     = 'hsa',
+                 pvalueCutoff = 0.05)
+head(kk)
+```
+
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot`, an example can be found in [the post](https://guangchuangyu.github.io/2016/05/convert-biological-id-with-kegg-api-using-clusterprofiler/).
+
+
+## KEGG Gene Set Enrichment Analysis
+
+```{r}
+kk2 <- gseKEGG(geneList     = geneList,
+               organism     = 'hsa',
+               nPerm        = 1000,
+               minGSSize    = 120,
+               pvalueCutoff = 0.05,
+               verbose      = FALSE)
+head(kk2)
+```
+
+
+
+## KEGG Module over-representation test
+
+[KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined function units. In some situation, KEGG Modules have a more straightforward interpretation.
+
+```{r eval = FALSE}
+mkk <- enrichMKEGG(gene = gene,
+                   organism = 'hsa')
+```
+
+## KEGG Module Gene Set Enrichment Analysis
+
+```{r eval=FALSE}
+mkk2 <- gseMKEGG(geneList = geneList,
+                 organism = 'hsa')
+```
+
+

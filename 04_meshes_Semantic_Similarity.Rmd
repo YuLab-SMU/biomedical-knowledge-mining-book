@@ -1,1 +1,1 @@
-# MeSH semantic similarity analysis {#chapter4}
+# MeSH semantic similarity analysis {#meshes-semantic-similarity}

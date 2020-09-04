@@ -50,13 +50,40 @@ Githubpkg <- function (user, pkg) {
 
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+
+library(org.Hs.eg.db)
 ```
 
 
 # Introduction {-}
 
 
+hello
 
+![](figures/clusterProfiler-diagram.png)
+
+<!--
+In recently years, high-throughput experimental techniques such as
+microarray, RNA-Seq and mass spectrometry can detect cellular
+molecules at systems-level. These kinds of analyses generate huge
+quantitaties of data, which need to be given a biological
+interpretation. A commonly used approach is via clustering in the gene
+dimension for grouping different genes based on their similarities[@yu2010].
+
+To search for shared functions among genes, a common way is to
+incorporate the biological knowledge, such as Gene Ontology (GO) and
+Kyoto Encyclopedia of Genes and Genomes (KEGG), for identifying
+predominant biological themes of a collection of genes.
+
+After clustering analysis, researchers not only want to determine
+whether there is a common theme of a particular gene cluster, but also
+to compare the biological themes among gene clusters. The manual step
+to choose interesting clusters followed by enrichment analysis on each
+selected cluster is slow and tedious. To bridge this gap, we designed
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@yu2012], for comparing and visualizing functional
+profiles among gene clusters.
+
+-->
 
 ## Motivation {-}
 

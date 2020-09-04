@@ -1,1 +1,12 @@
-# Reactome enrichment analysis {#chapter8}
+# Reactome enrichment analysis {#reactomepa}
+
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+library(clusterProfiler)
+```
+
+
+[ReactomePA](https://www.bioconductor.org/packages/ReactomePA)[@yu_reactomepa_2016] uses Reactome as a source of pathway data. The function call of `enrichPathway` and `gsePathway` in [ReactomePA](https://www.bioconductor.org/packages/ReactomePA) is consistent with `enrichKEGG` and `gseKEGG`.

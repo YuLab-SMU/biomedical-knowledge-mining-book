@@ -1,1 +1,1 @@
-# GO semantic similarity analysis {#chapter2}
+# GO semantic similarity analysis {#GOSemSim}
