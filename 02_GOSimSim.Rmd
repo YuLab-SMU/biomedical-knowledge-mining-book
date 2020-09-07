@@ -1,31 +1,14 @@
 # GO semantic similarity analysis {#GOSemSim}
 
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods and one graph-based method. 
+
+## Semantic data {#semantic-data}
+
+To measure semantic similarity, we need to prepare GO annotations including GO structure (i.e. GO term relationships) and gene to GO mapping. For IC-based methods, information of GO term is species specific. We need to calculate `IC` for all GO terms of a species before we measure semantic similarity.
 
 
-## Supported organisms
+`r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene simiarlity. It internally used the `r Biocpkg("GO.db")` package to obtain GO strucuture and `OrgDb` for gene to GO mapping. 
 
-For IC-based methods, information of GO term is species specific. We
-need to calculate `IC` for all GO terms of a species before we measure
-semantic
-similarity. [GOSemSim](https://www.bioconductor.org/packages/GOSemSim)
-support all organisms that have an `OrgDb` object available.
-
-Bioconductor have already provided `OrgDb` for about 20 species, see <http://bioconductor.org/packages/release/BiocViews.html#___OrgDb>.
-
-We can build query `OrgDb` online via [AnnotationHub](https://www.bioconductor.org/packages/AnnotationHub). For example:
-
-```{r eval=FALSE}
-library(AnnotationHub)
-hub <- AnnotationHub()
-q <- query(hub, "Cricetulus")
-id <- q$ah_id[length(q)]
-Cgriseus <- hub[[id]]
-```
-
-
-If organism is not supported by [AnnotationHub](https://www.bioconductor.org/packages/AnnotationHub), user can use [AnnotationForge](https://www.bioconductor.org/packages/AnnotationForge) to build `OrgDb`.
-
-Once we have `OrgDb`, we can build annotation data needed by [GOSemSim](https://www.bioconductor.org/packages/GOSemSim) via `godata` function.
 
 ```{r}
 library(GOSemSim)
@@ -35,9 +18,30 @@ hsGO <- godata('org.Hs.eg.db', ont="MF")
 User can set `computeIC=FALSE` if they only want to use Wang's method.
 
 
-## goSim and mgoSim function
+## Supported organisms {#gosemsim-supported-organisms}
 
-In [GOSemSim](https://www.bioconductor.org/packages/GOSemSim), we implemented all these IC-based and graph-based methods. __*goSim*__ function calculates semantic similarity between two GO terms, while __*mgoSim*__ function calculates semantic similarity between two sets of GO terms.
+`r Biocpkg("GOSemSim")` supports all organisms that have an `OrgDb` object available.
+
+Bioconductor have already provided `OrgDb` for about 20 species, see <http://bioconductor.org/packages/release/BiocViews.html#___OrgDb>.
+
+We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
+
+```{r eval=FALSE}
+library(AnnotationHub)
+hub <- AnnotationHub()
+q <- query(hub, "Cricetulus")
+id <- q$ah_id[length(q)]
+Cgriseus <- hub[[id]]
+```
+
+If an organism is not supported by `r Biocpkg("AnnotationHub")`, user can use the `r Biocpkg("AnnotationForge")` package to build `OrgDb` manually.
+
+Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSim")` via `godata()` function described previously.
+
+
+## GO semantic similarity measurement {#go-semantic-simiarlity}
+
+The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
 
 
 ```{r}
@@ -49,23 +53,18 @@ mgoSim(go1, go2, semData=hsGO, measure="Wang", combine=NULL)
 mgoSim(go1, go2, semData=hsGO, measure="Wang", combine="BMA")
 ```
 
-## Gene Semantic Similarity Measurement
+## Gene semantic similarity measurement {#gene-go-semantic-similarity}
 
 On the basis of semantic similarity between GO terms, [GOSemSim](https://www.bioconductor.org/packages/GOSemSim) can
 also compute semantic similarity among sets of GO terms, gene products, and gene clusters.
 
 Suppose we have gene $g_1$ annotated by GO terms sets $GO_{1}=\{go_{11},go_{12} \cdots go_{1m}\}$
-and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, [GOSemSim](https://www.bioconductor.org/packages/GOSemSim) implemented four methods which called __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__ to combine
-semantic similarity scores of multiple GO terms. The similarities
+and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, `r Biocpkg("GOSemSim")` implemented four combine methods, including __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__, to aggregate semantic similarity scores of multiple GO terms (see also [session 1.3](#combine-methods)). The similarities
 among gene products and gene clusters which annotated by multiple GO
-terms were also calculated by the same combine methods mentioned
-above.
+terms are also calculated by the these combine methods.
 
 
-
-## geneSim and mgeneSim
-
-In [GOSemSim](https://www.bioconductor.org/packages/GOSemSim), we implemented __*geneSim*__ to calculate semantic similarity between two gene products, and __*mgeneSim*__ to calculate semantic similarity among multiple gene products.
+`r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
 
 ```{r}
 geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
@@ -85,13 +84,12 @@ genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
 mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
 ```
 
-Users can also use [`clusterProfiler::bitr`](https://bioconductor.org/packages/release/bioc/vignettes/clusterProfiler/inst/doc/clusterProfiler.html#bitr-biological-id-translator) to translate biological IDs.
+Users can also use [`clusterProfiler::bitr`](#bitr) to translate biological IDs.
+
+## Gene cluster semantic similarity measurement {#gene-cluster-go-semantic-similarity}
 
 
-## clusterSim and mclusterSim
-
-We also implemented __*clusterSim*__ for calculating semantic similarity between two gene clusters
-and __*mclusterSim*__ for calculating semantic similarities among multiple gene clusters.
+`r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
 
 ```{r}
 gs1 <- c("835", "5261","241", "994", "514", "533")
@@ -105,6 +103,8 @@ set.seed <- 123
 clusters <- list(a=sample(hsEG, 20), b=sample(hsEG, 20), c=sample(hsEG, 20))
 mclusterSim(clusters, semData=hsGO, measure="Wang", combine="BMA")
 ```
+
+
 
 
 <!--

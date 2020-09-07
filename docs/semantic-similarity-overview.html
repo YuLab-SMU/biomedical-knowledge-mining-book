@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-04" />
+<meta name="date" content="2020-09-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,11 +169,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2" data-path="GOSemSim.html"><a href="GOSemSim.html"><i class="fa fa-check"></i><b>2</b> GO semantic similarity analysis</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="GOSemSim.html"><a href="GOSemSim.html#supported-organisms"><i class="fa fa-check"></i><b>2.1</b> Supported organisms</a></li>
-<li class="chapter" data-level="2.2" data-path="GOSemSim.html"><a href="GOSemSim.html#gosim-and-mgosim-function"><i class="fa fa-check"></i><b>2.2</b> goSim and mgoSim function</a></li>
-<li class="chapter" data-level="2.3" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-semantic-similarity-measurement"><i class="fa fa-check"></i><b>2.3</b> Gene Semantic Similarity Measurement</a></li>
-<li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#genesim-and-mgenesim"><i class="fa fa-check"></i><b>2.4</b> geneSim and mgeneSim</a></li>
-<li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#clustersim-and-mclustersim"><i class="fa fa-check"></i><b>2.5</b> clusterSim and mclusterSim</a></li>
+<li class="chapter" data-level="2.1" data-path="GOSemSim.html"><a href="GOSemSim.html#semantic-data"><i class="fa fa-check"></i><b>2.1</b> Semantic data</a></li>
+<li class="chapter" data-level="2.2" data-path="GOSemSim.html"><a href="GOSemSim.html#gosemsim-supported-organisms"><i class="fa fa-check"></i><b>2.2</b> Supported organisms</a></li>
+<li class="chapter" data-level="2.3" data-path="GOSemSim.html"><a href="GOSemSim.html#go-semantic-simiarlity"><i class="fa fa-check"></i><b>2.3</b> GO semantic similarity measurement</a></li>
+<li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-go-semantic-similarity"><i class="fa fa-check"></i><b>2.4</b> Gene semantic similarity measurement</a></li>
+<li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-cluster-go-semantic-similarity"><i class="fa fa-check"></i><b>2.5</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
 <li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
@@ -193,7 +193,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html"><i class="fa fa-check"></i><b>6</b> GO enrichment analysis</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="GOSemSim.html"><a href="GOSemSim.html#supported-organisms"><i class="fa fa-check"></i><b>6.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="6.1" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#supported-organisms"><i class="fa fa-check"></i><b>6.1</b> Supported organisms</a></li>
 <li class="chapter" data-level="6.2" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-classification"><i class="fa fa-check"></i><b>6.2</b> GO classification</a></li>
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-over-representation-test"><i class="fa fa-check"></i><b>6.3</b> GO over-representation test</a>
 <ul>
@@ -355,7 +355,7 @@ the semantic value of DO term A, <span class="math inline">\(SV(A)\)</span>, is 
 <p><span class="math display">\[sim_{Wang}(A, B) = \frac{\displaystyle\sum_{t \in T_{A} \cap T_{B}}{S_{A}(t) + S_{B}(t)}}{SV(A) + SV(B)}\]</span></p>
 <p>where <span class="math inline">\(S_{A}(\textit{t})\)</span> is the S-value of GO term <span class="math inline">\(t\)</span> related to term <span class="math inline">\(A\)</span>
 and <span class="math inline">\(S_{B}(\textit{t})\)</span> is the S-value of GO term <span class="math inline">\(t\)</span> related to term <span class="math inline">\(B\)</span>.</p>
-<p>This method proposed by Wang<span class="citation">(Wang et al. <a href="#ref-wang_new_2007" role="doc-biblioref">2007</a>)</span> determines the semantic
+<p>This method proposed by Wang <span class="citation">(Wang et al. <a href="#ref-wang_new_2007" role="doc-biblioref">2007</a>)</span> determines the semantic
 similarity of two GO terms based on both the locations of these terms
 in the GO graph and their relations with their ancestor terms.</p>
 </div>
@@ -387,7 +387,7 @@ in the GO graph and their relations with their ancestor terms.</p>
 <div id="summary" class="section level2" number="1.4">
 <h2><span class="header-section-number">1.4</span> Summary</h2>
 <p>The idea behind semantic similarity measurement is the notion that genes with similar function should have similar annotation vocabulary and have a close relationship in the ontology strucutre. Measuring similarity is critical for expanding knownledge, since similar objects tend to behave similarly, which supports many bioinformatics applications to infer gene/protein functions, miRNA function, genetic interaction, protein-protein interaction, miRNA-mRNA interaction and celluar localization.</p>
-<p>We developed several Bioconductor packages, including <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>; Yu <a href="#ref-yu_gosemsim_2020" role="doc-biblioref">2020</a>)</span> for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also <a href="GOSemSim.html#GOSemSim">Chapter 2</a>), <a href="http://bioconductor.org/packages/DOSE">DOSE</a> <span class="citation">(G. Yu et al. <a href="#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span> for Disease Ontology (DO) (see also <a href="DOSE-semantic-similarity.html#DOSE-semantic-similarity">Chapter 3</a>) and <a href="http://bioconductor.org/packages/meshes">meshes</a> <span class="citation">(Yu <a href="#ref-yu_meshes_2018" role="doc-biblioref">2018</a>)</span> that based on Medical Subject Headings (MeSH) (see also <a href="meshes-semantic-similarity.html#meshes-semantic-similarity">Chapter 4</a>)</p>
+<p>We developed several Bioconductor packages, including <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>; Yu <a href="#ref-yu_gosemsim_2020" role="doc-biblioref">2020</a>)</span> for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also <a href="GOSemSim.html#GOSemSim">Chapter 2</a>), <a href="http://bioconductor.org/packages/DOSE">DOSE</a> <span class="citation">(G. Yu et al. <a href="#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span> for Disease Ontology (DO) (see also <a href="DOSE-semantic-similarity.html#DOSE-semantic-similarity">Chapter 3</a>) and <a href="http://bioconductor.org/packages/meshes">meshes</a> <span class="citation">(Yu <a href="#ref-yu_meshes_2018" role="doc-biblioref">2018</a>)</span> that based on Medical Subject Headings (MeSH) (see also <a href="meshes-semantic-similarity.html#meshes-semantic-similarity">Chapter 4</a>).</p>
 
 </div>
 </div>

@@ -93,7 +93,7 @@ $$sim_{Wang}(A, B) = \frac{\displaystyle\sum_{t \in T_{A} \cap T_{B}}{S_{A}(t) +
 where $S_{A}(\textit{t})$ is the S-value of GO term $t$ related to term $A$
 and $S_{B}(\textit{t})$ is the S-value of GO term $t$ related to term $B$.
 
-This method proposed by Wang[@wang_new_2007] determines the semantic
+This method proposed by Wang [@wang_new_2007] determines the semantic
 similarity of two GO terms based on both the locations of these terms
 in the GO graph and their relations with their ancestor terms.
 
@@ -137,6 +137,6 @@ $$sim_{BMA}(g_1, g_2) = \frac{\displaystyle\sum_{1=i}^m \max_{1 \le j \le n}sim(
 The idea behind semantic similarity measurement is the notion that genes with similar function should have similar annotation vocabulary and have a close relationship in the ontology strucutre. Measuring similarity is critical for expanding knownledge, since similar objects tend to behave similarly, which supports many bioinformatics applications to infer gene/protein functions, miRNA function, genetic interaction, protein-protein interaction, miRNA-mRNA interaction and celluar localization.
 
 
-We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [Chapter 2](#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [Chapter 3](#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [Chapter 4](#meshes-semantic-similarity))
+We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [Chapter 2](#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [Chapter 3](#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [Chapter 4](#meshes-semantic-similarity)).
 
 
