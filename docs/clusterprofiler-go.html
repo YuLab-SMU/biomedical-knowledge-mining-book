@@ -175,7 +175,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-go-semantic-similarity"><i class="fa fa-check"></i><b>2.4</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-cluster-go-semantic-similarity"><i class="fa fa-check"></i><b>2.5</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#do-semantic-similarity"><i class="fa fa-check"></i><b>3.1</b> DO term semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
@@ -307,13 +312,13 @@ process (BP), and cellular component (CC).</p>
 <div id="go-classification" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> GO classification</h2>
 <p>In <a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <code>groupGO</code> is designed for gene classification based on GO distribution at a specific level. Here we use dataset <code>geneList</code> provided by <a href="https://www.bioconductor.org/packages/DOSE">DOSE</a>. Please refer to vignette of <a href="https://www.bioconductor.org/packages/DOSE">DOSE</a> for more details.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="clusterprofiler-go.html#cb27-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb27-2"><a href="clusterprofiler-go.html#cb27-2" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb27-3"><a href="clusterprofiler-go.html#cb27-3" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
-<span id="cb27-4"><a href="clusterprofiler-go.html#cb27-4" aria-hidden="true"></a>gene.df &lt;-<span class="st"> </span><span class="kw">bitr</span>(gene, <span class="dt">fromType =</span> <span class="st">&quot;ENTREZID&quot;</span>,</span>
-<span id="cb27-5"><a href="clusterprofiler-go.html#cb27-5" aria-hidden="true"></a>	   	<span class="dt">toType =</span> <span class="kw">c</span>(<span class="st">&quot;ENSEMBL&quot;</span>, <span class="st">&quot;SYMBOL&quot;</span>),</span>
-<span id="cb27-6"><a href="clusterprofiler-go.html#cb27-6" aria-hidden="true"></a>		<span class="dt">OrgDb =</span> org.Hs.eg.db)</span>
-<span id="cb27-7"><a href="clusterprofiler-go.html#cb27-7" aria-hidden="true"></a><span class="kw">head</span>(gene.df)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="clusterprofiler-go.html#cb44-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
+<span id="cb44-2"><a href="clusterprofiler-go.html#cb44-2" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb44-3"><a href="clusterprofiler-go.html#cb44-3" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb44-4"><a href="clusterprofiler-go.html#cb44-4" aria-hidden="true"></a>gene.df &lt;-<span class="st"> </span><span class="kw">bitr</span>(gene, <span class="dt">fromType =</span> <span class="st">&quot;ENTREZID&quot;</span>,</span>
+<span id="cb44-5"><a href="clusterprofiler-go.html#cb44-5" aria-hidden="true"></a>	   	<span class="dt">toType =</span> <span class="kw">c</span>(<span class="st">&quot;ENSEMBL&quot;</span>, <span class="st">&quot;SYMBOL&quot;</span>),</span>
+<span id="cb44-6"><a href="clusterprofiler-go.html#cb44-6" aria-hidden="true"></a>		<span class="dt">OrgDb =</span> org.Hs.eg.db)</span>
+<span id="cb44-7"><a href="clusterprofiler-go.html#cb44-7" aria-hidden="true"></a><span class="kw">head</span>(gene.df)</span></code></pre></div>
 <pre><code>##   ENTREZID         ENSEMBL SYMBOL
 ## 1     4312 ENSG00000196611   MMP1
 ## 2     8318 ENSG00000093009  CDC45
@@ -321,13 +326,13 @@ process (BP), and cellular component (CC).</p>
 ## 4    55143 ENSG00000134690  CDCA8
 ## 5    55388 ENSG00000065328  MCM10
 ## 6      991 ENSG00000117399  CDC20</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="clusterprofiler-go.html#cb29-1" aria-hidden="true"></a>ggo &lt;-<span class="st"> </span><span class="kw">groupGO</span>(<span class="dt">gene     =</span> gene,</span>
-<span id="cb29-2"><a href="clusterprofiler-go.html#cb29-2" aria-hidden="true"></a>               <span class="dt">OrgDb    =</span> org.Hs.eg.db,</span>
-<span id="cb29-3"><a href="clusterprofiler-go.html#cb29-3" aria-hidden="true"></a>               <span class="dt">ont      =</span> <span class="st">&quot;CC&quot;</span>,</span>
-<span id="cb29-4"><a href="clusterprofiler-go.html#cb29-4" aria-hidden="true"></a>               <span class="dt">level    =</span> <span class="dv">3</span>,</span>
-<span id="cb29-5"><a href="clusterprofiler-go.html#cb29-5" aria-hidden="true"></a>               <span class="dt">readable =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb29-6"><a href="clusterprofiler-go.html#cb29-6" aria-hidden="true"></a></span>
-<span id="cb29-7"><a href="clusterprofiler-go.html#cb29-7" aria-hidden="true"></a><span class="kw">head</span>(ggo)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="clusterprofiler-go.html#cb46-1" aria-hidden="true"></a>ggo &lt;-<span class="st"> </span><span class="kw">groupGO</span>(<span class="dt">gene     =</span> gene,</span>
+<span id="cb46-2"><a href="clusterprofiler-go.html#cb46-2" aria-hidden="true"></a>               <span class="dt">OrgDb    =</span> org.Hs.eg.db,</span>
+<span id="cb46-3"><a href="clusterprofiler-go.html#cb46-3" aria-hidden="true"></a>               <span class="dt">ont      =</span> <span class="st">&quot;CC&quot;</span>,</span>
+<span id="cb46-4"><a href="clusterprofiler-go.html#cb46-4" aria-hidden="true"></a>               <span class="dt">level    =</span> <span class="dv">3</span>,</span>
+<span id="cb46-5"><a href="clusterprofiler-go.html#cb46-5" aria-hidden="true"></a>               <span class="dt">readable =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb46-6"><a href="clusterprofiler-go.html#cb46-6" aria-hidden="true"></a></span>
+<span id="cb46-7"><a href="clusterprofiler-go.html#cb46-7" aria-hidden="true"></a><span class="kw">head</span>(ggo)</span></code></pre></div>
 <pre><code>##                    ID                                        Description Count
 ## GO:0000131 GO:0000131                        incipient cellular bud site     0
 ## GO:0000151 GO:0000151                           ubiquitin ligase complex     4
@@ -348,15 +353,15 @@ process (BP), and cellular component (CC).</p>
 <div id="go-over-representation-test" class="section level2" number="6.3">
 <h2><span class="header-section-number">6.3</span> GO over-representation test</h2>
 <p>Over-representation test<span class="citation">(Boyle et al. <a href="#ref-boyle2004" role="doc-biblioref">2004</a>)</span> were implemented in <a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a>. For calculation details and explanation of paramters, please refer to the vignette of <a href="https://www.bioconductor.org/packages/DOSE">DOSE</a>.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="clusterprofiler-go.html#cb31-1" aria-hidden="true"></a>ego &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(<span class="dt">gene          =</span> gene,</span>
-<span id="cb31-2"><a href="clusterprofiler-go.html#cb31-2" aria-hidden="true"></a>                <span class="dt">universe      =</span> <span class="kw">names</span>(geneList),</span>
-<span id="cb31-3"><a href="clusterprofiler-go.html#cb31-3" aria-hidden="true"></a>                <span class="dt">OrgDb         =</span> org.Hs.eg.db,</span>
-<span id="cb31-4"><a href="clusterprofiler-go.html#cb31-4" aria-hidden="true"></a>                <span class="dt">ont           =</span> <span class="st">&quot;CC&quot;</span>,</span>
-<span id="cb31-5"><a href="clusterprofiler-go.html#cb31-5" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb31-6"><a href="clusterprofiler-go.html#cb31-6" aria-hidden="true"></a>                <span class="dt">pvalueCutoff  =</span> <span class="fl">0.01</span>,</span>
-<span id="cb31-7"><a href="clusterprofiler-go.html#cb31-7" aria-hidden="true"></a>                <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
-<span id="cb31-8"><a href="clusterprofiler-go.html#cb31-8" aria-hidden="true"></a>		<span class="dt">readable      =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb31-9"><a href="clusterprofiler-go.html#cb31-9" aria-hidden="true"></a><span class="kw">head</span>(ego)</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="clusterprofiler-go.html#cb48-1" aria-hidden="true"></a>ego &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(<span class="dt">gene          =</span> gene,</span>
+<span id="cb48-2"><a href="clusterprofiler-go.html#cb48-2" aria-hidden="true"></a>                <span class="dt">universe      =</span> <span class="kw">names</span>(geneList),</span>
+<span id="cb48-3"><a href="clusterprofiler-go.html#cb48-3" aria-hidden="true"></a>                <span class="dt">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb48-4"><a href="clusterprofiler-go.html#cb48-4" aria-hidden="true"></a>                <span class="dt">ont           =</span> <span class="st">&quot;CC&quot;</span>,</span>
+<span id="cb48-5"><a href="clusterprofiler-go.html#cb48-5" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb48-6"><a href="clusterprofiler-go.html#cb48-6" aria-hidden="true"></a>                <span class="dt">pvalueCutoff  =</span> <span class="fl">0.01</span>,</span>
+<span id="cb48-7"><a href="clusterprofiler-go.html#cb48-7" aria-hidden="true"></a>                <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
+<span id="cb48-8"><a href="clusterprofiler-go.html#cb48-8" aria-hidden="true"></a>		<span class="dt">readable      =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb48-9"><a href="clusterprofiler-go.html#cb48-9" aria-hidden="true"></a><span class="kw">head</span>(ego)</span></code></pre></div>
 <pre><code>##                    ID                              Description GeneRatio
 ## GO:0005819 GO:0005819                                  spindle    25/200
 ## GO:0005876 GO:0005876                      spindle microtubule    12/200
@@ -386,15 +391,15 @@ process (BP), and cellular component (CC).</p>
 ## GO:0000775    18
 ## GO:0000776    15</code></pre>
 <p>As I mentioned before, any gene ID type that supported in <code>OrgDb</code> can be directly used in GO analyses. User need to specify the <code>keyType</code> parameter to specify the input gene ID type.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="clusterprofiler-go.html#cb33-1" aria-hidden="true"></a>ego2 &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(<span class="dt">gene         =</span> gene.df<span class="op">$</span>ENSEMBL,</span>
-<span id="cb33-2"><a href="clusterprofiler-go.html#cb33-2" aria-hidden="true"></a>                <span class="dt">OrgDb         =</span> org.Hs.eg.db,</span>
-<span id="cb33-3"><a href="clusterprofiler-go.html#cb33-3" aria-hidden="true"></a>                <span class="dt">keyType       =</span> <span class="st">&#39;ENSEMBL&#39;</span>,</span>
-<span id="cb33-4"><a href="clusterprofiler-go.html#cb33-4" aria-hidden="true"></a>                <span class="dt">ont           =</span> <span class="st">&quot;CC&quot;</span>,</span>
-<span id="cb33-5"><a href="clusterprofiler-go.html#cb33-5" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb33-6"><a href="clusterprofiler-go.html#cb33-6" aria-hidden="true"></a>                <span class="dt">pvalueCutoff  =</span> <span class="fl">0.01</span>,</span>
-<span id="cb33-7"><a href="clusterprofiler-go.html#cb33-7" aria-hidden="true"></a>                <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="clusterprofiler-go.html#cb50-1" aria-hidden="true"></a>ego2 &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(<span class="dt">gene         =</span> gene.df<span class="op">$</span>ENSEMBL,</span>
+<span id="cb50-2"><a href="clusterprofiler-go.html#cb50-2" aria-hidden="true"></a>                <span class="dt">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb50-3"><a href="clusterprofiler-go.html#cb50-3" aria-hidden="true"></a>                <span class="dt">keyType       =</span> <span class="st">&#39;ENSEMBL&#39;</span>,</span>
+<span id="cb50-4"><a href="clusterprofiler-go.html#cb50-4" aria-hidden="true"></a>                <span class="dt">ont           =</span> <span class="st">&quot;CC&quot;</span>,</span>
+<span id="cb50-5"><a href="clusterprofiler-go.html#cb50-5" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb50-6"><a href="clusterprofiler-go.html#cb50-6" aria-hidden="true"></a>                <span class="dt">pvalueCutoff  =</span> <span class="fl">0.01</span>,</span>
+<span id="cb50-7"><a href="clusterprofiler-go.html#cb50-7" aria-hidden="true"></a>                <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>)</span></code></pre></div>
 <p>Gene ID can be mapped to gene Symbol by using paramter <code>readable=TRUE</code> or <code>setReadable</code> function.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="clusterprofiler-go.html#cb34-1" aria-hidden="true"></a>ego2 &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ego2, <span class="dt">OrgDb =</span> org.Hs.eg.db)</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="clusterprofiler-go.html#cb51-1" aria-hidden="true"></a>ego2 &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ego2, <span class="dt">OrgDb =</span> org.Hs.eg.db)</span></code></pre></div>
 <div id="drop-specific-go-terms-or-level" class="section level3" number="6.3.1">
 <h3><span class="header-section-number">6.3.1</span> drop specific GO terms or level</h3>
 <p><code>enrichGO</code> test the whole GO corpus and enriched result may contains very general terms. With <code>dropGO</code> function, user can remove specific GO terms or GO level from results obtained from both <code>enrichGO</code> and <code>compareCluster</code>.</p>
@@ -412,14 +417,14 @@ process (BP), and cellular component (CC).</p>
 <h2><span class="header-section-number">6.4</span> GO Gene Set Enrichment Analysis</h2>
 <p>A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The enrichment analysis we demonstrated previous were based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(Subramanian et al. <a href="#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span> directly addresses this limitation. All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. Since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.</p>
 <p>For algorithm details, please refer to the vignette of <a href="https://www.bioconductor.org/packages/DOSE">DOSE</a>.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="clusterprofiler-go.html#cb35-1" aria-hidden="true"></a>ego3 &lt;-<span class="st"> </span><span class="kw">gseGO</span>(<span class="dt">geneList     =</span> geneList,</span>
-<span id="cb35-2"><a href="clusterprofiler-go.html#cb35-2" aria-hidden="true"></a>              <span class="dt">OrgDb        =</span> org.Hs.eg.db,</span>
-<span id="cb35-3"><a href="clusterprofiler-go.html#cb35-3" aria-hidden="true"></a>              <span class="dt">ont          =</span> <span class="st">&quot;CC&quot;</span>,</span>
-<span id="cb35-4"><a href="clusterprofiler-go.html#cb35-4" aria-hidden="true"></a>              <span class="dt">nPerm        =</span> <span class="dv">1000</span>,</span>
-<span id="cb35-5"><a href="clusterprofiler-go.html#cb35-5" aria-hidden="true"></a>              <span class="dt">minGSSize    =</span> <span class="dv">100</span>,</span>
-<span id="cb35-6"><a href="clusterprofiler-go.html#cb35-6" aria-hidden="true"></a>              <span class="dt">maxGSSize    =</span> <span class="dv">500</span>,</span>
-<span id="cb35-7"><a href="clusterprofiler-go.html#cb35-7" aria-hidden="true"></a>              <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
-<span id="cb35-8"><a href="clusterprofiler-go.html#cb35-8" aria-hidden="true"></a>              <span class="dt">verbose      =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="clusterprofiler-go.html#cb52-1" aria-hidden="true"></a>ego3 &lt;-<span class="st"> </span><span class="kw">gseGO</span>(<span class="dt">geneList     =</span> geneList,</span>
+<span id="cb52-2"><a href="clusterprofiler-go.html#cb52-2" aria-hidden="true"></a>              <span class="dt">OrgDb        =</span> org.Hs.eg.db,</span>
+<span id="cb52-3"><a href="clusterprofiler-go.html#cb52-3" aria-hidden="true"></a>              <span class="dt">ont          =</span> <span class="st">&quot;CC&quot;</span>,</span>
+<span id="cb52-4"><a href="clusterprofiler-go.html#cb52-4" aria-hidden="true"></a>              <span class="dt">nPerm        =</span> <span class="dv">1000</span>,</span>
+<span id="cb52-5"><a href="clusterprofiler-go.html#cb52-5" aria-hidden="true"></a>              <span class="dt">minGSSize    =</span> <span class="dv">100</span>,</span>
+<span id="cb52-6"><a href="clusterprofiler-go.html#cb52-6" aria-hidden="true"></a>              <span class="dt">maxGSSize    =</span> <span class="dv">500</span>,</span>
+<span id="cb52-7"><a href="clusterprofiler-go.html#cb52-7" aria-hidden="true"></a>              <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb52-8"><a href="clusterprofiler-go.html#cb52-8" aria-hidden="true"></a>              <span class="dt">verbose      =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p>GSEA use permutation test, user can set <em>nPerm</em> for number of permutations. Only gene Set size in <code>[minGSSize, maxGSSize]</code> will be tested.</p>
 <p>If you have issues in preparing your own <code>geneList</code>, please refer to the <a href="https://github.com/GuangchuangYu/DOSE/wiki/how-to-prepare-your-own-geneList">wiki
 page</a>.</p>

@@ -175,7 +175,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-go-semantic-similarity"><i class="fa fa-check"></i><b>2.4</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-cluster-go-semantic-similarity"><i class="fa fa-check"></i><b>2.5</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#do-semantic-similarity"><i class="fa fa-check"></i><b>3.1</b> DO term semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
@@ -340,14 +345,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 are annotated to the gene set. The background distribution by default is
 all the genes that have annotation. <em>P</em>-values should be adjusted for <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparison</a>.</p>
 <p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differential expressed genes, 28 are annotated to a gene set<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="enrichment-overview.html#cb23-1" aria-hidden="true"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene.not.interest=</span><span class="kw">c</span>(<span class="dv">2613</span>, <span class="dv">15310</span>), <span class="dt">gene.in.interest=</span><span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">29</span>))</span>
-<span id="cb23-2"><a href="enrichment-overview.html#cb23-2" aria-hidden="true"></a><span class="kw">row.names</span>(d) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;In_category&quot;</span>, <span class="st">&quot;not_in_category&quot;</span>)</span>
-<span id="cb23-3"><a href="enrichment-overview.html#cb23-3" aria-hidden="true"></a>d</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="enrichment-overview.html#cb40-1" aria-hidden="true"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gene.not.interest=</span><span class="kw">c</span>(<span class="dv">2613</span>, <span class="dv">15310</span>), <span class="dt">gene.in.interest=</span><span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">29</span>))</span>
+<span id="cb40-2"><a href="enrichment-overview.html#cb40-2" aria-hidden="true"></a><span class="kw">row.names</span>(d) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;In_category&quot;</span>, <span class="st">&quot;not_in_category&quot;</span>)</span>
+<span id="cb40-3"><a href="enrichment-overview.html#cb40-3" aria-hidden="true"></a>d</span></code></pre></div>
 <pre><code>##                 gene.not.interest gene.in.interest
 ## In_category                  2613               28
 ## not_in_category             15310               29</code></pre>
 <p>whether the overlap of 25 genes are significantly over represented in the gene set can be assessed using hypergeometric distribution. This corresponding to a one-sided version of Fisher’s exact test.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="enrichment-overview.html#cb25-1" aria-hidden="true"></a><span class="kw">fisher.test</span>(d, <span class="dt">alternative =</span> <span class="st">&quot;greater&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="enrichment-overview.html#cb42-1" aria-hidden="true"></a><span class="kw">fisher.test</span>(d, <span class="dt">alternative =</span> <span class="st">&quot;greater&quot;</span>)</span></code></pre></div>
 <pre><code>## 
 ## 	Fisher&#39;s Exact Test for Count Data
 ## 

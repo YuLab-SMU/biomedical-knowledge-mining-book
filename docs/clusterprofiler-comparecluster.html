@@ -175,7 +175,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-go-semantic-similarity"><i class="fa fa-check"></i><b>2.4</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-cluster-go-semantic-similarity"><i class="fa fa-check"></i><b>2.5</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#do-semantic-similarity"><i class="fa fa-check"></i><b>3.1</b> DO term semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
@@ -295,8 +300,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="clusterprofiler-comparecluster" class="section level1" number="13">
 <h1><span class="header-section-number">Chapter 13</span> Biological theme comparison</h1>
 <p><a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a> was developed for biological theme comparison<span class="citation">(Yu et al. <a href="#ref-yu2012" role="doc-biblioref">2012</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional categories of each gene clusters.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="clusterprofiler-comparecluster.html#cb106-1" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
-<span id="cb106-2"><a href="clusterprofiler-comparecluster.html#cb106-2" aria-hidden="true"></a><span class="kw">lapply</span>(gcSample, head)</span></code></pre></div>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="clusterprofiler-comparecluster.html#cb123-1" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
+<span id="cb123-2"><a href="clusterprofiler-comparecluster.html#cb123-2" aria-hidden="true"></a><span class="kw">lapply</span>(gcSample, head)</span></code></pre></div>
 <pre><code>## $X1
 ## [1] &quot;4597&quot;  &quot;7111&quot;  &quot;5266&quot;  &quot;2175&quot;  &quot;755&quot;   &quot;23046&quot;
 ## 
@@ -321,22 +326,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## $X8
 ## [1] &quot;2665&quot; &quot;4735&quot; &quot;1327&quot; &quot;3192&quot; &quot;5573&quot; &quot;9528&quot;</code></pre>
 <p>The input for <em>geneCluster</em> parameter should be a named list of gene IDs. To speed up the compilation of this document, we set <code>use_internal_data = TRUE</code>.</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="clusterprofiler-comparecluster.html#cb108-1" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(<span class="dt">geneCluster =</span> gcSample, <span class="dt">fun =</span> <span class="st">&quot;enrichKEGG&quot;</span>)</span>
-<span id="cb108-2"><a href="clusterprofiler-comparecluster.html#cb108-2" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">as.data.frame</span>(ck))</span></code></pre></div>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="clusterprofiler-comparecluster.html#cb125-1" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(<span class="dt">geneCluster =</span> gcSample, <span class="dt">fun =</span> <span class="st">&quot;enrichKEGG&quot;</span>)</span>
+<span id="cb125-2"><a href="clusterprofiler-comparecluster.html#cb125-2" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">as.data.frame</span>(ck))</span></code></pre></div>
 <pre><code>##   Cluster       ID                             Description GeneRatio  BgRatio
-## 1      X2 hsa04110                              Cell cycle    18/377 124/8062
-## 2      X2 hsa05169            Epstein-Barr virus infection    23/377 202/8062
-## 3      X2 hsa05340                Primary immunodeficiency     8/377  38/8062
-## 4      X2 hsa05166 Human T-cell leukemia virus 1 infection    22/377 219/8062
-## 5      X3 hsa04512                ECM-receptor interaction     9/185  88/8062
-## 6      X3 hsa04060  Cytokine-cytokine receptor interaction    17/185 294/8062
+## 1      X2 hsa04110                              Cell cycle    18/377 124/8063
+## 2      X2 hsa05169            Epstein-Barr virus infection    23/377 202/8063
+## 3      X2 hsa05340                Primary immunodeficiency     8/377  38/8063
+## 4      X2 hsa05166 Human T-cell leukemia virus 1 infection    22/377 219/8063
+## 5      X3 hsa04512                ECM-receptor interaction     9/185  88/8063
+## 6      X3 hsa04060  Cytokine-cytokine receptor interaction    17/185 294/8063
 ##         pvalue    p.adjust      qvalue
-## 1 1.635867e-05 0.004842165 0.004511548
-## 2 6.466575e-05 0.009570531 0.008917067
-## 3 3.016668e-04 0.029764462 0.027732181
-## 4 5.611055e-04 0.041521808 0.038686749
-## 5 1.741522e-04 0.040637799 0.037821809
-## 6 4.046267e-04 0.040637799 0.037821809
+## 1 1.633160e-05 0.004834153 0.004504083
+## 2 6.454464e-05 0.009552607 0.008900366
+## 3 3.014145e-04 0.029739564 0.027708982
+## 4 5.601779e-04 0.041453162 0.038622790
+## 5 1.739917e-04 0.040576319 0.037764589
+## 6 4.040556e-04 0.040576319 0.037764589
 ##                                                                                                      geneID
 ## 1                   991/1869/890/1871/701/990/10926/9088/8317/9700/9134/1029/2810/699/11200/23594/8555/4173
 ## 2 4067/3383/7128/1869/890/1871/578/864/637/9641/6891/355/9134/5971/916/956/6850/7187/3551/919/4734/958/6772
@@ -354,16 +359,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="formula-interface-of-comparecluster" class="section level2" number="13.1">
 <h2><span class="header-section-number">13.1</span> Formula interface of compareCluster</h2>
 <p><code>compareCluster</code> also supports passing a formula (the code to support formula has been contributed by Giovanni Dall’Olio) of type <span class="math inline">\(Entrez \sim group\)</span> or <span class="math inline">\(Entrez \sim group + othergroup\)</span>.</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="clusterprofiler-comparecluster.html#cb110-1" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Entrez=</span><span class="kw">names</span>(geneList), <span class="dt">FC=</span>geneList)</span>
-<span id="cb110-2"><a href="clusterprofiler-comparecluster.html#cb110-2" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span>mydf[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
-<span id="cb110-3"><a href="clusterprofiler-comparecluster.html#cb110-3" aria-hidden="true"></a>mydf<span class="op">$</span>group &lt;-<span class="st"> &quot;upregulated&quot;</span></span>
-<span id="cb110-4"><a href="clusterprofiler-comparecluster.html#cb110-4" aria-hidden="true"></a>mydf<span class="op">$</span>group[mydf<span class="op">$</span>FC <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> &quot;downregulated&quot;</span></span>
-<span id="cb110-5"><a href="clusterprofiler-comparecluster.html#cb110-5" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup &lt;-<span class="st"> &quot;A&quot;</span></span>
-<span id="cb110-6"><a href="clusterprofiler-comparecluster.html#cb110-6" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> &quot;B&quot;</span></span>
-<span id="cb110-7"><a href="clusterprofiler-comparecluster.html#cb110-7" aria-hidden="true"></a></span>
-<span id="cb110-8"><a href="clusterprofiler-comparecluster.html#cb110-8" aria-hidden="true"></a>formula_res &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(Entrez<span class="op">~</span>group<span class="op">+</span>othergroup, <span class="dt">data=</span>mydf, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>)</span>
-<span id="cb110-9"><a href="clusterprofiler-comparecluster.html#cb110-9" aria-hidden="true"></a></span>
-<span id="cb110-10"><a href="clusterprofiler-comparecluster.html#cb110-10" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">as.data.frame</span>(formula_res))</span></code></pre></div>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="clusterprofiler-comparecluster.html#cb127-1" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Entrez=</span><span class="kw">names</span>(geneList), <span class="dt">FC=</span>geneList)</span>
+<span id="cb127-2"><a href="clusterprofiler-comparecluster.html#cb127-2" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span>mydf[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
+<span id="cb127-3"><a href="clusterprofiler-comparecluster.html#cb127-3" aria-hidden="true"></a>mydf<span class="op">$</span>group &lt;-<span class="st"> &quot;upregulated&quot;</span></span>
+<span id="cb127-4"><a href="clusterprofiler-comparecluster.html#cb127-4" aria-hidden="true"></a>mydf<span class="op">$</span>group[mydf<span class="op">$</span>FC <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> &quot;downregulated&quot;</span></span>
+<span id="cb127-5"><a href="clusterprofiler-comparecluster.html#cb127-5" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup &lt;-<span class="st"> &quot;A&quot;</span></span>
+<span id="cb127-6"><a href="clusterprofiler-comparecluster.html#cb127-6" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> &quot;B&quot;</span></span>
+<span id="cb127-7"><a href="clusterprofiler-comparecluster.html#cb127-7" aria-hidden="true"></a></span>
+<span id="cb127-8"><a href="clusterprofiler-comparecluster.html#cb127-8" aria-hidden="true"></a>formula_res &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(Entrez<span class="op">~</span>group<span class="op">+</span>othergroup, <span class="dt">data=</span>mydf, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>)</span>
+<span id="cb127-9"><a href="clusterprofiler-comparecluster.html#cb127-9" aria-hidden="true"></a></span>
+<span id="cb127-10"><a href="clusterprofiler-comparecluster.html#cb127-10" aria-hidden="true"></a><span class="kw">head</span>(<span class="kw">as.data.frame</span>(formula_res))</span></code></pre></div>
 <pre><code>##           Cluster         group othergroup       ID
 ## 1 downregulated.A downregulated          A hsa04974
 ## 2 downregulated.A downregulated          A hsa04510
@@ -372,19 +377,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5 downregulated.B downregulated          B hsa03320
 ## 6   upregulated.A   upregulated          A hsa04110
 ##                        Description GeneRatio  BgRatio       pvalue     p.adjust
-## 1 Protein digestion and absorption    16/312 103/8062 1.824898e-06 4.927224e-04
-## 2                   Focal adhesion    20/312 201/8062 9.484037e-05 1.280345e-02
-## 3       PI3K-Akt signaling pathway    28/312 354/8062 2.387153e-04 2.148438e-02
-## 4         ECM-receptor interaction    11/312  88/8062 5.458826e-04 3.684707e-02
-## 5           PPAR signaling pathway      5/42  77/8062 4.499234e-05 6.793843e-03
-## 6                       Cell cycle    20/219 124/8062 1.000510e-10 2.421233e-08
+## 1 Protein digestion and absorption    16/313 103/8063 1.900162e-06 5.130437e-04
+## 2                   Focal adhesion    20/313 201/8063 9.894603e-05 1.335771e-02
+## 3       PI3K-Akt signaling pathway    28/313 354/8063 2.512699e-04 2.261429e-02
+## 4         ECM-receptor interaction    11/313  88/8063 5.601739e-04 3.781174e-02
+## 5           PPAR signaling pathway      5/42  77/8063 4.496598e-05 6.789863e-03
+## 6                       Cell cycle    20/219 124/8063 9.983412e-11 2.415986e-08
 ##         qvalue
-## 1 4.629477e-04
-## 2 1.202975e-02
-## 3 2.018610e-02
-## 4 3.462045e-02
-## 5 6.298928e-03
-## 6 2.169526e-08
+## 1 4.820411e-04
+## 2 1.255052e-02
+## 3 2.124774e-02
+## 4 3.552682e-02
+## 5 6.295238e-03
+## 6 2.164824e-08
 ##                                                                                                                                             geneID
 ## 1                                                                 1281/50509/1290/477/1294/1360/1289/1292/1296/23428/1359/1300/1287/6505/2006/7373
 ## 2                                         55742/2317/7058/25759/56034/3693/3480/5159/857/1292/3908/3909/63923/3913/1287/3679/7060/3479/10451/80310
@@ -403,12 +408,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="visualization-of-profile-comparison" class="section level2" number="13.2">
 <h2><span class="header-section-number">13.2</span> Visualization of profile comparison</h2>
 <p>We can visualize the result using <code>dotplot</code> method.</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="clusterprofiler-comparecluster.html#cb112-1" aria-hidden="true"></a><span class="kw">dotplot</span>(ck)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-51-1.png" width="864" /></p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="clusterprofiler-comparecluster.html#cb113-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-52-1.png" width="960" /></p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="clusterprofiler-comparecluster.html#cb114-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res, <span class="dt">x=</span><span class="op">~</span>group) <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">facet_grid</span>(<span class="op">~</span>othergroup)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-52-2.png" width="960" /></p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="clusterprofiler-comparecluster.html#cb129-1" aria-hidden="true"></a><span class="kw">dotplot</span>(ck)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-56-1.png" width="864" /></p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="clusterprofiler-comparecluster.html#cb130-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-57-1.png" width="960" /></p>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="clusterprofiler-comparecluster.html#cb131-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res, <span class="dt">x=</span><span class="op">~</span>group) <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">facet_grid</span>(<span class="op">~</span>othergroup)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-57-2.png" width="960" /></p>
 <p>By default, only top 5 (most significant) categories of each cluster
 was plotted. User can changes the parameter <em>showCategory</em> to
 specify how many categories of each cluster to be plotted, and if

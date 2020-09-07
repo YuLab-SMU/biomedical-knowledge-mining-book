@@ -175,7 +175,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.4" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-go-semantic-similarity"><i class="fa fa-check"></i><b>2.4</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="2.5" data-path="GOSemSim.html"><a href="GOSemSim.html#gene-cluster-go-semantic-similarity"><i class="fa fa-check"></i><b>2.5</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a></li>
+<li class="chapter" data-level="3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html"><i class="fa fa-check"></i><b>3</b> DO semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#do-semantic-similarity"><i class="fa fa-check"></i><b>3.1</b> DO term semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
+<li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
+</ul></li>
 <li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
@@ -294,7 +299,134 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="DOSE-semantic-similarity" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> DO semantic similarity analysis</h1>
+<p>Public health is an important driving force behind biological and medical research.
+A major challenge of the post-genomic era is bridging the gap between fundamental biological research and its clinical applications.
+Recent research has increasingly demonstrated that many seemingly dissimilar diseases have common molecular mechanisms.
+Understanding similarities among disease aids in early diagnosis and new drug development.</p>
+<p>Formal knowledge representation of gene-disease association is demanded for this purpose.
+Ontologies, such as Gene Ontology (GO), have been successfully applied to represent biological knowledge, and many related techniques have been adopted to extract information.
+Disease Ontology (DO) <span class="citation">(Schriml et al. <a href="#ref-schriml_disease_2011" role="doc-biblioref">2011</a>)</span> was developed to create a consistent description of gene products with disease perspectives, and is essential for supporting functional genomics in disease context.
+Accurate disease descriptions can discover new relationships between genes and disease, and new functions for previous uncharacteried genes and alleles.</p>
+<p>Unlike other clinical vocabularies that defined disease related concepts disparately, DO is organized as a directed acyclic graph, laying the foundation for quantitative computation of disease knowledge.</p>
+<p>We developed an <code>R</code> package <a href="http://bioconductor.org/packages/DOSE">DOSE</a> <span class="citation">(G. Yu et al. <a href="#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span> for analyzing semantic similarities among DO terms and gene products annotated with DO terms.</p>
+<div id="do-semantic-similarity" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> DO term semantic similarity measurement</h2>
+<p>Four methods determine the semantic similarity of two terms based on the Information Content of their common ancestor term were proposed by Resnik <span class="citation">(Philip <a href="#ref-philip_semantic_1999" role="doc-biblioref">1999</a>)</span>, Jiang <span class="citation">(Jiang and Conrath <a href="#ref-jiang_semantic_1997" role="doc-biblioref">1997</a>)</span>, Lin <span class="citation">(Lin <a href="#ref-lin_information-theoretic_1998" role="doc-biblioref">1998</a>)</span> and Schlicker <span class="citation">(Schlicker et al. <a href="#ref-schlicker_new_2006" role="doc-biblioref">2006</a>)</span>. Wang <span class="citation">(Wang et al. <a href="#ref-wang_new_2007" role="doc-biblioref">2007</a>)</span> presented a method to measure the similarity based on the graph structure. Each of these methods has its own advantage and weakness. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> supports all these methods to compute semantic similarity among DO terms and gene products. For algorithm details, please refer to <a href="semantic-similarity-overview.html#semantic-similarity-overview">chapter 1</a>.</p>
+<p>In <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, we implemented <code>doSim</code> for calculating semantic similarity between two DO terms and two set of DO terms.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="DOSE-semantic-similarity.html#cb23-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb23-2"><a href="DOSE-semantic-similarity.html#cb23-2" aria-hidden="true"></a></span>
+<span id="cb23-3"><a href="DOSE-semantic-similarity.html#cb23-3" aria-hidden="true"></a>a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;DOID:14095&quot;</span>, <span class="st">&quot;DOID:5844&quot;</span>, <span class="st">&quot;DOID:2044&quot;</span>, <span class="st">&quot;DOID:8432&quot;</span>, <span class="st">&quot;DOID:9146&quot;</span>,</span>
+<span id="cb23-4"><a href="DOSE-semantic-similarity.html#cb23-4" aria-hidden="true"></a>       <span class="st">&quot;DOID:10588&quot;</span>, <span class="st">&quot;DOID:3209&quot;</span>, <span class="st">&quot;DOID:848&quot;</span>, <span class="st">&quot;DOID:3341&quot;</span>, <span class="st">&quot;DOID:252&quot;</span>)</span>
+<span id="cb23-5"><a href="DOSE-semantic-similarity.html#cb23-5" aria-hidden="true"></a>b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;DOID:9409&quot;</span>, <span class="st">&quot;DOID:2491&quot;</span>, <span class="st">&quot;DOID:4467&quot;</span>, <span class="st">&quot;DOID:3498&quot;</span>, <span class="st">&quot;DOID:11256&quot;</span>)</span>
+<span id="cb23-6"><a href="DOSE-semantic-similarity.html#cb23-6" aria-hidden="true"></a><span class="kw">doSim</span>(a[<span class="dv">1</span>], b[<span class="dv">1</span>], <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.07142995</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="DOSE-semantic-similarity.html#cb25-1" aria-hidden="true"></a><span class="kw">doSim</span>(a[<span class="dv">1</span>], b[<span class="dv">1</span>], <span class="dt">measure=</span><span class="st">&quot;Resnik&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="DOSE-semantic-similarity.html#cb27-1" aria-hidden="true"></a><span class="kw">doSim</span>(a[<span class="dv">1</span>], b[<span class="dv">1</span>], <span class="dt">measure=</span><span class="st">&quot;Lin&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="DOSE-semantic-similarity.html#cb29-1" aria-hidden="true"></a>s &lt;-<span class="st"> </span><span class="kw">doSim</span>(a, b, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>)</span>
+<span id="cb29-2"><a href="DOSE-semantic-similarity.html#cb29-2" aria-hidden="true"></a>s</span></code></pre></div>
+<pre><code>##             DOID:9409  DOID:2491  DOID:4467  DOID:3498 DOID:11256
+## DOID:14095 0.07142995 0.05714393 0.03676194 0.03676194 0.52749870
+## DOID:5844  0.14897652 0.11564838 0.02801328 0.02801328 0.06134327
+## DOID:2044  0.14897652 0.11564838 0.02801328 0.02801328 0.06134327
+## DOID:8432  0.17347273 0.13877811 0.03676194 0.03676194 0.07142995
+## DOID:9146  0.07142995 0.05714393 0.03676194 0.03676194 0.17347273
+## DOID:10588 0.13240905 0.18401515 0.02208240 0.02208240 0.05452137
+## DOID:3209  0.14897652 0.11564838 0.02801328 0.02801328 0.06134327
+## DOID:848   0.14897652 0.11564838 0.02801328 0.02801328 0.06134327
+## DOID:3341  0.13240905 0.09998997 0.02208240 0.02208240 0.05452137
+## DOID:252   0.06134327 0.04761992 0.02801328 0.02801328 0.06134327</code></pre>
+<p>The <code>doSim</code> function requires three parameter <code>DOID1</code>, <code>DOID2</code> and <code>measure</code>. <code>DOID1</code> and <code>DOID2</code> should be a vector of DO terms, while <code>measure</code> should be one of <em>Resnik</em>, <em>Jiang</em>, <em>Lin</em>, <em>Rel</em>, and <em>Wang</em>.</p>
+<p>We also implement a plot function <code>simplot()</code> to visualize the similarity result as demonstrated in Figure <a href="DOSE-semantic-similarity.html#fig:dose-simplot">3.1</a>.</p>
 
+
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="DOSE-semantic-similarity.html#cb31-1" aria-hidden="true"></a><span class="kw">simplot</span>(s,</span>
+<span id="cb31-2"><a href="DOSE-semantic-similarity.html#cb31-2" aria-hidden="true"></a>        <span class="dt">color.low=</span><span class="st">&quot;white&quot;</span>, <span class="dt">color.high=</span><span class="st">&quot;red&quot;</span>,</span>
+<span id="cb31-3"><a href="DOSE-semantic-similarity.html#cb31-3" aria-hidden="true"></a>        <span class="dt">labs=</span><span class="ot">TRUE</span>, <span class="dt">digits=</span><span class="dv">2</span>, <span class="dt">labs.size=</span><span class="dv">5</span>,</span>
+<span id="cb31-4"><a href="DOSE-semantic-similarity.html#cb31-4" aria-hidden="true"></a>        <span class="dt">font.size=</span><span class="dv">14</span>, <span class="dt">xlab=</span><span class="st">&quot;&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<div class="figure"><span id="fig:dose-simplot"></span>
+<img src="biomedicalKnowledge_files/figure-html/dose-simplot-1.png" alt="Similarity matrix visualization. The simplot() function visualize similarity matrix as a heatmap." width="480"  />
+<p class="caption">
+Figure 3.1: <strong>Similarity matrix visualization</strong>. The <code>simplot()</code> function visualize similarity matrix as a heatmap.
+</p>
+</div>
+<p>Parameter <code>color.low</code> and <code>colow.high</code> are used to setting the color gradient; <code>labs</code> is a logical parameter indicating whether to show the similarity values or not, <code>digits</code> to indicate the number of decimal places to be used and <code>labs.size</code> control the font size of similarity values; <code>font.size</code> setting the font size of axis and label of the coordinate system.</p>
+</div>
+<div id="gene-do-semantic-similarity" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Gene semantic similarity measurement</h2>
+<p>On the basis of semantic similarity between DO terms, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> can also compute semantic similarity among gene products. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> provides four methods which called <code>max</code>, <code>avg</code>, <code>rcmax</code> and <code>BMA</code> to combine semantic similarity scores of multiple DO terms (as described in <a href="combine-methods">session 1.3</a>). The similarities among genes and gene clusters which annotated by multiple DO terms were also calculated by these combine methods.</p>
+<p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> implemented <code>geneSim</code> to measure semantic similarities among genes.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="DOSE-semantic-similarity.html#cb32-1" aria-hidden="true"></a>g1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;84842&quot;</span>, <span class="st">&quot;2524&quot;</span>, <span class="st">&quot;10590&quot;</span>, <span class="st">&quot;3070&quot;</span>, <span class="st">&quot;91746&quot;</span>)</span>
+<span id="cb32-2"><a href="DOSE-semantic-similarity.html#cb32-2" aria-hidden="true"></a>g2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;84289&quot;</span>, <span class="st">&quot;6045&quot;</span>, <span class="st">&quot;56999&quot;</span>, <span class="st">&quot;9869&quot;</span>)</span>
+<span id="cb32-3"><a href="DOSE-semantic-similarity.html#cb32-3" aria-hidden="true"></a></span>
+<span id="cb32-4"><a href="DOSE-semantic-similarity.html#cb32-4" aria-hidden="true"></a><span class="kw">geneSim</span>(g1[<span class="dv">1</span>], g2[<span class="dv">1</span>], <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.051</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="DOSE-semantic-similarity.html#cb34-1" aria-hidden="true"></a>gs &lt;-<span class="st"> </span><span class="kw">geneSim</span>(g1, g2, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span>
+<span id="cb34-2"><a href="DOSE-semantic-similarity.html#cb34-2" aria-hidden="true"></a>gs</span></code></pre></div>
+<pre><code>##       84289  6045 56999  9869
+## 84842 0.051 0.135 0.355 0.103
+## 2524  0.284 0.172 0.517 0.517
+## 10590 0.150 0.173 0.242 0.262
+## 3070  0.573 0.517 1.000 1.000
+## 91746 0.351 0.308 0.527 0.496</code></pre>
+<p>The <code>geneSim</code> requires four parameter <code>geneID1</code>, <code>geneID2</code>, <code>measure</code> and <code>combine</code>. <code>geneID1</code> and <code>geneID2</code> should be a vector of entrez gene IDs; <code>measure</code> should be one of <em>Resnik</em>, <em>Jiang</em>, <em>Lin</em>, <em>Rel</em>, and <em>Wang</em>, while <code>combine</code> should be one of <em>max</em>, <em>avg</em>, <em>rcmax</em> and <em>BMA</em>.</p>
+</div>
+<div id="gene-cluster-do-semantic-similarity" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Gene cluster semantic similarity measurement</h2>
+<p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> also implemented <code>clusterSim</code> for calculating semantic similarity between two gene clusters and <code>mclusterSim</code> for calculating semantic similarities among multiple gene clusters.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="DOSE-semantic-similarity.html#cb36-1" aria-hidden="true"></a><span class="kw">clusterSim</span>(g1, g2, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.549</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="DOSE-semantic-similarity.html#cb38-1" aria-hidden="true"></a>g3 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;57491&quot;</span>, <span class="st">&quot;6296&quot;</span>, <span class="st">&quot;51438&quot;</span>, <span class="st">&quot;5504&quot;</span>, <span class="st">&quot;27319&quot;</span>, <span class="st">&quot;1643&quot;</span>)</span>
+<span id="cb38-2"><a href="DOSE-semantic-similarity.html#cb38-2" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a=</span>g1, <span class="dt">b=</span>g2, <span class="dt">c=</span>g3)</span>
+<span id="cb38-3"><a href="DOSE-semantic-similarity.html#cb38-3" aria-hidden="true"></a><span class="kw">mclusterSim</span>(clusters, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
+<pre><code>##       a     b     c
+## a 1.000 0.549 0.425
+## b 0.549 1.000 0.645
+## c 0.425 0.645 1.000</code></pre>
+<!--
+
+# GO semantic similarity calculation
+
+GO Semantic similarity can be calculated by [GOSemSim](http://bioconductor.org/packages/GOSemSim)[@yu2010].
+
+We have developed another package [GOSemSim](http://bioconductor.org/packages/GOSemSim)[@yu2010] to explore the functional similarity at GO perspective, including molecular function (MF), biological process (BP) and cellular component (CC).
+
+
+# MeSH semantic analysis
+
+MeSH (Medical Subject Headings) is the NLM controlled vocabulary used
+to manually index articles for MEDLINE/PubMed. [meshes](http://bioconductor.org/packages/meshes)
+supports enrichment (hypergeometric test and GSEA) and semantic
+similarity analyses for more than 70 species.
+
+-->
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-jiang_semantic_1997">
+<p>Jiang, Jay J., and David W. Conrath. 1997. “Semantic Similarity Based on Corpus Statistics and Lexical Taxonomy.” <em>Proceedings of 10th International Conference on Research in Computational Linguistics</em>. <a href="http://www.citebase.org/abstract?id=oai:arXiv.org:cmp-lg/9709008">http://www.citebase.org/abstract?id=oai:arXiv.org:cmp-lg/9709008</a>.</p>
+</div>
+<div id="ref-lin_information-theoretic_1998">
+<p>Lin, Dekang. 1998. “An Information-Theoretic Definition of Similarity.” <em>In Proceedings of the 15th International Conference on Machine Learning</em>, 296—304. <a href="https://doi.org/10.1.1.55.1832">https://doi.org/10.1.1.55.1832</a>.</p>
+</div>
+<div id="ref-philip_semantic_1999">
+<p>Philip, Resnik. 1999. “Semantic Similarity in a Taxonomy: An Information-Based Measure and Its Application to Problems of Ambiguity in Natural Language.” <em>Journal of Artificial Intelligence Research</em> 11: 95–130.</p>
+</div>
+<div id="ref-schlicker_new_2006">
+<p>Schlicker, Andreas, Francisco S Domingues, Jörg Rahnenführer, and Thomas Lengauer. 2006. “A New Measure for Functional Similarity of Gene Products Based on Gene Ontology.” <em>BMC Bioinformatics</em> 7: 302. <a href="https://doi.org/1471-2105-7-302">https://doi.org/1471-2105-7-302</a>.</p>
+</div>
+<div id="ref-schriml_disease_2011">
+<p>Schriml, L. M., C. Arze, S. Nadendla, Y.-W. W. Chang, M. Mazaitis, V. Felix, G. Feng, and W. A. Kibbe. 2011. “Disease Ontology: A Backbone for Disease Semantic Integration.” <em>Nucleic Acids Research</em> 40 (D1): D940–D946. <a href="https://doi.org/10.1093/nar/gkr972">https://doi.org/10.1093/nar/gkr972</a>.</p>
+</div>
+<div id="ref-wang_new_2007">
+<p>Wang, James Z, Zhidian Du, Rapeeporn Payattakool, Philip S Yu, and Chin-Fu Chen. 2007. “A New Method to Measure the Semantic Similarity of Go Terms.” <em>Bioinformatics (Oxford, England)</em> 23 (May): 1274–81. <a href="https://doi.org/btm087">https://doi.org/btm087</a>.</p>
+</div>
+<div id="ref-yu_dose_2015">
+<p>Yu, Guangchuang, Li-Gen Wang, Guang-Rong Yan, and Qing-Yu He. 2015. “DOSE: An R/Bioconductor Package for Disease Ontology Semantic and Enrichment Analysis.” <em>Bioinformatics</em> 31 (4): 608–9. <a href="https://doi.org/10.1093/bioinformatics/btu684">https://doi.org/10.1093/bioinformatics/btu684</a>.</p>
+</div>
 </div>
             </section>
 
