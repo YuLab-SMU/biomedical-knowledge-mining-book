@@ -22,7 +22,7 @@ User can set `computeIC=FALSE` if they only want to use Wang's method.
 
 `r Biocpkg("GOSemSim")` supports all organisms that have an `OrgDb` object available.
 
-Bioconductor have already provided `OrgDb` for about 20 species, see <http://bioconductor.org/packages/release/BiocViews.html#___OrgDb>.
+Bioconductor have already provided `OrgDb` for [about 20 species](http://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
 
 We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
 

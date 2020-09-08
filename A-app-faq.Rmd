@@ -2,6 +2,32 @@
 
 # Frequently asked questions {#faq}
 
+## How to prepare your own geneList {#genelist}
+
+GSEA analysis requires a ranked gene list, which contains three features:
+
+
++ numeric vector: fold change or other type of numerical variable
++ named vector: every number has a name, the corresponding gene ID
++ sorted vector: number should be sorted in decreasing order
+
+
+If you import your data from a `csv` file, the file should contains two columns, one for gene ID (no duplicated ID allowed) and another one for fold change.
+
+```r
+d = read.csv(your_csv_file)
+## assume 1st column is ID
+## 2nd column is FC
+
+## feature 1: numeric vector
+geneList = d[,2]
+
+## feature 2: named vector
+names(geneList) = as.character(d[,1])
+
+## feature 3: decreasing orde
+geneList = sort(geneList, decreasing = TRUE)
+```
 
 
 No gene can be mapped

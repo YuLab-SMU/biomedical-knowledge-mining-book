@@ -18,6 +18,6 @@ rmd_files: ["index.Rmd",
   "13_compareCluster.Rmd",
   "14_enrichplot_visualization.Rmd",
   "15_dplyr.Rmd",
-  "16_other_utilities.Rmd",
+  "16_useful_utilities.Rmd",
   "A-app-faq.Rmd",
   "B-references.Rmd"]

@@ -48,8 +48,16 @@ Githubpkg <- function (user, pkg) {
     sprintf(fmt, pkg, gh, user, pkg)
 }
 
+badge_version <- function(pkg, color="green") {
+    v <- packageVersion(pkg)
+    url <- paste0("https://github.com/YuLab-SMU/", pkg)
+    badger::badge_custom(pkg, v, color, url)
+}
+
+
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+
 
 library(emojifont)
 library(org.Hs.eg.db)
@@ -57,6 +65,15 @@ library(org.Hs.eg.db)
 
 
 # `r emoji("book")` Introduction {-}
+
+`r badge_version("ChIPseeker")`
+`r badge_version("clusterProfiler")`
+`r badge_version("DOSE")`
+`r badge_version("enrichplot")`
+`r badge_version("GOSemSim")`
+`r badge_version("meshes")`
+`r badge_version("ReactomePA")`
+
 
 
 hello

@@ -7,12 +7,15 @@ opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 library(clusterProfiler)
 ```
 
-The annotation package, `KEGG.db`, is not updated since 2012. It's now pretty old and in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler), `enrichKEGG` (for KEGG pathway) and `enrichMKEGG` (for KEGG module) supports downloading latest online version of KEGG data for enrichment analysis. Using `KEGG.db` is also supported by explicitly setting _use\_internal\_data_ parameter to _TRUE_, but it's not recommended.
+The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The `r Biocpkg("clusterProfiler")` package supports downloading latest online version of KEGG data using the [KEGG website](https://www.kegg.jp), which is freely available for academic users. Both KEGG pathway and module are supported in `r Biocpkg("clusterProfiler")`.
 
-With this new feature, organism is not restricted to those supported in previous release, it can be any species that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the _organism_ parameter. The full list of KEGG supported organisms can be accessed via [http://www.genome.jp/kegg/catalog/org_list.html](http://www.genome.jp/kegg/catalog/org_list.html). 
-[KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
 
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides `search_kegg_organism()` function to help searching supported organisms.
+## Supported organisms {#clusterProfiler-kegg-supported-organisms}
+
+The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <http://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
+
+
+The `r Biocpkg("clusterProfiler")` package provides `search_kegg_organism()` function to help searching supported organisms.
 
 ```{r}
 library(clusterProfiler)
@@ -23,7 +26,7 @@ head(ecoli)
 ```
 
 
-## KEGG over-representation test
+## KEGG pathway over-representation test {#clusterprofiler-kegg-pathway-ora}
 
 
 ```{r}
@@ -36,10 +39,10 @@ kk <- enrichKEGG(gene         = gene,
 head(kk)
 ```
 
-Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot`, an example can be found in [the post](https://guangchuangyu.github.io/2016/05/convert-biological-id-with-kegg-api-using-clusterprofiler/).
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also [session 16.1.2](#bitr_kegg)). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the [`setReadable()` function](#setReadable) if there is an `OrgDb` available for the species.
 
 
-## KEGG Gene Set Enrichment Analysis
+## KEGG pathway gene set enrichment analysis {#clusterprofiler-kegg-pathway-gsea}
 
 ```{r}
 kk2 <- gseKEGG(geneList     = geneList,
@@ -53,20 +56,27 @@ head(kk2)
 
 
 
-## KEGG Module over-representation test
+## KEGG module over-representation test {#clusterprofiler-kegg-module-ora}
+
 
 [KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined function units. In some situation, KEGG Modules have a more straightforward interpretation.
 
-```{r eval = FALSE}
+```{r}
 mkk <- enrichMKEGG(gene = gene,
-                   organism = 'hsa')
+                   organism = 'hsa',
+                   pvalueCutoff = 1,
+                   qvalueCutoff = 1)
+head(mkk)                   
 ```
 
-## KEGG Module Gene Set Enrichment Analysis
+## KEGG module gene set enrichment analysis {#clusterprofiler-kegg-module-gsea}
 
-```{r eval=FALSE}
+
+```{r}
 mkk2 <- gseMKEGG(geneList = geneList,
-                 organism = 'hsa')
+                 organism = 'hsa',
+                 pvalueCutoff = 1)
+head(mkk2)
 ```
 
 
