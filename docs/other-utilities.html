@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-07" />
+<meta name="date" content="2020-09-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -181,7 +181,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-supported-organisms"><i class="fa fa-check"></i><b>4.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="4.2" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-semantic-simiarlity"><i class="fa fa-check"></i><b>4.2</b> MeSH semantic similarity measurement</a></li>
+<li class="chapter" data-level="4.3" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#gene-meshes-semantic-similarity"><i class="fa fa-check"></i><b>4.3</b> Gene semantic similarity measurement</a></li>
+</ul></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
 <ul>
@@ -302,14 +307,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="setReadable" class="section level2" number="17.1">
 <h2><span class="header-section-number">17.1</span> <code>setReadable</code>: translating gene IDs to human readable symbols</h2>
 <p>Some of the functions, especially those internally supported for <a href="#chapter4">DO</a>, <a href="#chapter5">GO</a>, and <a href="#chapter8">Reactome Pathway</a>, support a parameter, <code>readable</code>. If <code>readable = TRUE</code>, all the gene IDs will be translated to gene symbols. The <code>readable</code> parameter is not available for enrichment analysis of KEGG or using user’s own annotation. KEGG analysis using <code>enrichKEGG</code> and <code>gseKEGG</code>, internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn’t provide gene ID to symbol mapping information. For analysis using user’s own annotation data, we even don’t know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the <code>setReadable</code> function if and only if there is an <code>OrgDb</code> available.</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="other-utilities.html#cb183-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
-<span id="cb183-2"><a href="other-utilities.html#cb183-2" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb183-3"><a href="other-utilities.html#cb183-3" aria-hidden="true"></a></span>
-<span id="cb183-4"><a href="other-utilities.html#cb183-4" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb183-5"><a href="other-utilities.html#cb183-5" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
-<span id="cb183-6"><a href="other-utilities.html#cb183-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(de)</span>
-<span id="cb183-7"><a href="other-utilities.html#cb183-7" aria-hidden="true"></a><span class="co">## The geneID column is ENTREZID</span></span>
-<span id="cb183-8"><a href="other-utilities.html#cb183-8" aria-hidden="true"></a><span class="kw">head</span>(x, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="other-utilities.html#cb198-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
+<span id="cb198-2"><a href="other-utilities.html#cb198-2" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
+<span id="cb198-3"><a href="other-utilities.html#cb198-3" aria-hidden="true"></a></span>
+<span id="cb198-4"><a href="other-utilities.html#cb198-4" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb198-5"><a href="other-utilities.html#cb198-5" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb198-6"><a href="other-utilities.html#cb198-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(de)</span>
+<span id="cb198-7"><a href="other-utilities.html#cb198-7" aria-hidden="true"></a><span class="co">## The geneID column is ENTREZID</span></span>
+<span id="cb198-8"><a href="other-utilities.html#cb198-8" aria-hidden="true"></a><span class="kw">head</span>(x, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
 ## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
 ## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05
@@ -318,9 +323,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## hsa04110 6.410428e-05 5.859948e-05 8318/991/9133/890/983/4085/7272/1111     8
 ## hsa04218 1.912444e-03 1.748217e-03    2305/4605/9133/890/983/51806/1111     7
 ## hsa04114 3.843336e-03 3.513299e-03         991/9133/983/4085/51806/6790     6</code></pre>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="other-utilities.html#cb185-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">setReadable</span>(x, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
-<span id="cb185-2"><a href="other-utilities.html#cb185-2" aria-hidden="true"></a><span class="co">## The geneID column is translated to symbol</span></span>
-<span id="cb185-3"><a href="other-utilities.html#cb185-3" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="other-utilities.html#cb200-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">setReadable</span>(x, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
+<span id="cb200-2"><a href="other-utilities.html#cb200-2" aria-hidden="true"></a><span class="co">## The geneID column is translated to symbol</span></span>
+<span id="cb200-3"><a href="other-utilities.html#cb200-3" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
 ## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
 ## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05

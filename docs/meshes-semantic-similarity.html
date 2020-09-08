@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-07" />
+<meta name="date" content="2020-09-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -181,7 +181,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-supported-organisms"><i class="fa fa-check"></i><b>4.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="4.2" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-semantic-simiarlity"><i class="fa fa-check"></i><b>4.2</b> MeSH semantic similarity measurement</a></li>
+<li class="chapter" data-level="4.3" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#gene-meshes-semantic-similarity"><i class="fa fa-check"></i><b>4.3</b> Gene semantic similarity measurement</a></li>
+</ul></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
 <ul>
@@ -299,11 +304,171 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="meshes-semantic-similarity" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> MeSH semantic similarity analysis</h1>
+<p>MeSH (Medical Subject Headings) is the NLM (U.S. National Library of
+Medicine) controlled vocabulary used to manually index articles for
+MEDLINE/PubMed. MeSH is a comprehensive life science vocabulary. MeSH has
+19 categories and <code>MeSH.db</code> contains 16 of them. That is:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Abbreviation</th>
+<th align="left">Category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="left">Anatomy</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="left">Organisms</td>
+</tr>
+<tr class="odd">
+<td align="left">C</td>
+<td align="left">Diseases</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">Chemicals and Drugs</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">Analytical, Diagnostic and Therapeutic Techniques and Equipment</td>
+</tr>
+<tr class="even">
+<td align="left">F</td>
+<td align="left">Psychiatry and Psychology</td>
+</tr>
+<tr class="odd">
+<td align="left">G</td>
+<td align="left">Phenomena and Processes</td>
+</tr>
+<tr class="even">
+<td align="left">H</td>
+<td align="left">Disciplines and Occupations</td>
+</tr>
+<tr class="odd">
+<td align="left">I</td>
+<td align="left">Anthropology, Education, Sociology and Social Phenomena</td>
+</tr>
+<tr class="even">
+<td align="left">J</td>
+<td align="left">Technology and Food and Beverages</td>
+</tr>
+<tr class="odd">
+<td align="left">K</td>
+<td align="left">Humanities</td>
+</tr>
+<tr class="even">
+<td align="left">L</td>
+<td align="left">Information Science</td>
+</tr>
+<tr class="odd">
+<td align="left">M</td>
+<td align="left">Persons</td>
+</tr>
+<tr class="even">
+<td align="left">N</td>
+<td align="left">Health Care</td>
+</tr>
+<tr class="odd">
+<td align="left">V</td>
+<td align="left">Publication Type</td>
+</tr>
+<tr class="even">
+<td align="left">Z</td>
+<td align="left">Geographical Locations</td>
+</tr>
+</tbody>
+</table>
+<p>MeSH terms were associated with Entrez Gene ID by three methods,
+<code>gendoo</code>, <code>gene2pubmed</code> and <code>RBBH</code> (Reciprocal Blast Best Hit).</p>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Way of corresponding Entrez Gene IDs and MeSH IDs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gendoo</td>
+<td>Text-mining</td>
+</tr>
+<tr class="even">
+<td>gene2pubmed</td>
+<td>Manual curation by NCBI teams</td>
+</tr>
+<tr class="odd">
+<td>RBBH</td>
+<td>sequence homology with BLASTP search (E-value&lt;10<sup>-50</sup>)</td>
+</tr>
+</tbody>
+</table>
+<div id="meshes-supported-organisms" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Supported organisms</h2>
+<p>The <a href="http://bioconductor.org/packages/meshes">meshes</a> relies on <code>MeSHDb</code> to prepare semantic data for measuring simiarlity. A list of <code>MeSHDb</code> can be found on Bioconductor, <a href="https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb" class="uri">https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb</a> and all the species (more than 70) that have MeSHDb available are supported by the <a href="http://bioconductor.org/packages/meshes">meshes</a> package.</p>
+<p>The semantic data is prepare by the <code>meshdata()</code> function:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="meshes-semantic-similarity.html#cb40-1" aria-hidden="true"></a>hsamd &lt;-<span class="st"> </span><span class="kw">meshdata</span>(<span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">category=</span><span class="st">&#39;A&#39;</span>, <span class="dt">computeIC=</span>T, <span class="dt">database=</span><span class="st">&quot;gendoo&quot;</span>)</span>
+<span id="cb40-2"><a href="meshes-semantic-similarity.html#cb40-2" aria-hidden="true"></a></span>
+<span id="cb40-3"><a href="meshes-semantic-similarity.html#cb40-3" aria-hidden="true"></a><span class="co">## you may want to save the result for future usage</span></span>
+<span id="cb40-4"><a href="meshes-semantic-similarity.html#cb40-4" aria-hidden="true"></a><span class="co"># </span></span>
+<span id="cb40-5"><a href="meshes-semantic-similarity.html#cb40-5" aria-hidden="true"></a><span class="co"># save(hsamd, file = &quot;hsamd.rda&quot;)</span></span>
+<span id="cb40-6"><a href="meshes-semantic-similarity.html#cb40-6" aria-hidden="true"></a><span class="co">#</span></span></code></pre></div>
+</div>
+<div id="meshes-semantic-simiarlity" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> MeSH semantic similarity measurement</h2>
+<p>The <a href="http://bioconductor.org/packages/meshes">meshes</a> package implemented four IC-based methods (i.e. Resnik <span class="citation">(Philip <a href="#ref-philip_semantic_1999" role="doc-biblioref">1999</a>)</span>, Jiang <span class="citation">(Jiang and Conrath <a href="#ref-jiang_semantic_1997" role="doc-biblioref">1997</a>)</span>,
+Lin <span class="citation">(Lin <a href="#ref-lin_information-theoretic_1998" role="doc-biblioref">1998</a>)</span> and Schlicker <span class="citation">(Schlicker et al. <a href="#ref-schlicker_new_2006" role="doc-biblioref">2006</a>)</span>) and one graph-structure based method (i.e. Wang <span class="citation">(Wang et al. <a href="#ref-wang_new_2007" role="doc-biblioref">2007</a>)</span>), to measure MeSH term semantic similarity. For algorithm details, please refer to <a href="semantic-similarity-overview.html#semantic-similarity-overview">Chapter 1</a>.</p>
+<p>The <code>meshSim()</code> function is designed to measure semantic similarity between two MeSH term vectors.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="meshes-semantic-similarity.html#cb41-1" aria-hidden="true"></a><span class="kw">library</span>(meshes)</span>
+<span id="cb41-2"><a href="meshes-semantic-similarity.html#cb41-2" aria-hidden="true"></a><span class="kw">meshSim</span>(<span class="st">&quot;D000009&quot;</span>, <span class="st">&quot;D009130&quot;</span>, <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Resnik&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.2910261</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="meshes-semantic-similarity.html#cb43-1" aria-hidden="true"></a><span class="kw">meshSim</span>(<span class="st">&quot;D000009&quot;</span>, <span class="st">&quot;D009130&quot;</span>, <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Rel&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.521396</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="meshes-semantic-similarity.html#cb45-1" aria-hidden="true"></a><span class="kw">meshSim</span>(<span class="st">&quot;D000009&quot;</span>, <span class="st">&quot;D009130&quot;</span>, <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Jiang&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.4914785</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="meshes-semantic-similarity.html#cb47-1" aria-hidden="true"></a><span class="kw">meshSim</span>(<span class="st">&quot;D000009&quot;</span>, <span class="st">&quot;D009130&quot;</span>, <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.5557103</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="meshes-semantic-similarity.html#cb49-1" aria-hidden="true"></a><span class="kw">meshSim</span>(<span class="kw">c</span>(<span class="st">&quot;D001369&quot;</span>, <span class="st">&quot;D002462&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;D017629&quot;</span>, <span class="st">&quot;D002890&quot;</span>, <span class="st">&quot;D008928&quot;</span>), <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>)</span></code></pre></div>
+<pre><code>##           D017629   D002890   D008928
+## D001369 0.2886598 0.1923711 0.2193326
+## D002462 0.6521739 0.2381925 0.2809552</code></pre>
+</div>
+<div id="gene-meshes-semantic-similarity" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Gene semantic similarity measurement</h2>
+<p>The <code>geneSim()</code> function is designed to measure semantic similarity among two gene vectors.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="meshes-semantic-similarity.html#cb51-1" aria-hidden="true"></a><span class="kw">geneSim</span>(<span class="st">&quot;241&quot;</span>, <span class="st">&quot;251&quot;</span>, <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.487</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="meshes-semantic-similarity.html#cb53-1" aria-hidden="true"></a><span class="kw">geneSim</span>(<span class="kw">c</span>(<span class="st">&quot;241&quot;</span>, <span class="st">&quot;251&quot;</span>), <span class="kw">c</span>(<span class="st">&quot;835&quot;</span>, <span class="st">&quot;5261&quot;</span>,<span class="st">&quot;241&quot;</span>, <span class="st">&quot;994&quot;</span>), <span class="dt">semData=</span>hsamd, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
+<pre><code>##       835  5261   241   994
+## 241 0.732 0.337 1.000 0.438
+## 251 0.526 0.588 0.487 0.597</code></pre>
 
+</div>
 </div>
 
 
 
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-jiang_semantic_1997">
+<p>Jiang, Jay J., and David W. Conrath. 1997. “Semantic Similarity Based on Corpus Statistics and Lexical Taxonomy.” <em>Proceedings of 10th International Conference on Research in Computational Linguistics</em>. <a href="http://www.citebase.org/abstract?id=oai:arXiv.org:cmp-lg/9709008">http://www.citebase.org/abstract?id=oai:arXiv.org:cmp-lg/9709008</a>.</p>
+</div>
+<div id="ref-lin_information-theoretic_1998">
+<p>Lin, Dekang. 1998. “An Information-Theoretic Definition of Similarity.” <em>In Proceedings of the 15th International Conference on Machine Learning</em>, 296—304. <a href="https://doi.org/10.1.1.55.1832">https://doi.org/10.1.1.55.1832</a>.</p>
+</div>
+<div id="ref-philip_semantic_1999">
+<p>Philip, Resnik. 1999. “Semantic Similarity in a Taxonomy: An Information-Based Measure and Its Application to Problems of Ambiguity in Natural Language.” <em>Journal of Artificial Intelligence Research</em> 11: 95–130.</p>
+</div>
+<div id="ref-schlicker_new_2006">
+<p>Schlicker, Andreas, Francisco S Domingues, Jörg Rahnenführer, and Thomas Lengauer. 2006. “A New Measure for Functional Similarity of Gene Products Based on Gene Ontology.” <em>BMC Bioinformatics</em> 7: 302. <a href="https://doi.org/1471-2105-7-302">https://doi.org/1471-2105-7-302</a>.</p>
+</div>
+<div id="ref-wang_new_2007">
+<p>Wang, James Z, Zhidian Du, Rapeeporn Payattakool, Philip S Yu, and Chin-Fu Chen. 2007. “A New Method to Measure the Semantic Similarity of Go Terms.” <em>Bioinformatics (Oxford, England)</em> 23 (May): 1274–81. <a href="https://doi.org/btm087">https://doi.org/btm087</a>.</p>
+</div>
+</div>
             </section>
 
           </div>

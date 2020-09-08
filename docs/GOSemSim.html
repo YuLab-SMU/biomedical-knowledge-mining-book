@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-07" />
+<meta name="date" content="2020-09-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -181,7 +181,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-supported-organisms"><i class="fa fa-check"></i><b>4.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="4.2" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-semantic-simiarlity"><i class="fa fa-check"></i><b>4.2</b> MeSH semantic similarity measurement</a></li>
+<li class="chapter" data-level="4.3" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#gene-meshes-semantic-similarity"><i class="fa fa-check"></i><b>4.3</b> Gene semantic similarity measurement</a></li>
+</ul></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
 <ul>
@@ -398,9 +403,9 @@ terms are also calculated by the these combine methods.</p>
 <span id="cb21-5"><a href="GOSemSim.html#cb21-5" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>), <span class="dt">b=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>), <span class="dt">c=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>))</span>
 <span id="cb21-6"><a href="GOSemSim.html#cb21-6" aria-hidden="true"></a><span class="kw">mclusterSim</span>(clusters, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
 <pre><code>##       a     b     c
-## a 1.000 0.669 0.735
-## b 0.669 1.000 0.677
-## c 0.735 0.677 1.000</code></pre>
+## a 1.000 0.725 0.608
+## b 0.725 1.000 0.668
+## c 0.608 0.668 1.000</code></pre>
 <!--
 
 

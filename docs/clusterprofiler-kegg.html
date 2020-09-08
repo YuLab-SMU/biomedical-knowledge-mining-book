@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-07" />
+<meta name="date" content="2020-09-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -181,7 +181,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-do-semantic-similarity"><i class="fa fa-check"></i><b>3.2</b> Gene semantic similarity measurement</a></li>
 <li class="chapter" data-level="3.3" data-path="DOSE-semantic-similarity.html"><a href="DOSE-semantic-similarity.html#gene-cluster-do-semantic-similarity"><i class="fa fa-check"></i><b>3.3</b> Gene cluster semantic similarity measurement</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a></li>
+<li class="chapter" data-level="4" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html"><i class="fa fa-check"></i><b>4</b> MeSH semantic similarity analysis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-supported-organisms"><i class="fa fa-check"></i><b>4.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="4.2" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#meshes-semantic-simiarlity"><i class="fa fa-check"></i><b>4.2</b> MeSH semantic similarity measurement</a></li>
+<li class="chapter" data-level="4.3" data-path="meshes-semantic-similarity.html"><a href="meshes-semantic-similarity.html#gene-meshes-semantic-similarity"><i class="fa fa-check"></i><b>4.3</b> Gene semantic similarity measurement</a></li>
+</ul></li>
 <li class="part"><span><b>Part II: Enrichment analysis</b></span></li>
 <li class="chapter" data-level="5" data-path="enrichment-overview.html"><a href="enrichment-overview.html"><i class="fa fa-check"></i><b>5</b> Overview of enrichment analysis</a>
 <ul>
@@ -303,14 +308,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>With this new feature, organism is not restricted to those supported in previous release, it can be any species that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the <em>organism</em> parameter. The full list of KEGG supported organisms can be accessed via <a href="http://www.genome.jp/kegg/catalog/org_list.html">http://www.genome.jp/kegg/catalog/org_list.html</a>.
 <a href="https://www.genome.jp/kegg/ko.html">KEGG Orthology</a> (KO) Database is also supported by specifying <code>organism = "ko"</code>.</p>
 <p><a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a> provides <code>search_kegg_organism()</code> function to help searching supported organisms.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="clusterprofiler-kegg.html#cb53-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb53-2"><a href="clusterprofiler-kegg.html#cb53-2" aria-hidden="true"></a><span class="kw">search_kegg_organism</span>(<span class="st">&#39;ece&#39;</span>, <span class="dt">by=</span><span class="st">&#39;kegg_code&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="clusterprofiler-kegg.html#cb68-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
+<span id="cb68-2"><a href="clusterprofiler-kegg.html#cb68-2" aria-hidden="true"></a><span class="kw">search_kegg_organism</span>(<span class="st">&#39;ece&#39;</span>, <span class="dt">by=</span><span class="st">&#39;kegg_code&#39;</span>)</span></code></pre></div>
 <pre><code>##     kegg_code                        scientific_name common_name
 ## 366       ece Escherichia coli O157:H7 EDL933 (EHEC)        &lt;NA&gt;</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="clusterprofiler-kegg.html#cb55-1" aria-hidden="true"></a>ecoli &lt;-<span class="st"> </span><span class="kw">search_kegg_organism</span>(<span class="st">&#39;Escherichia coli&#39;</span>, <span class="dt">by=</span><span class="st">&#39;scientific_name&#39;</span>)</span>
-<span id="cb55-2"><a href="clusterprofiler-kegg.html#cb55-2" aria-hidden="true"></a><span class="kw">dim</span>(ecoli)</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="clusterprofiler-kegg.html#cb70-1" aria-hidden="true"></a>ecoli &lt;-<span class="st"> </span><span class="kw">search_kegg_organism</span>(<span class="st">&#39;Escherichia coli&#39;</span>, <span class="dt">by=</span><span class="st">&#39;scientific_name&#39;</span>)</span>
+<span id="cb70-2"><a href="clusterprofiler-kegg.html#cb70-2" aria-hidden="true"></a><span class="kw">dim</span>(ecoli)</span></code></pre></div>
 <pre><code>## [1] 65  3</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="clusterprofiler-kegg.html#cb57-1" aria-hidden="true"></a><span class="kw">head</span>(ecoli)</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="clusterprofiler-kegg.html#cb72-1" aria-hidden="true"></a><span class="kw">head</span>(ecoli)</span></code></pre></div>
 <pre><code>##     kegg_code                        scientific_name common_name
 ## 361       eco           Escherichia coli K-12 MG1655        &lt;NA&gt;
 ## 362       ecj            Escherichia coli K-12 W3110        &lt;NA&gt;
@@ -320,13 +325,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 366       ece Escherichia coli O157:H7 EDL933 (EHEC)        &lt;NA&gt;</code></pre>
 <div id="kegg-over-representation-test" class="section level2" number="7.1">
 <h2><span class="header-section-number">7.1</span> KEGG over-representation test</h2>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="clusterprofiler-kegg.html#cb59-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb59-2"><a href="clusterprofiler-kegg.html#cb59-2" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
-<span id="cb59-3"><a href="clusterprofiler-kegg.html#cb59-3" aria-hidden="true"></a></span>
-<span id="cb59-4"><a href="clusterprofiler-kegg.html#cb59-4" aria-hidden="true"></a>kk &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(<span class="dt">gene         =</span> gene,</span>
-<span id="cb59-5"><a href="clusterprofiler-kegg.html#cb59-5" aria-hidden="true"></a>                 <span class="dt">organism     =</span> <span class="st">&#39;hsa&#39;</span>,</span>
-<span id="cb59-6"><a href="clusterprofiler-kegg.html#cb59-6" aria-hidden="true"></a>                 <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>)</span>
-<span id="cb59-7"><a href="clusterprofiler-kegg.html#cb59-7" aria-hidden="true"></a><span class="kw">head</span>(kk)</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="clusterprofiler-kegg.html#cb74-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb74-2"><a href="clusterprofiler-kegg.html#cb74-2" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb74-3"><a href="clusterprofiler-kegg.html#cb74-3" aria-hidden="true"></a></span>
+<span id="cb74-4"><a href="clusterprofiler-kegg.html#cb74-4" aria-hidden="true"></a>kk &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(<span class="dt">gene         =</span> gene,</span>
+<span id="cb74-5"><a href="clusterprofiler-kegg.html#cb74-5" aria-hidden="true"></a>                 <span class="dt">organism     =</span> <span class="st">&#39;hsa&#39;</span>,</span>
+<span id="cb74-6"><a href="clusterprofiler-kegg.html#cb74-6" aria-hidden="true"></a>                 <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>)</span>
+<span id="cb74-7"><a href="clusterprofiler-kegg.html#cb74-7" aria-hidden="true"></a><span class="kw">head</span>(kk)</span></code></pre></div>
 <pre><code>##                ID                                                   Description
 ## hsa04110 hsa04110                                                    Cell cycle
 ## hsa04114 hsa04114                                                Oocyte meiosis
@@ -352,13 +357,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="kegg-gene-set-enrichment-analysis" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> KEGG Gene Set Enrichment Analysis</h2>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="clusterprofiler-kegg.html#cb61-1" aria-hidden="true"></a>kk2 &lt;-<span class="st"> </span><span class="kw">gseKEGG</span>(<span class="dt">geneList     =</span> geneList,</span>
-<span id="cb61-2"><a href="clusterprofiler-kegg.html#cb61-2" aria-hidden="true"></a>               <span class="dt">organism     =</span> <span class="st">&#39;hsa&#39;</span>,</span>
-<span id="cb61-3"><a href="clusterprofiler-kegg.html#cb61-3" aria-hidden="true"></a>               <span class="dt">nPerm        =</span> <span class="dv">1000</span>,</span>
-<span id="cb61-4"><a href="clusterprofiler-kegg.html#cb61-4" aria-hidden="true"></a>               <span class="dt">minGSSize    =</span> <span class="dv">120</span>,</span>
-<span id="cb61-5"><a href="clusterprofiler-kegg.html#cb61-5" aria-hidden="true"></a>               <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
-<span id="cb61-6"><a href="clusterprofiler-kegg.html#cb61-6" aria-hidden="true"></a>               <span class="dt">verbose      =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb61-7"><a href="clusterprofiler-kegg.html#cb61-7" aria-hidden="true"></a><span class="kw">head</span>(kk2)</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="clusterprofiler-kegg.html#cb76-1" aria-hidden="true"></a>kk2 &lt;-<span class="st"> </span><span class="kw">gseKEGG</span>(<span class="dt">geneList     =</span> geneList,</span>
+<span id="cb76-2"><a href="clusterprofiler-kegg.html#cb76-2" aria-hidden="true"></a>               <span class="dt">organism     =</span> <span class="st">&#39;hsa&#39;</span>,</span>
+<span id="cb76-3"><a href="clusterprofiler-kegg.html#cb76-3" aria-hidden="true"></a>               <span class="dt">nPerm        =</span> <span class="dv">1000</span>,</span>
+<span id="cb76-4"><a href="clusterprofiler-kegg.html#cb76-4" aria-hidden="true"></a>               <span class="dt">minGSSize    =</span> <span class="dv">120</span>,</span>
+<span id="cb76-5"><a href="clusterprofiler-kegg.html#cb76-5" aria-hidden="true"></a>               <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb76-6"><a href="clusterprofiler-kegg.html#cb76-6" aria-hidden="true"></a>               <span class="dt">verbose      =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb76-7"><a href="clusterprofiler-kegg.html#cb76-7" aria-hidden="true"></a><span class="kw">head</span>(kk2)</span></code></pre></div>
 <pre><code>##                ID                Description setSize enrichmentScore       NES
 ## hsa04151 hsa04151 PI3K-Akt signaling pathway     322      -0.3482755 -1.500870
 ## hsa04510 hsa04510             Focal adhesion     190      -0.4169068 -1.704878
@@ -384,13 +389,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="kegg-module-over-representation-test" class="section level2" number="7.3">
 <h2><span class="header-section-number">7.3</span> KEGG Module over-representation test</h2>
 <p><a href="http://www.genome.jp/kegg/module.html">KEGG Module</a> is a collection of manually defined function units. In some situation, KEGG Modules have a more straightforward interpretation.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="clusterprofiler-kegg.html#cb63-1" aria-hidden="true"></a>mkk &lt;-<span class="st"> </span><span class="kw">enrichMKEGG</span>(<span class="dt">gene =</span> gene,</span>
-<span id="cb63-2"><a href="clusterprofiler-kegg.html#cb63-2" aria-hidden="true"></a>                   <span class="dt">organism =</span> <span class="st">&#39;hsa&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="clusterprofiler-kegg.html#cb78-1" aria-hidden="true"></a>mkk &lt;-<span class="st"> </span><span class="kw">enrichMKEGG</span>(<span class="dt">gene =</span> gene,</span>
+<span id="cb78-2"><a href="clusterprofiler-kegg.html#cb78-2" aria-hidden="true"></a>                   <span class="dt">organism =</span> <span class="st">&#39;hsa&#39;</span>)</span></code></pre></div>
 </div>
 <div id="kegg-module-gene-set-enrichment-analysis" class="section level2" number="7.4">
 <h2><span class="header-section-number">7.4</span> KEGG Module Gene Set Enrichment Analysis</h2>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="clusterprofiler-kegg.html#cb64-1" aria-hidden="true"></a>mkk2 &lt;-<span class="st"> </span><span class="kw">gseMKEGG</span>(<span class="dt">geneList =</span> geneList,</span>
-<span id="cb64-2"><a href="clusterprofiler-kegg.html#cb64-2" aria-hidden="true"></a>                 <span class="dt">organism =</span> <span class="st">&#39;hsa&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="clusterprofiler-kegg.html#cb79-1" aria-hidden="true"></a>mkk2 &lt;-<span class="st"> </span><span class="kw">gseMKEGG</span>(<span class="dt">geneList =</span> geneList,</span>
+<span id="cb79-2"><a href="clusterprofiler-kegg.html#cb79-2" aria-hidden="true"></a>                 <span class="dt">organism =</span> <span class="st">&#39;hsa&#39;</span>)</span></code></pre></div>
 
 </div>
 </div>

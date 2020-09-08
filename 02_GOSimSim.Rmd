@@ -10,7 +10,7 @@ To measure semantic similarity, we need to prepare GO annotations including GO s
 `r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene simiarlity. It internally used the `r Biocpkg("GO.db")` package to obtain GO strucuture and `OrgDb` for gene to GO mapping. 
 
 
-```{r}
+```{r godata}
 library(GOSemSim)
 hsGO <- godata('org.Hs.eg.db', ont="MF")
 ```
@@ -44,7 +44,7 @@ Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSi
 The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
 
 
-```{r}
+```{r gosemsim-gosim}
 goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Jiang")
 goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Wang")
 go1 = c("GO:0004022","GO:0004024","GO:0004174")
@@ -66,7 +66,7 @@ terms are also calculated by the these combine methods.
 
 `r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
 
-```{r}
+```{r gosemsim-genesim}
 geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
 mgeneSim(genes=c("835", "5261","241", "994"),
          semData=hsGO, measure="Wang",verbose=FALSE)
@@ -78,7 +78,7 @@ By default, `godata` function use `ENTREZID` as keytype, and the input ID type i
 
 Here as an example, we use `SYMBOL` as `keytype` and calculate semantic similarities among several genes by using their gene symbol as input.
 
-```{r}
+```{r gosemsim-mgeneSim}
 hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE)
 genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
 mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
@@ -91,7 +91,7 @@ Users can also use [`clusterProfiler::bitr`](#bitr) to translate biological IDs.
 
 `r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
 
-```{r}
+```{r gosemsim-clusterSim}
 gs1 <- c("835", "5261","241", "994", "514", "533")
 gs2 <- c("578","582", "400", "409", "411")
 clusterSim(gs1, gs2, semData=hsGO, measure="Wang", combine="BMA")
