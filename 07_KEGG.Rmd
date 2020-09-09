@@ -26,7 +26,7 @@ head(ecoli)
 ```
 
 
-## KEGG pathway over-representation test {#clusterprofiler-kegg-pathway-ora}
+## KEGG pathway over-representation analysis {#clusterprofiler-kegg-pathway-ora}
 
 
 ```{r}
@@ -56,7 +56,7 @@ head(kk2)
 
 
 
-## KEGG module over-representation test {#clusterprofiler-kegg-module-ora}
+## KEGG module over-representation analysis {#clusterprofiler-kegg-module-ora}
 
 
 [KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined function units. In some situation, KEGG Modules have a more straightforward interpretation.

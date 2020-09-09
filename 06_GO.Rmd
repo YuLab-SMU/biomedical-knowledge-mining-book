@@ -47,7 +47,7 @@ head(ggo)
 The `gene` parameter is a vector of gene IDs (can be any ID type that supported by corresponding `OrgDb`, see also [session 16.1](#id-convert)). If `readable` is set to `TRUE`, the input gene IDs will be converted to gene symbols.
 
 
-## GO over-representation test {#clusterprofiler-go-ora}
+## GO over-representation analysis {#clusterprofiler-go-ora}
 
 
 The `r Biocpkg("clusterProfiler")` package implemented `enrichGO()` function for gene ontology over-representation test.

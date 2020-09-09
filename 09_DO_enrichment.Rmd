@@ -1,4 +1,7 @@
-# DO enrichment analysis {#dose-enrichment}
+# Disease enrichment analysis {#dose-enrichment}
+
+
+We developed `r Biocpkg("DOSE")` [@yu_dose_2015] package to promote the investigation of diseases. `r Biocpkg("DOSE")` provides five methods for [measuring semantic similarities among DO terms and gene products](#DOSE-semantic-similarity), hypergeometric model and gene set enrichment analysis (GSEA) for associating disease with gene list and extracting disease association insight from genome wide expression profiles.
 
 
 ```{r include=FALSE}
@@ -7,14 +10,14 @@ opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 library(clusterProfiler)
 ```
 
-
-[DOSE](https://www.bioconductor.org/packages/DOSE)[@yu_dose_2015] supports Disease Ontology (DO) Semantic and Enrichment analysis. The `enrichDO` function is very useful for identifying disease association of interesting genes, and function `gseDO` function is designed for gene set enrichment analysis of _DO_.
-
-In addition, [DOSE](https://www.bioconductor.org/packages/DOSE) also supports enrichment analysis of [Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG)[@omer_ncg] and [Disease Gene Network](http://disgenet.org/)[@janet_disgenet], please refer to the [DOSE](https://www.bioconductor.org/packages/DOSE) vignettes.
+## Disease over-representation analysis {#dose-ora}
 
 
+`r Biocpkg("DOSE")` supports enrichment analysis of Disease Ontology (DO) [@schriml_disease_2011], [Network of Cancer Gene](http://ncg.kcl.ac.uk/) [@omer_ncg] and [Disease Gene Network](http://disgenet.org/) (DisGeNET) [@janet_disgenet]. In addition, several visualization methods were provided by `r Biocpkg("enrichplot")` to help interpreting semantic and enrichment results.
 
-## `enrichDO` function
+
+### Over-representation analysis for disease ontology {#dose-do-ora}
+
 
 In the following example, we selected fold change above 1.5 as the differential genes and analyzing their disease association.
 
@@ -35,26 +38,21 @@ x <- enrichDO(gene          = gene,
 head(x)
 ```
 
-The `enrichDO` function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. If user needs to convert other gene ID type to entrezgene ID, we recommend using `bitr` function provided by `r Biocpkg("clusterProfiler")`.
+The `enrichDO()` function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. Please refer to [session 16.1](#id-convert) if you need to conver other gene ID types to entrezgene ID. 
 
-The `ont` parameter can be "DO" or "DOLite", DOLite[@Du15062009] was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use `ont="DO"`. `pvalueCutoff` setting the cutoff value of *p* value and *p* value adjust; `pAdjustMethod` setting the *p* value correction methods, include the Bonferroni correction ("bonferroni"), Holm ("holm"), Hochberg ("hochberg"), Hommel ("hommel"), Benjamini \& Hochberg ("BH") and Benjamini \& Yekutieli ("BY") while `qvalueCutoff` is used to control *q*-values.
 
-The `universe` setting the background gene universe for testing. If user do not explicitly setting this parameter, `enrichDO` will set the universe to all human genes that have DO annotation.
+The `ont` parameter can be "DO" or "DOLite", DOLite [@Du15062009] was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use `ont="DO"`. `pvalueCutoff` setting the cutoff value of *p* value and adjusted *p* value; `pAdjustMethod` setting the *p* value correction methods, include the Bonferroni correction ("bonferroni"), Holm ("holm"), Hochberg ("hochberg"), Hommel ("hommel"), Benjamini \& Hochberg ("BH") and Benjamini \& Yekutieli ("BY") while `qvalueCutoff` is used to control *q*-values.
+
+The `universe` setting the background gene universe for testing. If user do not explicitly setting this parameter, `enrichDO()` will set the universe to all human genes that have DO annotation.
 
 The `minGSSize` (and `maxGSSize`) indicates that only those DO terms that have more than `minGSSize` (and less than `maxGSSize`) genes annotated will be tested.
 
-The `readable` is a logical parameter, indicates whether the entrezgene IDs will mapping to gene symbols or not.
+The `readable` is a logical parameter, indicates whether the entrezgene IDs will mapping to gene symbols or not (see also [setReadable](#setReadable)).
 
-We also implement `setReadable` function that helps the user to convert entrezgene IDs to gene symbols.
 
-```{r}
-x <- setReadable(x, 'org.Hs.eg.db')
-head(x)
-```
+### Over-representation analysis for the network of cancer gene {#dose-ncg-ora}
 
-## `enrichNCG` function
-
-[Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG)[@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
+[Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG) [@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
 
 ```{r}
 gene2 <- names(geneList)[abs(geneList) < 3]
@@ -62,7 +60,7 @@ ncg <- enrichNCG(gene2)
 head(ncg)
 ```
 
-## `enrichDGN` and `enrichDGNv` functions
+### `enrichDGN` and `enrichDGNv` functions
 
 [DisGeNET](http://disgenet.org/)[@janet_disgenet] is an integrative and comprehensive resources of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.
 
@@ -80,8 +78,9 @@ dgnv <- enrichDGNv(snp)
 head(dgnv)
 ```
 
+## Disease gene set enrichment analysis {#dose-gsea}
 
-## `gseDO` fuction
+### `gseDO` fuction
 
 In the following example, in order to speedup the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.
 
@@ -97,7 +96,7 @@ y <- gseDO(geneList,
 head(y, 3)
 ```
 
-## `gseNCG` fuction
+### `gseNCG` fuction
 
 ```{r}
 ncg <- gseNCG(geneList,
@@ -110,7 +109,7 @@ ncg <- setReadable(ncg, 'org.Hs.eg.db')
 head(ncg, 3)
 ```
 
-## `gseDGN` fuction
+### `gseDGN` fuction
 
 ```{r}
 dgn <- gseDGN(geneList,

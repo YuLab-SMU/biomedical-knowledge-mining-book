@@ -18,7 +18,7 @@ library(ReactomePA)
 Currently `r Biocpkg("ReactomePA")` supports several model organisms, including 'celegans', 'fly', 'human', 'mouse', 'rat', 'yeast' and 'zebrafish'. The input gene ID should be Entrez gene ID. We recommend using [`clusterProfiler::bitr()`](#bitr) to convert biological IDs. 
 
 
-## Reactome pathway over-representation test {#reactomepa-ora}
+## Reactome pathway over-representation analysis {#reactomepa-ora}
 
 Enrichment analysis is a widely used approach to identify biological
 themes. `r Biocpkg("ReactomePA")` implemented `enrichPathway()` that uses [hypergeometric model](#ora-algorithm) to assess whether the number of selected genes associated with a reactome pathway is larger than expected. 

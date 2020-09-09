@@ -20,7 +20,8 @@ Disease Ontology (DO) [@schriml_disease_2011] was developed to create a consiste
 Accurate disease descriptions can discover new relationships between genes and disease, and new functions for previous uncharacteried genes and alleles.
 
 
-Unlike other clinical vocabularies that defined disease related concepts disparately, DO is organized as a directed acyclic graph, laying the foundation for quantitative computation of disease knowledge.
+
+Disease Ontology (DO) [@schriml_disease_2011] aims to provide an open source ontology for the integration of biomedical data that is associated with human disease. Unlike other clinical vocabularies that defined disease related concepts disparately, DO is organized as a directed acyclic graph, laying the foundation for quantitative computation of disease knowledge.
 
 We developed an `R` package `r Biocpkg("DOSE")` [@yu_dose_2015] for analyzing semantic similarities among DO terms and gene products annotated with DO terms.
 
