@@ -31,6 +31,39 @@ geneList = sort(geneList, decreasing = TRUE)
 ```
 
 
+
+<!--
+
+
+# DAVID functional analysis
+
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides enrichment and GSEA analysis with GO, KEGG, DO and Reactome pathway supported internally, some user may prefer GO and KEGG analysis with DAVID[@huang_david_2007] and still attracted by the visualization methods provided by [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@paranjpe_genome_wid_2013]. To bridge the gap between DAVID and clusterProfiler, we implemented `enrichDAVID`. This function query enrichment analysis result from DAVID webserver via [RDAVIDWebService](https://www.bioconductor.org/packages/RDAVIDWebService)[@fresno_rdavidwebservice_2013] and stored the result as an `enrichResult` instance, so that we can use all the visualization functions in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) to visualize DAVID results. `enrichDAVID` is fully compatible with `compareCluster` function and comparing enrichment results from different gene clusters is now available with DAVID.
+
+```{r eval=FALSE}
+library(clusterProfiler)
+data(geneList, package="DOSE")
+gene = names(geneList)[abs(geneList) > 2]
+david <- enrichDAVID(gene = gene,
+                     idType = "ENTREZ_GENE_ID",
+                     listType = "Gene",
+                     annotation = "KEGG_PATHWAY",
+                     david.user = "clusterProfiler@hku.hk")
+```
+
+DAVID Web Service has the following limitations:
+
++ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
++ No more than 200 jobs in a day from one user or computer.
++ DAVID Team reserves right to suspend any improper uses of the web service without notice.
+
+For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
+
+As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
+
+
+-->
+
+
 ## No gene can be mapped
 
 <https://www.biostars.org/p/431270/>

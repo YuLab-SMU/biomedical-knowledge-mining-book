@@ -51,14 +51,6 @@
 
 
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.15/datatables.js"></script>
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
 
 
 <style type="text/css">
@@ -236,7 +228,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="10.1.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-do-ora"><i class="fa fa-check"></i><b>10.1.1</b> Over-representation analysis for disease ontology</a></li>
 <li class="chapter" data-level="10.1.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ncg-ora"><i class="fa fa-check"></i><b>10.1.2</b> Over-representation analysis for the network of cancer gene</a></li>
-<li class="chapter" data-level="10.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>10.1.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="10.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-dgn-ora"><i class="fa fa-check"></i><b>10.1.3</b> Over-representation analysis for the disease gene network</a></li>
 </ul></li>
 <li class="chapter" data-level="10.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-gsea"><i class="fa fa-check"></i><b>10.2</b> Disease gene set enrichment analysis</a>
 <ul>
@@ -253,15 +245,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>12</b> Universal enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="12.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>12.1</b> Input data</a></li>
-<li class="chapter" data-level="12.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>12.2</b> Cell Marker</a></li>
-<li class="chapter" data-level="12.3" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>12.3</b> MSigDb analysis</a></li>
-<li class="chapter" data-level="12.4" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>12.4</b> MSigDb</a></li>
+<li class="chapter" data-level="12.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>12.2</b> Cell Marker</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="universal-api.html"><a href="universal-api.html#cell-marker-ora"><i class="fa fa-check"></i><b>12.2.1</b> Cell Marker over-presentaton analysis</a></li>
+<li class="chapter" data-level="12.2.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker-gsea"><i class="fa fa-check"></i><b>12.2.2</b> Cell Marker gene set enrichment analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>12.3</b> MSigDb analysis</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="universal-api.html"><a href="universal-api.html#msigdb-ora"><i class="fa fa-check"></i><b>12.3.1</b> MSigDb over-presentaton analysis</a></li>
+<li class="chapter" data-level="12.3.2" data-path="universal-api.html"><a href="universal-api.html#msigdb-gsea"><i class="fa fa-check"></i><b>12.3.2</b> MSigDb gene set enrichment analysis</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>13</b> Functional enrichment analysis of genomic coordinations</a></li>
 <li class="chapter" data-level="14" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>14</b> Biological theme comparison</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>14.1</b> Formula interface of compareCluster</a></li>
-<li class="chapter" data-level="14.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>14.2</b> Visualization of profile comparison</a></li>
+<li class="chapter" data-level="14.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#comparing-multiple-gene-lists"><i class="fa fa-check"></i><b>14.1</b> Comparing multiple gene lists</a></li>
+<li class="chapter" data-level="14.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>14.2</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="14.3" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>14.3</b> Visualization of profile comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>15</b> Visualization of functional enrichment result</a>
 <ul>
@@ -339,7 +339,7 @@ Department of Bioinformatics, School of Basic Medical Sciences, Southern Medical
 <h1>📖 Introduction</h1>
 <p><a href="https://github.com/YuLab-SMU/ChIPseeker"><img src="https://img.shields.io/badge/ChIPseeker-1.24.0-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/clusterProfiler"><img src="https://img.shields.io/badge/clusterProfiler-3.17.3-green.svg" /></a>
-<a href="https://github.com/YuLab-SMU/DOSE"><img src="https://img.shields.io/badge/DOSE-3.15.1-green.svg" /></a>
+<a href="https://github.com/YuLab-SMU/DOSE"><img src="https://img.shields.io/badge/DOSE-3.15.2-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/enrichplot"><img src="https://img.shields.io/badge/enrichplot-1.9.1-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/GOSemSim"><img src="https://img.shields.io/badge/GOSemSim-2.15.2-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/meshes"><img src="https://img.shields.io/badge/meshes-1.14.0-green.svg" /></a>

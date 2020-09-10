@@ -51,14 +51,6 @@
 
 
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.15/datatables.js"></script>
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
 
 
 <style type="text/css">
@@ -236,7 +228,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="10.1.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-do-ora"><i class="fa fa-check"></i><b>10.1.1</b> Over-representation analysis for disease ontology</a></li>
 <li class="chapter" data-level="10.1.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ncg-ora"><i class="fa fa-check"></i><b>10.1.2</b> Over-representation analysis for the network of cancer gene</a></li>
-<li class="chapter" data-level="10.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>10.1.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="10.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-dgn-ora"><i class="fa fa-check"></i><b>10.1.3</b> Over-representation analysis for the disease gene network</a></li>
 </ul></li>
 <li class="chapter" data-level="10.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-gsea"><i class="fa fa-check"></i><b>10.2</b> Disease gene set enrichment analysis</a>
 <ul>
@@ -253,15 +245,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>12</b> Universal enrichment analysis</a>
 <ul>
 <li class="chapter" data-level="12.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>12.1</b> Input data</a></li>
-<li class="chapter" data-level="12.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>12.2</b> Cell Marker</a></li>
-<li class="chapter" data-level="12.3" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>12.3</b> MSigDb analysis</a></li>
-<li class="chapter" data-level="12.4" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>12.4</b> MSigDb</a></li>
+<li class="chapter" data-level="12.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>12.2</b> Cell Marker</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="universal-api.html"><a href="universal-api.html#cell-marker-ora"><i class="fa fa-check"></i><b>12.2.1</b> Cell Marker over-presentaton analysis</a></li>
+<li class="chapter" data-level="12.2.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker-gsea"><i class="fa fa-check"></i><b>12.2.2</b> Cell Marker gene set enrichment analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="12.3" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>12.3</b> MSigDb analysis</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="universal-api.html"><a href="universal-api.html#msigdb-ora"><i class="fa fa-check"></i><b>12.3.1</b> MSigDb over-presentaton analysis</a></li>
+<li class="chapter" data-level="12.3.2" data-path="universal-api.html"><a href="universal-api.html#msigdb-gsea"><i class="fa fa-check"></i><b>12.3.2</b> MSigDb gene set enrichment analysis</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="13" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>13</b> Functional enrichment analysis of genomic coordinations</a></li>
 <li class="chapter" data-level="14" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>14</b> Biological theme comparison</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>14.1</b> Formula interface of compareCluster</a></li>
-<li class="chapter" data-level="14.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>14.2</b> Visualization of profile comparison</a></li>
+<li class="chapter" data-level="14.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#comparing-multiple-gene-lists"><i class="fa fa-check"></i><b>14.1</b> Comparing multiple gene lists</a></li>
+<li class="chapter" data-level="14.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>14.2</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="14.3" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>14.3</b> Visualization of profile comparison</a></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>15</b> Visualization of functional enrichment result</a>
 <ul>
@@ -338,18 +338,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>sorted vector: number should be sorted in decreasing order</li>
 </ul>
 <p>If you import your data from a <code>csv</code> file, the file should contains two columns, one for gene ID (no duplicated ID allowed) and another one for fold change. You can prepare your own <code>geneList</code> via the following command:</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="faq.html#cb208-1" aria-hidden="true"></a>d =<span class="st"> </span><span class="kw">read.csv</span>(your_csv_file)</span>
-<span id="cb208-2"><a href="faq.html#cb208-2" aria-hidden="true"></a><span class="co">## assume 1st column is ID</span></span>
-<span id="cb208-3"><a href="faq.html#cb208-3" aria-hidden="true"></a><span class="co">## 2nd column is FC</span></span>
-<span id="cb208-4"><a href="faq.html#cb208-4" aria-hidden="true"></a></span>
-<span id="cb208-5"><a href="faq.html#cb208-5" aria-hidden="true"></a><span class="co">## feature 1: numeric vector</span></span>
-<span id="cb208-6"><a href="faq.html#cb208-6" aria-hidden="true"></a>geneList =<span class="st"> </span>d[,<span class="dv">2</span>]</span>
-<span id="cb208-7"><a href="faq.html#cb208-7" aria-hidden="true"></a></span>
-<span id="cb208-8"><a href="faq.html#cb208-8" aria-hidden="true"></a><span class="co">## feature 2: named vector</span></span>
-<span id="cb208-9"><a href="faq.html#cb208-9" aria-hidden="true"></a><span class="kw">names</span>(geneList) =<span class="st"> </span><span class="kw">as.character</span>(d[,<span class="dv">1</span>])</span>
-<span id="cb208-10"><a href="faq.html#cb208-10" aria-hidden="true"></a></span>
-<span id="cb208-11"><a href="faq.html#cb208-11" aria-hidden="true"></a><span class="co">## feature 3: decreasing orde</span></span>
-<span id="cb208-12"><a href="faq.html#cb208-12" aria-hidden="true"></a>geneList =<span class="st"> </span><span class="kw">sort</span>(geneList, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="faq.html#cb203-1" aria-hidden="true"></a>d =<span class="st"> </span><span class="kw">read.csv</span>(your_csv_file)</span>
+<span id="cb203-2"><a href="faq.html#cb203-2" aria-hidden="true"></a><span class="co">## assume 1st column is ID</span></span>
+<span id="cb203-3"><a href="faq.html#cb203-3" aria-hidden="true"></a><span class="co">## 2nd column is FC</span></span>
+<span id="cb203-4"><a href="faq.html#cb203-4" aria-hidden="true"></a></span>
+<span id="cb203-5"><a href="faq.html#cb203-5" aria-hidden="true"></a><span class="co">## feature 1: numeric vector</span></span>
+<span id="cb203-6"><a href="faq.html#cb203-6" aria-hidden="true"></a>geneList =<span class="st"> </span>d[,<span class="dv">2</span>]</span>
+<span id="cb203-7"><a href="faq.html#cb203-7" aria-hidden="true"></a></span>
+<span id="cb203-8"><a href="faq.html#cb203-8" aria-hidden="true"></a><span class="co">## feature 2: named vector</span></span>
+<span id="cb203-9"><a href="faq.html#cb203-9" aria-hidden="true"></a><span class="kw">names</span>(geneList) =<span class="st"> </span><span class="kw">as.character</span>(d[,<span class="dv">1</span>])</span>
+<span id="cb203-10"><a href="faq.html#cb203-10" aria-hidden="true"></a></span>
+<span id="cb203-11"><a href="faq.html#cb203-11" aria-hidden="true"></a><span class="co">## feature 3: decreasing orde</span></span>
+<span id="cb203-12"><a href="faq.html#cb203-12" aria-hidden="true"></a>geneList =<span class="st"> </span><span class="kw">sort</span>(geneList, <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<!--
+
+
+# DAVID functional analysis
+
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides enrichment and GSEA analysis with GO, KEGG, DO and Reactome pathway supported internally, some user may prefer GO and KEGG analysis with DAVID[@huang_david_2007] and still attracted by the visualization methods provided by [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@paranjpe_genome_wid_2013]. To bridge the gap between DAVID and clusterProfiler, we implemented `enrichDAVID`. This function query enrichment analysis result from DAVID webserver via [RDAVIDWebService](https://www.bioconductor.org/packages/RDAVIDWebService)[@fresno_rdavidwebservice_2013] and stored the result as an `enrichResult` instance, so that we can use all the visualization functions in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) to visualize DAVID results. `enrichDAVID` is fully compatible with `compareCluster` function and comparing enrichment results from different gene clusters is now available with DAVID.
+
+
+```r
+library(clusterProfiler)
+data(geneList, package="DOSE")
+gene = names(geneList)[abs(geneList) > 2]
+david <- enrichDAVID(gene = gene,
+                     idType = "ENTREZ_GENE_ID",
+                     listType = "Gene",
+                     annotation = "KEGG_PATHWAY",
+                     david.user = "clusterProfiler@hku.hk")
+```
+
+DAVID Web Service has the following limitations:
+
++ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
++ No more than 200 jobs in a day from one user or computer.
++ DAVID Team reserves right to suspend any improper uses of the web service without notice.
+
+For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
+
+As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
+
+
+-->
 </div>
 <div id="no-gene-can-be-mapped" class="section level2" number="18.2">
 <h2><span class="header-section-number">A.2</span> No gene can be mapped</h2>

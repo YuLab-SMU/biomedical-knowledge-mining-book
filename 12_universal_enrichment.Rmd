@@ -40,23 +40,38 @@ head(gene)
 
 ## Cell Marker	
 
+<!--     # tidyr::unite("cellMarker", tissueType, cancerType, cellName, sep=", ")  -->
+
+
 ```{r}
-cell_markers <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt') %>%
-   tidyr::unite("cellMarker", tissueType, cancerType, cellName, sep=", ") %>% 
-   dplyr::select(cellMarker, geneID) %>%
-   dplyr::mutate(geneID = strsplit(geneID, ', '))
-cell_markers
-y <- enricher(gene, TERM2GENE=cell_markers, minGSSize=1)
-DT::datatable(as.data.frame(y))
+cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
+
+## instead of `cellName`, users can use other features (e.g. `cancerType`)
+cells <- cell_marker_data %>%
+    dplyr::select(cellName, geneID) %>%
+    dplyr::mutate(geneID = strsplit(geneID, ', ')) %>%
+    tidyr::unnest()
 ```
 
+### Cell Marker over-presentaton analysis {#cell-marker-ora}
 
 
+```{r}
+x <- enricher(gene, TERM2GENE = cells)
+head(x)
+```
+
+### Cell Marker gene set enrichment analysis {#cell-marker-gsea}
+
+```{r}
+y <- GSEA(geneList, TERM2GENE = cells)
+head(y)
+```
 
 ## MSigDb analysis
 
 
-[Molecular Signatures Database](http://software.broadinstitute.org/gsea/msigdb) contains 8 major collections:
+[Molecular Signatures Database](http://software.broadinstitute.org/gsea/msigdb) is a collection of annotated gene sets. It contains 8 major collections:
 
 * H: hallmark gene sets
 * C1: positional gene sets
@@ -67,9 +82,9 @@ DT::datatable(as.data.frame(y))
 * C6: oncogenic signatures
 * C7: immunologic signatures
 
-Users can download GMT files from [Broad Institute](http://software.broadinstitute.org/gsea/msigdb) and use `read.gmt` to parse the file to be used in `enricher()` and `GSEA()`.
+Users can download [GMT files](www.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29) from [Broad Institute](http://software.broadinstitute.org/gsea/msigdb) and use the `read.gmt()` function to parse the file to be used in `enricher()` and `GSEA()`.
 
-There is an R package, [msigdbr](https://cran.r-project.org/package=msigdbr), that already packed the MSigDB gene sets in tidy data format that can be used directly with *clusterProfiler*.
+There is an R package, [msigdbr](https://cran.r-project.org/package=msigdbr), that already packed the MSigDB gene sets in tidy data format that can be used directly with `r Biocpkg("clusterProfiler")` [@yu2012].
 
 It supports several specices:
 
@@ -87,92 +102,33 @@ head(m_df, 2) %>% as.data.frame
 
 
 Or specific collection. Here we use C6, oncogenic gene sets as an example:
+
 ```{r}
 m_t2g <- msigdbr(species = "Homo sapiens", category = "C6") %>% 
   dplyr::select(gs_name, entrez_gene)
 head(m_t2g)
+```
 
+
+### MSigDb over-presentaton analysis {#msigdb-ora}
+
+
+```{r}
 em <- enricher(gene, TERM2GENE=m_t2g)
-em2 <- GSEA(geneList, TERM2GENE = m_t2g)
 head(em)
+```
+
+
+### MSigDb gene set enrichment analysis {#msigdb-gsea}
+
+In over-presentaton analysis, we use oncogenic gene sets (i.e. C6) to test whether the DE genes are involved in the process that leads to cancer. In this example, we will use the C3 category to test whether genes are up/down-regulated by sharing specific motif using GSEA approach.
+
+
+```{r}
+C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>% 
+  dplyr::select(gs_name, entrez_gene)
+head(C3_t2g)
+
+em2 <- GSEA(geneList, TERM2GENE = C3_t2g)
 head(em2)
 ```
-
-We can test with other collections, for example, using C3 to test whether the genes are up/down-regulated by sharing specific motif.
-
-```{r}
-m_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>% 
-  dplyr::select(gs_name, entrez_gene)
-head(m_t2g)
-
-em3 <- GSEA(geneList, TERM2GENE = m_t2g)
-head(em3)
-```
-
-<!--
-
-
-# DAVID functional analysis
-
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides enrichment and GSEA analysis with GO, KEGG, DO and Reactome pathway supported internally, some user may prefer GO and KEGG analysis with DAVID[@huang_david_2007] and still attracted by the visualization methods provided by [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@paranjpe_genome_wid_2013]. To bridge the gap between DAVID and clusterProfiler, we implemented `enrichDAVID`. This function query enrichment analysis result from DAVID webserver via [RDAVIDWebService](https://www.bioconductor.org/packages/RDAVIDWebService)[@fresno_rdavidwebservice_2013] and stored the result as an `enrichResult` instance, so that we can use all the visualization functions in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) to visualize DAVID results. `enrichDAVID` is fully compatible with `compareCluster` function and comparing enrichment results from different gene clusters is now available with DAVID.
-
-```{r eval=FALSE}
-david <- enrichDAVID(gene = gene,
-                     idType = "ENTREZ_GENE_ID",
-                     listType = "Gene",
-                     annotation = "KEGG_PATHWAY",
-                     david.user = "clusterProfiler@hku.hk")
-```
-
-DAVID Web Service has the following limitations:
-
-+ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
-+ No more than 200 jobs in a day from one user or computer.
-+ DAVID Team reserves right to suspend any improper uses of the web service without notice.
-
-For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
-
-As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
-
-
--->
-
-
-## MSigDb {#msigdb}
-
-
-
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
-library(clusterProfiler)
-```
-
-The MSigDB is a collection of annotated gene sets, it include 8 major collections:
-
-* H:  hallmark gene sets
-* C1: positional gene sets
-* C2: curated gene sets
-* C3: motif gene sets
-* C4: computational gene sets
-* C5: GO gene sets
-* C6: oncogenic signatures
-* C7: immunologic signatures
-
-
-Users can use `enricher` and `GSEA` function to analyze gene set collections downloaded from Molecular Signatures Database ([MSigDb](http://www.broadinstitute.org/gsea/msigdb/index.jsp)). [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides a function, `read.gmt`, to parse the [gmt file](www.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29) into a _TERM2GENE_ `data.frame` that is ready for both `enricher` and `GSEA` functions.
-
-```{r}
-data(geneList, package="DOSE")
-gene <- names(geneList)[abs(geneList) > 2]
-
-gmtfile <- system.file("extdata", "c5.cc.v5.0.entrez.gmt", package="clusterProfiler")
-c5 <- read.gmt(gmtfile)
-
-egmt <- enricher(gene, TERM2GENE=c5)
-head(egmt)
-
-egmt2 <- GSEA(geneList, TERM2GENE=c5, verbose=FALSE)
-head(egmt2)
-```
-
