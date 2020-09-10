@@ -32,7 +32,7 @@ keytypes(org.Hs.eg.db)
 ```
 
 We can translate from one type to other types.
-```{r}
+```{r message=FALSE, warning=TRUE}
 ids <- bitr(x, fromType="SYMBOL", toType=c("UNIPROT", "ENSEMBL"), OrgDb="org.Hs.eg.db")
 head(ids)
 ```
@@ -42,7 +42,7 @@ For GO analysis, user don't need to convert ID, all ID type provided by `OrgDb` 
 ### `bitr_kegg`: converting biological IDs using KEGG API {#bitr_kegg}
 
 
-```{r}
+```{r message=FALSE, warning=TRUE}
 data(gcSample)
 hg <- gcSample[[1]]
 head(hg)
@@ -96,4 +96,24 @@ head(y, 3)
 ```
 
 For those functions that internally support `readable` parameter, user can also use `setReadable` for translating gene IDs.
+
+
+
+## GO utilities
+
+### drop specific GO terms or level
+
+`enrichGO` test the whole GO corpus and enriched result may contains very general terms. With `dropGO` function, user can remove specific GO terms or GO level from results obtained from both `enrichGO` and `compareCluster`.
+
+
+### test GO at sepcific level
+
+`enrichGO` doesn't contain parameter to restrict the test at specific GO level. Instead, we provide a function `gofilter` to restrict the result at specific GO level. It works with results obtained from both `enrichGO` and `compareCluster`.
+
+
+### reduce redundancy of enriched GO terms
+
+
+
+GO is organized in parent-child structure, thus a parent term can be overlap with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, `r Biocpkg("clusterProfiler")` implement [`simplify`](https://github.com/GuangchuangYu/clusterProfiler/issues/28) method to reduce redundant GO terms from the outputs of `enrichGO` and `gseGO`. The function internally called `r Biocpkg("GOSemSim")` [@yu2010] to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. An example can be found in [the blog post](https://guangchuangyu.github.io/2015/10/use-simplify-to-remove-redundancy-of-enriched-go-terms/).
 

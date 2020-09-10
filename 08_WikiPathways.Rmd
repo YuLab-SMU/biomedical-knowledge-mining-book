@@ -1,0 +1,81 @@
+# WikiPathways analysis
+
+
+[WikiPathways](https://www.wikipathways.org) is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of gmt files for supported organisms at [data.wikipathways.org](http://data.wikipathways.org/current/gmt/). The `r Biocpkg("clusterProfiler")` package [@yu2012] supports enrichment analysis (either ORA or GSEA) for WikiPathways using the `enrichWP()` and `gseWP()` functions. These functions will automatically download and parse latest WikiPathways GMT file for selected organism.
+
+
+Supported organisms can be listed by:
+
+```{r}
+get_wp_organisms()
+```
+
+
+<!--
+
+
+Download the appropriate gmt file and then generate `TERM2GENE` and `TERM2NAME` to use `enricher()` and `GSEA()` functions. 
+
+Use can download wikiPathways manually:
+
+```r
+###################################
+# download file manually
+# 1. visit the website, http://data.wikipathways.org/current/gmt/, to get the url
+# 2. use the following code to download it
+####################################
+url <- "http://data.wikipathways.org/current/gmt/wikipathways-20200810-gmt-Homo_sapiens.gmt"
+wpgmtfile <- "wikiPathways-HS.gmt"
+download.file(url, destfile = wpgmtfile)
+```
+
+As an alternative to manually downloading gmt files, install the `r Biocpkg("rWikiPathways")` to gain scripting access to the latest gmt files using the `downloadPathwayArchive()` function.
+
+
+```r
+## supported organisms can be accessed via the following command:
+## rWikiPathways::listOrganisms()
+
+wpgmtfile <- rWikiPathways::downloadPathwayArchive(organism="Homo sapiens", format = "gmt")
+```
+
+Once the GMT file was downloaded, we can use `read.gmt.wp()` to parse it. Note that the `read.gmt.wp()` function is designed for WikiPathways GMT file. For ordinary GMT file, please use the `read.gmt()` function.
+
+```r
+wp2gene <- read.gmt.wp(wpgmtfile)
+#TERM2GENE
+wpid2gene <- wp2gene %>% dplyr::select(wpid, gene) 
+#TERM2NAME
+wpid2name <- wp2gene %>% dplyr::select(wpid, name) 
+
+ewp <- enricher(gene, TERM2GENE = wpid2gene, TERM2NAME = wpid2name)
+head(ewp)
+
+ewp2 <- GSEA(geneList, TERM2GENE = wpid2gene, TERM2NAME = wpid2name, verbose=FALSE)
+head(ewp2)
+```
+-->
+
+
+## WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
+
+```{r}
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+enrichWP(gene, organism = "Homo sapiens")
+```
+
+## WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
+
+
+```{r}
+gseWP(geneList, organism = "Homo sapiens")
+```
+
+
+If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](#bitr) function to convert gene ID. If you want to convert the gene IDs in output result to gene symbols, you can use the [`setReadable()`](#setReadable) function.
+
+
+
+

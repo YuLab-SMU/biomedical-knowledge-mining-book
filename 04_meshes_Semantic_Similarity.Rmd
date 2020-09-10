@@ -41,7 +41,7 @@ MeSH terms were associated with Entrez Gene ID by three methods,
 
 ## Supported organisms {#meshes-supported-organisms}
 
-The `r Biocpkg("meshes")` relies on `MeSHDb` to prepare semantic data for measuring simiarlity. A list of `MeSHDb` can be found on Bioconductor, <https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb> and all the species (more than 70) that have MeSHDb available are supported by the `r Biocpkg("meshes")` package. 
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring simiarlity. A list of `MeSHDb` can be found on Bioconductor, <https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb> and all the species (more than 70) that have MeSHDb available are supported by the `r Biocpkg("meshes")` package. 
 
 The semantic data is prepare by the `meshdata()` function:
 
@@ -57,7 +57,7 @@ hsamd <- meshdata("MeSH.Hsa.eg.db", category='A', computeIC=T, database="gendoo"
 
 ## MeSH semantic similarity measurement {#meshes-semantic-simiarlity}
 
-The `r Biocpkg("meshes")` package implemented four IC-based methods (i.e. Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997],
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] implemented four IC-based methods (i.e. Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997],
 Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and one graph-structure based method (i.e. Wang [@wang_new_2007]), to measure MeSH term semantic similarity. For algorithm details, please refer to [Chapter 1](#semantic-similarity-overview).
 
 

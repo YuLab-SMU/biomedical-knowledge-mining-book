@@ -9,39 +9,17 @@ library(clusterProfiler)
 ```
 
 
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it's still not enough for users may want to analyze their data with unsupported organisms, slim version of GO, novel functional annotation (e.g. GO via BlastGO or KEGG via KAAS), unsupported ontologies/pathways or customized annotations.
+The `r Biocpkg("clusterProfiler")` package [@yu2012] supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it's still not enough for users may want to analyze their data with unsupported organisms, slim version of GO, novel functional annotation (e.g. GO via BlastGO or KEGG via KAAS), unsupported ontologies/pathways or customized annotations.
 
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides `enricher` function for hypergeometric test and `GSEA` function for gene set enrichment analysis that are designed to accept user defined annotation. They accept two additional parameters _TERM2GENE_ and _TERM2NAME_. As indicated in the parameter names, _TERM2GENE_ is a data.frame with first column of term ID and second column of corresponding mapped gene and _TERM2NAME_ is a data.frame with first column of term ID and second column of corresponding term name. _TERM2NAME_ is optional.
+The `r Biocpkg("clusterProfiler")` package provides `enricher()` function for hypergeometric test and `GSEA()` function for gene set enrichment analysis that are designed to accept user defined annotation. They accept two additional parameters `TERM2GENE` and `TERM2NAME`. As indicated in the parameter names, `TERM2GENE` is a data.frame with first column of term ID and second column of corresponding mapped gene and `TERM2NAME` is a `data.frame` with first column of term ID and second column of corresponding term name. `TERM2NAME` is optional.
 
 
 ## Input data
 
-For over representation analysis, all we need is a gene vector, that is a vector of gene IDs. These gene IDs can be obtained by differential expression analysis (*e.g.* with [DESeq2](http://www.bioconductor.org/packages/DESeq2) package). 
+For over representation analysis, all we need is a gene vector, that is a vector of gene IDs. These gene IDs can be obtained by differential expression analysis (*e.g.* with the `r Biocpkg("DESeq2")` package). 
 
-For gene set enrichment analysis, we need a ranked list of genes. `r Biocpkg("DOSE")` provides an example dataset `geneList` which was derived from `R` package `r Biocpkg("breastCancerMAINZ")` that contained 200 samples, including 29 samples in grade I, 136 samples in grade II and 35 samples in grade III. We computed the ratios of geometric means of grade III samples versus geometric means of grade I samples. Logarithm of these ratios (base 2) were stored in `geneList` dataset.
+For gene set enrichment analysis, we need a ranked list of genes. `r Biocpkg("DOSE")` provides an example dataset `geneList` which was derived from `R` package `r Biocpkg("breastCancerMAINZ")` that contained 200 samples, including 29 samples in grade I, 136 samples in grade II and 35 samples in grade III. We computed the ratios of geometric means of grade III samples versus geometric means of grade I samples. Logarithm of these ratios (base 2) were stored in `geneList` dataset. If you want to prepare your own `geneList`, please refer to the [FAQ](#genelist).
 
-The `geneList` contains three features:
-
-1. numeric vector: fold change or other type of numerical variable
-2. named vector: every number was named by the corresponding gene ID
-3. sorted vector: number should be sorted in decreasing order
-
-Suppose you are importing your own data from a *csv* file and the file contains two columns, one for gene ID (no duplicated allowed) and another one for fold change, you can prepare your own `geneList` via the following command:
-
-```r
-d <- read.csv(your_csv_file)
-## assume that 1st column is ID
-## 2nd column is fold change
-
-## feature 1: numeric vector
-geneList <- d[,2]
-
-## feature 2: named vector
-names(geneList) <- as.character(d[,1])
-
-## feature 3: decreasing order
-geneList <- sort(geneList, decreasing = TRUE)
-```
 
 We can load the sample data into R via:
 
@@ -58,44 +36,6 @@ head(gene)
 ```
 
 
-
-## WikiPathways analysis
-
-
-[WikiPathways](https://www.wikipathways.org) is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of gmt files for supported organisms at [data.wikipathways.org](http://data.wikipathways.org/current/gmt/). Download the appropriate gmt file and then generate `TERM2GENE` and `TERM2NAME` to use `enricher` and `GSEA` functions. 
-
-```{r}
-library(magrittr)
-library(clusterProfiler)
-
-data(geneList, package="DOSE")
-gene <- names(geneList)[abs(geneList) > 2]
-
-wpgmtfile <- system.file("extdata/wikipathways-20180810-gmt-Homo_sapiens.gmt", package="clusterProfiler")
-wp2gene <- read.gmt(wpgmtfile)
-wp2gene <- wp2gene %>% tidyr::separate(term, c("name","version","wpid","org"), "%")
-wpid2gene <- wp2gene %>% dplyr::select(wpid, gene) #TERM2GENE
-wpid2name <- wp2gene %>% dplyr::select(wpid, name) #TERM2NAME
-
-ewp <- enricher(gene, TERM2GENE = wpid2gene, TERM2NAME = wpid2name)
-head(ewp)
-
-ewp2 <- GSEA(geneList, TERM2GENE = wpid2gene, TERM2NAME = wpid2name, verbose=FALSE)
-head(ewp2)
-```
-
-You may want to convert the gene IDs to gene symbols, which can be done by `setReadable` function. 
-
-
-```{r}
-library(org.Hs.eg.db)
-ewp <- setReadable(ewp, org.Hs.eg.db, keyType = "ENTREZID")
-ewp2 <- setReadable(ewp2, org.Hs.eg.db, keyType = "ENTREZID")
-head(ewp)
-head(ewp2)
-```
-
-As an alternative to manually downloading gmt files, install the [rWikiPathways package](https://bioconductor.org/packages/release/bioc/html/rWikiPathways.html) to gain scripting access to the latest gmt files using the `downloadPathwayArchive` function.
 
 
 ## Cell Marker	

@@ -12,7 +12,8 @@ GSEA analysis requires a ranked gene list, which contains three features:
 + sorted vector: number should be sorted in decreasing order
 
 
-If you import your data from a `csv` file, the file should contains two columns, one for gene ID (no duplicated ID allowed) and another one for fold change.
+If you import your data from a `csv` file, the file should contains two columns, one for gene ID (no duplicated ID allowed) and another one for fold change. You can prepare your own `geneList` via the following command:
+
 
 ```r
 d = read.csv(your_csv_file)
@@ -30,7 +31,7 @@ geneList = sort(geneList, decreasing = TRUE)
 ```
 
 
-No gene can be mapped
+## No gene can be mapped
 
 <https://www.biostars.org/p/431270/>
 

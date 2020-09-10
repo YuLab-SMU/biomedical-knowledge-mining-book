@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 8 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
-  <meta name="description" content="Chapter 8 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <title>Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 8 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
   
   
@@ -16,21 +16,21 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 8 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="twitter:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   
   
   
 
 
 
-<meta name="date" content="2020-09-09" />
+<meta name="date" content="2020-09-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="clusterprofiler-kegg.html"/>
+<link rel="prev" href="wikipathways-analysis.html"/>
 <link rel="next" href="dose-enrichment.html"/>
 <script src="libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -218,81 +218,96 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="reactomepa.html"><a href="reactomepa.html"><i class="fa fa-check"></i><b>8</b> Reactome enrichment analysis</a>
+<li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-supported-organisms"><i class="fa fa-check"></i><b>8.1</b> Supported organisms</a></li>
-<li class="chapter" data-level="8.2" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-ora"><i class="fa fa-check"></i><b>8.2</b> Reactome pathway over-representation analysis</a></li>
-<li class="chapter" data-level="8.3" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-gsea"><i class="fa fa-check"></i><b>8.3</b> Reactome pathway gene set enrichment analysis</a></li>
-<li class="chapter" data-level="8.4" data-path="reactomepa.html"><a href="reactomepa.html#pathway-visualization"><i class="fa fa-check"></i><b>8.4</b> Pathway Visualization</a></li>
+<li class="chapter" data-level="8.1" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html#clusterprofiler-wikipathway-ora"><i class="fa fa-check"></i><b>8.1</b> WikiPathways over-representation analysis</a></li>
+<li class="chapter" data-level="8.2" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html#clusterprofiler-wikipathway-gsea"><i class="fa fa-check"></i><b>8.2</b> WikiPathways gene set enrichment analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="dose-enrichment.html"><a href="dose-enrichment.html"><i class="fa fa-check"></i><b>9</b> Disease enrichment analysis</a>
+<li class="chapter" data-level="9" data-path="reactomepa.html"><a href="reactomepa.html"><i class="fa fa-check"></i><b>9</b> Reactome enrichment analysis</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ora"><i class="fa fa-check"></i><b>9.1</b> Disease over-representation analysis</a>
-<ul>
-<li class="chapter" data-level="9.1.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-do-ora"><i class="fa fa-check"></i><b>9.1.1</b> Over-representation analysis for disease ontology</a></li>
-<li class="chapter" data-level="9.1.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ncg-ora"><i class="fa fa-check"></i><b>9.1.2</b> Over-representation analysis for the network of cancer gene</a></li>
-<li class="chapter" data-level="9.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>9.1.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+<li class="chapter" data-level="9.1" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-supported-organisms"><i class="fa fa-check"></i><b>9.1</b> Supported organisms</a></li>
+<li class="chapter" data-level="9.2" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-ora"><i class="fa fa-check"></i><b>9.2</b> Reactome pathway over-representation analysis</a></li>
+<li class="chapter" data-level="9.3" data-path="reactomepa.html"><a href="reactomepa.html#reactomepa-gsea"><i class="fa fa-check"></i><b>9.3</b> Reactome pathway gene set enrichment analysis</a></li>
+<li class="chapter" data-level="9.4" data-path="reactomepa.html"><a href="reactomepa.html#pathway-visualization"><i class="fa fa-check"></i><b>9.4</b> Pathway Visualization</a></li>
 </ul></li>
-<li class="chapter" data-level="9.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-gsea"><i class="fa fa-check"></i><b>9.2</b> Disease gene set enrichment analysis</a>
+<li class="chapter" data-level="10" data-path="dose-enrichment.html"><a href="dose-enrichment.html"><i class="fa fa-check"></i><b>10</b> Disease enrichment analysis</a>
 <ul>
-<li class="chapter" data-level="9.2.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedo-fuction"><i class="fa fa-check"></i><b>9.2.1</b> <code>gseDO</code> fuction</a></li>
-<li class="chapter" data-level="9.2.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsencg-fuction"><i class="fa fa-check"></i><b>9.2.2</b> <code>gseNCG</code> fuction</a></li>
-<li class="chapter" data-level="9.2.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedgn-fuction"><i class="fa fa-check"></i><b>9.2.3</b> <code>gseDGN</code> fuction</a></li>
+<li class="chapter" data-level="10.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ora"><i class="fa fa-check"></i><b>10.1</b> Disease over-representation analysis</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-do-ora"><i class="fa fa-check"></i><b>10.1.1</b> Over-representation analysis for disease ontology</a></li>
+<li class="chapter" data-level="10.1.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-ncg-ora"><i class="fa fa-check"></i><b>10.1.2</b> Over-representation analysis for the network of cancer gene</a></li>
+<li class="chapter" data-level="10.1.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#enrichdgn-and-enrichdgnv-functions"><i class="fa fa-check"></i><b>10.1.3</b> <code>enrichDGN</code> and <code>enrichDGNv</code> functions</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#dose-gsea"><i class="fa fa-check"></i><b>10.2</b> Disease gene set enrichment analysis</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedo-fuction"><i class="fa fa-check"></i><b>10.2.1</b> <code>gseDO</code> fuction</a></li>
+<li class="chapter" data-level="10.2.2" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsencg-fuction"><i class="fa fa-check"></i><b>10.2.2</b> <code>gseNCG</code> fuction</a></li>
+<li class="chapter" data-level="10.2.3" data-path="dose-enrichment.html"><a href="dose-enrichment.html#gsedgn-fuction"><i class="fa fa-check"></i><b>10.2.3</b> <code>gseDGN</code> fuction</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html"><i class="fa fa-check"></i><b>10</b> MeSH enrichment analysis</a></li>
-<li class="chapter" data-level="11" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>11</b> Universal enrichment analysis</a>
+<li class="chapter" data-level="11" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html"><i class="fa fa-check"></i><b>11</b> MeSH enrichment analysis</a>
 <ul>
-<li class="chapter" data-level="11.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>11.1</b> Input data</a></li>
-<li class="chapter" data-level="11.2" data-path="universal-api.html"><a href="universal-api.html#wikipathways-analysis"><i class="fa fa-check"></i><b>11.2</b> WikiPathways analysis</a></li>
-<li class="chapter" data-level="11.3" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>11.3</b> Cell Marker</a></li>
-<li class="chapter" data-level="11.4" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>11.4</b> MSigDb analysis</a></li>
-<li class="chapter" data-level="11.5" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>11.5</b> MSigDb</a></li>
+<li class="chapter" data-level="11.1" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html#meshes-ora"><i class="fa fa-check"></i><b>11.1</b> MeSH over-representation analysis</a></li>
+<li class="chapter" data-level="11.2" data-path="meshes-enrichment.html"><a href="meshes-enrichment.html#meshes-gsea"><i class="fa fa-check"></i><b>11.2</b> MeSH gene set enrichment analysis</a></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>12</b> Functional enrichment analysis of genomic coordinations</a></li>
-<li class="chapter" data-level="13" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>13</b> Biological theme comparison</a>
+<li class="chapter" data-level="12" data-path="universal-api.html"><a href="universal-api.html"><i class="fa fa-check"></i><b>12</b> Universal enrichment analysis</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>13.1</b> Formula interface of compareCluster</a></li>
-<li class="chapter" data-level="13.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>13.2</b> Visualization of profile comparison</a></li>
+<li class="chapter" data-level="12.1" data-path="universal-api.html"><a href="universal-api.html#input-data"><i class="fa fa-check"></i><b>12.1</b> Input data</a></li>
+<li class="chapter" data-level="12.2" data-path="universal-api.html"><a href="universal-api.html#cell-marker"><i class="fa fa-check"></i><b>12.2</b> Cell Marker</a></li>
+<li class="chapter" data-level="12.3" data-path="universal-api.html"><a href="universal-api.html#msigdb-analysis"><i class="fa fa-check"></i><b>12.3</b> MSigDb analysis</a></li>
+<li class="chapter" data-level="12.4" data-path="universal-api.html"><a href="universal-api.html#msigdb"><i class="fa fa-check"></i><b>12.4</b> MSigDb</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>14</b> Visualization of functional enrichment result</a>
+<li class="chapter" data-level="13" data-path="chipseeker-enrichment.html"><a href="chipseeker-enrichment.html"><i class="fa fa-check"></i><b>13</b> Functional enrichment analysis of genomic coordinations</a></li>
+<li class="chapter" data-level="14" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html"><i class="fa fa-check"></i><b>14</b> Biological theme comparison</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="enrichplot.html"><a href="enrichplot.html#bar-plot"><i class="fa fa-check"></i><b>14.1</b> Bar Plot</a></li>
-<li class="chapter" data-level="14.2" data-path="enrichplot.html"><a href="enrichplot.html#dot-plot"><i class="fa fa-check"></i><b>14.2</b> Dot plot</a></li>
-<li class="chapter" data-level="14.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>14.3</b> Gene-Concept Network</a></li>
-<li class="chapter" data-level="14.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>14.4</b> Heatmap-like functional classification</a></li>
-<li class="chapter" data-level="14.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>14.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="14.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>14.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="14.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>14.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="14.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>14.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="14.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>14.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="14.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>14.10</b> goplot</a></li>
-<li class="chapter" data-level="14.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>14.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="14.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>14.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="14.1" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#formula-interface-of-comparecluster"><i class="fa fa-check"></i><b>14.1</b> Formula interface of compareCluster</a></li>
+<li class="chapter" data-level="14.2" data-path="clusterprofiler-comparecluster.html"><a href="clusterprofiler-comparecluster.html#visualization-of-profile-comparison"><i class="fa fa-check"></i><b>14.2</b> Visualization of profile comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="enrichplot.html"><a href="enrichplot.html"><i class="fa fa-check"></i><b>15</b> Visualization of functional enrichment result</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="enrichplot.html"><a href="enrichplot.html#bar-plot"><i class="fa fa-check"></i><b>15.1</b> Bar Plot</a></li>
+<li class="chapter" data-level="15.2" data-path="enrichplot.html"><a href="enrichplot.html#dot-plot"><i class="fa fa-check"></i><b>15.2</b> Dot plot</a></li>
+<li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
+<li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
+<li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
+<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
+<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
-<li class="chapter" data-level="15" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>15</b> dplyr verbs for manipulating enrichment result</a>
+<li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#filter"><i class="fa fa-check"></i><b>15.1</b> filter</a></li>
-<li class="chapter" data-level="15.2" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#arrange"><i class="fa fa-check"></i><b>15.2</b> arrange</a></li>
-<li class="chapter" data-level="15.3" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#select"><i class="fa fa-check"></i><b>15.3</b> select</a></li>
-<li class="chapter" data-level="15.4" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#mutate"><i class="fa fa-check"></i><b>15.4</b> mutate</a></li>
-<li class="chapter" data-level="15.5" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#slice"><i class="fa fa-check"></i><b>15.5</b> slice</a></li>
-<li class="chapter" data-level="15.6" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#summarise"><i class="fa fa-check"></i><b>15.6</b> summarise</a></li>
+<li class="chapter" data-level="16.1" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#filter"><i class="fa fa-check"></i><b>16.1</b> filter</a></li>
+<li class="chapter" data-level="16.2" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#arrange"><i class="fa fa-check"></i><b>16.2</b> arrange</a></li>
+<li class="chapter" data-level="16.3" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#select"><i class="fa fa-check"></i><b>16.3</b> select</a></li>
+<li class="chapter" data-level="16.4" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#mutate"><i class="fa fa-check"></i><b>16.4</b> mutate</a></li>
+<li class="chapter" data-level="16.5" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#slice"><i class="fa fa-check"></i><b>16.5</b> slice</a></li>
+<li class="chapter" data-level="16.6" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html#summarise"><i class="fa fa-check"></i><b>16.6</b> summarise</a></li>
 </ul></li>
-<li class="chapter" data-level="16" data-path="useful-utilities.html"><a href="useful-utilities.html"><i class="fa fa-check"></i><b>16</b> Useful utilities</a>
+<li class="chapter" data-level="17" data-path="useful-utilities.html"><a href="useful-utilities.html"><i class="fa fa-check"></i><b>17</b> Useful utilities</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>16.1</b> Translating Biological ID</a>
+<li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="16.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>16.1.1</b> bitr: Biological Id TranslatoR</a></li>
-<li class="chapter" data-level="16.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>16.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
-<li class="chapter" data-level="16.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>16.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
+<li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
+<li class="chapter" data-level="17.3" data-path="useful-utilities.html"><a href="useful-utilities.html#go-utilities"><i class="fa fa-check"></i><b>17.3</b> GO utilities</a>
+<ul>
+<li class="chapter" data-level="17.3.1" data-path="useful-utilities.html"><a href="useful-utilities.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>17.3.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="17.3.2" data-path="useful-utilities.html"><a href="useful-utilities.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>17.3.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="17.3.3" data-path="useful-utilities.html"><a href="useful-utilities.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>17.3.3</b> reduce redundancy of enriched GO terms</a></li>
+</ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="faq.html"><a href="faq.html"><i class="fa fa-check"></i><b>A</b> Frequently asked questions</a>
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
+<li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -312,24 +327,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="reactomepa" class="section level1" number="8">
-<h1><span class="header-section-number">Chapter 8</span> Reactome enrichment analysis</h1>
+<div id="reactomepa" class="section level1" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Reactome enrichment analysis</h1>
 <p><a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> is designed for reactome pathway based analysis <span class="citation">(Yu and He <a href="#ref-yu_reactomepa_2016" role="doc-biblioref">2016</a>)</span>. Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.</p>
-<div id="reactomepa-supported-organisms" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Supported organisms</h2>
+<div id="reactomepa-supported-organisms" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Supported organisms</h2>
 <p>Currently <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> supports several model organisms, including ‘celegans’, ‘fly’, ‘human’, ‘mouse’, ‘rat’, ‘yeast’ and ‘zebrafish’. The input gene ID should be Entrez gene ID. We recommend using <a href="useful-utilities.html#bitr"><code>clusterProfiler::bitr()</code></a> to convert biological IDs.</p>
 </div>
-<div id="reactomepa-ora" class="section level2" number="8.2">
-<h2><span class="header-section-number">8.2</span> Reactome pathway over-representation analysis</h2>
+<div id="reactomepa-ora" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Reactome pathway over-representation analysis</h2>
 <p>Enrichment analysis is a widely used approach to identify biological
 themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented <code>enrichPathway()</code> that uses <a href="enrichment-overview.html#ora-algorithm">hypergeometric model</a> to assess whether the number of selected genes associated with a reactome pathway is larger than expected.</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="reactomepa.html#cb82-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
-<span id="cb82-2"><a href="reactomepa.html#cb82-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
-<span id="cb82-3"><a href="reactomepa.html#cb82-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
-<span id="cb82-4"><a href="reactomepa.html#cb82-4" aria-hidden="true"></a><span class="kw">head</span>(de)</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="reactomepa.html#cb88-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
+<span id="cb88-2"><a href="reactomepa.html#cb88-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb88-3"><a href="reactomepa.html#cb88-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
+<span id="cb88-4"><a href="reactomepa.html#cb88-4" aria-hidden="true"></a><span class="kw">head</span>(de)</span></code></pre></div>
 <pre><code>## [1] &quot;4312&quot;  &quot;8318&quot;  &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot;</code></pre>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="reactomepa.html#cb84-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichPathway</span>(<span class="dt">gene=</span>de, <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>, <span class="dt">readable=</span><span class="ot">TRUE</span>)</span>
-<span id="cb84-2"><a href="reactomepa.html#cb84-2" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="reactomepa.html#cb90-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichPathway</span>(<span class="dt">gene=</span>de, <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>, <span class="dt">readable=</span><span class="ot">TRUE</span>)</span>
+<span id="cb90-2"><a href="reactomepa.html#cb90-2" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
 <pre><code>##                          ID
 ## R-HSA-69620     R-HSA-69620
 ## R-HSA-2500257 R-HSA-2500257
@@ -366,55 +381,55 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 ## R-HSA-69618      21
 ## R-HSA-68877      26</code></pre>
 </div>
-<div id="reactomepa-gsea" class="section level2" number="8.3">
-<h2><span class="header-section-number">8.3</span> Reactome pathway gene set enrichment analysis</h2>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="reactomepa.html#cb86-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gsePathway</span>(geneList, <span class="dt">nPerm=</span><span class="dv">10000</span>,</span>
-<span id="cb86-2"><a href="reactomepa.html#cb86-2" aria-hidden="true"></a>                <span class="dt">pvalueCutoff=</span><span class="fl">0.2</span>,</span>
-<span id="cb86-3"><a href="reactomepa.html#cb86-3" aria-hidden="true"></a>                <span class="dt">pAdjustMethod=</span><span class="st">&quot;BH&quot;</span>, <span class="dt">verbose=</span><span class="ot">FALSE</span>)</span>
-<span id="cb86-4"><a href="reactomepa.html#cb86-4" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
+<div id="reactomepa-gsea" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Reactome pathway gene set enrichment analysis</h2>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="reactomepa.html#cb92-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gsePathway</span>(geneList, <span class="dt">nPerm=</span><span class="dv">10000</span>,</span>
+<span id="cb92-2"><a href="reactomepa.html#cb92-2" aria-hidden="true"></a>                <span class="dt">pvalueCutoff=</span><span class="fl">0.2</span>,</span>
+<span id="cb92-3"><a href="reactomepa.html#cb92-3" aria-hidden="true"></a>                <span class="dt">pAdjustMethod=</span><span class="st">&quot;BH&quot;</span>, <span class="dt">verbose=</span><span class="ot">FALSE</span>)</span>
+<span id="cb92-4"><a href="reactomepa.html#cb92-4" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
 <pre><code>##                          ID
 ## R-HSA-1474244 R-HSA-1474244
-## R-HSA-216083   R-HSA-216083
 ## R-HSA-3000178 R-HSA-3000178
-## R-HSA-1650814 R-HSA-1650814
 ## R-HSA-3000171 R-HSA-3000171
 ## R-HSA-2022090 R-HSA-2022090
+## R-HSA-1650814 R-HSA-1650814
+## R-HSA-1566948 R-HSA-1566948
 ##                                                                Description
 ## R-HSA-1474244                            Extracellular matrix organization
-## R-HSA-216083                            Integrin cell surface interactions
 ## R-HSA-3000178                                            ECM proteoglycans
-## R-HSA-1650814                  Collagen biosynthesis and modifying enzymes
 ## R-HSA-3000171                       Non-integrin membrane-ECM interactions
 ## R-HSA-2022090 Assembly of collagen fibrils and other multimeric structures
+## R-HSA-1650814                  Collagen biosynthesis and modifying enzymes
+## R-HSA-1566948                                      Elastic fibre formation
 ##               setSize enrichmentScore       NES       pvalue    p.adjust
-## R-HSA-1474244     266      -0.4576106 -1.936754 0.0001332268 0.003176563
-## R-HSA-216083       80      -0.5123103 -1.860721 0.0001546790 0.003176563
-## R-HSA-3000178      74      -0.6262504 -2.247901 0.0001555210 0.003176563
-## R-HSA-1650814      53      -0.5915513 -2.000152 0.0001596934 0.003176563
-## R-HSA-3000171      56      -0.5863352 -2.000599 0.0001598210 0.003176563
-## R-HSA-2022090      54      -0.5600621 -1.898797 0.0001598977 0.003176563
+## R-HSA-1474244     266      -0.4576106 -1.932778 0.0001339405 0.003136523
+## R-HSA-3000178      74      -0.6262504 -2.238495 0.0001508751 0.003136523
+## R-HSA-3000171      56      -0.5863352 -1.987543 0.0001568381 0.003136523
+## R-HSA-2022090      54      -0.5600621 -1.887950 0.0001575796 0.003136523
+## R-HSA-1650814      53      -0.5915513 -1.987657 0.0001577785 0.003136523
+## R-HSA-1566948      41      -0.6804683 -2.174238 0.0001609528 0.003136523
 ##                   qvalues rank                   leading_edge
-## R-HSA-1474244 0.002306638 1943 tags=33%, list=16%, signal=29%
-## R-HSA-216083  0.002306638 1890 tags=39%, list=15%, signal=33%
-## R-HSA-3000178 0.002306638 1890 tags=46%, list=15%, signal=39%
-## R-HSA-1650814 0.002306638 1890 tags=47%, list=15%, signal=40%
-## R-HSA-3000171 0.002306638 2538 tags=45%, list=20%, signal=36%
-## R-HSA-2022090 0.002306638 1897 tags=54%, list=15%, signal=46%
+## R-HSA-1474244 0.002270161 1943 tags=33%, list=16%, signal=29%
+## R-HSA-3000178 0.002270161 1890 tags=46%, list=15%, signal=39%
+## R-HSA-3000171 0.002270161 2538 tags=45%, list=20%, signal=36%
+## R-HSA-2022090 0.002270161 1897 tags=54%, list=15%, signal=46%
+## R-HSA-1650814 0.002270161 1890 tags=47%, list=15%, signal=40%
+## R-HSA-1566948 0.002270161 1562 tags=49%, list=13%, signal=43%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                       core_enrichment
 ## R-HSA-1474244 825/8038/11132/4017/1288/4811/3910/3371/1291/3791/831/1301/4238/7450/3685/80781/1280/1306/4314/3675/8425/977/4054/7837/7042/3912/4322/1278/1511/4060/30008/1277/164656/22795/10516/81578/1293/2247/1295/58494/8076/5118/2192/1281/83700/50509/4319/1290/1513/11096/2202/4313/2199/3693/10536/1294/11117/3339/1462/1289/1292/3908/4016/3909/4053/6678/1296/633/5654/2331/63923/7043/3913/1300/2200/1634/7177/1287/3679/4680/2006/7373/1307/1311/1308/652/4148/54829/4239
-## R-HSA-216083                                                                                                                                                                                                                                                                                                           1288/3371/1291/3791/7450/3685/80781/1280/3675/1278/4060/1277/1293/1295/58494/1281/83700/50509/1290/3693/1294/3339/1289/1292/1296/1300/2200/1287/3679/1307/1311
 ## R-HSA-3000178                                                                                                                                                                                                                                                                                             1288/3910/3371/1291/3685/1280/7042/3912/1278/4060/1277/1293/1281/50509/1290/3693/3339/1462/1289/1292/3908/3909/6678/633/2331/63923/7043/3913/1634/1287/3679/1311/4148/54829
-## R-HSA-1650814                                                                                                                                                                                                                                                                                                                                        1288/1291/1301/80781/1280/1306/1278/1277/81578/1293/1295/5118/1281/50509/1290/10536/1294/1289/1292/1296/1300/1287/7373/1307/1308
 ## R-HSA-3000171                                                                                                                                                                                                                                                                                                                                           7057/3915/6385/4921/1288/3910/3371/1301/3685/1280/3912/1278/1277/2247/1281/50509/1290/3693/3339/1289/3908/3909/3913/1300/1287
-## R-HSA-2022090                                                                                                                                                                                                                                                                                                                       4017/1288/1291/1301/80781/1280/1306/4314/977/7837/4322/1278/1277/1293/1295/5118/1281/50509/1290/1294/1289/1292/4016/3909/1296/1300/1287/7373/1308</code></pre>
+## R-HSA-2022090                                                                                                                                                                                                                                                                                                                       4017/1288/1291/1301/80781/1280/1306/4314/977/7837/4322/1278/1277/1293/1295/5118/1281/50509/1290/1294/1289/1292/4016/3909/1296/1300/1287/7373/1308
+## R-HSA-1650814                                                                                                                                                                                                                                                                                                                                        1288/1291/1301/80781/1280/1306/1278/1277/81578/1293/1295/5118/1281/50509/1290/10536/1294/1289/1292/1296/1300/1287/7373/1307/1308
+## R-HSA-1566948                                                                                                                                                                                                                                                                                                                                                                   4238/3685/8425/4054/7042/30008/10516/8076/2192/2202/2199/3693/11117/4016/4053/7043/2200/2006/652/4239</code></pre>
 </div>
-<div id="pathway-visualization" class="section level2" number="8.4">
-<h2><span class="header-section-number">8.4</span> Pathway Visualization</h2>
+<div id="pathway-visualization" class="section level2" number="9.4">
+<h2><span class="header-section-number">9.4</span> Pathway Visualization</h2>
 <p><a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented the <code>viewPathway()</code> to visualized selected reactome pathway. More general purpose of visualization methods for ORA and GSEA results are provided in the <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package and are documented on <a href="enrichplot.html#enrichplot">Chapter 14</a>.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="reactomepa.html#cb88-1" aria-hidden="true"></a><span class="kw">viewPathway</span>(<span class="st">&quot;E2F mediated regulation of DNA replication&quot;</span>, </span>
-<span id="cb88-2"><a href="reactomepa.html#cb88-2" aria-hidden="true"></a>            <span class="dt">readable =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb88-3"><a href="reactomepa.html#cb88-3" aria-hidden="true"></a>            <span class="dt">foldChange =</span> geneList)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-24-1.png" width="768" /></p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="reactomepa.html#cb94-1" aria-hidden="true"></a><span class="kw">viewPathway</span>(<span class="st">&quot;E2F mediated regulation of DNA replication&quot;</span>, </span>
+<span id="cb94-2"><a href="reactomepa.html#cb94-2" aria-hidden="true"></a>            <span class="dt">readable =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb94-3"><a href="reactomepa.html#cb94-3" aria-hidden="true"></a>            <span class="dt">foldChange =</span> geneList)</span></code></pre></div>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-1.png" width="768" /></p>
 <!--
 
 ## Pathway analysis of NGS data
@@ -484,7 +499,7 @@ dotplot(res)
           </div>
         </div>
       </div>
-<a href="clusterprofiler-kegg.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="wikipathways-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="dose-enrichment.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

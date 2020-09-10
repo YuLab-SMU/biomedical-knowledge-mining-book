@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
-  <meta name="description" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <title>Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+  <meta name="description" content="Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta property="og:title" content="Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
+  <meta name="twitter:title" content="Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="clusterProfiler-dplyr.html"/>
-<link rel="next" href="faq.html"/>
+<link rel="prev" href="clusterprofiler-kegg.html"/>
+<link rel="next" href="reactomepa.html"/>
 <script src="libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -327,145 +327,134 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="useful-utilities" class="section level1" number="17">
-<h1><span class="header-section-number">Chapter 17</span> Useful utilities</h1>
-<div id="id-convert" class="section level2" number="17.1">
-<h2><span class="header-section-number">17.1</span> Translating Biological ID</h2>
-<div id="bitr" class="section level3" number="17.1.1">
-<h3><span class="header-section-number">17.1.1</span> bitr: Biological Id TranslatoR</h3>
-<p><a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a> provides <code>bitr</code> and <code>bitr_kegg</code> for converting ID types. Both <code>bitr</code> and <code>bitr_kegg</code> support many species including model and many non-model organisms.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="useful-utilities.html#cb184-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GPX3&quot;</span>,  <span class="st">&quot;GLRX&quot;</span>,   <span class="st">&quot;LBP&quot;</span>,   <span class="st">&quot;CRYAB&quot;</span>, <span class="st">&quot;DEFB1&quot;</span>, <span class="st">&quot;HCLS1&quot;</span>,   <span class="st">&quot;SOD2&quot;</span>,   <span class="st">&quot;HSPA2&quot;</span>,</span>
-<span id="cb184-2"><a href="useful-utilities.html#cb184-2" aria-hidden="true"></a>       <span class="st">&quot;ORM1&quot;</span>,  <span class="st">&quot;IGFBP1&quot;</span>, <span class="st">&quot;PTHLH&quot;</span>, <span class="st">&quot;GPC3&quot;</span>,  <span class="st">&quot;IGFBP3&quot;</span>,<span class="st">&quot;TOB1&quot;</span>,    <span class="st">&quot;MITF&quot;</span>,   <span class="st">&quot;NDRG1&quot;</span>,</span>
-<span id="cb184-3"><a href="useful-utilities.html#cb184-3" aria-hidden="true"></a>       <span class="st">&quot;NR1H4&quot;</span>, <span class="st">&quot;FGFR3&quot;</span>,  <span class="st">&quot;PVR&quot;</span>,   <span class="st">&quot;IL6&quot;</span>,   <span class="st">&quot;PTPRM&quot;</span>, <span class="st">&quot;ERBB2&quot;</span>,   <span class="st">&quot;NID2&quot;</span>,   <span class="st">&quot;LAMB1&quot;</span>,</span>
-<span id="cb184-4"><a href="useful-utilities.html#cb184-4" aria-hidden="true"></a>       <span class="st">&quot;COMP&quot;</span>,  <span class="st">&quot;PLS3&quot;</span>,   <span class="st">&quot;MCAM&quot;</span>,  <span class="st">&quot;SPP1&quot;</span>,  <span class="st">&quot;LAMC1&quot;</span>, <span class="st">&quot;COL4A2&quot;</span>,  <span class="st">&quot;COL4A1&quot;</span>, <span class="st">&quot;MYOC&quot;</span>,</span>
-<span id="cb184-5"><a href="useful-utilities.html#cb184-5" aria-hidden="true"></a>       <span class="st">&quot;ANXA4&quot;</span>, <span class="st">&quot;TFPI2&quot;</span>,  <span class="st">&quot;CST6&quot;</span>,  <span class="st">&quot;SLPI&quot;</span>,  <span class="st">&quot;TIMP2&quot;</span>, <span class="st">&quot;CPM&quot;</span>,     <span class="st">&quot;GGT1&quot;</span>,   <span class="st">&quot;NNMT&quot;</span>,</span>
-<span id="cb184-6"><a href="useful-utilities.html#cb184-6" aria-hidden="true"></a>       <span class="st">&quot;MAL&quot;</span>,   <span class="st">&quot;EEF1A2&quot;</span>, <span class="st">&quot;HGD&quot;</span>,   <span class="st">&quot;TCN2&quot;</span>,  <span class="st">&quot;CDA&quot;</span>,   <span class="st">&quot;PCCA&quot;</span>,    <span class="st">&quot;CRYM&quot;</span>,   <span class="st">&quot;PDXK&quot;</span>,</span>
-<span id="cb184-7"><a href="useful-utilities.html#cb184-7" aria-hidden="true"></a>       <span class="st">&quot;STC1&quot;</span>,  <span class="st">&quot;WARS&quot;</span>,  <span class="st">&quot;HMOX1&quot;</span>, <span class="st">&quot;FXYD2&quot;</span>, <span class="st">&quot;RBP4&quot;</span>,   <span class="st">&quot;SLC6A12&quot;</span>, <span class="st">&quot;KDELR3&quot;</span>, <span class="st">&quot;ITM2B&quot;</span>)</span>
-<span id="cb184-8"><a href="useful-utilities.html#cb184-8" aria-hidden="true"></a>eg =<span class="st"> </span><span class="kw">bitr</span>(x, <span class="dt">fromType=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">toType=</span><span class="st">&quot;ENTREZID&quot;</span>, <span class="dt">OrgDb=</span><span class="st">&quot;org.Hs.eg.db&quot;</span>)</span>
-<span id="cb184-9"><a href="useful-utilities.html#cb184-9" aria-hidden="true"></a><span class="kw">head</span>(eg)</span></code></pre></div>
-<pre><code>##   SYMBOL ENTREZID
-## 1   GPX3     2878
-## 2   GLRX     2745
-## 3    LBP     3929
-## 4  CRYAB     1410
-## 5  DEFB1     1672
-## 6  HCLS1     3059</code></pre>
-<p>User should provides an annotation package, both <em>fromType</em> and <em>toType</em> can accept any types that supported.</p>
-<p>User can use <em>keytypes</em> to list all supporting types.</p>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="useful-utilities.html#cb186-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
-<span id="cb186-2"><a href="useful-utilities.html#cb186-2" aria-hidden="true"></a><span class="kw">keytypes</span>(org.Hs.eg.db)</span></code></pre></div>
-<pre><code>##  [1] &quot;ACCNUM&quot;       &quot;ALIAS&quot;        &quot;ENSEMBL&quot;      &quot;ENSEMBLPROT&quot;  &quot;ENSEMBLTRANS&quot;
-##  [6] &quot;ENTREZID&quot;     &quot;ENZYME&quot;       &quot;EVIDENCE&quot;     &quot;EVIDENCEALL&quot;  &quot;GENENAME&quot;    
-## [11] &quot;GO&quot;           &quot;GOALL&quot;        &quot;IPI&quot;          &quot;MAP&quot;          &quot;OMIM&quot;        
-## [16] &quot;ONTOLOGY&quot;     &quot;ONTOLOGYALL&quot;  &quot;PATH&quot;         &quot;PFAM&quot;         &quot;PMID&quot;        
-## [21] &quot;PROSITE&quot;      &quot;REFSEQ&quot;       &quot;SYMBOL&quot;       &quot;UCSCKG&quot;       &quot;UNIGENE&quot;     
-## [26] &quot;UNIPROT&quot;</code></pre>
-<p>We can translate from one type to other types.</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="useful-utilities.html#cb188-1" aria-hidden="true"></a>ids &lt;-<span class="st"> </span><span class="kw">bitr</span>(x, <span class="dt">fromType=</span><span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">toType=</span><span class="kw">c</span>(<span class="st">&quot;UNIPROT&quot;</span>, <span class="st">&quot;ENSEMBL&quot;</span>), <span class="dt">OrgDb=</span><span class="st">&quot;org.Hs.eg.db&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning in bitr(x, fromType = &quot;SYMBOL&quot;, toType = c(&quot;UNIPROT&quot;, &quot;ENSEMBL&quot;), :
-## 1.79% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="useful-utilities.html#cb190-1" aria-hidden="true"></a><span class="kw">head</span>(ids)</span></code></pre></div>
-<pre><code>##   SYMBOL    UNIPROT         ENSEMBL
-## 1   GPX3     P22352 ENSG00000211445
-## 2   GLRX A0A024RAM2 ENSG00000173221
-## 3   GLRX     P35754 ENSG00000173221
-## 4    LBP     P18428 ENSG00000129988
-## 5    LBP     Q8TCF0 ENSG00000129988
-## 6  CRYAB     P02511 ENSG00000109846</code></pre>
-<p>For GO analysis, user don’t need to convert ID, all ID type provided by <code>OrgDb</code> can be used in <code>groupGO</code>, <code>enrichGO</code> and <code>gseGO</code> by specifying <code>keyType</code> parameter.</p>
+<div id="wikipathways-analysis" class="section level1" number="8">
+<h1><span class="header-section-number">Chapter 8</span> WikiPathways analysis</h1>
+<p><a href="https://www.wikipathways.org">WikiPathways</a> is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of gmt files for supported organisms at <a href="http://data.wikipathways.org/current/gmt/">data.wikipathways.org</a>. The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package <span class="citation">(Yu et al. <a href="#ref-yu2012" role="doc-biblioref">2012</a>)</span> supports enrichment analysis (either ORA or GSEA) for WikiPathways using the <code>enrichWP()</code> and <code>gseWP()</code> functions. These functions will automatically download and parse latest WikiPathways GMT file for selected organism.</p>
+<p>Supported organisms can be listed by:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="wikipathways-analysis.html#cb82-1" aria-hidden="true"></a><span class="kw">get_wp_organisms</span>()</span></code></pre></div>
+<pre><code>##  [1] &quot;Anopheles gambiae&quot;        &quot;Arabidopsis thaliana&quot;    
+##  [3] &quot;Bos taurus&quot;               &quot;Caenorhabditis elegans&quot;  
+##  [5] &quot;Canis familiaris&quot;         &quot;Danio rerio&quot;             
+##  [7] &quot;Drosophila melanogaster&quot;  &quot;Equus caballus&quot;          
+##  [9] &quot;Gallus gallus&quot;            &quot;Homo sapiens&quot;            
+## [11] &quot;Mus musculus&quot;             &quot;Oryza sativa&quot;            
+## [13] &quot;Pan troglodytes&quot;          &quot;Populus trichocarpa&quot;     
+## [15] &quot;Rattus norvegicus&quot;        &quot;Saccharomyces cerevisiae&quot;
+## [17] &quot;Sus scrofa&quot;</code></pre>
+<!--
+
+
+Download the appropriate gmt file and then generate `TERM2GENE` and `TERM2NAME` to use `enricher()` and `GSEA()` functions. 
+
+Use can download wikiPathways manually:
+
+```r
+###################################
+# download file manually
+# 1. visit the website, http://data.wikipathways.org/current/gmt/, to get the url
+# 2. use the following code to download it
+####################################
+url <- "http://data.wikipathways.org/current/gmt/wikipathways-20200810-gmt-Homo_sapiens.gmt"
+wpgmtfile <- "wikiPathways-HS.gmt"
+download.file(url, destfile = wpgmtfile)
+```
+
+As an alternative to manually downloading gmt files, install the [rWikiPathways](http://bioconductor.org/packages/rWikiPathways) to gain scripting access to the latest gmt files using the `downloadPathwayArchive()` function.
+
+
+```r
+## supported organisms can be accessed via the following command:
+## rWikiPathways::listOrganisms()
+
+wpgmtfile <- rWikiPathways::downloadPathwayArchive(organism="Homo sapiens", format = "gmt")
+```
+
+Once the GMT file was downloaded, we can use `read.gmt.wp()` to parse it. Note that the `read.gmt.wp()` function is designed for WikiPathways GMT file. For ordinary GMT file, please use the `read.gmt()` function.
+
+```r
+wp2gene <- read.gmt.wp(wpgmtfile)
+#TERM2GENE
+wpid2gene <- wp2gene %>% dplyr::select(wpid, gene) 
+#TERM2NAME
+wpid2name <- wp2gene %>% dplyr::select(wpid, name) 
+
+ewp <- enricher(gene, TERM2GENE = wpid2gene, TERM2NAME = wpid2name)
+head(ewp)
+
+ewp2 <- GSEA(geneList, TERM2GENE = wpid2gene, TERM2NAME = wpid2name, verbose=FALSE)
+head(ewp2)
+```
+-->
+<div id="clusterprofiler-wikipathway-ora" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> WikiPathways over-representation analysis</h2>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="wikipathways-analysis.html#cb84-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb84-2"><a href="wikipathways-analysis.html#cb84-2" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb84-3"><a href="wikipathways-analysis.html#cb84-3" aria-hidden="true"></a></span>
+<span id="cb84-4"><a href="wikipathways-analysis.html#cb84-4" aria-hidden="true"></a><span class="kw">enrichWP</span>(gene, <span class="dt">organism =</span> <span class="st">&quot;Homo sapiens&quot;</span>)</span></code></pre></div>
+<pre><code>## #
+## # over-representation test
+## #
+## #...@organism 	 Homo sapiens 
+## #...@ontology 	 WikiPathways 
+## #...@keytype 	 ENTREZID 
+## #...@gene 	 chr [1:207] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
+## #...6 enriched terms found
+## &#39;data.frame&#39;:	6 obs. of  9 variables:
+##  $ ID         : chr  &quot;WP2446&quot; &quot;WP2361&quot; &quot;WP179&quot; &quot;WP3942&quot; ...
+##  $ Description: chr  &quot;Retinoblastoma Gene in Cancer&quot; &quot;Gastric Cancer Network 1&quot; &quot;Cell Cycle&quot; &quot;PPAR signaling pathway&quot; ...
+##  $ GeneRatio  : chr  &quot;11/105&quot; &quot;6/105&quot; &quot;10/105&quot; &quot;7/105&quot; ...
+##  $ BgRatio    : chr  &quot;88/7423&quot; &quot;29/7423&quot; &quot;122/7423&quot; &quot;67/7423&quot; ...
+##  $ pvalue     : num  3.45e-08 2.53e-06 7.68e-06 4.02e-05 6.04e-05 ...
+##  $ p.adjust   : num  7.32e-06 2.68e-04 5.43e-04 2.13e-03 2.56e-03 ...
+##  $ qvalue     : num  6.69e-06 2.45e-04 4.96e-04 1.94e-03 2.34e-03 ...
+##  $ geneID     : chr  &quot;8318/9133/7153/6241/890/983/81620/7272/1111/891/24137&quot; &quot;4605/7153/11065/22974/6286/6790&quot; &quot;8318/991/9133/890/983/7272/1111/891/4174/9232&quot; &quot;4312/9415/9370/5105/2167/3158/5346&quot; ...
+##  $ Count      : int  11 6 10 7 4 7
+## #...Citation
+##   Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+##   clusterProfiler: an R package for comparing biological themes among
+##   gene clusters. OMICS: A Journal of Integrative Biology
+##   2012, 16(5):284-287</code></pre>
 </div>
-<div id="bitr_kegg" class="section level3" number="17.1.2">
-<h3><span class="header-section-number">17.1.2</span> <code>bitr_kegg</code>: converting biological IDs using KEGG API</h3>
-<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="useful-utilities.html#cb192-1" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
-<span id="cb192-2"><a href="useful-utilities.html#cb192-2" aria-hidden="true"></a>hg &lt;-<span class="st"> </span>gcSample[[<span class="dv">1</span>]]</span>
-<span id="cb192-3"><a href="useful-utilities.html#cb192-3" aria-hidden="true"></a><span class="kw">head</span>(hg)</span></code></pre></div>
-<pre><code>## [1] &quot;4597&quot;  &quot;7111&quot;  &quot;5266&quot;  &quot;2175&quot;  &quot;755&quot;   &quot;23046&quot;</code></pre>
-<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="useful-utilities.html#cb194-1" aria-hidden="true"></a>eg2np &lt;-<span class="st"> </span><span class="kw">bitr_kegg</span>(hg, <span class="dt">fromType=</span><span class="st">&#39;kegg&#39;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-proteinid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;hsa&#39;</span>)</span></code></pre></div>
-<pre><code>## Warning in bitr_kegg(hg, fromType = &quot;kegg&quot;, toType = &quot;ncbi-proteinid&quot;, organism
-## = &quot;hsa&quot;): 3.7% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="useful-utilities.html#cb196-1" aria-hidden="true"></a><span class="kw">head</span>(eg2np)</span></code></pre></div>
-<pre><code>##    kegg ncbi-proteinid
-## 1 10001      NP_005457
-## 2 10209      NP_005792
-## 3 10232      NP_037536
-## 4 10324      NP_006054
-## 5 10411   NP_001092002
-## 6 10614      NP_006451</code></pre>
-<p>The ID type (both <code>fromType</code> &amp; <code>toType</code>) should be one of ‘kegg’, ‘ncbi-geneid’, ‘ncbi-proteinid’ or ‘uniprot’. The ‘kegg’ is the primary ID used in KEGG database. The data source of KEGG was from NCBI. A rule of thumb for the ‘kegg’ ID is <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
-<p>Many prokaryote species don’t have entrezgene ID available. For example we can check the gene information of <code>ece:Z5100</code> in <a href="http://www.genome.jp/dbget-bin/www_bget?ece:Z5100" class="uri">http://www.genome.jp/dbget-bin/www_bget?ece:Z5100</a>, which have <code>NCBI-ProteinID</code> and <code>UnitProt</code> links in the <code>Other DBs</code> Entry, but not <code>NCBI-GeneID</code>.</p>
-<p>If we try to convert <code>Z5100</code> to <code>ncbi-geneid</code>, <code>bitr_kegg</code> will throw error of <code>ncbi-geneid is not supported</code>.</p>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="useful-utilities.html#cb198-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-geneid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
-<pre><code>## Error in KEGG_convert(fromType, toType, organism) :
-## ncbi-geneid is not supported for ece ...</code></pre>
-<p>We can of course convert it to <code>ncbi-proteinid</code> and <code>uniprot</code>:</p>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="useful-utilities.html#cb200-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-proteinid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
-<pre><code>##    kegg ncbi-proteinid
-## 1 Z5100       AAG58814</code></pre>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="useful-utilities.html#cb202-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;uniprot&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
-<pre><code>##    kegg    uniprot
-## 1 Z5100 A0A4Q2TPW7</code></pre>
-</div>
-</div>
-<div id="setReadable" class="section level2" number="17.2">
-<h2><span class="header-section-number">17.2</span> <code>setReadable</code>: translating gene IDs to human readable symbols</h2>
-<p>Some of the functions, especially those internally supported for <a href="#chapter4">DO</a>, <a href="#chapter5">GO</a>, and <a href="#chapter8">Reactome Pathway</a>, support a parameter, <code>readable</code>. If <code>readable = TRUE</code>, all the gene IDs will be translated to gene symbols. The <code>readable</code> parameter is not available for enrichment analysis of KEGG or using user’s own annotation. KEGG analysis using <code>enrichKEGG</code> and <code>gseKEGG</code>, internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn’t provide gene ID to symbol mapping information. For analysis using user’s own annotation data, we even don’t know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the <code>setReadable</code> function if and only if there is an <code>OrgDb</code> available.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="useful-utilities.html#cb204-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
-<span id="cb204-2"><a href="useful-utilities.html#cb204-2" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb204-3"><a href="useful-utilities.html#cb204-3" aria-hidden="true"></a></span>
-<span id="cb204-4"><a href="useful-utilities.html#cb204-4" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb204-5"><a href="useful-utilities.html#cb204-5" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
-<span id="cb204-6"><a href="useful-utilities.html#cb204-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(de)</span>
-<span id="cb204-7"><a href="useful-utilities.html#cb204-7" aria-hidden="true"></a><span class="co">## The geneID column is ENTREZID</span></span>
-<span id="cb204-8"><a href="useful-utilities.html#cb204-8" aria-hidden="true"></a><span class="kw">head</span>(x, <span class="dv">3</span>)</span></code></pre></div>
-<pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
-## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/48 128/8063 1.011404e-04
-##              p.adjust       qvalue                               geneID Count
-## hsa04110 6.410428e-05 5.859948e-05 8318/991/9133/890/983/4085/7272/1111     8
-## hsa04218 1.912444e-03 1.748217e-03    2305/4605/9133/890/983/51806/1111     7
-## hsa04114 3.843336e-03 3.513299e-03         991/9133/983/4085/51806/6790     6</code></pre>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="useful-utilities.html#cb206-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">setReadable</span>(x, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
-<span id="cb206-2"><a href="useful-utilities.html#cb206-2" aria-hidden="true"></a><span class="co">## The geneID column is translated to symbol</span></span>
-<span id="cb206-3"><a href="useful-utilities.html#cb206-3" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
-<pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
-## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/48 128/8063 1.011404e-04
-##              p.adjust       qvalue
-## hsa04110 6.410428e-05 5.859948e-05
-## hsa04218 1.912444e-03 1.748217e-03
-## hsa04114 3.843336e-03 3.513299e-03
-##                                                 geneID Count
-## hsa04110 CDC45/CDC20/CCNB2/CCNA2/CDK1/MAD2L1/TTK/CHEK1     8
-## hsa04218     FOXM1/MYBL2/CCNB2/CCNA2/CDK1/CALML5/CHEK1     7
-## hsa04114          CDC20/CCNB2/CDK1/MAD2L1/CALML5/AURKA     6</code></pre>
-<p>For those functions that internally support <code>readable</code> parameter, user can also use <code>setReadable</code> for translating gene IDs.</p>
-</div>
-<div id="go-utilities" class="section level2" number="17.3">
-<h2><span class="header-section-number">17.3</span> GO utilities</h2>
-<div id="drop-specific-go-terms-or-level" class="section level3" number="17.3.1">
-<h3><span class="header-section-number">17.3.1</span> drop specific GO terms or level</h3>
-<p><code>enrichGO</code> test the whole GO corpus and enriched result may contains very general terms. With <code>dropGO</code> function, user can remove specific GO terms or GO level from results obtained from both <code>enrichGO</code> and <code>compareCluster</code>.</p>
-</div>
-<div id="test-go-at-sepcific-level" class="section level3" number="17.3.2">
-<h3><span class="header-section-number">17.3.2</span> test GO at sepcific level</h3>
-<p><code>enrichGO</code> doesn’t contain parameter to restrict the test at specific GO level. Instead, we provide a function <code>gofilter</code> to restrict the result at specific GO level. It works with results obtained from both <code>enrichGO</code> and <code>compareCluster</code>.</p>
-</div>
-<div id="reduce-redundancy-of-enriched-go-terms" class="section level3" number="17.3.3">
-<h3><span class="header-section-number">17.3.3</span> reduce redundancy of enriched GO terms</h3>
-<p>GO is organized in parent-child structure, thus a parent term can be overlap with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> implement <a href="https://github.com/GuangchuangYu/clusterProfiler/issues/28"><code>simplify</code></a> method to reduce redundant GO terms from the outputs of <code>enrichGO</code> and <code>gseGO</code>. The function internally called <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>)</span> to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. An example can be found in <a href="https://guangchuangyu.github.io/2015/10/use-simplify-to-remove-redundancy-of-enriched-go-terms/">the blog post</a>.</p>
+<div id="clusterprofiler-wikipathway-gsea" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> WikiPathways gene set enrichment analysis</h2>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="wikipathways-analysis.html#cb86-1" aria-hidden="true"></a><span class="kw">gseWP</span>(geneList, <span class="dt">organism =</span> <span class="st">&quot;Homo sapiens&quot;</span>)</span></code></pre></div>
+<pre><code>## #
+## # Gene Set Enrichment Analysis
+## #
+## #...@organism 	 Homo sapiens 
+## #...@setType 	 WikiPathways 
+## #...@keytype 	 ENTREZID 
+## #...@geneList 	 Named num [1:12495] 4.57 4.51 4.42 4.14 3.88 ...
+##  - attr(*, &quot;names&quot;)= chr [1:12495] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; ...
+## #...nPerm 	 
+## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
+## #...57 enriched terms found
+## &#39;data.frame&#39;:	57 obs. of  11 variables:
+##  $ ID             : chr  &quot;WP179&quot; &quot;WP2446&quot; &quot;WP466&quot; &quot;WP2361&quot; ...
+##  $ Description    : chr  &quot;Cell Cycle&quot; &quot;Retinoblastoma Gene in Cancer&quot; &quot;DNA Replication&quot; &quot;Gastric Cancer Network 1&quot; ...
+##  $ setSize        : int  111 84 42 23 62 76 41 61 14 36 ...
+##  $ enrichmentScore: num  0.663 0.731 0.792 0.837 0.665 ...
+##  $ NES            : num  2.75 2.93 2.72 2.47 2.47 ...
+##  $ pvalue         : num  1.00e-10 1.00e-10 1.00e-10 9.49e-10 1.19e-09 ...
+##  $ p.adjust       : num  1.64e-08 1.64e-08 1.64e-08 1.17e-07 1.17e-07 ...
+##  $ qvalues        : num  1.38e-08 1.38e-08 1.38e-08 9.84e-08 9.87e-08 ...
+##  $ rank           : num  1234 1333 1002 854 1111 ...
+##  $ leading_edge   : chr  &quot;tags=40%, list=10%, signal=36%&quot; &quot;tags=51%, list=11%, signal=46%&quot; &quot;tags=55%, list=8%, signal=51%&quot; &quot;tags=52%, list=7%, signal=49%&quot; ...
+##  $ core_enrichment: chr  &quot;8318/991/9133/890/983/7272/1111/891/4174/9232/4171/993/990/5347/9700/898/23594/4998/9134/4175/4173/10926/6502/9&quot;| __truncated__ &quot;8318/9133/7153/6241/890/983/81620/7272/1111/891/24137/993/898/4998/10733/9134/4175/4173/6502/5984/994/7298/3015&quot;| __truncated__ &quot;8318/55388/81620/4174/4171/990/23594/4998/4175/4173/10926/5984/5111/51053/8317/5427/23649/4176/5982/5557/5558/4172/5424&quot; &quot;4605/7153/11065/22974/6286/6790/1894/56992/4173/1063/9585/8607&quot; ...
+## #...Citation
+##   Guangchuang Yu, Li-Gen Wang, Yanyan Han and Qing-Yu He.
+##   clusterProfiler: an R package for comparing biological themes among
+##   gene clusters. OMICS: A Journal of Integrative Biology
+##   2012, 16(5):284-287</code></pre>
+<p>If your input gene ID type is not Entrez gene ID, you can use the <a href="useful-utilities.html#bitr"><code>bitr()</code></a> function to convert gene ID. If you want to convert the gene IDs in output result to gene symbols, you can use the <a href="useful-utilities.html#setReadable"><code>setReadable()</code></a> function.</p>
 
 </div>
 </div>
-</div>
-
-
-
 <h3>References</h3>
 <div id="refs" class="references">
-<div id="ref-yu2010">
-<p>Yu, Guangchuang, Fei Li, Yide Qin, Xiaochen Bo, Yibo Wu, and Shengqi Wang. 2010. “GOSemSim: An R Package for Measuring Semantic Similarity Among Go Terms and Gene Products.” <em>Bioinformatics</em> 26: 976–78. <a href="https://doi.org/10.1093/bioinformatics/btq064">https://doi.org/10.1093/bioinformatics/btq064</a>.</p>
+<div id="ref-yu2012">
+<p>Yu, Guangchuang, Li-Gen Wang, Yanyan Han, and Qing-Yu He. 2012. “clusterProfiler: an R Package for Comparing Biological Themes Among Gene Clusters.” <em>OMICS: A Journal of Integrative Biology</em> 16 (5): 284–87. <a href="https://doi.org/10.1089/omi.2011.0118">https://doi.org/10.1089/omi.2011.0118</a>.</p>
 </div>
 </div>
             </section>
@@ -473,8 +462,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="clusterProfiler-dplyr.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="faq.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="clusterprofiler-kegg.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reactomepa.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

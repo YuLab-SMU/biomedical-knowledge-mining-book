@@ -366,3 +366,18 @@ hsa04110 <- pathview(gene.data  = geneList,
 For further information, please refer to the vignette of [pathview](https://www.bioconductor.org/packages/pathview)[@luo_pathview].
 
 
+<!--
+
+using ggplot2 api
+
+`[` accessor
+
+
+ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    scale_fill_continuous(low="blue", high="red") +
+    labs(x = "", y = "", fill = "p.adjust") +
+    theme(axis.text=element_text(size=11))
+
+-->
