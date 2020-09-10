@@ -357,16 +357,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="GOSemSim.html#cb3-1" aria-hidden="true"></a><span class="kw">goSim</span>(<span class="st">&quot;GO:0004022&quot;</span>, <span class="st">&quot;GO:0005515&quot;</span>, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Jiang&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] 0.159</code></pre>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="GOSemSim.html#cb5-1" aria-hidden="true"></a><span class="kw">goSim</span>(<span class="st">&quot;GO:0004022&quot;</span>, <span class="st">&quot;GO:0005515&quot;</span>, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 0.158</code></pre>
+<pre><code>## [1] 0.116</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="GOSemSim.html#cb7-1" aria-hidden="true"></a>go1 =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GO:0004022&quot;</span>,<span class="st">&quot;GO:0004024&quot;</span>,<span class="st">&quot;GO:0004174&quot;</span>)</span>
 <span id="cb7-2"><a href="GOSemSim.html#cb7-2" aria-hidden="true"></a>go2 =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GO:0009055&quot;</span>,<span class="st">&quot;GO:0005515&quot;</span>)</span>
 <span id="cb7-3"><a href="GOSemSim.html#cb7-3" aria-hidden="true"></a><span class="kw">mgoSim</span>(go1, go2, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="ot">NULL</span>)</span></code></pre></div>
 <pre><code>##            GO:0009055 GO:0005515
-## GO:0004022      0.205      0.158
-## GO:0004024      0.185      0.141
-## GO:0004174      0.205      0.158</code></pre>
+## GO:0004022      0.368      0.116
+## GO:0004024      0.335      0.107
+## GO:0004174      0.663      0.119</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="GOSemSim.html#cb9-1" aria-hidden="true"></a><span class="kw">mgoSim</span>(go1, go2, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 0.192</code></pre>
+<pre><code>## [1] 0.43</code></pre>
 </div>
 <div id="gene-go-semantic-similarity" class="section level2" number="2.4">
 <h2><span class="header-section-number">2.4</span> Gene semantic similarity measurement</h2>
@@ -379,7 +379,7 @@ terms are also calculated by the these combine methods.</p>
 <p><a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> provides <code>geneSim()</code> to calculate semantic similarity between two gene products, and <code>mgeneSim()</code> to calculate semantic similarity among multiple gene products.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="GOSemSim.html#cb11-1" aria-hidden="true"></a><span class="kw">geneSim</span>(<span class="st">&quot;241&quot;</span>, <span class="st">&quot;251&quot;</span>, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
 <pre><code>## $geneSim
-## [1] 0.207
+## [1] 0.149
 ## 
 ## $GO1
 ## [1] &quot;GO:0004364&quot; &quot;GO:0004464&quot; &quot;GO:0004602&quot; &quot;GO:0005515&quot; &quot;GO:0047485&quot;
@@ -390,28 +390,28 @@ terms are also calculated by the these combine methods.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="GOSemSim.html#cb13-1" aria-hidden="true"></a><span class="kw">mgeneSim</span>(<span class="dt">genes=</span><span class="kw">c</span>(<span class="st">&quot;835&quot;</span>, <span class="st">&quot;5261&quot;</span>,<span class="st">&quot;241&quot;</span>, <span class="st">&quot;994&quot;</span>),</span>
 <span id="cb13-2"><a href="GOSemSim.html#cb13-2" aria-hidden="true"></a>         <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</span></code></pre></div>
 <pre><code>##        835  5261   241   994
-## 835  1.000 0.499 0.531 0.604
-## 5261 0.499 1.000 0.478 0.420
-## 241  0.531 0.478 1.000 0.462
-## 994  0.604 0.420 0.462 1.000</code></pre>
+## 835  1.000 0.517 0.503 0.620
+## 5261 0.517 1.000 0.447 0.505
+## 241  0.503 0.447 1.000 0.452
+## 994  0.620 0.505 0.452 1.000</code></pre>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="GOSemSim.html#cb15-1" aria-hidden="true"></a><span class="kw">mgeneSim</span>(<span class="dt">genes=</span><span class="kw">c</span>(<span class="st">&quot;835&quot;</span>, <span class="st">&quot;5261&quot;</span>,<span class="st">&quot;241&quot;</span>, <span class="st">&quot;994&quot;</span>),</span>
 <span id="cb15-2"><a href="GOSemSim.html#cb15-2" aria-hidden="true"></a>       <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Rel&quot;</span>,<span class="dt">verbose=</span><span class="ot">FALSE</span>)</span></code></pre></div>
 <pre><code>##        835  5261   241   994
-## 835  0.928 0.305 0.276 0.502
-## 5261 0.305 0.939 0.322 0.317
+## 835  0.928 0.398 0.276 0.507
+## 5261 0.398 0.939 0.322 0.438
 ## 241  0.276 0.322 0.941 0.277
-## 994  0.502 0.317 0.277 0.908</code></pre>
+## 994  0.507 0.438 0.277 0.908</code></pre>
 <p>By default, <code>godata</code> function use <code>ENTREZID</code> as keytype, and the input ID type is <code>ENTREZID</code>. User can use other ID types such as <code>ENSEMBL</code>, <code>UNIPROT</code>, <code>REFSEQ</code>, <code>ACCNUM</code>, <code>SYMBOL</code> <em>et al</em>.</p>
 <p>Here as an example, we use <code>SYMBOL</code> as <code>keytype</code> and calculate semantic similarities among several genes by using their gene symbol as input.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="GOSemSim.html#cb17-1" aria-hidden="true"></a>hsGO2 &lt;-<span class="st"> </span><span class="kw">godata</span>(<span class="st">&#39;org.Hs.eg.db&#39;</span>, <span class="dt">keytype =</span> <span class="st">&quot;SYMBOL&quot;</span>, <span class="dt">ont=</span><span class="st">&quot;MF&quot;</span>, <span class="dt">computeIC=</span><span class="ot">FALSE</span>)</span>
 <span id="cb17-2"><a href="GOSemSim.html#cb17-2" aria-hidden="true"></a>genes &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CDC45&quot;</span>, <span class="st">&quot;MCM10&quot;</span>, <span class="st">&quot;CDC20&quot;</span>, <span class="st">&quot;NMU&quot;</span>, <span class="st">&quot;MMP1&quot;</span>)</span>
 <span id="cb17-3"><a href="GOSemSim.html#cb17-3" aria-hidden="true"></a><span class="kw">mgeneSim</span>(genes, <span class="dt">semData=</span>hsGO2, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>, <span class="dt">verbose=</span><span class="ot">FALSE</span>)</span></code></pre></div>
 <pre><code>##       CDC45 MCM10 CDC20   NMU  MMP1
-## CDC45 1.000 0.817 0.601 0.551 0.150
-## MCM10 0.817 1.000 0.669 0.606 0.114
-## CDC20 0.601 0.669 1.000 0.746 0.136
-## NMU   0.551 0.606 0.746 1.000 0.112
-## MMP1  0.150 0.114 0.136 0.112 1.000</code></pre>
+## CDC45 1.000 0.813 0.594 0.544 0.116
+## MCM10 0.813 1.000 0.647 0.587 0.081
+## CDC20 0.594 0.647 1.000 0.730 0.100
+## NMU   0.544 0.587 0.730 1.000 0.079
+## MMP1  0.116 0.081 0.100 0.079 1.000</code></pre>
 <p>Users can also use <a href="useful-utilities.html#bitr"><code>clusterProfiler::bitr</code></a> to translate biological IDs.</p>
 </div>
 <div id="gene-cluster-go-semantic-similarity" class="section level2" number="2.5">
@@ -420,7 +420,7 @@ terms are also calculated by the these combine methods.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="GOSemSim.html#cb19-1" aria-hidden="true"></a>gs1 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;835&quot;</span>, <span class="st">&quot;5261&quot;</span>,<span class="st">&quot;241&quot;</span>, <span class="st">&quot;994&quot;</span>, <span class="st">&quot;514&quot;</span>, <span class="st">&quot;533&quot;</span>)</span>
 <span id="cb19-2"><a href="GOSemSim.html#cb19-2" aria-hidden="true"></a>gs2 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;578&quot;</span>,<span class="st">&quot;582&quot;</span>, <span class="st">&quot;400&quot;</span>, <span class="st">&quot;409&quot;</span>, <span class="st">&quot;411&quot;</span>)</span>
 <span id="cb19-3"><a href="GOSemSim.html#cb19-3" aria-hidden="true"></a><span class="kw">clusterSim</span>(gs1, gs2, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 0.638</code></pre>
+<pre><code>## [1] 0.611</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="GOSemSim.html#cb21-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
 <span id="cb21-2"><a href="GOSemSim.html#cb21-2" aria-hidden="true"></a>x &lt;-<span class="st"> </span>org.Hs.egGO</span>
 <span id="cb21-3"><a href="GOSemSim.html#cb21-3" aria-hidden="true"></a>hsEG &lt;-<span class="st"> </span><span class="kw">mappedkeys</span>(x)</span>
@@ -428,9 +428,9 @@ terms are also calculated by the these combine methods.</p>
 <span id="cb21-5"><a href="GOSemSim.html#cb21-5" aria-hidden="true"></a>clusters &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">a=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>), <span class="dt">b=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>), <span class="dt">c=</span><span class="kw">sample</span>(hsEG, <span class="dv">20</span>))</span>
 <span id="cb21-6"><a href="GOSemSim.html#cb21-6" aria-hidden="true"></a><span class="kw">mclusterSim</span>(clusters, <span class="dt">semData=</span>hsGO, <span class="dt">measure=</span><span class="st">&quot;Wang&quot;</span>, <span class="dt">combine=</span><span class="st">&quot;BMA&quot;</span>)</span></code></pre></div>
 <pre><code>##       a     b     c
-## a 1.000 0.725 0.608
-## b 0.725 1.000 0.668
-## c 0.608 0.668 1.000</code></pre>
+## a 1.000 0.651 0.686
+## b 0.651 1.000 0.786
+## c 0.686 0.786 1.000</code></pre>
 <!--
 
 

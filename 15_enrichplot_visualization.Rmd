@@ -1,21 +1,16 @@
 # Visualization of functional enrichment result {#enrichplot}
 
 
-The `r Biocpkg("enrichplot")` package implements several visualization methods
-to help interpreting enrichment results. It supports visualizing enrichment
-results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015],
-`r Biocpkg("clusterProfiler")` [@yu2012],
-`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")`. Both
-over representation analysis (ORA) and gene set enrichment analysis (GSEA) are
-supported.
+The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpreting enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012],
+`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")` [@yu_meshes_2018]. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.
 
-Many of these visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `ggplot2`. If you want to use old methods^[<https://www.biostars.org/p/375555>], you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
+Many of these visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `r CRANpkg("ggplot2")`. If you want to use [old methods](https://www.biostars.org/p/375555), you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
+
 
 ## Bar Plot
 
 
-Bar plot is the most widely used method to visualize enriched terms. It depicts
-the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
+Bar plot is the most widely used method to visualize enriched terms. It depicts the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
 and color.
 
 
@@ -34,25 +29,30 @@ edo <- enrichDGN(de)
 
 ```{r Barplot, fig.height=5, fig.width=8, fig.cap="(ref:Barplotcap)", fig.scap="(ref:Barplotscap)"}
 library(enrichplot)
-barplot(edo, showCategory=20)
+barplot(edo, showCategory=20) 
 ```
 
 
 ## Dot plot
 
 
-Dot plot is similar to bar plot with the capability to encode another score as
-dot size.
+Dot plot is similar to bar plot with the capability to encode another score as dot size.
+
+```r
+edo2 <- gseDO(geneList)
+dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
+```
 
 (ref:Dotplotscap) Dot plot of enriched terms.
 
 (ref:Dotplotcap) **Dot plot of enriched terms.** 
 
-```{r Dotplotcap, fig.width=12, fig.height=8, fig.cap="(ref:Dotplotcap)", fig.scap="(ref:Dotplotscap)"}
+```{r Dotplotcap, fig.width=12, fig.height=8, fig.cap="(ref:Dotplotcap)", fig.scap="(ref:Dotplotscap)", echo=FALSE}
 edo2 <- gseDO(geneList)
 p1 <- dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
 p2 <- dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
-plot_grid(p1, p2, ncol=2)
+plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
 ```
 
 
@@ -127,17 +127,17 @@ Enrichment map organizes enriched terms into a network with edges connecting
 overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
 
-The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `pie_scale` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
+The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `node_scale` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
 
 (ref:Enrichmentscap) Plot for results obtained from hypergeometric test and gene set enrichment analysis.
 
-(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `pie_scale=1.5` (B), `layout="kk"` (C) and `pie_scale=1.5,layout="kk"` (D).
+(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `node_scale=1.5` (B), `layout="kk"` (C) and `node_scale=1.5,layout="kk"` (D).
 
 ```{r Enrichment, fig.height=12, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
 p1 <- emapplot(edo)
-p2 <- emapplot(edo, pie_scale=1.5)
+p2 <- emapplot(edo, node_scale=1.5)
 p3 <- emapplot(edo,layout="kk")
-p4 <- emapplot(edo, pie_scale=1.5,layout="kk") 
+p4 <- emapplot(edo, node_scale=1.5,layout="kk") 
 cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
 ```
 

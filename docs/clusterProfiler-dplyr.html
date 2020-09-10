@@ -449,7 +449,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb175-12"><a href="clusterProfiler-dplyr.html#cb175-12" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;rich factor&quot;</span>) <span class="op">+</span></span>
 <span id="cb175-13"><a href="clusterProfiler-dplyr.html#cb175-13" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb175-14"><a href="clusterProfiler-dplyr.html#cb175-14" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Enriched Disease Ontology&quot;</span>)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.png" width="672" /></p>
+<p><img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.svg" width="672" /></p>
 <p>A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using <code>mutate</code> to add the fold enrichment variable is also easy:</p>
 <div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="clusterProfiler-dplyr.html#cb176-1" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">FoldEnrichment =</span> <span class="kw">parse_ratio</span>(GeneRatio) <span class="op">/</span><span class="st"> </span><span class="kw">parse_ratio</span>(BgRatio))</span></code></pre></div>
 </div>
@@ -478,7 +478,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb177-17"><a href="clusterProfiler-dplyr.html#cb177-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">scale_fill_continuous</span>(<span class="dt">low=</span><span class="st">&#39;red&#39;</span>, <span class="dt">high=</span><span class="st">&#39;blue&#39;</span>, <span class="dt">guide=</span><span class="kw">guide_colorbar</span>(<span class="dt">reverse=</span><span class="ot">TRUE</span>)) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb177-18"><a href="clusterProfiler-dplyr.html#cb177-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="ot">NULL</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:sliceNES"></span>
-<img src="biomedicalKnowledge_files/figure-html/sliceNES-1.png" alt="Choose pathways by ordinal positions." width="864" />
+<img src="biomedicalKnowledge_files/figure-html/sliceNES-1.svg" alt="Choose pathways by ordinal positions." width="864" />
 <p class="caption">
 Figure 16.1: <strong>Choose pathways by ordinal positions.</strong>
 </p>
@@ -496,7 +496,7 @@ Figure 16.1: <strong>Choose pathways by ordinal positions.</strong>
 <span id="cb178-8"><a href="clusterProfiler-dplyr.html#cb178-8" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;p value intervals&quot;</span>) <span class="op">+</span></span>
 <span id="cb178-9"><a href="clusterProfiler-dplyr.html#cb178-9" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Frequency&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb178-10"><a href="clusterProfiler-dplyr.html#cb178-10" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;p value distribution&quot;</span>)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/p-bar-1.png" width="768" /></p>
+<p><img src="biomedicalKnowledge_files/figure-html/p-bar-1.svg" width="768" /></p>
 
 </div>
 </div>

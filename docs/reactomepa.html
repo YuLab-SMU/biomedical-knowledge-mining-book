@@ -387,39 +387,32 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 <span id="cb92-2"><a href="reactomepa.html#cb92-2" aria-hidden="true"></a>                <span class="dt">pvalueCutoff=</span><span class="fl">0.2</span>,</span>
 <span id="cb92-3"><a href="reactomepa.html#cb92-3" aria-hidden="true"></a>                <span class="dt">pAdjustMethod=</span><span class="st">&quot;BH&quot;</span>, <span class="dt">verbose=</span><span class="ot">FALSE</span>)</span>
 <span id="cb92-4"><a href="reactomepa.html#cb92-4" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
-<pre><code>##                          ID
-## R-HSA-1474244 R-HSA-1474244
-## R-HSA-3000178 R-HSA-3000178
-## R-HSA-3000171 R-HSA-3000171
-## R-HSA-2022090 R-HSA-2022090
-## R-HSA-1650814 R-HSA-1650814
-## R-HSA-1566948 R-HSA-1566948
-##                                                                Description
-## R-HSA-1474244                            Extracellular matrix organization
-## R-HSA-3000178                                            ECM proteoglycans
-## R-HSA-3000171                       Non-integrin membrane-ECM interactions
-## R-HSA-2022090 Assembly of collagen fibrils and other multimeric structures
-## R-HSA-1650814                  Collagen biosynthesis and modifying enzymes
-## R-HSA-1566948                                      Elastic fibre formation
-##               setSize enrichmentScore       NES       pvalue    p.adjust
-## R-HSA-1474244     266      -0.4576106 -1.932778 0.0001339405 0.003136523
-## R-HSA-3000178      74      -0.6262504 -2.238495 0.0001508751 0.003136523
-## R-HSA-3000171      56      -0.5863352 -1.987543 0.0001568381 0.003136523
-## R-HSA-2022090      54      -0.5600621 -1.887950 0.0001575796 0.003136523
-## R-HSA-1650814      53      -0.5915513 -1.987657 0.0001577785 0.003136523
-## R-HSA-1566948      41      -0.6804683 -2.174238 0.0001609528 0.003136523
-##                   qvalues rank                   leading_edge
-## R-HSA-1474244 0.002270161 1943 tags=33%, list=16%, signal=29%
-## R-HSA-3000178 0.002270161 1890 tags=46%, list=15%, signal=39%
-## R-HSA-3000171 0.002270161 2538 tags=45%, list=20%, signal=36%
-## R-HSA-2022090 0.002270161 1897 tags=54%, list=15%, signal=46%
-## R-HSA-1650814 0.002270161 1890 tags=47%, list=15%, signal=40%
-## R-HSA-1566948 0.002270161 1562 tags=49%, list=13%, signal=43%
+<pre><code>##                          ID                                 Description setSize
+## R-HSA-1474244 R-HSA-1474244           Extracellular matrix organization     266
+## R-HSA-216083   R-HSA-216083          Integrin cell surface interactions      80
+## R-HSA-3000178 R-HSA-3000178                           ECM proteoglycans      74
+## R-HSA-3000171 R-HSA-3000171      Non-integrin membrane-ECM interactions      56
+## R-HSA-1650814 R-HSA-1650814 Collagen biosynthesis and modifying enzymes      53
+## R-HSA-1566948 R-HSA-1566948                     Elastic fibre formation      41
+##               enrichmentScore       NES       pvalue    p.adjust     qvalues
+## R-HSA-1474244      -0.4576106 -1.939249 0.0001340842 0.003399753 0.002471381
+## R-HSA-216083       -0.5123103 -1.857393 0.0001543448 0.003399753 0.002471381
+## R-HSA-3000178      -0.6262504 -2.236952 0.0001557390 0.003399753 0.002471381
+## R-HSA-3000171      -0.5863352 -1.988225 0.0001594896 0.003399753 0.002471381
+## R-HSA-1650814      -0.5915513 -1.984115 0.0001609788 0.003399753 0.002471381
+## R-HSA-1566948      -0.6804683 -2.168610 0.0001626545 0.003399753 0.002471381
+##               rank                   leading_edge
+## R-HSA-1474244 1943 tags=33%, list=16%, signal=29%
+## R-HSA-216083  1890 tags=39%, list=15%, signal=33%
+## R-HSA-3000178 1890 tags=46%, list=15%, signal=39%
+## R-HSA-3000171 2538 tags=45%, list=20%, signal=36%
+## R-HSA-1650814 1890 tags=47%, list=15%, signal=40%
+## R-HSA-1566948 1562 tags=49%, list=13%, signal=43%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                       core_enrichment
 ## R-HSA-1474244 825/8038/11132/4017/1288/4811/3910/3371/1291/3791/831/1301/4238/7450/3685/80781/1280/1306/4314/3675/8425/977/4054/7837/7042/3912/4322/1278/1511/4060/30008/1277/164656/22795/10516/81578/1293/2247/1295/58494/8076/5118/2192/1281/83700/50509/4319/1290/1513/11096/2202/4313/2199/3693/10536/1294/11117/3339/1462/1289/1292/3908/4016/3909/4053/6678/1296/633/5654/2331/63923/7043/3913/1300/2200/1634/7177/1287/3679/4680/2006/7373/1307/1311/1308/652/4148/54829/4239
+## R-HSA-216083                                                                                                                                                                                                                                                                                                           1288/3371/1291/3791/7450/3685/80781/1280/3675/1278/4060/1277/1293/1295/58494/1281/83700/50509/1290/3693/1294/3339/1289/1292/1296/1300/2200/1287/3679/1307/1311
 ## R-HSA-3000178                                                                                                                                                                                                                                                                                             1288/3910/3371/1291/3685/1280/7042/3912/1278/4060/1277/1293/1281/50509/1290/3693/3339/1462/1289/1292/3908/3909/6678/633/2331/63923/7043/3913/1634/1287/3679/1311/4148/54829
 ## R-HSA-3000171                                                                                                                                                                                                                                                                                                                                           7057/3915/6385/4921/1288/3910/3371/1301/3685/1280/3912/1278/1277/2247/1281/50509/1290/3693/3339/1289/3908/3909/3913/1300/1287
-## R-HSA-2022090                                                                                                                                                                                                                                                                                                                       4017/1288/1291/1301/80781/1280/1306/4314/977/7837/4322/1278/1277/1293/1295/5118/1281/50509/1290/1294/1289/1292/4016/3909/1296/1300/1287/7373/1308
 ## R-HSA-1650814                                                                                                                                                                                                                                                                                                                                        1288/1291/1301/80781/1280/1306/1278/1277/81578/1293/1295/5118/1281/50509/1290/10536/1294/1289/1292/1296/1300/1287/7373/1307/1308
 ## R-HSA-1566948                                                                                                                                                                                                                                                                                                                                                                   4238/3685/8425/4054/7042/30008/10516/8076/2192/2202/2199/3693/11117/4016/4053/7043/2200/2006/652/4239</code></pre>
 </div>
@@ -429,7 +422,7 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 <div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="reactomepa.html#cb94-1" aria-hidden="true"></a><span class="kw">viewPathway</span>(<span class="st">&quot;E2F mediated regulation of DNA replication&quot;</span>, </span>
 <span id="cb94-2"><a href="reactomepa.html#cb94-2" aria-hidden="true"></a>            <span class="dt">readable =</span> <span class="ot">TRUE</span>, </span>
 <span id="cb94-3"><a href="reactomepa.html#cb94-3" aria-hidden="true"></a>            <span class="dt">foldChange =</span> geneList)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-1.png" width="768" /></p>
+<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-1.svg" width="768" /></p>
 <!--
 
 ## Pathway analysis of NGS data

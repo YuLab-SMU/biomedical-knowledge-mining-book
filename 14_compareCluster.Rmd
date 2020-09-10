@@ -62,11 +62,11 @@ dotplot(formula_res)
 ```
 
 
-```{r comparecluster-genelists, fig.height=5, fig.width=10, fig.cap="(ref:compareClusterGeneListcap)", fig.scap="(ref:compareClusterGeneListscap)", echo=FALSE}
+```{r comparecluster-genelists, fig.height=8, fig.width=20, fig.cap="(ref:compareClusterGeneListcap)", fig.scap="(ref:compareClusterGeneListscap)", echo=FALSE}
 library(stringr)
-p1 <- dotplot(ck) + scale_y_discrete(labels=function(x) str_wrap(x, width=50))
-p2 <- dotplot(formula_res) + scale_y_discrete(labels=function(x) str_wrap(x, width=30))
-cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"), rel_widths=c(.9, 1))
+p1 <- dotplot(ck) + scale_y_discrete(labels=function(x) str_wrap(x, width=50)) + scale_size(range = c(3, 10))
+p2 <- dotplot(formula_res) + scale_y_discrete(labels=function(x) str_wrap(x, width=30)) + scale_size(range = c(5, 15))
+cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"))
 ```
 
 The fomula interface allows more complicated gene cluster definition. In Figure \@ref(fig:comparecluster-genelists)B, the gene clusters were defined by two variables (i.e. `group` that divides genes into `upregulated` and `downregulated` and `othergroup` that divides the genes into two categories of `A` and `B`.). The `dotplot()` function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure \@ref(fig:comparecluster-formula)).
@@ -76,7 +76,7 @@ The fomula interface allows more complicated gene cluster definition. In Figure 
 
 (ref:compareClusterFormulacap) **Comparing enrichment results of multiple gene lists defined by multiple variable.**  
 
-```{r comparecluster-formula, fig.height=4, fig.width=7,fig.cap="(ref:compareClusterFormulacap)", fig.scap="(ref:compareClusterFormulascap)"}
+```{r comparecluster-formula, fig.height=6, fig.width=12,fig.cap="(ref:compareClusterFormulacap)", fig.scap="(ref:compareClusterFormulascap)"}
 dotplot(formula_res, x=~group) + facet_grid(~othergroup)
 ```
 
