@@ -41,8 +41,14 @@ select(x, -geneID) %>% head
 
 ## mutate
 
+(ref:richfactorplotscap) Visualizing rich factor of enriched terms using lolliplot.
 
-```{r dot-richfactor, fig.width=7, fig.height=7}
+(ref:richfactorplotcap) **Visualizing rich factor of enriched terms using lolliplot.** 
+
+
+```{r dot-richfactor, fig.width=7, fig.height=7, fig.cap="(ref:richfactorplotcap)", fig.scap="(ref:richfactorplotscap)"}
+
+# k/M
 y <- mutate(x, richFactor = Count / as.numeric(sub("/\\d+", "", BgRatio)))
 y
 
@@ -105,17 +111,31 @@ ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalues), showCategory=10
 
 ## summarise
 
+(ref:pBarplotscap) Distribution of adjusted p-values.
 
-```{r p-bar, fig.width=8, fig.height=5}
-pi=seq(0, 1, length.out=11)
+(ref:pBarplotcap) **Distribution of adjusted p-values.** 
 
-mutate(x, pp = cut(pvalue, pi)) %>%
-  group_by(pp) %>% 
-  summarise(cnt = n()) %>% 
-  ggplot(aes(pp, cnt)) + geom_col() + 
-  theme_minimal() +
-  xlab("p value intervals") +
-  ylab("Frequency") + 
-  ggtitle("p value distribution")
+
+```{r p-bar, fig.width=8, fig.height=6, fig.cap="(ref:pBarplotcap)", fig.scap="(ref:pBarplotscap)"}
+pbar <- function(x) {
+  pi=seq(0, 1, length.out=11)
+
+  mutate(x, pp = cut(p.adjust, pi)) %>%
+    group_by(pp) %>% 
+    summarise(cnt = n()) %>% 
+    ggplot(aes(pp, cnt)) + geom_col() + 
+    theme_minimal() +
+    xlab("p value intervals") +
+    ylab("Frequency") + 
+    ggtitle("p value distribution")
+}    
+
+x <- enrichDO(de, pvalueCutoff=1, qvalueCutoff=1)
+set.seed(2020-09-10)
+random_genes <- sample(names(geneList), 100)
+y <- enrichDO(random_genes, pvalueCutoff=1, qvalueCutoff=1)
+p1 <- pbar(x)
+p2 <- pbar(y)
+cowplot::plot_grid(p1, p2, ncol=1, labels = LETTERS[1:2])
 ```
 

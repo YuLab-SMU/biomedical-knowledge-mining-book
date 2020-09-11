@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -336,21 +336,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="dose-do-ora" class="section level3" number="10.1.1">
 <h3><span class="header-section-number">10.1.1</span> Over-representation analysis for disease ontology</h3>
 <p>In the following example, we selected fold change above 1.5 as the differential genes and analyzing their disease association.</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="dose-enrichment.html#cb95-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
-<span id="cb95-2"><a href="dose-enrichment.html#cb95-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
-<span id="cb95-3"><a href="dose-enrichment.html#cb95-3" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
-<span id="cb95-4"><a href="dose-enrichment.html#cb95-4" aria-hidden="true"></a><span class="kw">head</span>(gene)</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="dose-enrichment.html#cb98-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb98-2"><a href="dose-enrichment.html#cb98-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb98-3"><a href="dose-enrichment.html#cb98-3" aria-hidden="true"></a>gene &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
+<span id="cb98-4"><a href="dose-enrichment.html#cb98-4" aria-hidden="true"></a><span class="kw">head</span>(gene)</span></code></pre></div>
 <pre><code>## [1] &quot;4312&quot;  &quot;8318&quot;  &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot;</code></pre>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="dose-enrichment.html#cb97-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichDO</span>(<span class="dt">gene          =</span> gene,</span>
-<span id="cb97-2"><a href="dose-enrichment.html#cb97-2" aria-hidden="true"></a>              <span class="dt">ont           =</span> <span class="st">&quot;DO&quot;</span>,</span>
-<span id="cb97-3"><a href="dose-enrichment.html#cb97-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
-<span id="cb97-4"><a href="dose-enrichment.html#cb97-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb97-5"><a href="dose-enrichment.html#cb97-5" aria-hidden="true"></a>              <span class="dt">universe      =</span> <span class="kw">names</span>(geneList),</span>
-<span id="cb97-6"><a href="dose-enrichment.html#cb97-6" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">5</span>,</span>
-<span id="cb97-7"><a href="dose-enrichment.html#cb97-7" aria-hidden="true"></a>              <span class="dt">maxGSSize     =</span> <span class="dv">500</span>,</span>
-<span id="cb97-8"><a href="dose-enrichment.html#cb97-8" aria-hidden="true"></a>              <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
-<span id="cb97-9"><a href="dose-enrichment.html#cb97-9" aria-hidden="true"></a>              <span class="dt">readable      =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb97-10"><a href="dose-enrichment.html#cb97-10" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="dose-enrichment.html#cb100-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichDO</span>(<span class="dt">gene          =</span> gene,</span>
+<span id="cb100-2"><a href="dose-enrichment.html#cb100-2" aria-hidden="true"></a>              <span class="dt">ont           =</span> <span class="st">&quot;DO&quot;</span>,</span>
+<span id="cb100-3"><a href="dose-enrichment.html#cb100-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
+<span id="cb100-4"><a href="dose-enrichment.html#cb100-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb100-5"><a href="dose-enrichment.html#cb100-5" aria-hidden="true"></a>              <span class="dt">universe      =</span> <span class="kw">names</span>(geneList),</span>
+<span id="cb100-6"><a href="dose-enrichment.html#cb100-6" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">5</span>,</span>
+<span id="cb100-7"><a href="dose-enrichment.html#cb100-7" aria-hidden="true"></a>              <span class="dt">maxGSSize     =</span> <span class="dv">500</span>,</span>
+<span id="cb100-8"><a href="dose-enrichment.html#cb100-8" aria-hidden="true"></a>              <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
+<span id="cb100-9"><a href="dose-enrichment.html#cb100-9" aria-hidden="true"></a>              <span class="dt">readable      =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb100-10"><a href="dose-enrichment.html#cb100-10" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
 <pre><code>##                    ID                    Description GeneRatio  BgRatio
 ## DOID:170     DOID:170         endocrine gland cancer    48/331 472/6268
 ## DOID:10283 DOID:10283                prostate cancer    40/331 394/6268
@@ -388,9 +388,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="dose-ncg-ora" class="section level3" number="10.1.2">
 <h3><span class="header-section-number">10.1.2</span> Over-representation analysis for the network of cancer gene</h3>
 <p><a href="http://ncg.kcl.ac.uk/">Network of Cancer Gene</a> (NCG) <span class="citation">(A. et al. <a href="#ref-omer_ncg" role="doc-biblioref">2016</a>)</span> is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="dose-enrichment.html#cb99-1" aria-hidden="true"></a>gene2 &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>]</span>
-<span id="cb99-2"><a href="dose-enrichment.html#cb99-2" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">enrichNCG</span>(gene2) </span>
-<span id="cb99-3"><a href="dose-enrichment.html#cb99-3" aria-hidden="true"></a><span class="kw">head</span>(ncg)</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="dose-enrichment.html#cb102-1" aria-hidden="true"></a>gene2 &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>]</span>
+<span id="cb102-2"><a href="dose-enrichment.html#cb102-2" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">enrichNCG</span>(gene2) </span>
+<span id="cb102-3"><a href="dose-enrichment.html#cb102-3" aria-hidden="true"></a><span class="kw">head</span>(ncg)</span></code></pre></div>
 <pre><code>##                                                                      ID
 ## pan-cancer_paediatric                             pan-cancer_paediatric
 ## triple_negative_breast_cancer             triple_negative_breast_cancer
@@ -438,8 +438,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">10.1.3</span> Over-representation analysis for the disease gene network</h3>
 <p><a href="http://disgenet.org/">DisGeNET</a><span class="citation">(Janet et al. <a href="#ref-janet_disgenet" role="doc-biblioref">2015</a>)</span> is an integrative and comprehensive resources of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.</p>
 <p>The enrichment analysis of disease-gene associations is supported by the <code>enrichDGN</code> function and analysis of snp-gene-disease associations is supported by the <code>enrichDGNv</code> function.</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="dose-enrichment.html#cb101-1" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">enrichDGN</span>(gene) </span>
-<span id="cb101-2"><a href="dose-enrichment.html#cb101-2" aria-hidden="true"></a><span class="kw">head</span>(dgn)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="dose-enrichment.html#cb104-1" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">enrichDGN</span>(gene) </span>
+<span id="cb104-2"><a href="dose-enrichment.html#cb104-2" aria-hidden="true"></a><span class="kw">head</span>(dgn)</span></code></pre></div>
 <pre><code>##                ID                              Description GeneRatio   BgRatio
 ## C0010278 C0010278                         Craniosynostosis    43/497 488/21671
 ## C0853879 C0853879             Invasive carcinoma of breast    42/497 473/21671
@@ -468,12 +468,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## C3642347    28
 ## C3642345    22
 ## C0036202    36</code></pre>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="dose-enrichment.html#cb103-1" aria-hidden="true"></a>snp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;rs1401296&quot;</span>, <span class="st">&quot;rs9315050&quot;</span>, <span class="st">&quot;rs5498&quot;</span>, <span class="st">&quot;rs1524668&quot;</span>, <span class="st">&quot;rs147377392&quot;</span>,</span>
-<span id="cb103-2"><a href="dose-enrichment.html#cb103-2" aria-hidden="true"></a>         <span class="st">&quot;rs841&quot;</span>, <span class="st">&quot;rs909253&quot;</span>, <span class="st">&quot;rs7193343&quot;</span>, <span class="st">&quot;rs3918232&quot;</span>, <span class="st">&quot;rs3760396&quot;</span>,</span>
-<span id="cb103-3"><a href="dose-enrichment.html#cb103-3" aria-hidden="true"></a>         <span class="st">&quot;rs2231137&quot;</span>, <span class="st">&quot;rs10947803&quot;</span>, <span class="st">&quot;rs17222919&quot;</span>, <span class="st">&quot;rs386602276&quot;</span>, <span class="st">&quot;rs11053646&quot;</span>,</span>
-<span id="cb103-4"><a href="dose-enrichment.html#cb103-4" aria-hidden="true"></a>         <span class="st">&quot;rs1805192&quot;</span>, <span class="st">&quot;rs139564723&quot;</span>, <span class="st">&quot;rs2230806&quot;</span>, <span class="st">&quot;rs20417&quot;</span>, <span class="st">&quot;rs966221&quot;</span>)</span>
-<span id="cb103-5"><a href="dose-enrichment.html#cb103-5" aria-hidden="true"></a>dgnv &lt;-<span class="st"> </span><span class="kw">enrichDGNv</span>(snp)</span>
-<span id="cb103-6"><a href="dose-enrichment.html#cb103-6" aria-hidden="true"></a><span class="kw">head</span>(dgnv)</span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="dose-enrichment.html#cb106-1" aria-hidden="true"></a>snp &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;rs1401296&quot;</span>, <span class="st">&quot;rs9315050&quot;</span>, <span class="st">&quot;rs5498&quot;</span>, <span class="st">&quot;rs1524668&quot;</span>, <span class="st">&quot;rs147377392&quot;</span>,</span>
+<span id="cb106-2"><a href="dose-enrichment.html#cb106-2" aria-hidden="true"></a>         <span class="st">&quot;rs841&quot;</span>, <span class="st">&quot;rs909253&quot;</span>, <span class="st">&quot;rs7193343&quot;</span>, <span class="st">&quot;rs3918232&quot;</span>, <span class="st">&quot;rs3760396&quot;</span>,</span>
+<span id="cb106-3"><a href="dose-enrichment.html#cb106-3" aria-hidden="true"></a>         <span class="st">&quot;rs2231137&quot;</span>, <span class="st">&quot;rs10947803&quot;</span>, <span class="st">&quot;rs17222919&quot;</span>, <span class="st">&quot;rs386602276&quot;</span>, <span class="st">&quot;rs11053646&quot;</span>,</span>
+<span id="cb106-4"><a href="dose-enrichment.html#cb106-4" aria-hidden="true"></a>         <span class="st">&quot;rs1805192&quot;</span>, <span class="st">&quot;rs139564723&quot;</span>, <span class="st">&quot;rs2230806&quot;</span>, <span class="st">&quot;rs20417&quot;</span>, <span class="st">&quot;rs966221&quot;</span>)</span>
+<span id="cb106-5"><a href="dose-enrichment.html#cb106-5" aria-hidden="true"></a>dgnv &lt;-<span class="st"> </span><span class="kw">enrichDGNv</span>(snp)</span>
+<span id="cb106-6"><a href="dose-enrichment.html#cb106-6" aria-hidden="true"></a><span class="kw">head</span>(dgnv)</span></code></pre></div>
 <pre><code>##                ID               Description GeneRatio    BgRatio       pvalue
 ## C0010054 C0010054 Coronary Arteriosclerosis      6/17 440/194515 1.568917e-12
 ## C0151744 C0151744       Myocardial Ischemia      4/17 103/194515 1.754840e-10
@@ -502,22 +502,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="gsedo-fuction" class="section level3" number="10.2.1">
 <h3><span class="header-section-number">10.2.1</span> <code>gseDO</code> fuction</h3>
 <p>In the following example, in order to speedup the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="dose-enrichment.html#cb105-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
-<span id="cb105-2"><a href="dose-enrichment.html#cb105-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
-<span id="cb105-3"><a href="dose-enrichment.html#cb105-3" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gseDO</span>(geneList,</span>
-<span id="cb105-4"><a href="dose-enrichment.html#cb105-4" aria-hidden="true"></a>           <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
-<span id="cb105-5"><a href="dose-enrichment.html#cb105-5" aria-hidden="true"></a>           <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
-<span id="cb105-6"><a href="dose-enrichment.html#cb105-6" aria-hidden="true"></a>           <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb105-7"><a href="dose-enrichment.html#cb105-7" aria-hidden="true"></a>           <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb105-8"><a href="dose-enrichment.html#cb105-8" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="dose-enrichment.html#cb108-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb108-2"><a href="dose-enrichment.html#cb108-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb108-3"><a href="dose-enrichment.html#cb108-3" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gseDO</span>(geneList,</span>
+<span id="cb108-4"><a href="dose-enrichment.html#cb108-4" aria-hidden="true"></a>           <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
+<span id="cb108-5"><a href="dose-enrichment.html#cb108-5" aria-hidden="true"></a>           <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
+<span id="cb108-6"><a href="dose-enrichment.html#cb108-6" aria-hidden="true"></a>           <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb108-7"><a href="dose-enrichment.html#cb108-7" aria-hidden="true"></a>           <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb108-8"><a href="dose-enrichment.html#cb108-8" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                        ID                          Description setSize
 ## DOID:0050338 DOID:0050338 primary bacterial infectious disease     214
 ## DOID:104         DOID:104         bacterial infectious disease     243
 ## DOID:399         DOID:399                         tuberculosis     140
 ##              enrichmentScore      NES       pvalue     p.adjust      qvalues
-## DOID:0050338       0.4569856 2.097200 3.654509e-10 5.737580e-08 2.231174e-08
-## DOID:104           0.4286201 1.975827 3.874627e-09 3.041582e-07 1.182781e-07
-## DOID:399           0.4999969 2.146206 1.206379e-08 6.313381e-07 2.455086e-07
+## DOID:0050338       0.4569856 2.077084 7.579090e-10 1.189917e-07 4.627234e-08
+## DOID:104           0.4286201 1.970758 2.265851e-09 1.778693e-07 6.916807e-08
+## DOID:399           0.4999969 2.147909 1.520399e-08 7.956757e-07 3.094146e-07
 ##              rank                   leading_edge
 ## DOID:0050338 1850 tags=35%, list=15%, signal=30%
 ## DOID:104     1808 tags=32%, list=14%, signal=28%
@@ -529,38 +529,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="gsencg-fuction" class="section level3" number="10.2.2">
 <h3><span class="header-section-number">10.2.2</span> <code>gseNCG</code> fuction</h3>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="dose-enrichment.html#cb107-1" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">gseNCG</span>(geneList,</span>
-<span id="cb107-2"><a href="dose-enrichment.html#cb107-2" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
-<span id="cb107-3"><a href="dose-enrichment.html#cb107-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
-<span id="cb107-4"><a href="dose-enrichment.html#cb107-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb107-5"><a href="dose-enrichment.html#cb107-5" aria-hidden="true"></a>              <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb107-6"><a href="dose-enrichment.html#cb107-6" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ncg, <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
-<span id="cb107-7"><a href="dose-enrichment.html#cb107-7" aria-hidden="true"></a><span class="kw">head</span>(ncg, <span class="dv">3</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="dose-enrichment.html#cb110-1" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">gseNCG</span>(geneList,</span>
+<span id="cb110-2"><a href="dose-enrichment.html#cb110-2" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
+<span id="cb110-3"><a href="dose-enrichment.html#cb110-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
+<span id="cb110-4"><a href="dose-enrichment.html#cb110-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb110-5"><a href="dose-enrichment.html#cb110-5" aria-hidden="true"></a>              <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb110-6"><a href="dose-enrichment.html#cb110-6" aria-hidden="true"></a>ncg &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ncg, <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
+<span id="cb110-7"><a href="dose-enrichment.html#cb110-7" aria-hidden="true"></a><span class="kw">head</span>(ncg, <span class="dv">3</span>) </span></code></pre></div>
 <pre><code>## [1] ID              Description     setSize         enrichmentScore
 ## [5] NES             pvalue          p.adjust        qvalues        
 ## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 </div>
 <div id="gsedgn-fuction" class="section level3" number="10.2.3">
 <h3><span class="header-section-number">10.2.3</span> <code>gseDGN</code> fuction</h3>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="dose-enrichment.html#cb109-1" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">gseDGN</span>(geneList,</span>
-<span id="cb109-2"><a href="dose-enrichment.html#cb109-2" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
-<span id="cb109-3"><a href="dose-enrichment.html#cb109-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
-<span id="cb109-4"><a href="dose-enrichment.html#cb109-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
-<span id="cb109-5"><a href="dose-enrichment.html#cb109-5" aria-hidden="true"></a>              <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb109-6"><a href="dose-enrichment.html#cb109-6" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">setReadable</span>(dgn, <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
-<span id="cb109-7"><a href="dose-enrichment.html#cb109-7" aria-hidden="true"></a><span class="kw">head</span>(dgn, <span class="dv">3</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="dose-enrichment.html#cb112-1" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">gseDGN</span>(geneList,</span>
+<span id="cb112-2"><a href="dose-enrichment.html#cb112-2" aria-hidden="true"></a>              <span class="dt">minGSSize     =</span> <span class="dv">120</span>,</span>
+<span id="cb112-3"><a href="dose-enrichment.html#cb112-3" aria-hidden="true"></a>              <span class="dt">pvalueCutoff  =</span> <span class="fl">0.2</span>,</span>
+<span id="cb112-4"><a href="dose-enrichment.html#cb112-4" aria-hidden="true"></a>              <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
+<span id="cb112-5"><a href="dose-enrichment.html#cb112-5" aria-hidden="true"></a>              <span class="dt">verbose       =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb112-6"><a href="dose-enrichment.html#cb112-6" aria-hidden="true"></a>dgn &lt;-<span class="st"> </span><span class="kw">setReadable</span>(dgn, <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
+<span id="cb112-7"><a href="dose-enrichment.html#cb112-7" aria-hidden="true"></a><span class="kw">head</span>(dgn, <span class="dv">3</span>) </span></code></pre></div>
 <pre><code>##                ID                  Description setSize enrichmentScore
 ## C0024266 C0024266 Lymphocytic Choriomeningitis     120       0.5712593
 ## C0151779 C0151779           Cutaneous Melanoma     415       0.3963772
 ## C0205682 C0205682              Waist-Hip Ratio     401      -0.4425633
-##                NES pvalue p.adjust      qvalues rank
-## C0024266  2.389058  1e-10 2.69e-08 1.763158e-08 2579
-## C0151779  1.921149  1e-10 2.69e-08 1.763158e-08 1864
-## C0205682 -1.945406  1e-10 2.69e-08 1.763158e-08 2011
-##                            leading_edge
-## C0024266 tags=48%, list=21%, signal=38%
-## C0151779 tags=27%, list=15%, signal=24%
-## C0205682 tags=28%, list=16%, signal=24%
+##                NES pvalue p.adjust  qvalues rank                   leading_edge
+## C0024266  2.409242  1e-10 2.69e-08 1.75e-08 2579 tags=48%, list=21%, signal=38%
+## C0151779  1.899837  1e-10 2.69e-08 1.75e-08 1864 tags=27%, list=15%, signal=24%
+## C0205682 -1.945541  1e-10 2.69e-08 1.75e-08 2011 tags=28%, list=16%, signal=24%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
 ## C0024266                                                                                                                                                                                                                                                                                                                                                                                S100A9/CXCL10/CXCL9/EZH2/GZMB/ICOS/USP18/CXCL8/CTLA4/TREM1/PRF1/ADM/CA9/STAT1/CCL2/SELL/CDKN2A/IL7/IL7R/IFNG/CCR5/IL27RA/SH2D1A/FCER1G/CDK2AP2/CPVL/CD27/PSMB10/PTPN22/SLAMF1/KDM1A/TNF/IL6/FGL2/TLR2/RPAIN/NELFCD/PDCD1/WAS/HIF1A/ATP5F1B/FCGR2B/EGR2/STX11/CXCR3/TYROBP/YME1L1/SOSTDC1/PTPN2/TRAF1/HNF1A/IRF9/PML/NR0B2/IL2/TOX/AGFG1
 ## C0151779                                                          MMP1/CDCA8/S100A8/TOP2A/PBK/ISG20/NEK2/CCL18/PDK1/EZH2/AURKB/CHAF1B/KIF18B/MMP12/LAG3/DTL/PTTG1/SOX11/CDKN3/PRAME/PLK1/FABP7/MMP9/GBP1/CXCL8/CTLA4/SOX10/PROM1/MKI67/FANCA/MCM6/MCM4/PITX1/DBF4/IL2RA/TYMS/PLA2G2A/MYC/PCNA/NDRG1/CDKAL1/BLM/E2F1/OCA2/CD163/CDKN2A/NME1/TCF21/KMO/VCAM1/RUNX3/IFNG/MCM7/KYNU/STIP1/CCDC88C/GSTP1/CHAF1A/MSH2/CYP27B1/MAGEA1/CDKN2C/PRDM16/MX2/CDK4/GAPDH/MCM3/ICAM1/CCL22/CHEK2/CXCL5/ERCC4/SPP1/TEAD4/MTAP/HCP5/MRC1/TUBB3/CD27/S100B/CSPG4/PLP2/NBN/VEGFA/IFNW1/CDK16/CDH1/CCNF/CBLIF/SOX4/PARP1/SLC16A1/DNMT1/MAP2K1/ATG5/TNF/NXT1/CDKN2B/RBX1/IL6/TLR2/CXCR4/PDCD1/PTGS2/HIF1A/JMJD6/XRCC3/HLA-DQB1/PVR/CASP10/TGFA/EGFR

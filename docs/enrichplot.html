@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -336,15 +336,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">15.1</span> Bar Plot</h2>
 <p>Bar plot is the most widely used method to visualize enriched terms. It depicts the enrichment scores (<em>e.g.</em> p values) and gene count or ratio as bar height
 and color.</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="enrichplot.html#cb144-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
-<span id="cb144-2"><a href="enrichplot.html#cb144-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
-<span id="cb144-3"><a href="enrichplot.html#cb144-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
-<span id="cb144-4"><a href="enrichplot.html#cb144-4" aria-hidden="true"></a></span>
-<span id="cb144-5"><a href="enrichplot.html#cb144-5" aria-hidden="true"></a>edo &lt;-<span class="st"> </span><span class="kw">enrichDGN</span>(de)</span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="enrichplot.html#cb147-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb147-2"><a href="enrichplot.html#cb147-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb147-3"><a href="enrichplot.html#cb147-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb147-4"><a href="enrichplot.html#cb147-4" aria-hidden="true"></a></span>
+<span id="cb147-5"><a href="enrichplot.html#cb147-5" aria-hidden="true"></a>edo &lt;-<span class="st"> </span><span class="kw">enrichDGN</span>(de)</span></code></pre></div>
 
 
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="enrichplot.html#cb145-1" aria-hidden="true"></a><span class="kw">library</span>(enrichplot)</span>
-<span id="cb145-2"><a href="enrichplot.html#cb145-2" aria-hidden="true"></a><span class="kw">barplot</span>(edo, <span class="dt">showCategory=</span><span class="dv">20</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="enrichplot.html#cb148-1" aria-hidden="true"></a><span class="kw">library</span>(enrichplot)</span>
+<span id="cb148-2"><a href="enrichplot.html#cb148-2" aria-hidden="true"></a><span class="kw">barplot</span>(edo, <span class="dt">showCategory=</span><span class="dv">20</span>) </span></code></pre></div>
 <div class="figure"><span id="fig:Barplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/Barplot-1.svg" alt="Bar plot of enriched terms." width="768" />
 <p class="caption">
@@ -355,9 +355,9 @@ Figure 15.1: <strong>Bar plot of enriched terms.</strong>
 <div id="dot-plot" class="section level2" number="15.2">
 <h2><span class="header-section-number">15.2</span> Dot plot</h2>
 <p>Dot plot is similar to bar plot with the capability to encode another score as dot size.</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="enrichplot.html#cb146-1" aria-hidden="true"></a>edo2 &lt;-<span class="st"> </span><span class="kw">gseDO</span>(geneList)</span>
-<span id="cb146-2"><a href="enrichplot.html#cb146-2" aria-hidden="true"></a><span class="kw">dotplot</span>(edo, <span class="dt">showCategory=</span><span class="dv">30</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;dotplot for ORA&quot;</span>)</span>
-<span id="cb146-3"><a href="enrichplot.html#cb146-3" aria-hidden="true"></a><span class="kw">dotplot</span>(edo2, <span class="dt">showCategory=</span><span class="dv">30</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;dotplot for GSEA&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="enrichplot.html#cb149-1" aria-hidden="true"></a>edo2 &lt;-<span class="st"> </span><span class="kw">gseDO</span>(geneList)</span>
+<span id="cb149-2"><a href="enrichplot.html#cb149-2" aria-hidden="true"></a><span class="kw">dotplot</span>(edo, <span class="dt">showCategory=</span><span class="dv">30</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;dotplot for ORA&quot;</span>)</span>
+<span id="cb149-3"><a href="enrichplot.html#cb149-3" aria-hidden="true"></a><span class="kw">dotplot</span>(edo2, <span class="dt">showCategory=</span><span class="dv">30</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">&quot;dotplot for GSEA&quot;</span>)</span></code></pre></div>
 
 
 <div class="figure"><span id="fig:Dotplotcap"></span>
@@ -377,13 +377,13 @@ The <code>cnetplot</code> depicts the linkages of genes and biological concepts 
 with only core enriched genes displayed.</p>
 
 
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="enrichplot.html#cb147-1" aria-hidden="true"></a><span class="co">## convert gene ID to Symbol</span></span>
-<span id="cb147-2"><a href="enrichplot.html#cb147-2" aria-hidden="true"></a>edox &lt;-<span class="st"> </span><span class="kw">setReadable</span>(edo, <span class="st">&#39;org.Hs.eg.db&#39;</span>, <span class="st">&#39;ENTREZID&#39;</span>)</span>
-<span id="cb147-3"><a href="enrichplot.html#cb147-3" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">foldChange=</span>geneList)</span>
-<span id="cb147-4"><a href="enrichplot.html#cb147-4" aria-hidden="true"></a><span class="co">## categorySize can be scaled by &#39;pvalue&#39; or &#39;geneNum&#39;</span></span>
-<span id="cb147-5"><a href="enrichplot.html#cb147-5" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">categorySize=</span><span class="st">&quot;pvalue&quot;</span>, <span class="dt">foldChange=</span>geneList)</span>
-<span id="cb147-6"><a href="enrichplot.html#cb147-6" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">foldChange=</span>geneList, <span class="dt">circular =</span> <span class="ot">TRUE</span>, <span class="dt">colorEdge =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb147-7"><a href="enrichplot.html#cb147-7" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, <span class="dt">ncol=</span><span class="dv">3</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="dt">rel_widths=</span><span class="kw">c</span>(.<span class="dv">8</span>, <span class="fl">.8</span>, <span class="fl">1.2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="enrichplot.html#cb150-1" aria-hidden="true"></a><span class="co">## convert gene ID to Symbol</span></span>
+<span id="cb150-2"><a href="enrichplot.html#cb150-2" aria-hidden="true"></a>edox &lt;-<span class="st"> </span><span class="kw">setReadable</span>(edo, <span class="st">&#39;org.Hs.eg.db&#39;</span>, <span class="st">&#39;ENTREZID&#39;</span>)</span>
+<span id="cb150-3"><a href="enrichplot.html#cb150-3" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">foldChange=</span>geneList)</span>
+<span id="cb150-4"><a href="enrichplot.html#cb150-4" aria-hidden="true"></a><span class="co">## categorySize can be scaled by &#39;pvalue&#39; or &#39;geneNum&#39;</span></span>
+<span id="cb150-5"><a href="enrichplot.html#cb150-5" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">categorySize=</span><span class="st">&quot;pvalue&quot;</span>, <span class="dt">foldChange=</span>geneList)</span>
+<span id="cb150-6"><a href="enrichplot.html#cb150-6" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">foldChange=</span>geneList, <span class="dt">circular =</span> <span class="ot">TRUE</span>, <span class="dt">colorEdge =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb150-7"><a href="enrichplot.html#cb150-7" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, <span class="dt">ncol=</span><span class="dv">3</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="dt">rel_widths=</span><span class="kw">c</span>(.<span class="dv">8</span>, <span class="fl">.8</span>, <span class="fl">1.2</span>))</span></code></pre></div>
 <div class="figure"><span id="fig:Networkplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/Networkplot-1.svg" alt="Network plot of enriched terms." width="1920" />
 <p class="caption">
@@ -393,11 +393,11 @@ Figure 15.3: <strong>Network plot of enriched terms.</strong>
 <p>If you would like label subset of the nodes, you can use the <code>node_label</code> parameter, which supports 4 possible selections (i.e. “category”, “gene”, “all” and “none”), as demonstrated in Figure <a href="enrichplot.html#fig:cnetNodeLabel">15.4</a>.</p>
 
 
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="enrichplot.html#cb148-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;category&quot;</span>) </span>
-<span id="cb148-2"><a href="enrichplot.html#cb148-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;gene&quot;</span>) </span>
-<span id="cb148-3"><a href="enrichplot.html#cb148-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;all&quot;</span>) </span>
-<span id="cb148-4"><a href="enrichplot.html#cb148-4" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;none&quot;</span>) </span>
-<span id="cb148-5"><a href="enrichplot.html#cb148-5" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="enrichplot.html#cb151-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;category&quot;</span>) </span>
+<span id="cb151-2"><a href="enrichplot.html#cb151-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;gene&quot;</span>) </span>
+<span id="cb151-3"><a href="enrichplot.html#cb151-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;all&quot;</span>) </span>
+<span id="cb151-4"><a href="enrichplot.html#cb151-4" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">cnetplot</span>(edox, <span class="dt">node_label=</span><span class="st">&quot;none&quot;</span>) </span>
+<span id="cb151-5"><a href="enrichplot.html#cb151-5" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:cnetNodeLabel"></span>
 <img src="biomedicalKnowledge_files/figure-html/cnetNodeLabel-1.svg" alt="Labelling nodes by selected subset. gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D)." width="1536" />
 <p class="caption">
@@ -413,9 +413,9 @@ show a large number significant terms. The <code>heatplot</code> can simplify th
 and more easy to identify expression patterns.</p>
 
 
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="enrichplot.html#cb149-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">heatplot</span>(edox)</span>
-<span id="cb149-2"><a href="enrichplot.html#cb149-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">heatplot</span>(edox, <span class="dt">foldChange=</span>geneList)</span>
-<span id="cb149-3"><a href="enrichplot.html#cb149-3" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="enrichplot.html#cb152-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">heatplot</span>(edox)</span>
+<span id="cb152-2"><a href="enrichplot.html#cb152-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">heatplot</span>(edox, <span class="dt">foldChange=</span>geneList)</span>
+<span id="cb152-3"><a href="enrichplot.html#cb152-3" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:Heatplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/Heatplot-1.svg" alt="Heatmap plot of enriched terms. default (A), foldChange=geneList (B)" width="1536" />
 <p class="caption">
@@ -431,44 +431,47 @@ cluster together, making it easy to identify functional module.</p>
 <p>The <code>emapplot</code> function supports results obtained from hypergeometric test and gene set enrichment analysis. The <code>node_scale</code> parameter can be used to resize nodes, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment">15.6</a> B, and the <code>layout</code> parameter can adjust the layout, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment">15.6</a> C and D.</p>
 
 
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="enrichplot.html#cb150-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo)</span>
-<span id="cb150-2"><a href="enrichplot.html#cb150-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo, <span class="dt">node_scale=</span><span class="fl">1.5</span>)</span>
-<span id="cb150-3"><a href="enrichplot.html#cb150-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo,<span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>)</span>
-<span id="cb150-4"><a href="enrichplot.html#cb150-4" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo, <span class="dt">node_scale=</span><span class="fl">1.5</span>,<span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>) </span>
-<span id="cb150-5"><a href="enrichplot.html#cb150-5" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="enrichplot.html#cb153-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo)</span>
+<span id="cb153-2"><a href="enrichplot.html#cb153-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo, <span class="dt">node_scale=</span><span class="fl">1.5</span>)</span>
+<span id="cb153-3"><a href="enrichplot.html#cb153-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo, <span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>)</span>
+<span id="cb153-4"><a href="enrichplot.html#cb153-4" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(edo, <span class="dt">node_scale=</span><span class="fl">1.5</span>,<span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>) </span>
+<span id="cb153-5"><a href="enrichplot.html#cb153-5" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:Enrichment"></span>
 <img src="biomedicalKnowledge_files/figure-html/Enrichment-1.svg" alt="Plot for results obtained from hypergeometric test and gene set enrichment analysis. default (A), node_scale=1.5 (B), layout="kk" (C) and node_scale=1.5,layout="kk" (D)." width="1536" />
 <p class="caption">
 Figure 15.6: <strong>Plot for results obtained from hypergeometric test and gene set enrichment analysis.</strong> default (A), <code>node_scale=1.5</code> (B), <code>layout="kk"</code> (C) and <code>node_scale=1.5,layout="kk"</code> (D).
 </p>
 </div>
-<p>The <code>emapplot</code> function also supports results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package. In addition to <code>pie_scale</code> and <code>layout</code> parameters, the number of circles in the bottom left corner can be adjusted using the <code>legend_n</code> parameteras, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment2">15.7</a> B. And proportion of clusters in the pie chart can be adjusted using the <code>pie</code> parameter, when <code>pie="count"</code>, the proportion of clusters in the pie chart is determined by the number of genes, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment2">15.7</a> C and D.</p>
+</div>
+<div id="biological-theme-comparison" class="section level2" number="15.6">
+<h2><span class="header-section-number">15.6</span> Biological theme comparison</h2>
+<p>The <code>emapplot</code> function also supports results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package. In addition to <code>node_scale</code> and <code>layout</code> parameters, the number of circles in the bottom left corner can be adjusted using the <code>legend_n</code> parameteras, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment2">15.7</a> B. And proportion of clusters in the pie chart can be adjusted using the <code>pie</code> parameter, when <code>pie="count"</code>, the proportion of clusters in the pie chart is determined by the number of genes, as demonstrated in Figure <a href="enrichplot.html#fig:Enrichment2">15.7</a> C and D.</p>
 
 
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="enrichplot.html#cb151-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb151-2"><a href="enrichplot.html#cb151-2" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
-<span id="cb151-3"><a href="enrichplot.html#cb151-3" aria-hidden="true"></a>xx &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(gcSample, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>,</span>
-<span id="cb151-4"><a href="enrichplot.html#cb151-4" aria-hidden="true"></a>                     <span class="dt">organism=</span><span class="st">&quot;hsa&quot;</span>, <span class="dt">pvalueCutoff=</span><span class="fl">0.05</span>)</span>
-<span id="cb151-5"><a href="enrichplot.html#cb151-5" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx)</span>
-<span id="cb151-6"><a href="enrichplot.html#cb151-6" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx,<span class="dt">legend_n=</span><span class="dv">2</span>) </span>
-<span id="cb151-7"><a href="enrichplot.html#cb151-7" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx,<span class="dt">pie=</span><span class="st">&quot;count&quot;</span>)</span>
-<span id="cb151-8"><a href="enrichplot.html#cb151-8" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx,<span class="dt">pie=</span><span class="st">&quot;count&quot;</span>, <span class="dt">pie_scale=</span><span class="fl">1.5</span>, <span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>)</span>
-<span id="cb151-9"><a href="enrichplot.html#cb151-9" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="enrichplot.html#cb154-1" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
+<span id="cb154-2"><a href="enrichplot.html#cb154-2" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
+<span id="cb154-3"><a href="enrichplot.html#cb154-3" aria-hidden="true"></a>xx &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(gcSample, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>,</span>
+<span id="cb154-4"><a href="enrichplot.html#cb154-4" aria-hidden="true"></a>                     <span class="dt">organism=</span><span class="st">&quot;hsa&quot;</span>, <span class="dt">pvalueCutoff=</span><span class="fl">0.05</span>)</span>
+<span id="cb154-5"><a href="enrichplot.html#cb154-5" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx)</span>
+<span id="cb154-6"><a href="enrichplot.html#cb154-6" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx, <span class="dt">legend_n=</span><span class="dv">2</span>) </span>
+<span id="cb154-7"><a href="enrichplot.html#cb154-7" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx, <span class="dt">pie=</span><span class="st">&quot;count&quot;</span>)</span>
+<span id="cb154-8"><a href="enrichplot.html#cb154-8" aria-hidden="true"></a>p4 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(xx, <span class="dt">pie=</span><span class="st">&quot;count&quot;</span>, <span class="dt">node_scale=</span><span class="fl">1.5</span>, <span class="dt">layout=</span><span class="st">&quot;kk&quot;</span>)</span>
+<span id="cb154-9"><a href="enrichplot.html#cb154-9" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, p4, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:Enrichment2"></span>
-<img src="biomedicalKnowledge_files/figure-html/Enrichment2-1.svg" alt="Plot for results obtained from compareCluster function of clusterProfiler package. default (A), legend_n=2 (B), pie="count" (C) and pie="count", pie_scale=1.5, layout="kk" (D)." width="1536" />
+<img src="biomedicalKnowledge_files/figure-html/Enrichment2-1.svg" alt="Plot for results obtained from compareCluster function of clusterProfiler package. default (A), legend_n=2 (B), pie="count" (C) and pie="count", node_scale=1.5, layout="kk" (D)." width="1536" />
 <p class="caption">
-Figure 15.7: <strong>Plot for results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package.</strong> default (A), <code>legend_n=2</code> (B), <code>pie="count"</code> (C) and <code>pie="count", pie_scale=1.5, layout="kk"</code> (D).
+Figure 15.7: <strong>Plot for results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package.</strong> default (A), <code>legend_n=2</code> (B), <code>pie="count"</code> (C) and <code>pie="count", node_scale=1.5, layout="kk"</code> (D).
 </p>
 </div>
 </div>
-<div id="upset-plot" class="section level2" number="15.6">
-<h2><span class="header-section-number">15.6</span> UpSet Plot</h2>
+<div id="upset-plot" class="section level2" number="15.7">
+<h2><span class="header-section-number">15.7</span> UpSet Plot</h2>
 <p>The <code>upsetplot</code> is an alternative to <code>cnetplot</code> for visualizing the complex
 association between genes and gene sets. It emphasizes the gene overlapping
 among different gene sets.</p>
 
 
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="enrichplot.html#cb152-1" aria-hidden="true"></a><span class="kw">upsetplot</span>(edo)</span></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="enrichplot.html#cb155-1" aria-hidden="true"></a><span class="kw">upsetplot</span>(edo)</span></code></pre></div>
 <div class="figure"><span id="fig:upsetORA"></span>
 <img src="biomedicalKnowledge_files/figure-html/upsetORA-1.svg" alt="Upsetplot for over-representation analysis." width="1152" />
 <p class="caption">
@@ -478,7 +481,7 @@ Figure 15.8: <strong>Upsetplot for over-representation analysis.</strong>
 <p>For over-representation analysis, <code>upsetplot</code> will calculate the overlaps among different gene sets as demonstrated in Figure <a href="enrichplot.html#fig:upsetORA">15.8</a>. For GSEA result, it will plot the fold change distributions of different categories (e.g. unique to pathway, overlaps among different pathways).</p>
 
 
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="enrichplot.html#cb153-1" aria-hidden="true"></a><span class="kw">upsetplot</span>(kk2) </span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="enrichplot.html#cb156-1" aria-hidden="true"></a><span class="kw">upsetplot</span>(kk2) </span></code></pre></div>
 <div class="figure"><span id="fig:upsetGSEA"></span>
 <img src="biomedicalKnowledge_files/figure-html/upsetGSEA-1.svg" alt="Upsetplot for gene set enrichment analysis." width="1152" />
 <p class="caption">
@@ -486,13 +489,13 @@ Figure 15.9: <strong>Upsetplot for gene set enrichment analysis.</strong>
 </p>
 </div>
 </div>
-<div id="ridgeline-plot-for-expression-distribution-of-gsea-result" class="section level2" number="15.7">
-<h2><span class="header-section-number">15.7</span> ridgeline plot for expression distribution of GSEA result</h2>
+<div id="ridgeline-plot-for-expression-distribution-of-gsea-result" class="section level2" number="15.8">
+<h2><span class="header-section-number">15.8</span> ridgeline plot for expression distribution of GSEA result</h2>
 <p>The <code>ridgeplot</code> will visualize expression distributions of core enriched genes
 for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.</p>
 
 
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="enrichplot.html#cb154-1" aria-hidden="true"></a><span class="kw">ridgeplot</span>(edo2)</span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="enrichplot.html#cb157-1" aria-hidden="true"></a><span class="kw">ridgeplot</span>(edo2)</span></code></pre></div>
 <div class="figure"><span id="fig:ridgeplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/ridgeplot-1.svg" alt="Ridgeplot for gene set enrichment analysis." width="1152" />
 <p class="caption">
@@ -500,17 +503,17 @@ Figure 15.10: <strong>Ridgeplot for gene set enrichment analysis.</strong>
 </p>
 </div>
 </div>
-<div id="running-score-and-preranked-list-of-gsea-result" class="section level2" number="15.8">
-<h2><span class="header-section-number">15.8</span> running score and preranked list of GSEA result</h2>
+<div id="running-score-and-preranked-list-of-gsea-result" class="section level2" number="15.9">
+<h2><span class="header-section-number">15.9</span> running score and preranked list of GSEA result</h2>
 <p>Running score and preranked list are traditional methods for visualizing GSEA
 result. The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package supports both of them to visualize
 the distribution of the gene set and the enrichment score.</p>
 
 
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="enrichplot.html#cb155-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">by =</span> <span class="st">&quot;runningScore&quot;</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
-<span id="cb155-2"><a href="enrichplot.html#cb155-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">by =</span> <span class="st">&quot;preranked&quot;</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
-<span id="cb155-3"><a href="enrichplot.html#cb155-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
-<span id="cb155-4"><a href="enrichplot.html#cb155-4" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="enrichplot.html#cb158-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">by =</span> <span class="st">&quot;runningScore&quot;</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb158-2"><a href="enrichplot.html#cb158-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">by =</span> <span class="st">&quot;preranked&quot;</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb158-3"><a href="enrichplot.html#cb158-3" aria-hidden="true"></a>p3 &lt;-<span class="st"> </span><span class="kw">gseaplot</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb158-4"><a href="enrichplot.html#cb158-4" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, p3, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:gseaplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/gseaplot-1.svg" alt="gseaplot for GSEA result(by = "runningScore"). by = "runningScore" (A), by = "preranked" (B), default (C)" width="1152" />
 <p class="caption">
@@ -520,7 +523,7 @@ Figure 15.11: <strong>gseaplot for GSEA result(<code>by = "runningScore"</code>)
 <p>Another method to plot GSEA result is the <code>gseaplot2</code> function:</p>
 
 
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="enrichplot.html#cb156-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="enrichplot.html#cb159-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span>, <span class="dt">title =</span> edo2<span class="op">$</span>Description[<span class="dv">1</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:gseaplot2"></span>
 <img src="biomedicalKnowledge_files/figure-html/gseaplot2-1.svg" alt="Gseaplot2 for GSEA result." width="1152" />
 <p class="caption">
@@ -530,7 +533,7 @@ Figure 15.12: <strong>Gseaplot2 for GSEA result.</strong>
 <p>The <code>gseaplot2</code> also supports multile gene sets to be displayed on the same figure:</p>
 
 
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="enrichplot.html#cb157-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="enrichplot.html#cb160-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:gseaplot22"></span>
 <img src="biomedicalKnowledge_files/figure-html/gseaplot22-1.svg" alt="Gseaplot2 for GSEA result of multile gene sets." width="1152" />
 <p class="caption">
@@ -541,8 +544,8 @@ Figure 15.13: <strong>Gseaplot2 for GSEA result of multile gene sets.</strong>
 parameter:</p>
 
 
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="enrichplot.html#cb158-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">pvalue_table =</span> <span class="ot">TRUE</span>,</span>
-<span id="cb158-2"><a href="enrichplot.html#cb158-2" aria-hidden="true"></a>          <span class="dt">color =</span> <span class="kw">c</span>(<span class="st">&quot;#E495A5&quot;</span>, <span class="st">&quot;#86B875&quot;</span>, <span class="st">&quot;#7DB0DD&quot;</span>), <span class="dt">ES_geom =</span> <span class="st">&quot;dot&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="enrichplot.html#cb161-1" aria-hidden="true"></a><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">pvalue_table =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb161-2"><a href="enrichplot.html#cb161-2" aria-hidden="true"></a>          <span class="dt">color =</span> <span class="kw">c</span>(<span class="st">&quot;#E495A5&quot;</span>, <span class="st">&quot;#86B875&quot;</span>, <span class="st">&quot;#7DB0DD&quot;</span>), <span class="dt">ES_geom =</span> <span class="st">&quot;dot&quot;</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:gseaplot23"></span>
 <img src="biomedicalKnowledge_files/figure-html/gseaplot23-1.svg" alt="Gseaplot2 for GSEA result of multile gene sets(add pvalue_table)." width="1152" />
 <p class="caption">
@@ -552,9 +555,9 @@ Figure 15.14: <strong>Gseaplot2 for GSEA result of multile gene sets(add pvalue_
 <p>User can specify <code>subplots</code> to only display a subset of plots:</p>
 
 
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="enrichplot.html#cb159-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">subplots =</span> <span class="dv">1</span>)</span>
-<span id="cb159-2"><a href="enrichplot.html#cb159-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">subplots =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</span>
-<span id="cb159-3"><a href="enrichplot.html#cb159-3" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="enrichplot.html#cb162-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">subplots =</span> <span class="dv">1</span>)</span>
+<span id="cb162-2"><a href="enrichplot.html#cb162-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">gseaplot2</span>(edo2, <span class="dt">geneSetID =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">subplots =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)</span>
+<span id="cb162-3"><a href="enrichplot.html#cb162-3" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:gseaplot24"></span>
 <img src="biomedicalKnowledge_files/figure-html/gseaplot24-1.svg" alt="Gseaplot2 for GSEA result of multile gene sets(add subplots). subplots = 1 (A),subplots = 1:2 (B)" width="1152" />
 <p class="caption">
@@ -565,7 +568,7 @@ Figure 15.15: <strong>Gseaplot2 for GSEA result of multile gene sets(add subplot
 gene set.</p>
 
 
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="enrichplot.html#cb160-1" aria-hidden="true"></a><span class="kw">gsearank</span>(edo2, <span class="dv">1</span>, <span class="dt">title =</span> edo2[<span class="dv">1</span>, <span class="st">&quot;Description&quot;</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="enrichplot.html#cb163-1" aria-hidden="true"></a><span class="kw">gsearank</span>(edo2, <span class="dv">1</span>, <span class="dt">title =</span> edo2[<span class="dv">1</span>, <span class="st">&quot;Description&quot;</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:gsearank"></span>
 <img src="biomedicalKnowledge_files/figure-html/gsearank-1.svg" alt="Ranked list of genes belong to the specific gene set." width="768" />
 <p class="caption">
@@ -575,17 +578,17 @@ Figure 15.16: <strong>Ranked list of genes belong to the specific gene set.</str
 <p>Multiple gene sets can be aligned using <code>cowplot</code>:
 (ref:gsearank2scap) Gsearank for multiple gene sets.</p>
 
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="enrichplot.html#cb161-1" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb161-2"><a href="enrichplot.html#cb161-2" aria-hidden="true"></a><span class="kw">library</span>(cowplot)</span>
-<span id="cb161-3"><a href="enrichplot.html#cb161-3" aria-hidden="true"></a></span>
-<span id="cb161-4"><a href="enrichplot.html#cb161-4" aria-hidden="true"></a>pp &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="cf">function</span>(i) {</span>
-<span id="cb161-5"><a href="enrichplot.html#cb161-5" aria-hidden="true"></a>    anno &lt;-<span class="st"> </span>edo2[i, <span class="kw">c</span>(<span class="st">&quot;NES&quot;</span>, <span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;p.adjust&quot;</span>)]</span>
-<span id="cb161-6"><a href="enrichplot.html#cb161-6" aria-hidden="true"></a>    lab &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">names</span>(anno), <span class="st">&quot;=&quot;</span>,  <span class="kw">round</span>(anno, <span class="dv">3</span>), <span class="dt">collapse=</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb161-7"><a href="enrichplot.html#cb161-7" aria-hidden="true"></a></span>
-<span id="cb161-8"><a href="enrichplot.html#cb161-8" aria-hidden="true"></a>    <span class="kw">gsearank</span>(edo2, i, edo2[i, <span class="dv">2</span>]) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="ot">NULL</span>) <span class="op">+</span><span class="kw">ylab</span>(<span class="ot">NULL</span>) <span class="op">+</span></span>
-<span id="cb161-9"><a href="enrichplot.html#cb161-9" aria-hidden="true"></a><span class="st">        </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dv">0</span>, edo2[i, <span class="st">&quot;enrichmentScore&quot;</span>] <span class="op">*</span><span class="st"> </span><span class="fl">.9</span>, <span class="dt">label =</span> lab, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">vjust=</span><span class="dv">0</span>)</span>
-<span id="cb161-10"><a href="enrichplot.html#cb161-10" aria-hidden="true"></a>})</span>
-<span id="cb161-11"><a href="enrichplot.html#cb161-11" aria-hidden="true"></a><span class="kw">plot_grid</span>(<span class="dt">plotlist=</span>pp, <span class="dt">ncol=</span><span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="enrichplot.html#cb164-1" aria-hidden="true"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb164-2"><a href="enrichplot.html#cb164-2" aria-hidden="true"></a><span class="kw">library</span>(cowplot)</span>
+<span id="cb164-3"><a href="enrichplot.html#cb164-3" aria-hidden="true"></a></span>
+<span id="cb164-4"><a href="enrichplot.html#cb164-4" aria-hidden="true"></a>pp &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb164-5"><a href="enrichplot.html#cb164-5" aria-hidden="true"></a>    anno &lt;-<span class="st"> </span>edo2[i, <span class="kw">c</span>(<span class="st">&quot;NES&quot;</span>, <span class="st">&quot;pvalue&quot;</span>, <span class="st">&quot;p.adjust&quot;</span>)]</span>
+<span id="cb164-6"><a href="enrichplot.html#cb164-6" aria-hidden="true"></a>    lab &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="kw">names</span>(anno), <span class="st">&quot;=&quot;</span>,  <span class="kw">round</span>(anno, <span class="dv">3</span>), <span class="dt">collapse=</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb164-7"><a href="enrichplot.html#cb164-7" aria-hidden="true"></a></span>
+<span id="cb164-8"><a href="enrichplot.html#cb164-8" aria-hidden="true"></a>    <span class="kw">gsearank</span>(edo2, i, edo2[i, <span class="dv">2</span>]) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="ot">NULL</span>) <span class="op">+</span><span class="kw">ylab</span>(<span class="ot">NULL</span>) <span class="op">+</span></span>
+<span id="cb164-9"><a href="enrichplot.html#cb164-9" aria-hidden="true"></a><span class="st">        </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dv">0</span>, edo2[i, <span class="st">&quot;enrichmentScore&quot;</span>] <span class="op">*</span><span class="st"> </span><span class="fl">.9</span>, <span class="dt">label =</span> lab, <span class="dt">hjust=</span><span class="dv">0</span>, <span class="dt">vjust=</span><span class="dv">0</span>)</span>
+<span id="cb164-10"><a href="enrichplot.html#cb164-10" aria-hidden="true"></a>})</span>
+<span id="cb164-11"><a href="enrichplot.html#cb164-11" aria-hidden="true"></a><span class="kw">plot_grid</span>(<span class="dt">plotlist=</span>pp, <span class="dt">ncol=</span><span class="dv">1</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:gsearank2"></span>
 <img src="biomedicalKnowledge_files/figure-html/gsearank2-1.svg" alt="Gsearank for multiple gene sets." width="768" />
 <p class="caption">
@@ -593,8 +596,8 @@ Figure 15.17: <strong>Gsearank for multiple gene sets.</strong>
 </p>
 </div>
 </div>
-<div id="pubmed-trend-of-enriched-terms" class="section level2" number="15.9">
-<h2><span class="header-section-number">15.9</span> pubmed trend of enriched terms</h2>
+<div id="pubmed-trend-of-enriched-terms" class="section level2" number="15.10">
+<h2><span class="header-section-number">15.10</span> pubmed trend of enriched terms</h2>
 <p>One of the problem of enrichment analysis is to find pathways for further
 investigation. Here, we provide <code>pmcplot</code> function to plot the number/proportion
 of publications trend based on the query result from PubMed Central. Of course,
@@ -602,41 +605,16 @@ users can use <code>pmcplot</code> in other scenarios. All text that can be quer
 is valid as input of <code>pmcplot</code>.</p>
 
 
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="enrichplot.html#cb162-1" aria-hidden="true"></a>terms &lt;-<span class="st"> </span>edo<span class="op">$</span>Description[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]</span>
-<span id="cb162-2"><a href="enrichplot.html#cb162-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">pmcplot</span>(terms, <span class="dv">2010</span><span class="op">:</span><span class="dv">2017</span>)</span>
-<span id="cb162-3"><a href="enrichplot.html#cb162-3" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">pmcplot</span>(terms, <span class="dv">2010</span><span class="op">:</span><span class="dv">2017</span>, <span class="dt">proportion=</span><span class="ot">FALSE</span>)</span>
-<span id="cb162-4"><a href="enrichplot.html#cb162-4" aria-hidden="true"></a><span class="kw">plot_grid</span>(p, p2, <span class="dt">ncol=</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="enrichplot.html#cb165-1" aria-hidden="true"></a>terms &lt;-<span class="st"> </span>edo<span class="op">$</span>Description[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</span>
+<span id="cb165-2"><a href="enrichplot.html#cb165-2" aria-hidden="true"></a>p &lt;-<span class="st"> </span><span class="kw">pmcplot</span>(terms, <span class="dv">2010</span><span class="op">:</span><span class="dv">2020</span>)</span>
+<span id="cb165-3"><a href="enrichplot.html#cb165-3" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">pmcplot</span>(terms, <span class="dv">2010</span><span class="op">:</span><span class="dv">2020</span>, <span class="dt">proportion=</span><span class="ot">FALSE</span>)</span>
+<span id="cb165-4"><a href="enrichplot.html#cb165-4" aria-hidden="true"></a><span class="kw">plot_grid</span>(p, p2, <span class="dt">ncol=</span><span class="dv">2</span>)</span></code></pre></div>
 <div class="figure"><span id="fig:pmcplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/pmcplot-1.svg" alt="Pmcplot of enrichment analysis." width="1344" />
 <p class="caption">
 Figure 15.18: <strong>Pmcplot of enrichment analysis.</strong>
 </p>
 </div>
-</div>
-<div id="goplot" class="section level2" number="15.10">
-<h2><span class="header-section-number">15.10</span> goplot</h2>
-<p><code>goplot</code> can accept output of <code>enrichGO</code> and visualized the enriched GO induced graph.</p>
-
-
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="enrichplot.html#cb163-1" aria-hidden="true"></a><span class="kw">goplot</span>(ego)</span></code></pre></div>
-</div>
-<div id="browsekegg" class="section level2" number="15.11">
-<h2><span class="header-section-number">15.11</span> browseKEGG</h2>
-<p>To view the KEGG pathway, user can use <code>browseKEGG</code> function, which will open web browser and highlight enriched genes.</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="enrichplot.html#cb164-1" aria-hidden="true"></a><span class="kw">browseKEGG</span>(kk, <span class="st">&#39;hsa04110&#39;</span>)</span></code></pre></div>
-<p><img src="figures/browseKEGG.png" /></p>
-</div>
-<div id="pathview-from-pathview-package" class="section level2" number="15.12">
-<h2><span class="header-section-number">15.12</span> pathview from pathview package</h2>
-<p><a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a> users can also use <code>pathview</code> from the <a href="https://www.bioconductor.org/packages/pathview">pathview</a><span class="citation">(Luo and Brouwer <a href="#ref-luo_pathview" role="doc-biblioref">2013</a>)</span> to visualize KEGG pathway.</p>
-<p>The following example illustrate how to visualize “hsa04110” pathway, which was enriched in our previous analysis.</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="enrichplot.html#cb165-1" aria-hidden="true"></a><span class="kw">library</span>(<span class="st">&quot;pathview&quot;</span>)</span>
-<span id="cb165-2"><a href="enrichplot.html#cb165-2" aria-hidden="true"></a>hsa04110 &lt;-<span class="st"> </span><span class="kw">pathview</span>(<span class="dt">gene.data  =</span> geneList,</span>
-<span id="cb165-3"><a href="enrichplot.html#cb165-3" aria-hidden="true"></a>                     <span class="dt">pathway.id =</span> <span class="st">&quot;hsa04110&quot;</span>,</span>
-<span id="cb165-4"><a href="enrichplot.html#cb165-4" aria-hidden="true"></a>                     <span class="dt">species    =</span> <span class="st">&quot;hsa&quot;</span>,</span>
-<span id="cb165-5"><a href="enrichplot.html#cb165-5" aria-hidden="true"></a>                     <span class="dt">limit      =</span> <span class="kw">list</span>(<span class="dt">gene=</span><span class="kw">max</span>(<span class="kw">abs</span>(geneList)), <span class="dt">cpd=</span><span class="dv">1</span>))</span></code></pre></div>
-<p><img src="figures/hsa04110_pathview.png" /></p>
-<p>For further information, please refer to the vignette of <a href="https://www.bioconductor.org/packages/pathview">pathview</a><span class="citation">(Luo and Brouwer <a href="#ref-luo_pathview" role="doc-biblioref">2013</a>)</span>.</p>
 <!--
 
 using ggplot2 api
@@ -660,9 +638,6 @@ ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust
 
 <h3>References</h3>
 <div id="refs" class="references">
-<div id="ref-luo_pathview">
-<p>Luo, Weijun, and Cory Brouwer. 2013. “Pathview: An R/Bioconductor Package for Pathway-Based Data Integration and Visualization.” <em>Bioinformatics</em> 29 (14): 1830–1. <a href="https://doi.org/10.1093/bioinformatics/btt285">https://doi.org/10.1093/bioinformatics/btt285</a>.</p>
-</div>
 <div id="ref-yu_meshes_2018">
 <p>Yu, Guangchuang. 2018. “Using Meshes for MeSH Term Enrichment and Semantic Analyses.” <em>Bioinformatics</em> 34 (21): 3766–7. <a href="https://doi.org/10.1093/bioinformatics/bty410">https://doi.org/10.1093/bioinformatics/bty410</a>.</p>
 </div>

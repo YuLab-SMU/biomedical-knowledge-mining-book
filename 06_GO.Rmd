@@ -108,6 +108,20 @@ The format of input data, `geneList`, was documented in the [FAQ](#genelist). Be
 Both `enrichGO()` and `gseGO()` functions require an `OrgDb` object as background annotation. For organisms that don't have `OrgDb` provided by Bioconductor, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")` or [Blast2GO](https://www.blast2go.com/). Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create `OrgDb` by your own using `r Biocpkg("AnnotationForge")` package.
 
 
+
+## Visualize enriched GO terms as a directed acyclic graph
+
+The `goplot()` can accept output of `enrichGO` and visualized the enriched GO induced graph.
+
+(ref:goplotscap) Goplot of enrichment analysis.
+
+(ref:goplotcap) **Goplot of enrichment analysis.**
+
+```{r goplot, fig.height=12, fig.width=8, fig.cap="(ref:goplotcap)", fig.scap="(ref:goplotscap)"}
+goplot(ego)
+```
+
+
 ## Summary {#clusterprofiler-go-summary}
 
 GO semantic similarity can be calculated by `r Biocpkg("GOSemSim")` [@yu2010]. We can use it to cluster genes/proteins into different clusters based on their functional similarity and can also use it to measure the similarities among GO terms to reduce the redundancy of GO enrichment results.

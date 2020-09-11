@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -333,8 +333,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="comparing-multiple-gene-lists" class="section level2" number="14.1">
 <h2><span class="header-section-number">14.1</span> Comparing multiple gene lists</h2>
 <p>The <code>compareCluster()</code> function applies selected function (via the <code>fun</code> parameter) to perform enrichment analysis for each gene list. All the results for the input gene lists will be aggregated into a single object.</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="clusterprofiler-comparecluster.html#cb136-1" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
-<span id="cb136-2"><a href="clusterprofiler-comparecluster.html#cb136-2" aria-hidden="true"></a><span class="kw">str</span>(gcSample)</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="clusterprofiler-comparecluster.html#cb139-1" aria-hidden="true"></a><span class="kw">data</span>(gcSample)</span>
+<span id="cb139-2"><a href="clusterprofiler-comparecluster.html#cb139-2" aria-hidden="true"></a><span class="kw">str</span>(gcSample)</span></code></pre></div>
 <pre><code>## List of 8
 ##  $ X1: chr [1:216] &quot;4597&quot; &quot;7111&quot; &quot;5266&quot; &quot;2175&quot; ...
 ##  $ X2: chr [1:805] &quot;23450&quot; &quot;5160&quot; &quot;7126&quot; &quot;26118&quot; ...
@@ -345,9 +345,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##  $ X7: chr [1:582] &quot;2621&quot; &quot;2665&quot; &quot;5690&quot; &quot;3608&quot; ...
 ##  $ X8: chr [1:237] &quot;2665&quot; &quot;4735&quot; &quot;1327&quot; &quot;3192&quot; ...</code></pre>
 <p>The input for <code>geneCluster</code> parameter should be a named list of gene IDs.</p>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="clusterprofiler-comparecluster.html#cb138-1" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(<span class="dt">geneCluster =</span> gcSample, <span class="dt">fun =</span> enrichKEGG)</span>
-<span id="cb138-2"><a href="clusterprofiler-comparecluster.html#cb138-2" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ck, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
-<span id="cb138-3"><a href="clusterprofiler-comparecluster.html#cb138-3" aria-hidden="true"></a><span class="kw">head</span>(ck)</span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="clusterprofiler-comparecluster.html#cb141-1" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(<span class="dt">geneCluster =</span> gcSample, <span class="dt">fun =</span> enrichKEGG)</span>
+<span id="cb141-2"><a href="clusterprofiler-comparecluster.html#cb141-2" aria-hidden="true"></a>ck &lt;-<span class="st"> </span><span class="kw">setReadable</span>(ck, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
+<span id="cb141-3"><a href="clusterprofiler-comparecluster.html#cb141-3" aria-hidden="true"></a><span class="kw">head</span>(ck)</span></code></pre></div>
 <pre><code>##   Cluster       ID                             Description GeneRatio  BgRatio
 ## 1      X2 hsa04110                              Cell cycle    18/377 124/8063
 ## 2      X2 hsa05169            Epstein-Barr virus infection    23/377 202/8063
@@ -380,16 +380,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="formula-interface-of-comparecluster" class="section level2" number="14.2">
 <h2><span class="header-section-number">14.2</span> Formula interface of compareCluster</h2>
 <p>As an alternaitve to using named list, the <code>compareCluster()</code> function also supports passing a formula of type <span class="math inline">\(Entrez \sim group\)</span> or <span class="math inline">\(Entrez \sim group + othergroup\)</span>.</p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="clusterprofiler-comparecluster.html#cb140-1" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Entrez=</span><span class="kw">names</span>(geneList), <span class="dt">FC=</span>geneList)</span>
-<span id="cb140-2"><a href="clusterprofiler-comparecluster.html#cb140-2" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span>mydf[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
-<span id="cb140-3"><a href="clusterprofiler-comparecluster.html#cb140-3" aria-hidden="true"></a>mydf<span class="op">$</span>group &lt;-<span class="st"> &quot;upregulated&quot;</span></span>
-<span id="cb140-4"><a href="clusterprofiler-comparecluster.html#cb140-4" aria-hidden="true"></a>mydf<span class="op">$</span>group[mydf<span class="op">$</span>FC <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> &quot;downregulated&quot;</span></span>
-<span id="cb140-5"><a href="clusterprofiler-comparecluster.html#cb140-5" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup &lt;-<span class="st"> &quot;A&quot;</span></span>
-<span id="cb140-6"><a href="clusterprofiler-comparecluster.html#cb140-6" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> &quot;B&quot;</span></span>
-<span id="cb140-7"><a href="clusterprofiler-comparecluster.html#cb140-7" aria-hidden="true"></a></span>
-<span id="cb140-8"><a href="clusterprofiler-comparecluster.html#cb140-8" aria-hidden="true"></a>formula_res &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(Entrez<span class="op">~</span>group<span class="op">+</span>othergroup, <span class="dt">data=</span>mydf, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>)</span>
-<span id="cb140-9"><a href="clusterprofiler-comparecluster.html#cb140-9" aria-hidden="true"></a></span>
-<span id="cb140-10"><a href="clusterprofiler-comparecluster.html#cb140-10" aria-hidden="true"></a><span class="kw">head</span>(formula_res)</span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="clusterprofiler-comparecluster.html#cb143-1" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Entrez=</span><span class="kw">names</span>(geneList), <span class="dt">FC=</span>geneList)</span>
+<span id="cb143-2"><a href="clusterprofiler-comparecluster.html#cb143-2" aria-hidden="true"></a>mydf &lt;-<span class="st"> </span>mydf[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
+<span id="cb143-3"><a href="clusterprofiler-comparecluster.html#cb143-3" aria-hidden="true"></a>mydf<span class="op">$</span>group &lt;-<span class="st"> &quot;upregulated&quot;</span></span>
+<span id="cb143-4"><a href="clusterprofiler-comparecluster.html#cb143-4" aria-hidden="true"></a>mydf<span class="op">$</span>group[mydf<span class="op">$</span>FC <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> &quot;downregulated&quot;</span></span>
+<span id="cb143-5"><a href="clusterprofiler-comparecluster.html#cb143-5" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup &lt;-<span class="st"> &quot;A&quot;</span></span>
+<span id="cb143-6"><a href="clusterprofiler-comparecluster.html#cb143-6" aria-hidden="true"></a>mydf<span class="op">$</span>othergroup[<span class="kw">abs</span>(mydf<span class="op">$</span>FC) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>] &lt;-<span class="st"> &quot;B&quot;</span></span>
+<span id="cb143-7"><a href="clusterprofiler-comparecluster.html#cb143-7" aria-hidden="true"></a></span>
+<span id="cb143-8"><a href="clusterprofiler-comparecluster.html#cb143-8" aria-hidden="true"></a>formula_res &lt;-<span class="st"> </span><span class="kw">compareCluster</span>(Entrez<span class="op">~</span>group<span class="op">+</span>othergroup, <span class="dt">data=</span>mydf, <span class="dt">fun=</span><span class="st">&quot;enrichKEGG&quot;</span>)</span>
+<span id="cb143-9"><a href="clusterprofiler-comparecluster.html#cb143-9" aria-hidden="true"></a></span>
+<span id="cb143-10"><a href="clusterprofiler-comparecluster.html#cb143-10" aria-hidden="true"></a><span class="kw">head</span>(formula_res)</span></code></pre></div>
 <pre><code>##           Cluster         group othergroup       ID
 ## 1 downregulated.A downregulated          A hsa04974
 ## 2 downregulated.A downregulated          A hsa04510
@@ -431,8 +431,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>We can visualize the result using the <code>dotplot()</code> method.</p>
 
 
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="clusterprofiler-comparecluster.html#cb142-1" aria-hidden="true"></a><span class="kw">dotplot</span>(ck)</span>
-<span id="cb142-2"><a href="clusterprofiler-comparecluster.html#cb142-2" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res)</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="clusterprofiler-comparecluster.html#cb145-1" aria-hidden="true"></a><span class="kw">dotplot</span>(ck)</span>
+<span id="cb145-2"><a href="clusterprofiler-comparecluster.html#cb145-2" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res)</span></code></pre></div>
 <div class="figure"><span id="fig:comparecluster-genelists"></span>
 <img src="biomedicalKnowledge_files/figure-html/comparecluster-genelists-1.svg" alt="Comparing enrichment results of multiple gene lists. (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula." width="1920" />
 <p class="caption">
@@ -442,7 +442,7 @@ Figure 14.1: <strong>Comparing enrichment results of multiple gene lists.</stron
 <p>The fomula interface allows more complicated gene cluster definition. In Figure <a href="clusterprofiler-comparecluster.html#fig:comparecluster-genelists">14.1</a>B, the gene clusters were defined by two variables (i.e. <code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code>dotplot()</code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure <a href="clusterprofiler-comparecluster.html#fig:comparecluster-formula">14.2</a>).</p>
 
 
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="clusterprofiler-comparecluster.html#cb143-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res, <span class="dt">x=</span><span class="op">~</span>group) <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(<span class="op">~</span>othergroup)</span></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="clusterprofiler-comparecluster.html#cb146-1" aria-hidden="true"></a><span class="kw">dotplot</span>(formula_res, <span class="dt">x=</span><span class="op">~</span>group) <span class="op">+</span><span class="st"> </span><span class="kw">facet_grid</span>(<span class="op">~</span>othergroup)</span></code></pre></div>
 <div class="figure"><span id="fig:comparecluster-formula"></span>
 <img src="biomedicalKnowledge_files/figure-html/comparecluster-formula-1.svg" alt="Comparing enrichment results of multiple gene lists defined by multiple variable." width="1152" />
 <p class="caption">

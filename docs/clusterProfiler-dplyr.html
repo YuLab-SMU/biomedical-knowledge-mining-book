@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -409,8 +409,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="mutate" class="section level2" number="16.4">
 <h2><span class="header-section-number">16.4</span> mutate</h2>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="clusterProfiler-dplyr.html#cb173-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">mutate</span>(x, <span class="dt">richFactor =</span> Count <span class="op">/</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">sub</span>(<span class="st">&quot;/</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;&quot;</span>, BgRatio)))</span>
-<span id="cb173-2"><a href="clusterProfiler-dplyr.html#cb173-2" aria-hidden="true"></a>y</span></code></pre></div>
+
+
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="clusterProfiler-dplyr.html#cb173-1" aria-hidden="true"></a><span class="co"># k/M</span></span>
+<span id="cb173-2"><a href="clusterProfiler-dplyr.html#cb173-2" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">mutate</span>(x, <span class="dt">richFactor =</span> Count <span class="op">/</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">sub</span>(<span class="st">&quot;/</span><span class="ch">\\</span><span class="st">d+&quot;</span>, <span class="st">&quot;&quot;</span>, BgRatio)))</span>
+<span id="cb173-3"><a href="clusterProfiler-dplyr.html#cb173-3" aria-hidden="true"></a>y</span></code></pre></div>
 <pre><code>## #
 ## # over-representation test
 ## #
@@ -449,14 +452,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb175-12"><a href="clusterProfiler-dplyr.html#cb175-12" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;rich factor&quot;</span>) <span class="op">+</span></span>
 <span id="cb175-13"><a href="clusterProfiler-dplyr.html#cb175-13" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span></span>
 <span id="cb175-14"><a href="clusterProfiler-dplyr.html#cb175-14" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Enriched Disease Ontology&quot;</span>)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.svg" width="672" /></p>
+<div class="figure"><span id="fig:dot-richfactor"></span>
+<img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.svg" alt="Visualizing rich factor of enriched terms using lolliplot." width="672" />
+<p class="caption">
+Figure 16.1: <strong>Visualizing rich factor of enriched terms using lolliplot.</strong>
+</p>
+</div>
 <p>A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using <code>mutate</code> to add the fold enrichment variable is also easy:</p>
 <div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="clusterProfiler-dplyr.html#cb176-1" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">FoldEnrichment =</span> <span class="kw">parse_ratio</span>(GeneRatio) <span class="op">/</span><span class="st"> </span><span class="kw">parse_ratio</span>(BgRatio))</span></code></pre></div>
 </div>
 <div id="slice" class="section level2" number="16.5">
 <h2><span class="header-section-number">16.5</span> slice</h2>
 <p>We can use <code>slice</code> to choose rows by their ordinal position in the enrichment result. Grouped result use the ordinal position with the group.</p>
-<p>In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure <a href="clusterProfiler-dplyr.html#fig:sliceNES">16.1</a>.</p>
+<p>In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure <a href="clusterProfiler-dplyr.html#fig:sliceNES">16.2</a>.</p>
 
 
 <div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="clusterProfiler-dplyr.html#cb177-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
@@ -480,23 +488,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="figure"><span id="fig:sliceNES"></span>
 <img src="biomedicalKnowledge_files/figure-html/sliceNES-1.svg" alt="Choose pathways by ordinal positions." width="864" />
 <p class="caption">
-Figure 16.1: <strong>Choose pathways by ordinal positions.</strong>
+Figure 16.2: <strong>Choose pathways by ordinal positions.</strong>
 </p>
 </div>
 </div>
 <div id="summarise" class="section level2" number="16.6">
 <h2><span class="header-section-number">16.6</span> summarise</h2>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="clusterProfiler-dplyr.html#cb178-1" aria-hidden="true"></a>pi=<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">11</span>)</span>
-<span id="cb178-2"><a href="clusterProfiler-dplyr.html#cb178-2" aria-hidden="true"></a></span>
-<span id="cb178-3"><a href="clusterProfiler-dplyr.html#cb178-3" aria-hidden="true"></a><span class="kw">mutate</span>(x, <span class="dt">pp =</span> <span class="kw">cut</span>(pvalue, pi)) <span class="op">%&gt;%</span></span>
-<span id="cb178-4"><a href="clusterProfiler-dplyr.html#cb178-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(pp) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb178-5"><a href="clusterProfiler-dplyr.html#cb178-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">cnt =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb178-6"><a href="clusterProfiler-dplyr.html#cb178-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pp, cnt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></span>
-<span id="cb178-7"><a href="clusterProfiler-dplyr.html#cb178-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
-<span id="cb178-8"><a href="clusterProfiler-dplyr.html#cb178-8" aria-hidden="true"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;p value intervals&quot;</span>) <span class="op">+</span></span>
-<span id="cb178-9"><a href="clusterProfiler-dplyr.html#cb178-9" aria-hidden="true"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Frequency&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb178-10"><a href="clusterProfiler-dplyr.html#cb178-10" aria-hidden="true"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;p value distribution&quot;</span>)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/p-bar-1.svg" width="768" /></p>
+
+
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="clusterProfiler-dplyr.html#cb178-1" aria-hidden="true"></a>pbar &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb178-2"><a href="clusterProfiler-dplyr.html#cb178-2" aria-hidden="true"></a>  pi=<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length.out=</span><span class="dv">11</span>)</span>
+<span id="cb178-3"><a href="clusterProfiler-dplyr.html#cb178-3" aria-hidden="true"></a></span>
+<span id="cb178-4"><a href="clusterProfiler-dplyr.html#cb178-4" aria-hidden="true"></a>  <span class="kw">mutate</span>(x, <span class="dt">pp =</span> <span class="kw">cut</span>(p.adjust, pi)) <span class="op">%&gt;%</span></span>
+<span id="cb178-5"><a href="clusterProfiler-dplyr.html#cb178-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">group_by</span>(pp) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb178-6"><a href="clusterProfiler-dplyr.html#cb178-6" aria-hidden="true"></a><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">cnt =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb178-7"><a href="clusterProfiler-dplyr.html#cb178-7" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pp, cnt)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_col</span>() <span class="op">+</span><span class="st"> </span></span>
+<span id="cb178-8"><a href="clusterProfiler-dplyr.html#cb178-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb178-9"><a href="clusterProfiler-dplyr.html#cb178-9" aria-hidden="true"></a><span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;p value intervals&quot;</span>) <span class="op">+</span></span>
+<span id="cb178-10"><a href="clusterProfiler-dplyr.html#cb178-10" aria-hidden="true"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Frequency&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb178-11"><a href="clusterProfiler-dplyr.html#cb178-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;p value distribution&quot;</span>)</span>
+<span id="cb178-12"><a href="clusterProfiler-dplyr.html#cb178-12" aria-hidden="true"></a>}    </span>
+<span id="cb178-13"><a href="clusterProfiler-dplyr.html#cb178-13" aria-hidden="true"></a></span>
+<span id="cb178-14"><a href="clusterProfiler-dplyr.html#cb178-14" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichDO</span>(de, <span class="dt">pvalueCutoff=</span><span class="dv">1</span>, <span class="dt">qvalueCutoff=</span><span class="dv">1</span>)</span>
+<span id="cb178-15"><a href="clusterProfiler-dplyr.html#cb178-15" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">2020-09-10</span>)</span>
+<span id="cb178-16"><a href="clusterProfiler-dplyr.html#cb178-16" aria-hidden="true"></a>random_genes &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">names</span>(geneList), <span class="dv">100</span>)</span>
+<span id="cb178-17"><a href="clusterProfiler-dplyr.html#cb178-17" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">enrichDO</span>(random_genes, <span class="dt">pvalueCutoff=</span><span class="dv">1</span>, <span class="dt">qvalueCutoff=</span><span class="dv">1</span>)</span>
+<span id="cb178-18"><a href="clusterProfiler-dplyr.html#cb178-18" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">pbar</span>(x)</span>
+<span id="cb178-19"><a href="clusterProfiler-dplyr.html#cb178-19" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">pbar</span>(y)</span>
+<span id="cb178-20"><a href="clusterProfiler-dplyr.html#cb178-20" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">1</span>, <span class="dt">labels =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="figure"><span id="fig:p-bar"></span>
+<img src="biomedicalKnowledge_files/figure-html/p-bar-1.svg" alt="Distribution of adjusted p-values." width="768" />
+<p class="caption">
+Figure 16.3: <strong>Distribution of adjusted p-values.</strong>
+</p>
+</div>
 
 </div>
 </div>

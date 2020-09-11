@@ -47,7 +47,6 @@ Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see a
 ```{r}
 kk2 <- gseKEGG(geneList     = geneList,
                organism     = 'hsa',
-               nPerm        = 1000,
                minGSSize    = 120,
                pvalueCutoff = 0.05,
                verbose      = FALSE)
@@ -78,5 +77,51 @@ mkk2 <- gseMKEGG(geneList = geneList,
                  pvalueCutoff = 1)
 head(mkk2)
 ```
+
+
+## Visualize enriched KEGG pathways
+
+The `r Biocpkg("enrichplot")` package implemented [several methods](#enrichplot) to visualize enriched terms. Most of them are general methods that can be used to GO, KEGG, MSigDb and other gene set annotations. Here, we introduce `clusterProfiler::browseKEGG()` and `pathview::pathview()`  functions to help users exploring enriched KEGG pathway with interested genes.
+
+
+To view the KEGG pathway, user can use `browseKEGG` function, which will open web browser and highlight enriched genes.
+
+
+```{r eval=FALSE}
+browseKEGG(kk, 'hsa04110')
+```
+
+
+
+(ref:browseKEGGscap) Explore selected KEGG pathway.
+
+(ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that enriched in the selected pathway will be highlighted.
+
+```{r browseKEGG, out.width="100%", echo=FALSE, fig.cap="(ref:browseKEGGcap)", fig.scap="(ref:browseKEGGscap)"}
+knitr::include_graphics("figures/browseKEGG.png")
+```
+
+
+
+Users can also use the `pathview()` function from the `R Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identify by the `r Biocpkg("clusterProfiler")` package [@yu2012].
+
+The following example illustrate how to visualize "hsa04110" pathway, which was enriched in our previous analysis.
+
+```{r eval=FALSE}
+library("pathview")
+hsa04110 <- pathview(gene.data  = geneList,
+                     pathway.id = "hsa04110",
+                     species    = "hsa",
+                     limit      = list(gene=max(abs(geneList)), cpd=1))
+```
+
+(ref:pathviewscap) Visualze selected KEGG pathway by `pathview()`.
+
+(ref:pathviewcap) **Visualize selected KEGG pathway by `pathview()`.** Gene expression values can be mapped to gradient color scale.
+
+```{r pathview, out.width="100%", echo=FALSE, fig.cap="(ref:pathviewcap)", fig.scap="(ref:pathviewscap)"}
+knitr::include_graphics("figures/hsa04110_pathview.png")
+```
+
 
 

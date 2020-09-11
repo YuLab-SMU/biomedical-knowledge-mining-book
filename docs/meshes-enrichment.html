@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -337,11 +337,11 @@ categories of MeSH are supported. The analysis supports &gt;70 species listed in
 <div id="meshes-ora" class="section level2" number="11.1">
 <h2><span class="header-section-number">11.1</span> MeSH over-representation analysis</h2>
 <p>In this example, we use data source from <code>gendoo</code> and <code>C</code> (Diseases) category.</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="meshes-enrichment.html#cb111-1" aria-hidden="true"></a><span class="kw">library</span>(meshes)</span>
-<span id="cb111-2"><a href="meshes-enrichment.html#cb111-2" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb111-3"><a href="meshes-enrichment.html#cb111-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
-<span id="cb111-4"><a href="meshes-enrichment.html#cb111-4" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichMeSH</span>(de, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database=</span><span class="st">&#39;gendoo&#39;</span>, <span class="dt">category =</span> <span class="st">&#39;C&#39;</span>)</span>
-<span id="cb111-5"><a href="meshes-enrichment.html#cb111-5" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="meshes-enrichment.html#cb114-1" aria-hidden="true"></a><span class="kw">library</span>(meshes)</span>
+<span id="cb114-2"><a href="meshes-enrichment.html#cb114-2" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb114-3"><a href="meshes-enrichment.html#cb114-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb114-4"><a href="meshes-enrichment.html#cb114-4" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichMeSH</span>(de, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database=</span><span class="st">&#39;gendoo&#39;</span>, <span class="dt">category =</span> <span class="st">&#39;C&#39;</span>)</span>
+<span id="cb114-5"><a href="meshes-enrichment.html#cb114-5" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
 <pre><code>##              ID              Description GeneRatio   BgRatio       pvalue
 ## D043171 D043171  Chromosomal Instability     16/96 198/16528 2.794765e-14
 ## D000782 D000782               Aneuploidy     17/96 320/16528 3.866830e-12
@@ -374,29 +374,29 @@ categories of MeSH are supported. The analysis supports &gt;70 species listed in
 <div id="meshes-gsea" class="section level2" number="11.2">
 <h2><span class="header-section-number">11.2</span> MeSH gene set enrichment analysis</h2>
 <p>In the following example, we use data source from <code>gene2pubmed</code> and test category <code>G</code> (Phenomena and Processes).</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="meshes-enrichment.html#cb113-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gseMeSH</span>(geneList, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database =</span> <span class="st">&#39;gene2pubmed&#39;</span>, <span class="dt">category =</span> <span class="st">&quot;G&quot;</span>)</span>
-<span id="cb113-2"><a href="meshes-enrichment.html#cb113-2" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="meshes-enrichment.html#cb116-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gseMeSH</span>(geneList, <span class="dt">MeSHDb =</span> <span class="st">&quot;MeSH.Hsa.eg.db&quot;</span>, <span class="dt">database =</span> <span class="st">&#39;gene2pubmed&#39;</span>, <span class="dt">category =</span> <span class="st">&quot;G&quot;</span>)</span>
+<span id="cb116-2"><a href="meshes-enrichment.html#cb116-2" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
 <pre><code>##              ID                   Description setSize enrichmentScore       NES
-## D008593 D008593                     Menopause     478      -0.3058965 -1.371820
-## D009043 D009043                Motor Activity     462      -0.3223426 -1.438781
-## D019655 D019655 Quantitative Trait, Heritable     463      -0.3124833 -1.394763
-## D009119 D009119            Muscle Contraction     438      -0.3244845 -1.444769
-## D012038 D012038                  Regeneration     426      -0.3212385 -1.425405
-## D006339 D006339                    Heart Rate     336      -0.3640991 -1.581197
+## D001846 D001846              Bone Development     322      -0.3722690 -1.603707
+## D049629 D049629               Waist-Hip Ratio     321      -0.3659337 -1.575575
+## D009043 D009043                Motor Activity     462      -0.3223426 -1.421886
+## D019655 D019655 Quantitative Trait, Heritable     463      -0.3124833 -1.378368
+## D009119 D009119            Muscle Contraction     438      -0.3244845 -1.425435
+## D059305 D059305                Diet, High-Fat     315      -0.3409002 -1.462961
 ##              pvalue   p.adjust    qvalues rank                   leading_edge
-## D008593 0.001210654 0.03112111 0.02289188 2020 tags=23%, list=16%, signal=20%
-## D009043 0.001226994 0.03112111 0.02289188 2176 tags=23%, list=17%, signal=20%
-## D019655 0.001226994 0.03112111 0.02289188 1998 tags=21%, list=16%, signal=18%
-## D009119 0.001234568 0.03112111 0.02289188 2517 tags=27%, list=20%, signal=22%
-## D012038 0.001239157 0.03112111 0.02289188 2132 tags=27%, list=17%, signal=23%
-## D006339 0.001303781 0.03112111 0.02289188 2405 tags=29%, list=19%, signal=24%
+## D001846 0.001275510 0.03440296 0.02541499 2100 tags=27%, list=17%, signal=23%
+## D049629 0.001278772 0.03440296 0.02541499 2176 tags=27%, list=17%, signal=23%
+## D009043 0.001280410 0.03440296 0.02541499 2176 tags=23%, list=17%, signal=20%
+## D019655 0.001280410 0.03440296 0.02541499 1998 tags=21%, list=16%, signal=18%
+## D009119 0.001290323 0.03440296 0.02541499 2517 tags=27%, list=20%, signal=22%
+## D059305 0.001290323 0.03440296 0.02541499 1447 tags=20%, list=12%, signal=18%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             core_enrichment
-## D008593                                           5729/627/22891/2908/8654/4088/11132/860/268/2104/94/6752/2662/5745/7508/3791/10406/1543/6750/1027/6787/27347/3643/5016/5624/8743/3350/596/3067/2078/8644/1548/2272/948/1621/324/196/8204/595/4018/2261/25960/2488/3483/4803/7042/8829/7048/6817/1277/3953/1140/5950/2638/10516/5243/5468/1012/5108/2691/4023/7056/4319/4214/3485/9365/7350/3952/126/3295/3489/5618/79068/9247/5733/4313/3625/2944/10468/9369/3899/2099/3480/6387/6833/3991/2690/658/3730/7043/2952/3487/367/4982/4128/7049/27324/7166/3479/2006/55259/4129/9370/2532/652/80736/8839/5346/1524/2625/9/5241
+## D001846                                                                                                                                              1499/8945/7157/57798/79048/627/6500/8038/4057/860/2752/4882/3371/2915/5745/63971/54455/3791/819/57045/596/2034/54808/80781/1280/64388/2261/4054/11059/3483/9900/26234/4734/9452/4208/4322/253461/1278/7048/51280/10903/30008/7869/1277/3953/10516/10411/8835/79776/11167/2317/3485/3952/5274/54681/4488/10486/1009/2202/91851/2099/5764/23327/3339/8817/83716/6678/4915/633/658/54361/5744/165/5654/10631/3487/367/4982/3667/79971/1634/3479/114899/9370/652/8614/4969
+## D049629                                                                                                                                              6532/8609/9563/23405/10206/7157/23314/4776/25970/627/2908/490/4057/268/3567/23429/283450/1543/3240/3174/81490/23047/55304/5099/54808/4179/2169/948/8082/4018/54465/4256/3087/5919/253461/26470/10903/1581/56172/3953/5950/5468/1012/8835/4023/594/4214/7350/3952/79068/51232/2202/6444/9369/2099/6833/3991/4016/2690/57161/79750/4915/5125/5167/8639/11188/10631/3551/2487/2697/6935/3487/367/4982/3667/4059/150/9358/1489/3479/6424/9370/4629/652/5346/7021/4239/5241
 ## D009043                                                6532/10550/9759/23405/1499/6453/8945/7157/25970/627/408/2908/22881/27445/11132/2752/9445/6548/2571/23621/3082/1291/2915/1543/7466/3240/3350/947/55304/181/3632/2169/27306/1621/80169/9627/196/8678/8863/23284/81627/4692/5799/11076/2259/3087/1278/283/1277/3953/4747/2247/6414/210/4744/5468/8835/89795/4023/8522/4319/3485/3952/79068/8864/4313/2944/2273/2099/3480/8528/4908/56892/3339/5138/57161/4741/4306/6571/79750/4915/5744/2487/58503/347/6863/2952/5327/367/4982/4128/4059/3572/150/7060/9358/7166/3479/9254/5348/4129/9370/3708/1311/5105/4137/1408/5241
 ## D019655                                                                                                  25970/627/2774/2908/51151/8660/11132/2559/1387/1952/2571/3082/4602/4153/10406/23247/604/1028/22841/1129/3043/54014/3350/81490/2823/7596/4887/3931/1621/196/4881/5021/4018/9814/2261/3426/8777/4803/590/3087/253461/553/10903/2353/56172/3953/164656/2241/2166/2247/5468/1393/1012/27136/216/2192/4023/4214/3952/126/5274/79068/93664/2944/6444/23327/9223/6571/4915/1191/5167/9429/4886/185/3357/6863/2952/9079/367/4982/7349/2200/4128/9607/79932/150/64084/7166/3479/2743/4129/9370/125/2018/652/4137/1408/79689
 ## D009119 5742/10174/2150/5562/3611/22859/4604/7070/4985/7139/3784/154/1760/3315/9732/72/5595/3092/6416/9759/270/6558/627/953/408/2908/7138/5563/6794/5564/3567/2104/845/3371/6548/831/182/3554/126393/7402/1129/7201/3350/5590/5592/7168/79923/2149/4628/23426/8082/5021/2318/23284/844/79026/4208/3790/2308/1907/253959/54795/4311/2247/10580/1848/2281/10398/5166/50507/1012/6876/10203/83700/11167/2317/3952/3778/1009/5733/10468/3693/6253/9499/7481/5159/3991/857/1289/1909/6678/7041/32/8639/5350/3551/1264/2697/185/55107/7043/3357/2205/253190/5327/25802/1634/3572/8490/3679/3479/5348/9370/9122/4629/652/7021/5241
-## D012038                        2869/5087/1499/7157/79960/627/2252/4088/825/9149/8038/4017/7010/2752/3248/3082/22921/3791/4005/182/7402/7474/596/947/9976/9315/8840/1490/54209/1280/4804/4314/324/6019/8425/595/10979/6843/4929/79026/2246/5029/4803/7042/4322/8829/7048/10216/79679/5176/55384/7078/5549/7216/727/10516/2247/6591/56944/210/5468/23345/6469/216/8076/26509/90865/11167/7075/7058/4313/3861/91851/2199/113146/6444/9201/1294/4254/4856/6720/3480/5764/6387/6833/5159/11117/857/1289/3908/4016/6678/7033/23030/7704/174/1191/2737/5744/11098/10631/9429/214/7043/2200/1634/4582/7031/3479/7373/2066/3169/2625
-## D006339                                                                                                                          83478/4985/7139/8929/3784/10681/3375/154/1760/9781/5139/118/2702/6532/6416/2869/270/7157/627/2908/7138/5563/3643/1129/7779/947/1901/2034/4179/4804/64388/1621/4881/8863/5021/844/4212/11030/5797/6403/4803/84059/79789/5176/3953/5243/5468/1012/2868/5793/4023/7056/3952/5577/126/2946/3778/477/5733/4313/2944/9201/3075/9499/2273/2099/1471/857/775/5138/4306/4487/213/5350/5744/23245/2152/2697/2791/185/6863/2952/5327/80206/2200/9607/3572/150/8490/3479/2006/55259/9370/125/652/55351</code></pre>
+## D059305                                                                                                                                                                                                                                                                                           2169/948/3931/5737/27232/196/2628/6403/2246/3397/63924/2308/2934/5176/1581/3953/51339/5950/2166/2057/727/23452/1293/2247/6414/5468/373/81603/6469/4023/90865/3485/7350/3952/1675/79068/6653/4313/56034/4856/6720/2099/6387/775/4035/5167/4922/3551/2697/3487/4982/3667/9607/563/7166/3479/114899/9370/2167/652/4036/10351</code></pre>
 <p>User can use visualization methods implemented in <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> to visualize these enrichment results. With <a href="enrichplot.html#enrichplot">these visualization methods</a>, it’s much easier to interpret enriched results.</p>
 
 </div>

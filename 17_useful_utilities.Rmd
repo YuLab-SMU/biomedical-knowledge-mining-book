@@ -5,10 +5,9 @@
 
 ## Translating Biological ID {#id-convert}
 
-### bitr: Biological Id TranslatoR {#bitr}
+### `bitr`: Biological Id TranslatoR {#bitr}
 
-
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides `bitr` and `bitr_kegg` for converting ID types. Both `bitr` and `bitr_kegg` support many species including model and many non-model organisms.
+The `r Biocpkg("clusterProfiler")` package provides the `bitr()` and `bitr_kegg()` functions for converting ID types. Both `bitr()` and `bitr_kegg()` support many species including model and many non-model organisms.
 
 ```{r}
 x <- c("GPX3",  "GLRX",   "LBP",   "CRYAB", "DEFB1", "HCLS1",   "SOD2",   "HSPA2",
@@ -22,9 +21,9 @@ eg = bitr(x, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 head(eg)
 ```
 
-User should provides an annotation package, both _fromType_ and _toType_ can accept any types that supported.
+User should provides an annotation package, both `fromType` and `toType` can accept any types that supported.
 
-User can use _keytypes_ to list all supporting types.
+User can use `keytypes` to list all supporting types.
 
 ```{r}
 library(org.Hs.eg.db)
@@ -38,6 +37,7 @@ head(ids)
 ```
 
 For GO analysis, user don't need to convert ID, all ID type provided by `OrgDb` can be used in `groupGO`, `enrichGO` and `gseGO` by specifying `keyType` parameter.
+
 
 ### `bitr_kegg`: converting biological IDs using KEGG API {#bitr_kegg}
 
@@ -60,9 +60,7 @@ If we try to convert `Z5100` to `ncbi-geneid`, `bitr_kegg` will throw error of `
 
 ```{r eval=FALSE}
 bitr_kegg("Z5100", fromType="kegg", toType='ncbi-geneid', organism='ece')
-```
 
-```
 ## Error in KEGG_convert(fromType, toType, organism) :
 ## ncbi-geneid is not supported for ece ...
 ```
@@ -77,7 +75,7 @@ bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
 
 ## `setReadable`: translating gene IDs to human readable symbols {#setReadable}
 
-Some of the functions, especially those internally supported for [DO](#chapter4), [GO](#chapter5), and [Reactome Pathway](#chapter8), support a parameter, `readable`.  If `readable = TRUE`, all the gene IDs will be translated to gene symbols. The `readable` parameter is not available for enrichment analysis of KEGG or using user's own annotation. KEGG analysis using `enrichKEGG` and `gseKEGG`, internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn't provide gene ID to symbol mapping information. For analysis using user's own annotation data, we even don't know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the `setReadable` function if and only if there is an `OrgDb` available. 
+Some of the functions, especially those internally supported for [DO](#chapter4), [GO](#chapter5), and [Reactome Pathway](#chapter8), support a parameter, `readable`.  If `readable = TRUE`, all the gene IDs will be translated to gene symbols. The `readable` parameter is not available for enrichment analysis of KEGG or using user's own annotation. KEGG analysis using `enrichKEGG` and `gseKEGG`, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn't provide gene ID to symbol mapping information. For analysis using user's own annotation data, we even don't know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the `setReadable` function if and only if there is an `OrgDb` available. 
 
 
 ```{r}
@@ -103,17 +101,36 @@ For those functions that internally support `readable` parameter, user can also 
 
 ### drop specific GO terms or level
 
-`enrichGO` test the whole GO corpus and enriched result may contains very general terms. With `dropGO` function, user can remove specific GO terms or GO level from results obtained from both `enrichGO` and `compareCluster`.
+The `enrichGO()` function tests the whole GO corpus and enriched result may contains very general terms. With `dropGO` function, user can remove specific GO terms or GO level from results obtained from both `enrichGO()` and `compareCluster()`.
 
 
 ### test GO at sepcific level
 
-`enrichGO` doesn't contain parameter to restrict the test at specific GO level. Instead, we provide a function `gofilter` to restrict the result at specific GO level. It works with results obtained from both `enrichGO` and `compareCluster`.
+The `enrichGO()` doesn't contain parameter to restrict the test at specific GO level. Instead, we provide a function, `gofilter()`, to restrict the result at specific GO level. It works with results obtained from both `enrichGO()` and `compareCluster()`.
 
 
 ### reduce redundancy of enriched GO terms
 
+GO is organized in parent-child structure, thus a parent term can be overlapped with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, `r Biocpkg("clusterProfiler")` implements [`simplify`](https://github.com/GuangchuangYu/clusterProfiler/issues/28) method to reduce redundant GO terms from the outputs of `enrichGO()` and `gseGO()`. The function internally called `r Biocpkg("GOSemSim")` [@yu2010] to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. The `simplify()` method apply `select_fun` (which can be a user defined function) to feature `by` to select one representative term from redundant terms (which have similarity higher than `cutoff`).
 
 
-GO is organized in parent-child structure, thus a parent term can be overlap with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, `r Biocpkg("clusterProfiler")` implement [`simplify`](https://github.com/GuangchuangYu/clusterProfiler/issues/28) method to reduce redundant GO terms from the outputs of `enrichGO` and `gseGO`. The function internally called `r Biocpkg("GOSemSim")` [@yu2010] to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. An example can be found in [the blog post](https://guangchuangyu.github.io/2015/10/use-simplify-to-remove-redundancy-of-enriched-go-terms/).
+In Figure \@ref(fig:simplify-emapplot)A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the `simplify()` method, the result is more clear to view the whole story.
+
+(ref:emapplotSimplifyscap) Visualize enriched terms by EnrichmentMap using the `emapplot()` function.
+
+(ref:emapplotSimplifycap) **Visualize enriched terms by EnrichmentMap using the `emapplot()` function.** (A) original result. (B) simplify result. 
+
+
+
+```{r simplify-emapplot,fig.width=16, fig.height=8, fig.cap="(ref:emapplotSimplifycap)", fig.scap="(ref:emapplotSimplifyscap)"}
+data(geneList, package="DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+bp <- enrichGO(de, ont="BP", OrgDb = 'org.Hs.eg.db')
+bp2 <- simplify(bp, cutoff=0.7, by="p.adjust", select_fun=min)
+p1 <- emapplot(bp)
+p2 <- emapplot(bp2)
+cowplot::plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
+```
+
+Alternatively, users can use slim version of GO and use the `enricher()` o r `gseGO()` functions to analyze. 
 

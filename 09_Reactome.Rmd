@@ -38,9 +38,10 @@ head(x)
 
 
 ```{r}
-y <- gsePathway(geneList, nPerm=10000,
-                pvalueCutoff=0.2,
-                pAdjustMethod="BH", verbose=FALSE)
+y <- gsePathway(geneList, 
+                pvalueCutoff = 0.2,
+                pAdjustMethod = "BH", 
+                verbose = FALSE)
 head(y)
 ```
 
@@ -49,7 +50,12 @@ head(y)
 
 `r Biocpkg("ReactomePA")` implemented the `viewPathway()` to visualized selected reactome pathway. More general purpose of visualization methods for ORA and GSEA results are provided in the `r Biocpkg("enrichplot")` package and are documented on [Chapter 14](#enrichplot).
 
-```{r fig.height=6, fig.width=8}
+
+(ref:viewpathwayscap) Visualize reactome pathway.
+
+(ref:viewpathwaycap) **Visualize reactome pathway.**
+
+```{r viewpathway, fig.height=6, fig.width=8, fig.cap="(ref:viewpathwaycap)", fig.scap="(ref:viewpathwayscap)"}
 viewPathway("E2F mediated regulation of DNA replication", 
             readable = TRUE, 
             foldChange = geneList)

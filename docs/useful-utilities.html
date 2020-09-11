@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -332,8 +332,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="id-convert" class="section level2" number="17.1">
 <h2><span class="header-section-number">17.1</span> Translating Biological ID</h2>
 <div id="bitr" class="section level3" number="17.1.1">
-<h3><span class="header-section-number">17.1.1</span> bitr: Biological Id TranslatoR</h3>
-<p><a href="https://www.bioconductor.org/packages/clusterProfiler">clusterProfiler</a> provides <code>bitr</code> and <code>bitr_kegg</code> for converting ID types. Both <code>bitr</code> and <code>bitr_kegg</code> support many species including model and many non-model organisms.</p>
+<h3><span class="header-section-number">17.1.1</span> <code>bitr</code>: Biological Id TranslatoR</h3>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides the <code>bitr()</code> and <code>bitr_kegg()</code> functions for converting ID types. Both <code>bitr()</code> and <code>bitr_kegg()</code> support many species including model and many non-model organisms.</p>
 <div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="useful-utilities.html#cb179-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;GPX3&quot;</span>,  <span class="st">&quot;GLRX&quot;</span>,   <span class="st">&quot;LBP&quot;</span>,   <span class="st">&quot;CRYAB&quot;</span>, <span class="st">&quot;DEFB1&quot;</span>, <span class="st">&quot;HCLS1&quot;</span>,   <span class="st">&quot;SOD2&quot;</span>,   <span class="st">&quot;HSPA2&quot;</span>,</span>
 <span id="cb179-2"><a href="useful-utilities.html#cb179-2" aria-hidden="true"></a>       <span class="st">&quot;ORM1&quot;</span>,  <span class="st">&quot;IGFBP1&quot;</span>, <span class="st">&quot;PTHLH&quot;</span>, <span class="st">&quot;GPC3&quot;</span>,  <span class="st">&quot;IGFBP3&quot;</span>,<span class="st">&quot;TOB1&quot;</span>,    <span class="st">&quot;MITF&quot;</span>,   <span class="st">&quot;NDRG1&quot;</span>,</span>
 <span id="cb179-3"><a href="useful-utilities.html#cb179-3" aria-hidden="true"></a>       <span class="st">&quot;NR1H4&quot;</span>, <span class="st">&quot;FGFR3&quot;</span>,  <span class="st">&quot;PVR&quot;</span>,   <span class="st">&quot;IL6&quot;</span>,   <span class="st">&quot;PTPRM&quot;</span>, <span class="st">&quot;ERBB2&quot;</span>,   <span class="st">&quot;NID2&quot;</span>,   <span class="st">&quot;LAMB1&quot;</span>,</span>
@@ -350,8 +350,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4  CRYAB     1410
 ## 5  DEFB1     1672
 ## 6  HCLS1     3059</code></pre>
-<p>User should provides an annotation package, both <em>fromType</em> and <em>toType</em> can accept any types that supported.</p>
-<p>User can use <em>keytypes</em> to list all supporting types.</p>
+<p>User should provides an annotation package, both <code>fromType</code> and <code>toType</code> can accept any types that supported.</p>
+<p>User can use <code>keytypes</code> to list all supporting types.</p>
 <div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="useful-utilities.html#cb181-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
 <span id="cb181-2"><a href="useful-utilities.html#cb181-2" aria-hidden="true"></a><span class="kw">keytypes</span>(org.Hs.eg.db)</span></code></pre></div>
 <pre><code>##  [1] &quot;ACCNUM&quot;       &quot;ALIAS&quot;        &quot;ENSEMBL&quot;      &quot;ENSEMBLPROT&quot;  &quot;ENSEMBLTRANS&quot;
@@ -394,29 +394,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The ID type (both <code>fromType</code> &amp; <code>toType</code>) should be one of ‘kegg’, ‘ncbi-geneid’, ‘ncbi-proteinid’ or ‘uniprot’. The ‘kegg’ is the primary ID used in KEGG database. The data source of KEGG was from NCBI. A rule of thumb for the ‘kegg’ ID is <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
 <p>Many prokaryote species don’t have entrezgene ID available. For example we can check the gene information of <code>ece:Z5100</code> in <a href="http://www.genome.jp/dbget-bin/www_bget?ece:Z5100" class="uri">http://www.genome.jp/dbget-bin/www_bget?ece:Z5100</a>, which have <code>NCBI-ProteinID</code> and <code>UnitProt</code> links in the <code>Other DBs</code> Entry, but not <code>NCBI-GeneID</code>.</p>
 <p>If we try to convert <code>Z5100</code> to <code>ncbi-geneid</code>, <code>bitr_kegg</code> will throw error of <code>ncbi-geneid is not supported</code>.</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="useful-utilities.html#cb193-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-geneid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
-<pre><code>## Error in KEGG_convert(fromType, toType, organism) :
-## ncbi-geneid is not supported for ece ...</code></pre>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="useful-utilities.html#cb193-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-geneid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span>
+<span id="cb193-2"><a href="useful-utilities.html#cb193-2" aria-hidden="true"></a></span>
+<span id="cb193-3"><a href="useful-utilities.html#cb193-3" aria-hidden="true"></a><span class="co">## Error in KEGG_convert(fromType, toType, organism) :</span></span>
+<span id="cb193-4"><a href="useful-utilities.html#cb193-4" aria-hidden="true"></a><span class="co">## ncbi-geneid is not supported for ece ...</span></span></code></pre></div>
 <p>We can of course convert it to <code>ncbi-proteinid</code> and <code>uniprot</code>:</p>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="useful-utilities.html#cb195-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-proteinid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="useful-utilities.html#cb194-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;ncbi-proteinid&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
 <pre><code>##    kegg ncbi-proteinid
 ## 1 Z5100       AAG58814</code></pre>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="useful-utilities.html#cb197-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;uniprot&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="useful-utilities.html#cb196-1" aria-hidden="true"></a><span class="kw">bitr_kegg</span>(<span class="st">&quot;Z5100&quot;</span>, <span class="dt">fromType=</span><span class="st">&quot;kegg&quot;</span>, <span class="dt">toType=</span><span class="st">&#39;uniprot&#39;</span>, <span class="dt">organism=</span><span class="st">&#39;ece&#39;</span>)</span></code></pre></div>
 <pre><code>##    kegg    uniprot
 ## 1 Z5100 A0A4Q2TPW7</code></pre>
 </div>
 </div>
 <div id="setReadable" class="section level2" number="17.2">
 <h2><span class="header-section-number">17.2</span> <code>setReadable</code>: translating gene IDs to human readable symbols</h2>
-<p>Some of the functions, especially those internally supported for <a href="#chapter4">DO</a>, <a href="#chapter5">GO</a>, and <a href="#chapter8">Reactome Pathway</a>, support a parameter, <code>readable</code>. If <code>readable = TRUE</code>, all the gene IDs will be translated to gene symbols. The <code>readable</code> parameter is not available for enrichment analysis of KEGG or using user’s own annotation. KEGG analysis using <code>enrichKEGG</code> and <code>gseKEGG</code>, internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn’t provide gene ID to symbol mapping information. For analysis using user’s own annotation data, we even don’t know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the <code>setReadable</code> function if and only if there is an <code>OrgDb</code> available.</p>
-<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="useful-utilities.html#cb199-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
-<span id="cb199-2"><a href="useful-utilities.html#cb199-2" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
-<span id="cb199-3"><a href="useful-utilities.html#cb199-3" aria-hidden="true"></a></span>
-<span id="cb199-4"><a href="useful-utilities.html#cb199-4" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb199-5"><a href="useful-utilities.html#cb199-5" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
-<span id="cb199-6"><a href="useful-utilities.html#cb199-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(de)</span>
-<span id="cb199-7"><a href="useful-utilities.html#cb199-7" aria-hidden="true"></a><span class="co">## The geneID column is ENTREZID</span></span>
-<span id="cb199-8"><a href="useful-utilities.html#cb199-8" aria-hidden="true"></a><span class="kw">head</span>(x, <span class="dv">3</span>)</span></code></pre></div>
+<p>Some of the functions, especially those internally supported for <a href="#chapter4">DO</a>, <a href="#chapter5">GO</a>, and <a href="#chapter8">Reactome Pathway</a>, support a parameter, <code>readable</code>. If <code>readable = TRUE</code>, all the gene IDs will be translated to gene symbols. The <code>readable</code> parameter is not available for enrichment analysis of KEGG or using user’s own annotation. KEGG analysis using <code>enrichKEGG</code> and <code>gseKEGG</code>, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn’t provide gene ID to symbol mapping information. For analysis using user’s own annotation data, we even don’t know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the <code>setReadable</code> function if and only if there is an <code>OrgDb</code> available.</p>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="useful-utilities.html#cb198-1" aria-hidden="true"></a><span class="kw">library</span>(org.Hs.eg.db)</span>
+<span id="cb198-2"><a href="useful-utilities.html#cb198-2" aria-hidden="true"></a><span class="kw">library</span>(clusterProfiler)</span>
+<span id="cb198-3"><a href="useful-utilities.html#cb198-3" aria-hidden="true"></a></span>
+<span id="cb198-4"><a href="useful-utilities.html#cb198-4" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb198-5"><a href="useful-utilities.html#cb198-5" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb198-6"><a href="useful-utilities.html#cb198-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichKEGG</span>(de)</span>
+<span id="cb198-7"><a href="useful-utilities.html#cb198-7" aria-hidden="true"></a><span class="co">## The geneID column is ENTREZID</span></span>
+<span id="cb198-8"><a href="useful-utilities.html#cb198-8" aria-hidden="true"></a><span class="kw">head</span>(x, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
 ## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
 ## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05
@@ -425,9 +426,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## hsa04110 6.410428e-05 5.859948e-05 8318/991/9133/890/983/4085/7272/1111     8
 ## hsa04218 1.912444e-03 1.748217e-03    2305/4605/9133/890/983/51806/1111     7
 ## hsa04114 3.843336e-03 3.513299e-03         991/9133/983/4085/51806/6790     6</code></pre>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="useful-utilities.html#cb201-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">setReadable</span>(x, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
-<span id="cb201-2"><a href="useful-utilities.html#cb201-2" aria-hidden="true"></a><span class="co">## The geneID column is translated to symbol</span></span>
-<span id="cb201-3"><a href="useful-utilities.html#cb201-3" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="useful-utilities.html#cb200-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">setReadable</span>(x, <span class="dt">OrgDb =</span> org.Hs.eg.db, <span class="dt">keyType=</span><span class="st">&quot;ENTREZID&quot;</span>)</span>
+<span id="cb200-2"><a href="useful-utilities.html#cb200-2" aria-hidden="true"></a><span class="co">## The geneID column is translated to symbol</span></span>
+<span id="cb200-3"><a href="useful-utilities.html#cb200-3" aria-hidden="true"></a><span class="kw">head</span>(y, <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
 ## hsa04110 hsa04110          Cell cycle      8/48 124/8063 5.623183e-07
 ## hsa04218 hsa04218 Cellular senescence      7/48 156/8063 3.355165e-05
@@ -446,15 +447,32 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">17.3</span> GO utilities</h2>
 <div id="drop-specific-go-terms-or-level" class="section level3" number="17.3.1">
 <h3><span class="header-section-number">17.3.1</span> drop specific GO terms or level</h3>
-<p><code>enrichGO</code> test the whole GO corpus and enriched result may contains very general terms. With <code>dropGO</code> function, user can remove specific GO terms or GO level from results obtained from both <code>enrichGO</code> and <code>compareCluster</code>.</p>
+<p>The <code>enrichGO()</code> function tests the whole GO corpus and enriched result may contains very general terms. With <code>dropGO</code> function, user can remove specific GO terms or GO level from results obtained from both <code>enrichGO()</code> and <code>compareCluster()</code>.</p>
 </div>
 <div id="test-go-at-sepcific-level" class="section level3" number="17.3.2">
 <h3><span class="header-section-number">17.3.2</span> test GO at sepcific level</h3>
-<p><code>enrichGO</code> doesn’t contain parameter to restrict the test at specific GO level. Instead, we provide a function <code>gofilter</code> to restrict the result at specific GO level. It works with results obtained from both <code>enrichGO</code> and <code>compareCluster</code>.</p>
+<p>The <code>enrichGO()</code> doesn’t contain parameter to restrict the test at specific GO level. Instead, we provide a function, <code>gofilter()</code>, to restrict the result at specific GO level. It works with results obtained from both <code>enrichGO()</code> and <code>compareCluster()</code>.</p>
 </div>
 <div id="reduce-redundancy-of-enriched-go-terms" class="section level3" number="17.3.3">
 <h3><span class="header-section-number">17.3.3</span> reduce redundancy of enriched GO terms</h3>
-<p>GO is organized in parent-child structure, thus a parent term can be overlap with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> implement <a href="https://github.com/GuangchuangYu/clusterProfiler/issues/28"><code>simplify</code></a> method to reduce redundant GO terms from the outputs of <code>enrichGO</code> and <code>gseGO</code>. The function internally called <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>)</span> to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. An example can be found in <a href="https://guangchuangyu.github.io/2015/10/use-simplify-to-remove-redundancy-of-enriched-go-terms/">the blog post</a>.</p>
+<p>GO is organized in parent-child structure, thus a parent term can be overlapped with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> implements <a href="https://github.com/GuangchuangYu/clusterProfiler/issues/28"><code>simplify</code></a> method to reduce redundant GO terms from the outputs of <code>enrichGO()</code> and <code>gseGO()</code>. The function internally called <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>)</span> to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. The <code>simplify()</code> method apply <code>select_fun</code> (which can be a user defined function) to feature <code>by</code> to select one representative term from redundant terms (which have similarity higher than <code>cutoff</code>).</p>
+<p>In Figure <a href="useful-utilities.html#fig:simplify-emapplot">17.1</a>A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the <code>simplify()</code> method, the result is more clear to view the whole story.</p>
+
+
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="useful-utilities.html#cb202-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb202-2"><a href="useful-utilities.html#cb202-2" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb202-3"><a href="useful-utilities.html#cb202-3" aria-hidden="true"></a>bp &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(de, <span class="dt">ont=</span><span class="st">&quot;BP&quot;</span>, <span class="dt">OrgDb =</span> <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
+<span id="cb202-4"><a href="useful-utilities.html#cb202-4" aria-hidden="true"></a>bp2 &lt;-<span class="st"> </span><span class="kw">simplify</span>(bp, <span class="dt">cutoff=</span><span class="fl">0.7</span>, <span class="dt">by=</span><span class="st">&quot;p.adjust&quot;</span>, <span class="dt">select_fun=</span>min)</span>
+<span id="cb202-5"><a href="useful-utilities.html#cb202-5" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp)</span>
+<span id="cb202-6"><a href="useful-utilities.html#cb202-6" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp2)</span>
+<span id="cb202-7"><a href="useful-utilities.html#cb202-7" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="figure"><span id="fig:simplify-emapplot"></span>
+<img src="biomedicalKnowledge_files/figure-html/simplify-emapplot-1.svg" alt="Visualize enriched terms by EnrichmentMap using the emapplot() function. (A) original result. (B) simplify result." width="1536" />
+<p class="caption">
+Figure 17.1: <strong>Visualize enriched terms by EnrichmentMap using the <code>emapplot()</code> function.</strong> (A) original result. (B) simplify result.
+</p>
+</div>
+<p>Alternatively, users can use slim version of GO and use the <code>enricher()</code> o r <code>gseGO()</code> functions to analyze.</p>
 
 </div>
 </div>

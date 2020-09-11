@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-10" />
+<meta name="date" content="2020-09-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -200,7 +200,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.3" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-ora"><i class="fa fa-check"></i><b>6.3</b> GO over-representation analysis</a></li>
 <li class="chapter" data-level="6.4" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#go-gene-set-enrichment-analysis"><i class="fa fa-check"></i><b>6.4</b> GO Gene Set Enrichment Analysis</a></li>
 <li class="chapter" data-level="6.5" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-non-model"><i class="fa fa-check"></i><b>6.5</b> GO analysis for non-model organisms</a></li>
-<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.6</b> Summary</a></li>
+<li class="chapter" data-level="6.6" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fa fa-check"></i><b>6.6</b> Visualize enriched GO terms as a directed acyclic graph</a></li>
+<li class="chapter" data-level="6.7" data-path="clusterprofiler-go.html"><a href="clusterprofiler-go.html#clusterprofiler-go-summary"><i class="fa fa-check"></i><b>6.7</b> Summary</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html"><i class="fa fa-check"></i><b>7</b> KEGG enrichment analysis</a>
 <ul>
@@ -209,6 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.3" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-gsea"><i class="fa fa-check"></i><b>7.3</b> KEGG pathway gene set enrichment analysis</a></li>
 <li class="chapter" data-level="7.4" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora"><i class="fa fa-check"></i><b>7.4</b> KEGG module over-representation analysis</a></li>
 <li class="chapter" data-level="7.5" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-gsea"><i class="fa fa-check"></i><b>7.5</b> KEGG module gene set enrichment analysis</a></li>
+<li class="chapter" data-level="7.6" data-path="clusterprofiler-kegg.html"><a href="clusterprofiler-kegg.html#visualize-enriched-kegg-pathways"><i class="fa fa-check"></i><b>7.6</b> Visualize enriched KEGG pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="wikipathways-analysis.html"><a href="wikipathways-analysis.html"><i class="fa fa-check"></i><b>8</b> WikiPathways analysis</a>
 <ul>
@@ -270,13 +272,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="15.3" data-path="enrichplot.html"><a href="enrichplot.html#gene-concept-network"><i class="fa fa-check"></i><b>15.3</b> Gene-Concept Network</a></li>
 <li class="chapter" data-level="15.4" data-path="enrichplot.html"><a href="enrichplot.html#heatmap-like-functional-classification"><i class="fa fa-check"></i><b>15.4</b> Heatmap-like functional classification</a></li>
 <li class="chapter" data-level="15.5" data-path="enrichplot.html"><a href="enrichplot.html#enrichment-map"><i class="fa fa-check"></i><b>15.5</b> Enrichment Map</a></li>
-<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.6</b> UpSet Plot</a></li>
-<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.7</b> ridgeline plot for expression distribution of GSEA result</a></li>
-<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> running score and preranked list of GSEA result</a></li>
-<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.9</b> pubmed trend of enriched terms</a></li>
-<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#goplot"><i class="fa fa-check"></i><b>15.10</b> goplot</a></li>
-<li class="chapter" data-level="15.11" data-path="enrichplot.html"><a href="enrichplot.html#browsekegg"><i class="fa fa-check"></i><b>15.11</b> browseKEGG</a></li>
-<li class="chapter" data-level="15.12" data-path="enrichplot.html"><a href="enrichplot.html#pathview-from-pathview-package"><i class="fa fa-check"></i><b>15.12</b> pathview from pathview package</a></li>
+<li class="chapter" data-level="15.6" data-path="enrichplot.html"><a href="enrichplot.html#biological-theme-comparison"><i class="fa fa-check"></i><b>15.6</b> Biological theme comparison</a></li>
+<li class="chapter" data-level="15.7" data-path="enrichplot.html"><a href="enrichplot.html#upset-plot"><i class="fa fa-check"></i><b>15.7</b> UpSet Plot</a></li>
+<li class="chapter" data-level="15.8" data-path="enrichplot.html"><a href="enrichplot.html#ridgeline-plot-for-expression-distribution-of-gsea-result"><i class="fa fa-check"></i><b>15.8</b> ridgeline plot for expression distribution of GSEA result</a></li>
+<li class="chapter" data-level="15.9" data-path="enrichplot.html"><a href="enrichplot.html#running-score-and-preranked-list-of-gsea-result"><i class="fa fa-check"></i><b>15.9</b> running score and preranked list of GSEA result</a></li>
+<li class="chapter" data-level="15.10" data-path="enrichplot.html"><a href="enrichplot.html#pubmed-trend-of-enriched-terms"><i class="fa fa-check"></i><b>15.10</b> pubmed trend of enriched terms</a></li>
 </ul></li>
 <li class="part"><span><b>Part III: Miscellaneous topics</b></span></li>
 <li class="chapter" data-level="16" data-path="clusterProfiler-dplyr.html"><a href="clusterProfiler-dplyr.html"><i class="fa fa-check"></i><b>16</b> dplyr verbs for manipulating enrichment result</a>
@@ -292,7 +292,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="17.1" data-path="useful-utilities.html"><a href="useful-utilities.html#id-convert"><i class="fa fa-check"></i><b>17.1</b> Translating Biological ID</a>
 <ul>
-<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> bitr: Biological Id TranslatoR</a></li>
+<li class="chapter" data-level="17.1.1" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr"><i class="fa fa-check"></i><b>17.1.1</b> <code>bitr</code>: Biological Id TranslatoR</a></li>
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
@@ -338,13 +338,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">9.2</span> Reactome pathway over-representation analysis</h2>
 <p>Enrichment analysis is a widely used approach to identify biological
 themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented <code>enrichPathway()</code> that uses <a href="enrichment-overview.html#ora-algorithm">hypergeometric model</a> to assess whether the number of selected genes associated with a reactome pathway is larger than expected.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="reactomepa.html#cb88-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
-<span id="cb88-2"><a href="reactomepa.html#cb88-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
-<span id="cb88-3"><a href="reactomepa.html#cb88-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
-<span id="cb88-4"><a href="reactomepa.html#cb88-4" aria-hidden="true"></a><span class="kw">head</span>(de)</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="reactomepa.html#cb91-1" aria-hidden="true"></a><span class="kw">library</span>(ReactomePA)</span>
+<span id="cb91-2"><a href="reactomepa.html#cb91-2" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb91-3"><a href="reactomepa.html#cb91-3" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="fl">1.5</span>]</span>
+<span id="cb91-4"><a href="reactomepa.html#cb91-4" aria-hidden="true"></a><span class="kw">head</span>(de)</span></code></pre></div>
 <pre><code>## [1] &quot;4312&quot;  &quot;8318&quot;  &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot;</code></pre>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="reactomepa.html#cb90-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichPathway</span>(<span class="dt">gene=</span>de, <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>, <span class="dt">readable=</span><span class="ot">TRUE</span>)</span>
-<span id="cb90-2"><a href="reactomepa.html#cb90-2" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="reactomepa.html#cb93-1" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichPathway</span>(<span class="dt">gene=</span>de, <span class="dt">pvalueCutoff =</span> <span class="fl">0.05</span>, <span class="dt">readable=</span><span class="ot">TRUE</span>)</span>
+<span id="cb93-2"><a href="reactomepa.html#cb93-2" aria-hidden="true"></a><span class="kw">head</span>(x)</span></code></pre></div>
 <pre><code>##                          ID
 ## R-HSA-69620     R-HSA-69620
 ## R-HSA-2500257 R-HSA-2500257
@@ -383,46 +383,61 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 </div>
 <div id="reactomepa-gsea" class="section level2" number="9.3">
 <h2><span class="header-section-number">9.3</span> Reactome pathway gene set enrichment analysis</h2>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="reactomepa.html#cb92-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gsePathway</span>(geneList, <span class="dt">nPerm=</span><span class="dv">10000</span>,</span>
-<span id="cb92-2"><a href="reactomepa.html#cb92-2" aria-hidden="true"></a>                <span class="dt">pvalueCutoff=</span><span class="fl">0.2</span>,</span>
-<span id="cb92-3"><a href="reactomepa.html#cb92-3" aria-hidden="true"></a>                <span class="dt">pAdjustMethod=</span><span class="st">&quot;BH&quot;</span>, <span class="dt">verbose=</span><span class="ot">FALSE</span>)</span>
-<span id="cb92-4"><a href="reactomepa.html#cb92-4" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
-<pre><code>##                          ID                                 Description setSize
-## R-HSA-1474244 R-HSA-1474244           Extracellular matrix organization     266
-## R-HSA-216083   R-HSA-216083          Integrin cell surface interactions      80
-## R-HSA-3000178 R-HSA-3000178                           ECM proteoglycans      74
-## R-HSA-3000171 R-HSA-3000171      Non-integrin membrane-ECM interactions      56
-## R-HSA-1650814 R-HSA-1650814 Collagen biosynthesis and modifying enzymes      53
-## R-HSA-1566948 R-HSA-1566948                     Elastic fibre formation      41
-##               enrichmentScore       NES       pvalue    p.adjust     qvalues
-## R-HSA-1474244      -0.4576106 -1.939249 0.0001340842 0.003399753 0.002471381
-## R-HSA-216083       -0.5123103 -1.857393 0.0001543448 0.003399753 0.002471381
-## R-HSA-3000178      -0.6262504 -2.236952 0.0001557390 0.003399753 0.002471381
-## R-HSA-3000171      -0.5863352 -1.988225 0.0001594896 0.003399753 0.002471381
-## R-HSA-1650814      -0.5915513 -1.984115 0.0001609788 0.003399753 0.002471381
-## R-HSA-1566948      -0.6804683 -2.168610 0.0001626545 0.003399753 0.002471381
-##               rank                   leading_edge
-## R-HSA-1474244 1943 tags=33%, list=16%, signal=29%
-## R-HSA-216083  1890 tags=39%, list=15%, signal=33%
-## R-HSA-3000178 1890 tags=46%, list=15%, signal=39%
-## R-HSA-3000171 2538 tags=45%, list=20%, signal=36%
-## R-HSA-1650814 1890 tags=47%, list=15%, signal=40%
-## R-HSA-1566948 1562 tags=49%, list=13%, signal=43%
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                       core_enrichment
-## R-HSA-1474244 825/8038/11132/4017/1288/4811/3910/3371/1291/3791/831/1301/4238/7450/3685/80781/1280/1306/4314/3675/8425/977/4054/7837/7042/3912/4322/1278/1511/4060/30008/1277/164656/22795/10516/81578/1293/2247/1295/58494/8076/5118/2192/1281/83700/50509/4319/1290/1513/11096/2202/4313/2199/3693/10536/1294/11117/3339/1462/1289/1292/3908/4016/3909/4053/6678/1296/633/5654/2331/63923/7043/3913/1300/2200/1634/7177/1287/3679/4680/2006/7373/1307/1311/1308/652/4148/54829/4239
-## R-HSA-216083                                                                                                                                                                                                                                                                                                           1288/3371/1291/3791/7450/3685/80781/1280/3675/1278/4060/1277/1293/1295/58494/1281/83700/50509/1290/3693/1294/3339/1289/1292/1296/1300/2200/1287/3679/1307/1311
-## R-HSA-3000178                                                                                                                                                                                                                                                                                             1288/3910/3371/1291/3685/1280/7042/3912/1278/4060/1277/1293/1281/50509/1290/3693/3339/1462/1289/1292/3908/3909/6678/633/2331/63923/7043/3913/1634/1287/3679/1311/4148/54829
-## R-HSA-3000171                                                                                                                                                                                                                                                                                                                                           7057/3915/6385/4921/1288/3910/3371/1301/3685/1280/3912/1278/1277/2247/1281/50509/1290/3693/3339/1289/3908/3909/3913/1300/1287
-## R-HSA-1650814                                                                                                                                                                                                                                                                                                                                        1288/1291/1301/80781/1280/1306/1278/1277/81578/1293/1295/5118/1281/50509/1290/10536/1294/1289/1292/1296/1300/1287/7373/1307/1308
-## R-HSA-1566948                                                                                                                                                                                                                                                                                                                                                                   4238/3685/8425/4054/7042/30008/10516/8076/2192/2202/2199/3693/11117/4016/4053/7043/2200/2006/652/4239</code></pre>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="reactomepa.html#cb95-1" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">gsePathway</span>(geneList, </span>
+<span id="cb95-2"><a href="reactomepa.html#cb95-2" aria-hidden="true"></a>                <span class="dt">pvalueCutoff =</span> <span class="fl">0.2</span>,</span>
+<span id="cb95-3"><a href="reactomepa.html#cb95-3" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>, </span>
+<span id="cb95-4"><a href="reactomepa.html#cb95-4" aria-hidden="true"></a>                <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb95-5"><a href="reactomepa.html#cb95-5" aria-hidden="true"></a><span class="kw">head</span>(y)</span></code></pre></div>
+<pre><code>##                        ID
+## R-HSA-141424 R-HSA-141424
+## R-HSA-141444 R-HSA-141444
+## R-HSA-162909 R-HSA-162909
+## R-HSA-174143 R-HSA-174143
+## R-HSA-174178 R-HSA-174178
+## R-HSA-174184 R-HSA-174184
+##                                                                                                           Description
+## R-HSA-141424                                                            Amplification of signal from the kinetochores
+## R-HSA-141444                     Amplification  of signal from unattached  kinetochores via a MAD2  inhibitory signal
+## R-HSA-162909                                                                         Host Interactions of HIV factors
+## R-HSA-174143                                                        APC/C-mediated degradation of cell cycle proteins
+## R-HSA-174178 APC/C:Cdh1 mediated degradation of Cdc20 and other APC/C:Cdh1 targeted proteins in late mitosis/early G1
+## R-HSA-174184                                                     Cdc20:Phospho-APC/C mediated degradation of Cyclin A
+##              setSize enrichmentScore      NES pvalue     p.adjust      qvalues
+## R-HSA-141424      81       0.7111667 2.825059  1e-10 3.822857e-09 2.769925e-09
+## R-HSA-141444      81       0.7111667 2.825059  1e-10 3.822857e-09 2.769925e-09
+## R-HSA-162909     121       0.5896187 2.521490  1e-10 3.822857e-09 2.769925e-09
+## R-HSA-174143      77       0.6947533 2.746037  1e-10 3.822857e-09 2.769925e-09
+## R-HSA-174178      63       0.6897538 2.619690  1e-10 3.822857e-09 2.769925e-09
+## R-HSA-174184      63       0.6868706 2.608740  1e-10 3.822857e-09 2.769925e-09
+##              rank                   leading_edge
+## R-HSA-141424  759  tags=31%, list=6%, signal=29%
+## R-HSA-141444  759  tags=31%, list=6%, signal=29%
+## R-HSA-162909 3321 tags=58%, list=27%, signal=43%
+## R-HSA-174143 1851 tags=47%, list=15%, signal=40%
+## R-HSA-174178 2788 tags=59%, list=22%, signal=46%
+## R-HSA-174184 2788 tags=57%, list=22%, signal=45%
+##                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
+## R-HSA-141424                                                                                                                                                                                                                             55143/991/1062/10403/220134/79019/55839/54821/4085/81930/332/9212/11004/5347/701/11130/79682/57405/2491/1058/699/1063/55055/79980/9735
+## R-HSA-141444                                                                                                                                                                                                                             55143/991/1062/10403/220134/79019/55839/54821/4085/81930/332/9212/11004/5347/701/11130/79682/57405/2491/1058/699/1063/55055/79980/9735
+## R-HSA-162909 3159/3932/5688/9688/3055/5709/5698/919/5693/5902/5713/5721/5691/292/1104/5685/1794/9631/5690/5684/5686/5695/11168/10213/940/23198/7979/6396/23165/5699/5714/6921/55706/8815/5702/23636/9978/5905/5708/1174/5692/5704/5901/164/60489/4927/79902/5683/10762/1175/5694/8480/11097/5718/5682/5716/9972/904/81929/162/5707/57122/4869/926/5696/7514/79023/3837/920/9818
+## R-HSA-174143                                                                                                                                                                                991/11065/4751/890/983/4085/9212/6790/891/9232/5347/701/6502/5688/5709/26271/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704
+## R-HSA-174178                                                                                                                                                                       991/11065/9212/6790/9232/5347/6502/5688/5709/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704/5683/5694/7321/5718/5682/5716/25906/5707
+## R-HSA-174184                                                                                                                                                                               991/11065/890/983/4085/701/5688/5709/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704/5683/5694/7321/5718/5682/5716/25906/5707</code></pre>
 </div>
 <div id="pathway-visualization" class="section level2" number="9.4">
 <h2><span class="header-section-number">9.4</span> Pathway Visualization</h2>
 <p><a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented the <code>viewPathway()</code> to visualized selected reactome pathway. More general purpose of visualization methods for ORA and GSEA results are provided in the <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package and are documented on <a href="enrichplot.html#enrichplot">Chapter 14</a>.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="reactomepa.html#cb94-1" aria-hidden="true"></a><span class="kw">viewPathway</span>(<span class="st">&quot;E2F mediated regulation of DNA replication&quot;</span>, </span>
-<span id="cb94-2"><a href="reactomepa.html#cb94-2" aria-hidden="true"></a>            <span class="dt">readable =</span> <span class="ot">TRUE</span>, </span>
-<span id="cb94-3"><a href="reactomepa.html#cb94-3" aria-hidden="true"></a>            <span class="dt">foldChange =</span> geneList)</span></code></pre></div>
-<p><img src="biomedicalKnowledge_files/figure-html/unnamed-chunk-27-1.svg" width="768" /></p>
+
+
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="reactomepa.html#cb97-1" aria-hidden="true"></a><span class="kw">viewPathway</span>(<span class="st">&quot;E2F mediated regulation of DNA replication&quot;</span>, </span>
+<span id="cb97-2"><a href="reactomepa.html#cb97-2" aria-hidden="true"></a>            <span class="dt">readable =</span> <span class="ot">TRUE</span>, </span>
+<span id="cb97-3"><a href="reactomepa.html#cb97-3" aria-hidden="true"></a>            <span class="dt">foldChange =</span> geneList)</span></code></pre></div>
+<div class="figure"><span id="fig:viewpathway"></span>
+<img src="biomedicalKnowledge_files/figure-html/viewpathway-1.svg" alt="Visualize reactome pathway." width="768" />
+<p class="caption">
+Figure 9.1: <strong>Visualize reactome pathway.</strong>
+</p>
+</div>
 <!--
 
 ## Pathway analysis of NGS data
