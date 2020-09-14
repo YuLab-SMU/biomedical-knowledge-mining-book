@@ -96,8 +96,47 @@ head(y, 3)
 For those functions that internally support `readable` parameter, user can also use `setReadable` for translating gene IDs.
 
 
+## Parsing GMT files {#read-gmt}
 
-## GO utilities
+The GMT (Gene Matrix Transposed) file format is a tab delimited file format that is widely used to describe gene sets. Each row in the GMT format represents one gene set and each gene set is described by a name (or ID), a description and the genes in the gene set as illustrated in Figure \@ref(fig:gmtFormat).
+
+
+(ref:gmtFormatscap) The GMT format..
+
+(ref:gmtFormatcap) **The GMT format.** Figure taken from <https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>. 
+
+
+
+```{r gmtFormat, out.width="100%", echo=FALSE, fig.cap="(ref:gmtFormatcap)", fig.scap="(ref:egmtFormatscap)"}
+knitr::include_graphics("figures/Gmt_format_snapshot.gif")
+```
+
+The `r Biocpkg("clusterProfiler")` package implemented a function, `read.gmt()`, to parse GMT file into a `data.frame`. The WikiPathway GMT file encodes information of `version`, `wpid` and `species` into the `Description` column. The `r Biocpkg("clusterProfiler")` provides the `read.gmt.wp()` function to parse WikiPathway GMT file and supports parsing information that encoded in the `Description` column. 
+
+```{r echo=FALSE}
+options(download.file.method = "wget")
+options(download.file.extra = "-c")
+```
+
+
+```{r}
+url <- "https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&libraryName=COVID-19_Related_Gene_Sets"
+download.file(url, destfile = "COVID19_GeneSets.gmt")
+covid19_gs <- read.gmt("COVID19_GeneSets.gmt")
+head(covid19_gs)
+```
+
+
+
+Gene set resources:
+
++ <https://maayanlab.cloud/Enrichr/#stats>
++ <http://ge-lab.org/#/data>
+
+
+There are many gene sets available online. After parsing by the `read.gmt()` function, the data can be directly used to perform enrichment analysis using `enricher()` and `GSEA()` functions (see also [Chapter 12](#universal-api)).
+
+## GO utilities {#go-utilities}
 
 ### drop specific GO terms or level
 

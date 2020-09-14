@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-11" />
+<meta name="date" content="2020-09-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -296,11 +296,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
-<li class="chapter" data-level="17.3" data-path="useful-utilities.html"><a href="useful-utilities.html#go-utilities"><i class="fa fa-check"></i><b>17.3</b> GO utilities</a>
+<li class="chapter" data-level="17.3" data-path="useful-utilities.html"><a href="useful-utilities.html#read-gmt"><i class="fa fa-check"></i><b>17.3</b> Parsing GMT files</a></li>
+<li class="chapter" data-level="17.4" data-path="useful-utilities.html"><a href="useful-utilities.html#go-utilities"><i class="fa fa-check"></i><b>17.4</b> GO utilities</a>
 <ul>
-<li class="chapter" data-level="17.3.1" data-path="useful-utilities.html"><a href="useful-utilities.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>17.3.1</b> drop specific GO terms or level</a></li>
-<li class="chapter" data-level="17.3.2" data-path="useful-utilities.html"><a href="useful-utilities.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>17.3.2</b> test GO at sepcific level</a></li>
-<li class="chapter" data-level="17.3.3" data-path="useful-utilities.html"><a href="useful-utilities.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>17.3.3</b> reduce redundancy of enriched GO terms</a></li>
+<li class="chapter" data-level="17.4.1" data-path="useful-utilities.html"><a href="useful-utilities.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>17.4.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="17.4.2" data-path="useful-utilities.html"><a href="useful-utilities.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>17.4.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="17.4.3" data-path="useful-utilities.html"><a href="useful-utilities.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>17.4.3</b> reduce redundancy of enriched GO terms</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
@@ -548,14 +549,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## SGCGSSAAA_E2F1DP2_01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     79733/6241/4171/993/990/3159/9768/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/5427/4176/5902/4436/1871/79915/9088/6632/284403/7290/4172/5424/124222/1633/7374/2189/4678/2289/50/63967/56886/23234/6839/1786/204/51087/23636/1174/83463/10492/79173
 ## E2F_Q4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 8318/79733/6241/983/5080/81620/2146/4171/993/990/5888/9768/4175/4173/29028/3015/85236/5111/64785/26271/51053/1869/3925/5427/23649/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7473/7374/9824/7353/4678/6646/50/63967/56886/23234/1786/204/6427/51087/23636
 ## E2F1DP1_01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       79733/6241/983/5080/2146/4171/993/990/3159/9768/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/3925/5427/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7374/9824/2189/4678/2289/6646/50/63967/5457/56886/23234/6839/1786/204/51087/23636/11335/1174/83463/10492/79173</code></pre>
-<!--
-
-other data source
-
-+ <http://ge-lab.org/#/data>
-
-
--->
 
 </div>
 </div>

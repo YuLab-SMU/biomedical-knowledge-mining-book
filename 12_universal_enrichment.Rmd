@@ -133,12 +133,3 @@ em2 <- GSEA(geneList, TERM2GENE = C3_t2g)
 head(em2)
 ```
 
-
-<!--
-
-other data source
-
-+ <http://ge-lab.org/#/data>
-
-
--->

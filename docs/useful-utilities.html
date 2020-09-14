@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-11" />
+<meta name="date" content="2020-09-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -296,11 +296,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="17.1.2" data-path="useful-utilities.html"><a href="useful-utilities.html#bitr_kegg"><i class="fa fa-check"></i><b>17.1.2</b> <code>bitr_kegg</code>: converting biological IDs using KEGG API</a></li>
 </ul></li>
 <li class="chapter" data-level="17.2" data-path="useful-utilities.html"><a href="useful-utilities.html#setReadable"><i class="fa fa-check"></i><b>17.2</b> <code>setReadable</code>: translating gene IDs to human readable symbols</a></li>
-<li class="chapter" data-level="17.3" data-path="useful-utilities.html"><a href="useful-utilities.html#go-utilities"><i class="fa fa-check"></i><b>17.3</b> GO utilities</a>
+<li class="chapter" data-level="17.3" data-path="useful-utilities.html"><a href="useful-utilities.html#read-gmt"><i class="fa fa-check"></i><b>17.3</b> Parsing GMT files</a></li>
+<li class="chapter" data-level="17.4" data-path="useful-utilities.html"><a href="useful-utilities.html#go-utilities"><i class="fa fa-check"></i><b>17.4</b> GO utilities</a>
 <ul>
-<li class="chapter" data-level="17.3.1" data-path="useful-utilities.html"><a href="useful-utilities.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>17.3.1</b> drop specific GO terms or level</a></li>
-<li class="chapter" data-level="17.3.2" data-path="useful-utilities.html"><a href="useful-utilities.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>17.3.2</b> test GO at sepcific level</a></li>
-<li class="chapter" data-level="17.3.3" data-path="useful-utilities.html"><a href="useful-utilities.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>17.3.3</b> reduce redundancy of enriched GO terms</a></li>
+<li class="chapter" data-level="17.4.1" data-path="useful-utilities.html"><a href="useful-utilities.html#drop-specific-go-terms-or-level"><i class="fa fa-check"></i><b>17.4.1</b> drop specific GO terms or level</a></li>
+<li class="chapter" data-level="17.4.2" data-path="useful-utilities.html"><a href="useful-utilities.html#test-go-at-sepcific-level"><i class="fa fa-check"></i><b>17.4.2</b> test GO at sepcific level</a></li>
+<li class="chapter" data-level="17.4.3" data-path="useful-utilities.html"><a href="useful-utilities.html#reduce-redundancy-of-enriched-go-terms"><i class="fa fa-check"></i><b>17.4.3</b> reduce redundancy of enriched GO terms</a></li>
 </ul></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
@@ -443,33 +444,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## hsa04114          CDC20/CCNB2/CDK1/MAD2L1/CALML5/AURKA     6</code></pre>
 <p>For those functions that internally support <code>readable</code> parameter, user can also use <code>setReadable</code> for translating gene IDs.</p>
 </div>
-<div id="go-utilities" class="section level2" number="17.3">
-<h2><span class="header-section-number">17.3</span> GO utilities</h2>
-<div id="drop-specific-go-terms-or-level" class="section level3" number="17.3.1">
-<h3><span class="header-section-number">17.3.1</span> drop specific GO terms or level</h3>
+<div id="read-gmt" class="section level2" number="17.3">
+<h2><span class="header-section-number">17.3</span> Parsing GMT files</h2>
+<p>The GMT (Gene Matrix Transposed) file format is a tab delimited file format that is widely used to describe gene sets. Each row in the GMT format represents one gene set and each gene set is described by a name (or ID), a description and the genes in the gene set as illustrated in Figure <a href="useful-utilities.html#fig:gmtFormat">17.1</a>.</p>
+
+
+<div class="figure"><span id="fig:gmtFormat"></span>
+<img src="figures/Gmt_format_snapshot.gif" alt="The GMT format. Figure taken from https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats." width="100%" />
+<p class="caption">
+Figure 17.1: <strong>The GMT format.</strong> Figure taken from <a href="https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats" class="uri">https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats</a>.
+</p>
+</div>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package implemented a function, <code>read.gmt()</code>, to parse GMT file into a <code>data.frame</code>. The WikiPathway GMT file encodes information of <code>version</code>, <code>wpid</code> and <code>species</code> into the <code>Description</code> column. The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> provides the <code>read.gmt.wp()</code> function to parse WikiPathway GMT file and supports parsing information that encoded in the <code>Description</code> column.</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="useful-utilities.html#cb202-1" aria-hidden="true"></a>url &lt;-<span class="st"> &quot;https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&amp;libraryName=COVID-19_Related_Gene_Sets&quot;</span></span>
+<span id="cb202-2"><a href="useful-utilities.html#cb202-2" aria-hidden="true"></a><span class="kw">download.file</span>(url, <span class="dt">destfile =</span> <span class="st">&quot;COVID19_GeneSets.gmt&quot;</span>)</span>
+<span id="cb202-3"><a href="useful-utilities.html#cb202-3" aria-hidden="true"></a>covid19_gs &lt;-<span class="st"> </span><span class="kw">read.gmt</span>(<span class="st">&quot;COVID19_GeneSets.gmt&quot;</span>)</span>
+<span id="cb202-4"><a href="useful-utilities.html#cb202-4" aria-hidden="true"></a><span class="kw">head</span>(covid19_gs)</span></code></pre></div>
+<pre><code>##                                     term    gene
+## 1 COVID19-E protein host PPI from Krogan    BRD4
+## 2 COVID19-E protein host PPI from Krogan    BRD2
+## 3 COVID19-E protein host PPI from Krogan SLC44A2
+## 4 COVID19-E protein host PPI from Krogan  ZC3H18
+## 5 COVID19-E protein host PPI from Krogan   AP3B1
+## 6 COVID19-E protein host PPI from Krogan   CWC27</code></pre>
+<p>Gene set resources:</p>
+<ul>
+<li><a href="https://maayanlab.cloud/Enrichr/#stats" class="uri">https://maayanlab.cloud/Enrichr/#stats</a></li>
+<li><a href="http://ge-lab.org/#/data" class="uri">http://ge-lab.org/#/data</a></li>
+</ul>
+<p>There are many gene sets available online. After parsing by the <code>read.gmt()</code> function, the data can be directly used to perform enrichment analysis using <code>enricher()</code> and <code>GSEA()</code> functions (see also <a href="universal-api.html#universal-api">Chapter 12</a>).</p>
+</div>
+<div id="go-utilities" class="section level2" number="17.4">
+<h2><span class="header-section-number">17.4</span> GO utilities</h2>
+<div id="drop-specific-go-terms-or-level" class="section level3" number="17.4.1">
+<h3><span class="header-section-number">17.4.1</span> drop specific GO terms or level</h3>
 <p>The <code>enrichGO()</code> function tests the whole GO corpus and enriched result may contains very general terms. With <code>dropGO</code> function, user can remove specific GO terms or GO level from results obtained from both <code>enrichGO()</code> and <code>compareCluster()</code>.</p>
 </div>
-<div id="test-go-at-sepcific-level" class="section level3" number="17.3.2">
-<h3><span class="header-section-number">17.3.2</span> test GO at sepcific level</h3>
+<div id="test-go-at-sepcific-level" class="section level3" number="17.4.2">
+<h3><span class="header-section-number">17.4.2</span> test GO at sepcific level</h3>
 <p>The <code>enrichGO()</code> doesn’t contain parameter to restrict the test at specific GO level. Instead, we provide a function, <code>gofilter()</code>, to restrict the result at specific GO level. It works with results obtained from both <code>enrichGO()</code> and <code>compareCluster()</code>.</p>
 </div>
-<div id="reduce-redundancy-of-enriched-go-terms" class="section level3" number="17.3.3">
-<h3><span class="header-section-number">17.3.3</span> reduce redundancy of enriched GO terms</h3>
+<div id="reduce-redundancy-of-enriched-go-terms" class="section level3" number="17.4.3">
+<h3><span class="header-section-number">17.4.3</span> reduce redundancy of enriched GO terms</h3>
 <p>GO is organized in parent-child structure, thus a parent term can be overlapped with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> implements <a href="https://github.com/GuangchuangYu/clusterProfiler/issues/28"><code>simplify</code></a> method to reduce redundant GO terms from the outputs of <code>enrichGO()</code> and <code>gseGO()</code>. The function internally called <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a> <span class="citation">(Yu et al. <a href="#ref-yu2010" role="doc-biblioref">2010</a>)</span> to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. The <code>simplify()</code> method apply <code>select_fun</code> (which can be a user defined function) to feature <code>by</code> to select one representative term from redundant terms (which have similarity higher than <code>cutoff</code>).</p>
-<p>In Figure <a href="useful-utilities.html#fig:simplify-emapplot">17.1</a>A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the <code>simplify()</code> method, the result is more clear to view the whole story.</p>
+<p>In Figure <a href="useful-utilities.html#fig:simplify-emapplot">17.2</a>A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the <code>simplify()</code> method, the result is more clear to view the whole story.</p>
 
 
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="useful-utilities.html#cb202-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
-<span id="cb202-2"><a href="useful-utilities.html#cb202-2" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
-<span id="cb202-3"><a href="useful-utilities.html#cb202-3" aria-hidden="true"></a>bp &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(de, <span class="dt">ont=</span><span class="st">&quot;BP&quot;</span>, <span class="dt">OrgDb =</span> <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
-<span id="cb202-4"><a href="useful-utilities.html#cb202-4" aria-hidden="true"></a>bp2 &lt;-<span class="st"> </span><span class="kw">simplify</span>(bp, <span class="dt">cutoff=</span><span class="fl">0.7</span>, <span class="dt">by=</span><span class="st">&quot;p.adjust&quot;</span>, <span class="dt">select_fun=</span>min)</span>
-<span id="cb202-5"><a href="useful-utilities.html#cb202-5" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp)</span>
-<span id="cb202-6"><a href="useful-utilities.html#cb202-6" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp2)</span>
-<span id="cb202-7"><a href="useful-utilities.html#cb202-7" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="useful-utilities.html#cb204-1" aria-hidden="true"></a><span class="kw">data</span>(geneList, <span class="dt">package=</span><span class="st">&quot;DOSE&quot;</span>)</span>
+<span id="cb204-2"><a href="useful-utilities.html#cb204-2" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="kw">abs</span>(geneList) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>]</span>
+<span id="cb204-3"><a href="useful-utilities.html#cb204-3" aria-hidden="true"></a>bp &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(de, <span class="dt">ont=</span><span class="st">&quot;BP&quot;</span>, <span class="dt">OrgDb =</span> <span class="st">&#39;org.Hs.eg.db&#39;</span>)</span>
+<span id="cb204-4"><a href="useful-utilities.html#cb204-4" aria-hidden="true"></a>bp2 &lt;-<span class="st"> </span><span class="kw">simplify</span>(bp, <span class="dt">cutoff=</span><span class="fl">0.7</span>, <span class="dt">by=</span><span class="st">&quot;p.adjust&quot;</span>, <span class="dt">select_fun=</span>min)</span>
+<span id="cb204-5"><a href="useful-utilities.html#cb204-5" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp)</span>
+<span id="cb204-6"><a href="useful-utilities.html#cb204-6" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">emapplot</span>(bp2)</span>
+<span id="cb204-7"><a href="useful-utilities.html#cb204-7" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">ncol=</span><span class="dv">2</span>, <span class="dt">labels =</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
 <div class="figure"><span id="fig:simplify-emapplot"></span>
 <img src="biomedicalKnowledge_files/figure-html/simplify-emapplot-1.svg" alt="Visualize enriched terms by EnrichmentMap using the emapplot() function. (A) original result. (B) simplify result." width="1536" />
 <p class="caption">
-Figure 17.1: <strong>Visualize enriched terms by EnrichmentMap using the <code>emapplot()</code> function.</strong> (A) original result. (B) simplify result.
+Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code>emapplot()</code> function.</strong> (A) original result. (B) simplify result.
 </p>
 </div>
 <p>Alternatively, users can use slim version of GO and use the <code>enricher()</code> o r <code>gseGO()</code> functions to analyze.</p>
