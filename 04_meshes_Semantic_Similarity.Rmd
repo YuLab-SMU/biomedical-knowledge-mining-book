@@ -46,6 +46,7 @@ The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepar
 The semantic data is prepare by the `meshdata()` function:
 
 ```{r meshdata}
+library(meshes)
 hsamd <- meshdata("MeSH.Hsa.eg.db", category='A', computeIC=T, database="gendoo")
 
 ## you may want to save the result for future usage
@@ -64,7 +65,6 @@ Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and o
 The `meshSim()` function is designed to measure semantic similarity between two MeSH term vectors.
 
 ```{r meshSim}
-library(meshes)
 meshSim("D000009", "D009130", semData=hsamd, measure="Resnik")
 meshSim("D000009", "D009130", semData=hsamd, measure="Rel")
 meshSim("D000009", "D009130", semData=hsamd, measure="Jiang")
