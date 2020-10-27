@@ -64,6 +64,7 @@ dotplot(formula_res)
 
 ```{r comparecluster-genelists, fig.height=8, fig.width=20, fig.cap="(ref:compareClusterGeneListcap)", fig.scap="(ref:compareClusterGeneListscap)", echo=FALSE}
 library(stringr)
+library(ggplot2)
 p1 <- dotplot(ck) + scale_y_discrete(labels=function(x) str_wrap(x, width=50)) + scale_size(range = c(3, 10))
 p2 <- dotplot(formula_res) + scale_y_discrete(labels=function(x) str_wrap(x, width=30)) + scale_size(range = c(5, 15))
 cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"))
