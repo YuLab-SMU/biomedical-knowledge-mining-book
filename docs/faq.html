@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>A Frequently asked questions | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
   <meta name="description" content="A Frequently asked questions | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="A Frequently asked questions | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-14" />
+<meta name="date" content="2020-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="useful-utilities.html"/>
 <link rel="next" href="references.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +50,8 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -309,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
 <li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
+<li class="chapter" data-level="A.3" data-path="faq.html"><a href="faq.html#showing-specific-pathways"><i class="fa fa-check"></i><b>A.3</b> Showing specific pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -386,6 +388,46 @@ As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webse
 <div id="no-gene-can-be-mapped" class="section level2" number="18.2">
 <h2><span class="header-section-number">A.2</span> No gene can be mapped</h2>
 <p><a href="https://www.biostars.org/p/431270/" class="uri">https://www.biostars.org/p/431270/</a></p>
+</div>
+<div id="showing-specific-pathways" class="section level2" number="18.3">
+<h2><span class="header-section-number">A.3</span> Showing specific pathways</h2>
+<p>By default, all the visualization methods provided by <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the <code>showCategory</code> parameter in <code>dotplot()</code>, <code>barplot()</code>, <code>cnetplot()</code> and <code>emapplot()</code> etc.</p>
+
+
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="faq.html#cb206-1" aria-hidden="true"></a><span class="kw">library</span>(DOSE)</span>
+<span id="cb206-2"><a href="faq.html#cb206-2" aria-hidden="true"></a><span class="kw">library</span>(enrichplot)</span>
+<span id="cb206-3"><a href="faq.html#cb206-3" aria-hidden="true"></a><span class="kw">data</span>(geneList)</span>
+<span id="cb206-4"><a href="faq.html#cb206-4" aria-hidden="true"></a>de &lt;-<span class="st"> </span><span class="kw">names</span>(geneList)[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>]</span>
+<span id="cb206-5"><a href="faq.html#cb206-5" aria-hidden="true"></a></span>
+<span id="cb206-6"><a href="faq.html#cb206-6" aria-hidden="true"></a>x &lt;-<span class="st"> </span><span class="kw">enrichDO</span>(de)</span>
+<span id="cb206-7"><a href="faq.html#cb206-7" aria-hidden="true"></a></span>
+<span id="cb206-8"><a href="faq.html#cb206-8" aria-hidden="true"></a><span class="co">## show top 10 most significant pathways and want to exclude the second one</span></span>
+<span id="cb206-9"><a href="faq.html#cb206-9" aria-hidden="true"></a><span class="co">## dotplot(x, showCategory = x$Description[1:10][-2])</span></span>
+<span id="cb206-10"><a href="faq.html#cb206-10" aria-hidden="true"></a></span>
+<span id="cb206-11"><a href="faq.html#cb206-11" aria-hidden="true"></a><span class="kw">set.seed</span>(<span class="dv">2020-10-27</span>)</span>
+<span id="cb206-12"><a href="faq.html#cb206-12" aria-hidden="true"></a>selected_pathways &lt;-<span class="st"> </span><span class="kw">sample</span>(x<span class="op">$</span>Description, <span class="dv">10</span>)</span>
+<span id="cb206-13"><a href="faq.html#cb206-13" aria-hidden="true"></a>selected_pathways</span></code></pre></div>
+<pre><code>##  [1] &quot;in situ carcinoma&quot;                              
+##  [2] &quot;hypersensitivity reaction type IV disease&quot;      
+##  [3] &quot;lymph node disease&quot;                             
+##  [4] &quot;esophageal carcinoma&quot;                           
+##  [5] &quot;atopic dermatitis&quot;                              
+##  [6] &quot;pulmonary sarcoidosis&quot;                          
+##  [7] &quot;esophageal cancer&quot;                              
+##  [8] &quot;Human immunodeficiency virus infectious disease&quot;
+##  [9] &quot;ovarian cancer&quot;                                 
+## [10] &quot;breast carcinoma&quot;</code></pre>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="faq.html#cb208-1" aria-hidden="true"></a>p1 &lt;-<span class="st"> </span><span class="kw">dotplot</span>(x, <span class="dt">showCategory =</span> <span class="dv">10</span>, <span class="dt">font.size=</span><span class="dv">14</span>)</span>
+<span id="cb208-2"><a href="faq.html#cb208-2" aria-hidden="true"></a>p2 &lt;-<span class="st"> </span><span class="kw">dotplot</span>(x, <span class="dt">showCategory =</span> selected_pathways, <span class="dt">font.size=</span><span class="dv">14</span>)</span>
+<span id="cb208-3"><a href="faq.html#cb208-3" aria-hidden="true"></a></span>
+<span id="cb208-4"><a href="faq.html#cb208-4" aria-hidden="true"></a></span>
+<span id="cb208-5"><a href="faq.html#cb208-5" aria-hidden="true"></a>cowplot<span class="op">::</span><span class="kw">plot_grid</span>(p1, p2, <span class="dt">labels=</span>LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="figure"><span id="fig:selectedPaths"></span>
+<img src="biomedicalKnowledge_files/figure-html/selectedPaths-1.svg" alt="Showing specific pathways. Top ten most significant pathways (A), selected ten pathways (B)." width="1440" />
+<p class="caption">
+Figure A.1: <strong>Showing specific pathways.</strong> Top ten most significant pathways (A), selected ten pathways (B).
+</p>
+</div>
 
 </div>
 </div>

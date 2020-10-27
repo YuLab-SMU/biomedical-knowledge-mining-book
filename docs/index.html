@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
   <meta name="description" content="Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-14" />
+<meta name="date" content="2020-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 
 <link rel="next" href="semantic-similarity-overview.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +50,8 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -309,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
 <li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
+<li class="chapter" data-level="A.3" data-path="faq.html"><a href="faq.html#showing-specific-pathways"><i class="fa fa-check"></i><b>A.3</b> Showing specific pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -334,14 +336,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <address class="author_afil">
 Department of Bioinformatics, School of Basic Medical Sciences, Southern Medical University<br><a class="author_email" href="mailto:#"><a href="mailto:guangchuangyu@gmail.com" class="email">guangchuangyu@gmail.com</a></a>
 </address>
-<p class="date"><em>2020-09-14</em></p>
+<p class="date"><em>2020-10-27</em></p>
 </div>
-<div id="introduction" class="section level1 unnumbered" number="">
+<div id="introduction" class="section level1 unnumbered">
 <h1>📖 Introduction</h1>
 <p><a href="https://github.com/YuLab-SMU/ChIPseeker"><img src="https://img.shields.io/badge/ChIPseeker-1.24.0-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/clusterProfiler"><img src="https://img.shields.io/badge/clusterProfiler-3.17.4-green.svg" /></a>
-<a href="https://github.com/YuLab-SMU/DOSE"><img src="https://img.shields.io/badge/DOSE-3.15.2-green.svg" /></a>
-<a href="https://github.com/YuLab-SMU/enrichplot"><img src="https://img.shields.io/badge/enrichplot-1.9.3-green.svg" /></a>
+<a href="https://github.com/YuLab-SMU/DOSE"><img src="https://img.shields.io/badge/DOSE-3.15.4-green.svg" /></a>
+<a href="https://github.com/YuLab-SMU/enrichplot"><img src="https://img.shields.io/badge/enrichplot-1.9.5-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/GOSemSim"><img src="https://img.shields.io/badge/GOSemSim-2.15.2-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/meshes"><img src="https://img.shields.io/badge/meshes-1.14.0-green.svg" /></a>
 <a href="https://github.com/YuLab-SMU/ReactomePA"><img src="https://img.shields.io/badge/ReactomePA-1.33.1-green.svg" /></a></p>
@@ -369,11 +371,11 @@ selected cluster is slow and tedious. To bridge this gap, we designed
 profiles among gene clusters.
 
 -->
-<div id="motivation" class="section level2 unnumbered" number="">
+<div id="motivation" class="section level2 unnumbered">
 <h2>🎯 Motivation</h2>
 <p>The book is meant as a guide for mining biological knowledge to elucidate or interpret molecular mechanisms using a suite of R packages, including <a href="http://bioconductor.org/packages/ChIPseeker">ChIPseeker</a>, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a>, <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>. Hence, if you are starting to read this book, we assume you have a working knowledge of how to use R.</p>
 </div>
-<div id="citation" class="section level2 unnumbered" number="">
+<div id="citation" class="section level2 unnumbered">
 <h2>📝 Citation</h2>
 <p>If you use the software suite in published research, please cite the most appropriate paper(s) from this list:</p>
 <ol style="list-style-type: decimal">
@@ -393,7 +395,7 @@ doi: <a href="https://doi.org/10.1089/omi.2011.0118">10.1089/omi.2011.0118</a></
 doi: <a href="https://doi.org/10.1093/bioinformatics/btq064">10.1093/bioinformatics/btq064</a></li>
 </ol>
 </div>
-<div id="book-structure" class="section level2 unnumbered" number="">
+<div id="book-structure" class="section level2 unnumbered">
 <h2>📚 Book structure</h2>
 <ul>
 <li>Part 1 (Semantic similarity analysis) describes <a href="http://bioconductor.org/packages/GOSemSim">GOSemSim</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> and <a href="http://bioconductor.org/packages/meshes">meshes</a> packages for measuring semantic similarity of genes or gene products based on Gene Ontology, Disease Ontology and Medical Subject Headings.</li>
@@ -401,7 +403,7 @@ doi: <a href="https://doi.org/10.1093/bioinformatics/btq064">10.1093/bioinformat
 <li>Part 3 (Miscellaneous topics) describes useful utilities including translating gene IDs and manipulating enrichment results.</li>
 </ul>
 </div>
-<div id="want-to-help" class="section level2 unnumbered" number="">
+<div id="want-to-help" class="section level2 unnumbered">
 <h2>💖 Want to help?</h2>
 <p>The book’s source code is hosted on GitHub, at <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book" class="uri">https://github.com/YuLab-SMU/biomedical-knowledge-mining-book</a>. Any feedback on the book is very welcome. Feel free to <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new">open an issue</a> on GitHub or send me a pull request if you notice typos or other issues (I’m not a native English speaker ;) ).</p>
 

@@ -69,3 +69,33 @@ As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webse
 <https://www.biostars.org/p/431270/>
 
 
+## Showing specific pathways
+
+By default, all the visualization methods provided by `r Biocpkg("enrichplot")` display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the `showCategory` parameter in `dotplot()`, `barplot()`, `cnetplot()` and `emapplot()` etc.
+
+
+(ref:selectedPathsscap) Showing specific pathways.
+
+(ref:selectedPathscap) **Showing specific pathways.** Top ten most significant pathways (A), selected ten pathways (B).
+
+```{r selectedPaths, fig.height=6, fig.width=15, fig.cap="(ref:selectedPathscap)", fig.scap="(ref:selectedPathsscap)"}
+library(DOSE)
+library(enrichplot)
+data(geneList)
+de <- names(geneList)[1:100]
+
+x <- enrichDO(de)
+
+## show top 10 most significant pathways and want to exclude the second one
+## dotplot(x, showCategory = x$Description[1:10][-2])
+
+set.seed(2020-10-27)
+selected_pathways <- sample(x$Description, 10)
+selected_pathways
+
+p1 <- dotplot(x, showCategory = 10, font.size=14)
+p2 <- dotplot(x, showCategory = selected_pathways, font.size=14)
+
+
+cowplot::plot_grid(p1, p2, labels=LETTERS[1:2])
+```

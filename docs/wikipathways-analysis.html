@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
   <meta name="description" content="Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 8 WikiPathways analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-14" />
+<meta name="date" content="2020-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="clusterprofiler-kegg.html"/>
 <link rel="next" href="reactomepa.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +50,8 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -309,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
 <li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
+<li class="chapter" data-level="A.3" data-path="faq.html"><a href="faq.html#showing-specific-pathways"><i class="fa fa-check"></i><b>A.3</b> Showing specific pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -395,13 +397,13 @@ head(ewp2)
 <pre><code>## #
 ## # over-representation test
 ## #
-## #...@organism 	 Homo sapiens 
-## #...@ontology 	 WikiPathways 
-## #...@keytype 	 ENTREZID 
-## #...@gene 	 chr [1:207] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...@organism     Homo sapiens 
+## #...@ontology     WikiPathways 
+## #...@keytype      ENTREZID 
+## #...@gene     chr [1:207] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
 ## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
 ## #...6 enriched terms found
-## &#39;data.frame&#39;:	6 obs. of  9 variables:
+## &#39;data.frame&#39;:    6 obs. of  9 variables:
 ##  $ ID         : chr  &quot;WP2446&quot; &quot;WP2361&quot; &quot;WP179&quot; &quot;WP3942&quot; ...
 ##  $ Description: chr  &quot;Retinoblastoma Gene in Cancer&quot; &quot;Gastric Cancer Network 1&quot; &quot;Cell Cycle&quot; &quot;PPAR signaling pathway&quot; ...
 ##  $ GeneRatio  : chr  &quot;11/105&quot; &quot;6/105&quot; &quot;10/105&quot; &quot;7/105&quot; ...
@@ -423,15 +425,15 @@ head(ewp2)
 <pre><code>## #
 ## # Gene Set Enrichment Analysis
 ## #
-## #...@organism 	 Homo sapiens 
-## #...@setType 	 WikiPathways 
-## #...@keytype 	 ENTREZID 
-## #...@geneList 	 Named num [1:12495] 4.57 4.51 4.42 4.14 3.88 ...
+## #...@organism     Homo sapiens 
+## #...@setType      WikiPathways 
+## #...@keytype      ENTREZID 
+## #...@geneList     Named num [1:12495] 4.57 4.51 4.42 4.14 3.88 ...
 ##  - attr(*, &quot;names&quot;)= chr [1:12495] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; ...
-## #...nPerm 	 
+## #...nPerm     
 ## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
 ## #...58 enriched terms found
-## &#39;data.frame&#39;:	58 obs. of  11 variables:
+## &#39;data.frame&#39;:    58 obs. of  11 variables:
 ##  $ ID             : chr  &quot;WP179&quot; &quot;WP2446&quot; &quot;WP466&quot; &quot;WP45&quot; ...
 ##  $ Description    : chr  &quot;Cell Cycle&quot; &quot;Retinoblastoma Gene in Cancer&quot; &quot;DNA Replication&quot; &quot;G1 to S cell cycle control&quot; ...
 ##  $ setSize        : int  111 84 42 62 23 76 41 61 250 14 ...

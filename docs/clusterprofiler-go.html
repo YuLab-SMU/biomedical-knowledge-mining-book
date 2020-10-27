@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
   <meta name="description" content="Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-14" />
+<meta name="date" content="2020-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="enrichment-overview.html"/>
 <link rel="next" href="clusterprofiler-kegg.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +50,8 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -309,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
 <li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
+<li class="chapter" data-level="A.3" data-path="faq.html"><a href="faq.html#showing-specific-pathways"><i class="fa fa-check"></i><b>A.3</b> Showing specific pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -381,7 +383,7 @@ process (BP), and cellular component (CC).</p>
 <span id="cb63-5"><a href="clusterprofiler-go.html#cb63-5" aria-hidden="true"></a>                <span class="dt">pAdjustMethod =</span> <span class="st">&quot;BH&quot;</span>,</span>
 <span id="cb63-6"><a href="clusterprofiler-go.html#cb63-6" aria-hidden="true"></a>                <span class="dt">pvalueCutoff  =</span> <span class="fl">0.01</span>,</span>
 <span id="cb63-7"><a href="clusterprofiler-go.html#cb63-7" aria-hidden="true"></a>                <span class="dt">qvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
-<span id="cb63-8"><a href="clusterprofiler-go.html#cb63-8" aria-hidden="true"></a>		<span class="dt">readable      =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb63-8"><a href="clusterprofiler-go.html#cb63-8" aria-hidden="true"></a>        <span class="dt">readable      =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb63-9"><a href="clusterprofiler-go.html#cb63-9" aria-hidden="true"></a><span class="kw">head</span>(ego)</span></code></pre></div>
 <pre><code>##                    ID                              Description GeneRatio
 ## GO:0005819 GO:0005819                                  spindle    25/200
@@ -413,8 +415,8 @@ process (BP), and cellular component (CC).</p>
 ## GO:0000776    15</code></pre>
 <p>Any gene ID type that supported in <code>OrgDb</code> can be directly used in GO analyses. User need to specify the <code>keyType</code> parameter to specify the input gene ID type.</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="clusterprofiler-go.html#cb65-1" aria-hidden="true"></a>gene.df &lt;-<span class="st"> </span><span class="kw">bitr</span>(gene, <span class="dt">fromType =</span> <span class="st">&quot;ENTREZID&quot;</span>,</span>
-<span id="cb65-2"><a href="clusterprofiler-go.html#cb65-2" aria-hidden="true"></a>	   	<span class="dt">toType =</span> <span class="kw">c</span>(<span class="st">&quot;ENSEMBL&quot;</span>, <span class="st">&quot;SYMBOL&quot;</span>),</span>
-<span id="cb65-3"><a href="clusterprofiler-go.html#cb65-3" aria-hidden="true"></a>		<span class="dt">OrgDb =</span> org.Hs.eg.db)</span>
+<span id="cb65-2"><a href="clusterprofiler-go.html#cb65-2" aria-hidden="true"></a>        <span class="dt">toType =</span> <span class="kw">c</span>(<span class="st">&quot;ENSEMBL&quot;</span>, <span class="st">&quot;SYMBOL&quot;</span>),</span>
+<span id="cb65-3"><a href="clusterprofiler-go.html#cb65-3" aria-hidden="true"></a>        <span class="dt">OrgDb =</span> org.Hs.eg.db)</span>
 <span id="cb65-4"><a href="clusterprofiler-go.html#cb65-4" aria-hidden="true"></a></span>
 <span id="cb65-5"><a href="clusterprofiler-go.html#cb65-5" aria-hidden="true"></a>ego2 &lt;-<span class="st"> </span><span class="kw">enrichGO</span>(<span class="dt">gene         =</span> gene.df<span class="op">$</span>ENSEMBL,</span>
 <span id="cb65-6"><a href="clusterprofiler-go.html#cb65-6" aria-hidden="true"></a>                <span class="dt">OrgDb         =</span> org.Hs.eg.db,</span>

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
   <meta name="description" content="Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 
 
 
-<meta name="date" content="2020-09-14" />
+<meta name="date" content="2020-10-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
 <link rel="prev" href="enrichplot.html"/>
 <link rel="next" href="useful-utilities.html"/>
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -50,7 +50,8 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 
 <style type="text/css">
@@ -309,6 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="A.1" data-path="faq.html"><a href="faq.html#genelist"><i class="fa fa-check"></i><b>A.1</b> How to prepare your own geneList</a></li>
 <li class="chapter" data-level="A.2" data-path="faq.html"><a href="faq.html#no-gene-can-be-mapped"><i class="fa fa-check"></i><b>A.2</b> No gene can be mapped</a></li>
+<li class="chapter" data-level="A.3" data-path="faq.html"><a href="faq.html#showing-specific-pathways"><i class="fa fa-check"></i><b>A.3</b> Showing specific pathways</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
@@ -340,13 +342,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## #
 ## # over-representation test
 ## #
-## #...@organism 	 Homo sapiens 
-## #...@ontology 	 DO 
-## #...@keytype 	 ENTREZID 
-## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...@organism     Homo sapiens 
+## #...@ontology     DO 
+## #...@keytype      ENTREZID 
+## #...@gene     chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
 ## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
 ## #...28 enriched terms found
-## &#39;data.frame&#39;:	28 obs. of  9 variables:
+## &#39;data.frame&#39;:    28 obs. of  9 variables:
 ##  $ ID         : chr  &quot;DOID:0060071&quot; &quot;DOID:5295&quot; &quot;DOID:8719&quot; &quot;DOID:3007&quot; ...
 ##  $ Description: chr  &quot;pre-malignant neoplasm&quot; &quot;intestinal disease&quot; &quot;in situ carcinoma&quot; &quot;breast ductal carcinoma&quot; ...
 ##  $ GeneRatio  : chr  &quot;5/77&quot; &quot;9/77&quot; &quot;4/77&quot; &quot;4/77&quot; ...
@@ -368,13 +370,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## #
 ## # over-representation test
 ## #
-## #...@organism 	 Homo sapiens 
-## #...@ontology 	 DO 
-## #...@keytype 	 ENTREZID 
-## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...@organism     Homo sapiens 
+## #...@ontology     DO 
+## #...@keytype      ENTREZID 
+## #...@gene     chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
 ## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
 ## #...28 enriched terms found
-## &#39;data.frame&#39;:	28 obs. of  10 variables:
+## &#39;data.frame&#39;:    28 obs. of  10 variables:
 ##  $ ID         : chr  &quot;DOID:3908&quot; &quot;DOID:120&quot; &quot;DOID:2394&quot; &quot;DOID:3459&quot; ...
 ##  $ Description: chr  &quot;non-small cell lung carcinoma&quot; &quot;female reproductive organ cancer&quot; &quot;ovarian cancer&quot; &quot;breast carcinoma&quot; ...
 ##  $ GeneRatio  : chr  &quot;13/77&quot; &quot;13/77&quot; &quot;10/77&quot; &quot;10/77&quot; ...
@@ -418,13 +420,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## #
 ## # over-representation test
 ## #
-## #...@organism 	 Homo sapiens 
-## #...@ontology 	 DO 
-## #...@keytype 	 ENTREZID 
-## #...@gene 	 chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
+## #...@organism     Homo sapiens 
+## #...@ontology     DO 
+## #...@keytype      ENTREZID 
+## #...@gene     chr [1:100] &quot;4312&quot; &quot;8318&quot; &quot;10874&quot; &quot;55143&quot; &quot;55388&quot; &quot;991&quot; &quot;6280&quot; &quot;2305&quot; ...
 ## #...pvalues adjusted by &#39;BH&#39; with cutoff &lt;0.05 
 ## #...28 enriched terms found
-## &#39;data.frame&#39;:	28 obs. of  10 variables:
+## &#39;data.frame&#39;:    28 obs. of  10 variables:
 ##  $ ID         : chr  &quot;DOID:0060071&quot; &quot;DOID:5295&quot; &quot;DOID:8719&quot; &quot;DOID:3007&quot; ...
 ##  $ Description: chr  &quot;pre-malignant neoplasm&quot; &quot;intestinal disease&quot; &quot;in situ carcinoma&quot; &quot;breast ductal carcinoma&quot; ...
 ##  $ GeneRatio  : chr  &quot;5/77&quot; &quot;9/77&quot; &quot;4/77&quot; &quot;4/77&quot; ...
