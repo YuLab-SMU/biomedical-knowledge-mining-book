@@ -284,6 +284,7 @@ gsearank(edo2, 1, title = edo2[1, "Description"])
 ```
 
 Multiple gene sets can be aligned using `cowplot`:
+
 (ref:gsearank2scap) Gsearank for multiple gene sets.
 
 (ref:gsearank2cap) **Gsearank for multiple gene sets.**
