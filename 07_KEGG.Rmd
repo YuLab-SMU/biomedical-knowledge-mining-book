@@ -103,7 +103,7 @@ knitr::include_graphics("figures/browseKEGG.png")
 
 
 
-Users can also use the `pathview()` function from the `R Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identify by the `r Biocpkg("clusterProfiler")` package [@yu2012].
+Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identify by the `r Biocpkg("clusterProfiler")` package [@yu2012].
 
 The following example illustrate how to visualize "hsa04110" pathway, which was enriched in our previous analysis.
 
