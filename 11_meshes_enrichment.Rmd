@@ -5,7 +5,7 @@
 The `r Biocpkg("meshes")` package [@yu_meshes_2018] supports enrichment analysis (over-representation analysis and gene set
 enrichment analysis) of gene list or whole expression profile using MeSH
 annotation. Data source from `gendoo`, `gene2pubmed` and `RBBH` are all
-supported. User can selecte interesting category to test. All 16
+supported. User can select interesting category to test. All 16
 categories of MeSH are supported. The analysis supports >70 species listed in [MeSHDb BiocView](https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb) (see also [Chapter 4](#meshes-semantic-similarity) for more details).
 
 
