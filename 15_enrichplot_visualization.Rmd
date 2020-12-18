@@ -4,7 +4,7 @@
 The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpreting enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012],
 `r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")` [@yu_meshes_2018]. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.
 
-Many of these visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `r CRANpkg("ggplot2")`. If you want to use [old methods](https://www.biostars.org/p/375555), you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
+Several visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `r CRANpkg("ggplot2")`. If you want to use the [old methods](https://www.biostars.org/p/375555), you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
 
 
 ## Bar Plot
@@ -59,11 +59,11 @@ plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
 
 ## Gene-Concept Network
 
-Both the `barplot` and `dotplot` only displayed most significant enriched terms,
+Both the `barplot()` and `dotplot()` only displayed most significant enriched terms,
 while users may want to know which genes are involved in these significant
 terms. 
-In order to consider the potentially biological complexities in which a gene may belong to multiple annotation categories and provide information of numeric changes if available, we developed `cnetplot` function to extract the complex association. 
-The `cnetplot` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
+In order to consider the potentially biological complexities in which a gene may belong to multiple annotation categories and provide information of numeric changes if available, we developed `cnetplot()` function to extract the complex association. 
+The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
 with only core enriched genes displayed.
 
 (ref:Networkplotscap) Network plot of enriched terms.
@@ -126,39 +126,41 @@ Enrichment map organizes enriched terms into a network with edges connecting
 overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
 
-The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `node_scale` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
+The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `cex_category` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
 
 (ref:Enrichmentscap) Plot for results obtained from hypergeometric test and gene set enrichment analysis.
 
-(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `node_scale=1.5` (B), `layout="kk"` (C) and `node_scale=1.5,layout="kk"` (D).
+(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `cex_category=1.5` (B), `layout="kk"` (C) and `cex_category=1.5,layout="kk"` (D).
 
-```{r Enrichment, fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
+```{r Enrichment, dev='svg', fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
+edo <- pairwise_termsim(edo)
 p1 <- emapplot(edo)
-p2 <- emapplot(edo, node_scale=1.5)
+p2 <- emapplot(edo, cex_category=1.5)
 p3 <- emapplot(edo, layout="kk")
-p4 <- emapplot(edo, node_scale=1.5,layout="kk") 
+p4 <- emapplot(edo, cex_category=1.5,layout="kk") 
 cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
 ```
 
 
 ## Biological theme comparison 
 
-The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `node_scale` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, as demonstrated in Figure \@ref(fig:Enrichment2) B. And proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in Figure \@ref(fig:Enrichment2) C and D.
+The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `cex_category` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, as demonstrated in Figure \@ref(fig:Enrichment2) B. And proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in Figure \@ref(fig:Enrichment2) C and D.
 
 
 (ref:Enrichment2scap) Plot for results obtained from `compareCluster` function of `clusterProfiler` package.
 
-(ref:Enrichment2cap) **Plot for results obtained from `compareCluster` function of `clusterProfiler` package.** default (A), `legend_n=2` (B), `pie="count"` (C) and `pie="count", node_scale=1.5, layout="kk"` (D).
+(ref:Enrichment2cap) **Plot for results obtained from `compareCluster` function of `clusterProfiler` package.** default (A), `legend_n=2` (B), `pie="count"` (C) and `pie="count", cex_category=1.5, layout="kk"` (D).
 
 ```{r Enrichment2, fig.height=18, fig.width=16, fig.cap="(ref:Enrichment2cap)", fig.scap="(ref:Enrichment2scap)"}
 library(clusterProfiler)
 data(gcSample)
 xx <- compareCluster(gcSample, fun="enrichKEGG",
                      organism="hsa", pvalueCutoff=0.05)
+xx <- pairwise_termsim(xx)                     
 p1 <- emapplot(xx)
 p2 <- emapplot(xx, legend_n=2) 
 p3 <- emapplot(xx, pie="count")
-p4 <- emapplot(xx, pie="count", node_scale=1.5, layout="kk")
+p4 <- emapplot(xx, pie="count", cex_category=1.5, layout="kk")
 cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
 ```
 

@@ -63,7 +63,7 @@ head(ewp2)
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
-enrichWP(gene, organism = "Homo sapiens")
+enrichWP(gene, organism = "Homo sapiens") 
 ```
 
 ## WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
