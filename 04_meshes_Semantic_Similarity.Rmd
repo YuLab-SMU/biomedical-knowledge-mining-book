@@ -1,0 +1,87 @@
+# MeSH semantic similarity analysis {#meshes-semantic-similarity}
+
+
+```{r include=FALSE}
+geneSim <- meshes::geneSim
+```
+
+
+MeSH (Medical Subject Headings) is the NLM (U.S. National Library of
+Medicine) controlled vocabulary used to manually index articles for
+MEDLINE/PubMed. MeSH is a comprehensive life science vocabulary. MeSH has
+19 categories and `MeSH.db` contains 16 of them. That is:
+
+|Abbreviation |Category                                                        |
+|:------------|:---------------------------------------------------------------|
+|A            |Anatomy                                                         |
+|B            |Organisms                                                       |
+|C            |Diseases                                                        |
+|D            |Chemicals and Drugs                                             |
+|E            |Analytical, Diagnostic and Therapeutic Techniques and Equipment |
+|F            |Psychiatry and Psychology                                       |
+|G            |Phenomena and Processes                                         |
+|H            |Disciplines and Occupations                                     |
+|I            |Anthropology, Education, Sociology and Social Phenomena         |
+|J            |Technology and Food and Beverages                               |
+|K            |Humanities                                                      |
+|L            |Information Science                                             |
+|M            |Persons                                                         |
+|N            |Health Care                                                     |
+|V            |Publication Type                                                |
+|Z            |Geographical Locations                                          |
+
+MeSH terms were associated with Entrez Gene ID by three methods,
+`gendoo`, `gene2pubmed` and `RBBH` (Reciprocal Blast Best Hit).
+
+|Method|Way of corresponding Entrez Gene IDs and MeSH IDs|
+|------|-------------------------------------------------|
+|Gendoo|Text-mining|
+|gene2pubmed|Manual curation by NCBI teams|
+|RBBH|sequence homology with BLASTP search (E-value<10<sup>-50</sup>)|
+
+## Supported organisms {#meshes-supported-organisms}
+
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring simiarlity. A list of `MeSHDb` can be found on Bioconductor, <https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb> and all the species (more than 70) that have MeSHDb available are supported by the `r Biocpkg("meshes")` package. 
+
+The semantic data is prepare by the `meshdata()` function:
+
+```{r meshdata}
+library(meshes)
+hsamd <- meshdata("MeSH.Hsa.eg.db", category='A', computeIC=T, database="gendoo")
+
+## you may want to save the result for future usage
+# 
+# save(hsamd, file = "hsamd.rda")
+#
+```
+
+
+## MeSH semantic similarity measurement {#meshes-semantic-simiarlity}
+
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] implemented four IC-based methods (i.e. Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997],
+Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and one graph-structure based method (i.e. Wang [@wang_new_2007]), to measure MeSH term semantic similarity. For algorithm details, please refer to [Chapter 1](#semantic-similarity-overview).
+
+
+The `meshSim()` function is designed to measure semantic similarity between two MeSH term vectors.
+
+```{r meshSim}
+meshSim("D000009", "D009130", semData=hsamd, measure="Resnik")
+meshSim("D000009", "D009130", semData=hsamd, measure="Rel")
+meshSim("D000009", "D009130", semData=hsamd, measure="Jiang")
+meshSim("D000009", "D009130", semData=hsamd, measure="Wang")
+
+meshSim(c("D001369", "D002462"), c("D017629", "D002890", "D008928"), semData=hsamd, measure="Wang")
+```
+
+
+
+## Gene semantic similarity measurement {#gene-meshes-semantic-similarity}
+
+
+The `geneSim()` function is designed to measure semantic similarity among two gene vectors.
+
+```{r meshes-geneSim}
+geneSim("241", "251", semData=hsamd, measure="Wang", combine="BMA")
+geneSim(c("241", "251"), c("835", "5261","241", "994"), semData=hsamd, measure="Wang", combine="BMA")
+```
+

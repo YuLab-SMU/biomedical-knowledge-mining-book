@@ -1,0 +1,127 @@
+# KEGG enrichment analysis {#clusterprofiler-kegg}
+
+
+```{r include=FALSE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+library(clusterProfiler)
+```
+
+The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The `r Biocpkg("clusterProfiler")` package supports downloading latest online version of KEGG data using the [KEGG website](https://www.kegg.jp), which is freely available for academic users. Both KEGG pathway and module are supported in `r Biocpkg("clusterProfiler")`.
+
+
+## Supported organisms {#clusterProfiler-kegg-supported-organisms}
+
+The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <http://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
+
+
+The `r Biocpkg("clusterProfiler")` package provides `search_kegg_organism()` function to help searching supported organisms.
+
+```{r}
+library(clusterProfiler)
+search_kegg_organism('ece', by='kegg_code')
+ecoli <- search_kegg_organism('Escherichia coli', by='scientific_name')
+dim(ecoli)
+head(ecoli)
+```
+
+
+## KEGG pathway over-representation analysis {#clusterprofiler-kegg-pathway-ora}
+
+
+```{r}
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+kk <- enrichKEGG(gene         = gene,
+                 organism     = 'hsa',
+                 pvalueCutoff = 0.05)
+head(kk) 
+```
+
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also [session 16.1.2](#bitr_kegg)). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the [`setReadable()` function](#setReadable) if there is an `OrgDb` available for the species.
+
+
+## KEGG pathway gene set enrichment analysis {#clusterprofiler-kegg-pathway-gsea}
+
+```{r}
+kk2 <- gseKEGG(geneList     = geneList,
+               organism     = 'hsa',
+               minGSSize    = 120,
+               pvalueCutoff = 0.05,
+               verbose      = FALSE)
+head(kk2)
+```
+
+
+
+## KEGG module over-representation analysis {#clusterprofiler-kegg-module-ora}
+
+
+[KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined function units. In some situation, KEGG Modules have a more straightforward interpretation.
+
+```{r}
+mkk <- enrichMKEGG(gene = gene,
+                   organism = 'hsa',
+                   pvalueCutoff = 1,
+                   qvalueCutoff = 1)
+head(mkk)                   
+```
+
+## KEGG module gene set enrichment analysis {#clusterprofiler-kegg-module-gsea}
+
+
+```{r}
+mkk2 <- gseMKEGG(geneList = geneList,
+                 organism = 'hsa',
+                 pvalueCutoff = 1)
+head(mkk2)
+```
+
+
+## Visualize enriched KEGG pathways
+
+The `r Biocpkg("enrichplot")` package implemented [several methods](#enrichplot) to visualize enriched terms. Most of them are general methods that can be used to GO, KEGG, MSigDb and other gene set annotations. Here, we introduce `clusterProfiler::browseKEGG()` and `pathview::pathview()`  functions to help users exploring enriched KEGG pathway with interested genes.
+
+
+To view the KEGG pathway, user can use `browseKEGG` function, which will open web browser and highlight enriched genes.
+
+
+```{r eval=FALSE}
+browseKEGG(kk, 'hsa04110')
+```
+
+
+
+(ref:browseKEGGscap) Explore selected KEGG pathway.
+
+(ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that enriched in the selected pathway will be highlighted.
+
+```{r browseKEGG, out.width="100%", echo=FALSE, fig.cap="(ref:browseKEGGcap)", fig.scap="(ref:browseKEGGscap)"}
+knitr::include_graphics("figures/browseKEGG.png")
+```
+
+
+
+Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identify by the `r Biocpkg("clusterProfiler")` package [@yu2012].
+
+The following example illustrate how to visualize "hsa04110" pathway, which was enriched in our previous analysis.
+
+```{r eval=FALSE}
+library("pathview")
+hsa04110 <- pathview(gene.data  = geneList,
+                     pathway.id = "hsa04110",
+                     species    = "hsa",
+                     limit      = list(gene=max(abs(geneList)), cpd=1))
+```
+
+(ref:pathviewscap) Visualze selected KEGG pathway by `pathview()`.
+
+(ref:pathviewcap) **Visualize selected KEGG pathway by `pathview()`.** Gene expression values can be mapped to gradient color scale.
+
+```{r pathview, out.width="100%", echo=FALSE, fig.cap="(ref:pathviewcap)", fig.scap="(ref:pathviewscap)"}
+knitr::include_graphics("figures/hsa04110_pathview.png")
+```
+
+
+

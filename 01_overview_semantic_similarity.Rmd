@@ -1,0 +1,142 @@
+# (PART\*) Part I: Semantic Similarity Analysis {-}
+
+
+# Overview of semantic similarity analysis {#semantic-similarity-overview}
+
+
+Functional similarity of gene products can be estimated by controlled
+biological vocabularies, such as Gene Ontology (GO), Disease Ontology (DO) and Medical Subject Headings (MeSH). 
+
+Four methods including Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997], Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006] have been presented to determine the semantic similarity of two GO terms based on the annotation statistics of their common ancestor terms. Wang [@wang_new_2007]
+proposed a method to measure the similarity based on the graph structure of GO. Each of these methods has its own advantages and
+weaknesses and can be applied to other ontologies that have similar structure (i.e. directed acyclic graph). 
+
+
+
+## Information content-based methods
+
+Four methods proposed by Resnik [@philip_semantic_1999],
+Jiang [@jiang_semantic_1997], Lin [@lin_information-theoretic_1998]
+and Schlicker [@schlicker_new_2006] are information content (IC) based, which depend on the frequencies of two GO terms involved and that of their closest common ancestor term in a specific corpus of GO
+annotations. The information content of a GO term is computed by the
+negative log probability of the term occurring in GO corpus. A rarely used term contains a greater amount of information.
+
+The frequency of a term t is defined as:
+
+
+$$p(t) = \frac{n_{t'}}{N} | t' \in \left\{t, \; children\: of\: t \right\}$$
+
+where $n_{t'}$ is the number of term $t'$, and $N$ is the total number of terms in GO corpus.
+
+Thus the information content is defined as:
+
+$$IC(t) = -\log(p(t))$$
+
+As GO allow multiple parents for each concept, two terms can share
+parents by multiple paths. IC-based methods calculate similarity of two GO terms based on the information content of their closest common ancestor term, which was also called most informative common ancestor (MICA).
+
+### Resnik method
+
+The Resnik method is defined as:
+
+
+$$sim_{Resnik}(t_1,t_2) = IC(MICA)$$
+
+### Lin method
+
+The Lin method is defined as:
+
+$$sim_{Lin}(t_1,t_2) = \frac{2IC(MICA)}{IC(t_1)+IC(t_2)}$$
+
+### Rel method
+
+The Relevance method, which was proposed by Schlicker, combine Resnik's and Lin's method and is defined as:
+
+$$sim_{Rel}(t_1,t_2) = \frac{2IC(MICA)(1-p(MICA))}{IC(t_1)+IC(t_2)}$$
+
+### Jiang method
+
+The Jiang and Conrath's method is defined as:
+
+$$sim_{Jiang}(t_1,t_2) = 1-\min(1, IC(t_1) + IC(t_2) - 2IC(MICA))$$
+
+
+
+## Graph-based method
+
+Graph-based methods using the topology of GO graph structure to
+compute semantic similarity. Formally, a GO term A can be represented
+as $DAG_{A}=(A,T_{A},E_{A})$ where $T_{A}$ is the set of GO terms in
+$DAG_{A}$, including term A and all of its ancestor terms in the GO
+graph, and $E_{A}$ is the set of edges connecting the GO terms in
+$DAG_{A}$.
+
+### Wang method
+
+To encode the semantic of a GO term in a measurable format to enable a quantitative comparison, Wang[@wang_new_2007] firstly defined the semantic value of term A as the aggregate contribution of all terms in $DAG_{A}$ to the semantics of term A, terms closer to term A in $DAG_{A}$ contribute more to its semantics. Thus, defined the contribution of a GO term $t$ to the semantic of GO term $A$ as the S-value of GO term $t$ related to term $A$.
+
+For any of term $t$ in $DAG_{A}$, its S-value related to term $A$, $S_{A}(\textit{t})$ is defined as:
+
+
+$$\left\{\begin{array}{l} S_{A}(A)=1 \\ S_{A}(\textit{t})=\max\{w_{e} \times S_{A}(\textit{t}') | \textit{t}' \in children \: of(\textit{t}) \} \; if \: \textit{t} \ne A \end{array} \right.$$
+
+where $w_{e}$ is the semantic contribution factor for edge $e \in E_{A}$ linking term $t$ with its child term $t'$.
+Term $A$ contributes to its own is defined as 1. After obtaining the S-values for all terms in $DAG_{A}$,
+the semantic value of DO term A, $SV(A)$, is calculated as:
+
+$$SV(A)=\displaystyle\sum_{t \in T_{A}} S_{A}(t)$$
+
+Thus given two GO terms A and B, the semantic similarity between these two terms is defined as:
+
+$$sim_{Wang}(A, B) = \frac{\displaystyle\sum_{t \in T_{A} \cap T_{B}}{S_{A}(t) + S_{B}(t)}}{SV(A) + SV(B)}$$
+
+where $S_{A}(\textit{t})$ is the S-value of GO term $t$ related to term $A$
+and $S_{B}(\textit{t})$ is the S-value of GO term $t$ related to term $B$.
+
+This method proposed by Wang [@wang_new_2007] determines the semantic
+similarity of two GO terms based on both the locations of these terms
+in the GO graph and their relations with their ancestor terms.
+
+
+
+## Combine methods
+
+Since a gene product can be annotated by multiple GO terms, semantic similarity among gene products needs to be aggregated from different semantic similarity scores of multiple GO terms associated with genes, including `max`, `avg`, `rcmax` and `BMA`. 
+
+### max
+
+The `max` method calculates the maximum semantic similarity score over all pairs of GO terms between these two GO term sets.
+
+
+$$sim_{max}(g_1, g_2) = \displaystyle\max_{1 \le i \le m, 1 \le j \le n} sim(go_{1i}, go_{2j})$$
+
+### avg
+
+The `avg` calculates the average semantic similarity score over all pairs of GO terms.
+
+
+$$sim_{avg}(g_1, g_2) = \frac{\displaystyle\sum_{i=1}^m\sum_{j=1}^nsim(go_{1i}, go_{2j})}{m \times n}$$
+
+### rcmax
+
+Similarities among two sets of GO terms form a matrix, the `rcmax` method uses the maximum of `RowScore` and `ColumnScore`, where `RowScore` (or `ColumnScore`) is the average of maximum similarity on each row (or column).
+
+
+$$sim_{rcmax}(g_1, g_2) = \max(\frac{\displaystyle\sum_{i=1}^m \max_{1 \le j \le n} sim(go_{1i}, go_{2j})}{m},\frac{\displaystyle\sum_{j=1}^n \max_{1 \le i \le m} sim(go_{1i},go_{2j})}{n})$$
+
+### BMA
+
+The `BMA` method, used the **B**est-**M**atch **A**verage strategy, calculates the average of all maximum similarities on each row and column, and is defined as:
+
+
+$$sim_{BMA}(g_1, g_2) = \frac{\displaystyle\sum_{1=i}^m \max_{1 \le j \le n}sim(go_{1i}, go_{2j}) + \displaystyle\sum_{1=j}^n \max_{1 \le i \le m}sim(go_{1i}, go_{2j})} {m+n}$$
+
+
+## Summary
+
+The idea behind semantic similarity measurement is the notion that genes with similar function should have similar annotation vocabulary and have a close relationship in the ontology strucutre. Measuring similarity is critical for expanding knownledge, since similar objects tend to behave similarly, which supports many bioinformatics applications to infer gene/protein functions, miRNA function, genetic interaction, protein-protein interaction, miRNA-mRNA interaction and celluar localization.
+
+
+We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [Chapter 2](#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [Chapter 3](#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [Chapter 4](#meshes-semantic-similarity)).
+
+

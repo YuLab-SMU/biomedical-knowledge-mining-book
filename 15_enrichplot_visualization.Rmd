@@ -1,0 +1,346 @@
+# Visualization of functional enrichment result {#enrichplot}
+
+
+The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpreting enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012],
+`r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")` [@yu_meshes_2018]. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.
+
+Several visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `r CRANpkg("ggplot2")`. If you want to use the [old methods](https://www.biostars.org/p/375555), you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
+
+
+## Bar Plot
+
+
+Bar plot is the most widely used method to visualize enriched terms. It depicts the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
+and color.
+
+
+
+```{r}
+library(DOSE)
+data(geneList)
+de <- names(geneList)[abs(geneList) > 2]
+
+edo <- enrichDGN(de)
+```
+
+(ref:Barplotscap) Bar plot of enriched terms.
+
+(ref:Barplotcap) **Bar plot of enriched terms.** 
+
+```{r Barplot, fig.height=5, fig.width=8, fig.cap="(ref:Barplotcap)", fig.scap="(ref:Barplotscap)"}
+library(enrichplot)
+barplot(edo, showCategory=20) 
+```
+
+
+## Dot plot
+
+
+Dot plot is similar to bar plot with the capability to encode another score as dot size.
+
+```r
+edo2 <- gseDO(geneList)
+dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
+```
+
+(ref:Dotplotscap) Dot plot of enriched terms.
+
+(ref:Dotplotcap) **Dot plot of enriched terms.** 
+
+```{r Dotplotcap, fig.width=12, fig.height=8, fig.cap="(ref:Dotplotcap)", fig.scap="(ref:Dotplotscap)", echo=FALSE}
+edo2 <- gseDO(geneList)
+p1 <- dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
+p2 <- dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
+plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
+```
+
+
+
+## Gene-Concept Network
+
+Both the `barplot()` and `dotplot()` only displayed most significant enriched terms,
+while users may want to know which genes are involved in these significant
+terms. 
+In order to consider the potentially biological complexities in which a gene may belong to multiple annotation categories and provide information of numeric changes if available, we developed `cnetplot()` function to extract the complex association. 
+The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
+with only core enriched genes displayed.
+
+(ref:Networkplotscap) Network plot of enriched terms.
+
+(ref:Networkplotcap) **Network plot of enriched terms.** 
+
+```{r Networkplot, fig.width=20, fig.height=8, fig.cap="(ref:Networkplotcap)", fig.scap="(ref:Networkplotscap)"}
+## convert gene ID to Symbol
+edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
+p1 <- cnetplot(edox, foldChange=geneList)
+## categorySize can be scaled by 'pvalue' or 'geneNum'
+p2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
+p3 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE)
+cowplot::plot_grid(p1, p2, p3, ncol=3, labels=LETTERS[1:3], rel_widths=c(.8, .8, 1.2))
+```
+
+
+
+
+If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in Figure \@ref(fig:cnetNodeLabel).
+
+
+(ref:cnetNodeLabelscap) Labelling nodes by selected subset.
+
+(ref:cnetNodeLabelcap) **Labelling nodes by selected subset.** gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D).
+
+```{r cnetNodeLabel, fig.height=12, fig.width=16, fig.cap="(ref:cnetNodeLabelcap)", fig.scap="(ref:cnetNodeLabelscap)"}
+p1 <- cnetplot(edox, node_label="category") 
+p2 <- cnetplot(edox, node_label="gene") 
+p3 <- cnetplot(edox, node_label="all") 
+p4 <- cnetplot(edox, node_label="none") 
+cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
+```
+
+
+## Heatmap-like functional classification
+
+
+The `heatplot` is similar to `cnetplot`, while displaying the relationships as a
+heatmap. The gene-concept network may become too complicated if user want to
+show a large number significant terms. The `heatplot` can simplify the result
+and more easy to identify expression patterns.
+
+(ref:Heatplotscap) Heatmap plot of enriched terms.
+
+(ref:Heatplotcap) **Heatmap plot of enriched terms.** default (A), `foldChange=geneList` (B)
+
+```{r Heatplot, fig.width=16, fig.height=8, fig.cap="(ref:Heatplotcap)", fig.scap="(ref:Heatplotscap)"}
+p1 <- heatplot(edox)
+p2 <- heatplot(edox, foldChange=geneList)
+cowplot::plot_grid(p1, p2, ncol=1, labels=LETTERS[1:2])
+```
+
+
+
+## Enrichment Map
+
+
+Enrichment map organizes enriched terms into a network with edges connecting
+overlapping gene sets. In this way, mutually overlapping gene sets are tend to
+cluster together, making it easy to identify functional module.
+
+The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `cex_category` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
+
+(ref:Enrichmentscap) Plot for results obtained from hypergeometric test and gene set enrichment analysis.
+
+(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `cex_category=1.5` (B), `layout="kk"` (C) and `cex_category=1.5,layout="kk"` (D).
+
+```{r Enrichment, dev='svg', fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
+edo <- pairwise_termsim(edo)
+p1 <- emapplot(edo)
+p2 <- emapplot(edo, cex_category=1.5)
+p3 <- emapplot(edo, layout="kk")
+p4 <- emapplot(edo, cex_category=1.5,layout="kk") 
+cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
+```
+
+
+## Biological theme comparison 
+
+The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `cex_category` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, as demonstrated in Figure \@ref(fig:Enrichment2) B. And proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in Figure \@ref(fig:Enrichment2) C and D.
+
+
+(ref:Enrichment2scap) Plot for results obtained from `compareCluster` function of `clusterProfiler` package.
+
+(ref:Enrichment2cap) **Plot for results obtained from `compareCluster` function of `clusterProfiler` package.** default (A), `legend_n=2` (B), `pie="count"` (C) and `pie="count", cex_category=1.5, layout="kk"` (D).
+
+```{r Enrichment2, fig.height=18, fig.width=16, fig.cap="(ref:Enrichment2cap)", fig.scap="(ref:Enrichment2scap)"}
+library(clusterProfiler)
+data(gcSample)
+xx <- compareCluster(gcSample, fun="enrichKEGG",
+                     organism="hsa", pvalueCutoff=0.05)
+xx <- pairwise_termsim(xx)                     
+p1 <- emapplot(xx)
+p2 <- emapplot(xx, legend_n=2) 
+p3 <- emapplot(xx, pie="count")
+p4 <- emapplot(xx, pie="count", cex_category=1.5, layout="kk")
+cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
+```
+
+
+## UpSet Plot
+
+
+The `upsetplot` is an alternative to `cnetplot` for visualizing the complex
+association between genes and gene sets. It emphasizes the gene overlapping
+among different gene sets.
+
+
+
+(ref:upsetORAscap) Upsetplot for over-representation analysis.
+
+(ref:upsetORAcap) **Upsetplot for over-representation analysis.** 
+
+```{r upsetORA, fig.width=12, fig.height=5, fig.cap="(ref:upsetORAcap)", fig.scap="(ref:upsetORAscap)"}
+upsetplot(edo)
+```
+
+For over-representation analysis, `upsetplot` will calculate the overlaps among different gene sets as demonstrated in Figure \@ref(fig:upsetORA). For GSEA result, it will plot the fold change distributions of different categories (e.g. unique to pathway, overlaps among different pathways).
+
+
+(ref:upsetGSEAscap) Upsetplot for gene set enrichment analysis.
+
+(ref:upsetGSEAcap) **Upsetplot for gene set enrichment analysis.** 
+
+```{r upsetGSEA, fig.height=5, fig.width=12, fig.cap="(ref:upsetGSEAcap)", fig.scap="(ref:upsetGSEAscap)"}
+upsetplot(kk2) 
+```
+
+
+## ridgeline plot for expression distribution of GSEA result
+
+The `ridgeplot` will visualize expression distributions of core enriched genes
+for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
+
+(ref:ridgeplotscap) Ridgeplot for gene set enrichment analysis.
+
+(ref:ridgeplotcap) **Ridgeplot for gene set enrichment analysis.** 
+
+```{r ridgeplot, fig.width=12, fig.height=8, message=FALSE, fig.cap="(ref:ridgeplotcap)", fig.scap="(ref:ridgeplotscap)"}
+ridgeplot(edo2)
+```
+
+
+## running score and preranked list of GSEA result
+
+Running score and preranked list are traditional methods for visualizing GSEA
+result. The `r Biocpkg("enrichplot")` package supports both of them to visualize
+the distribution of the gene set and the enrichment score.
+
+(ref:gseaplotscap) gseaplot for GSEA result(`by = "runningScore"`).
+
+(ref:gseaplotcap) **gseaplot for GSEA result(`by = "runningScore"`).** `by = "runningScore"` (A), `by = "preranked"` (B), default (C)
+
+```{r gseaplot, fig.width=12, fig.height=16, fig.cap="(ref:gseaplotcap)", fig.scap="(ref:gseaplotscap)"}
+p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
+p2 <- gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])
+p3 <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
+cowplot::plot_grid(p1, p2, p3, ncol=1, labels=LETTERS[1:3])
+```
+
+
+Another method to plot GSEA result is the `gseaplot2` function:
+
+
+(ref:gseaplot2scap) Gseaplot2 for GSEA result.
+
+(ref:gseaplot2cap) **Gseaplot2 for GSEA result.** 
+
+```{r gseaplot2, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot2cap)", fig.scap="(ref:gseaplot2scap)"}
+gseaplot2(edo2, geneSetID = 1, title = edo2$Description[1])
+```
+
+The `gseaplot2` also supports multile gene sets to be displayed on the same figure:
+
+(ref:gseaplot22scap) Gseaplot2 for GSEA result of multile gene sets.
+
+(ref:gseaplot22cap) **Gseaplot2 for GSEA result of multile gene sets.** 
+
+```{r gseaplot22, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot22cap)", fig.scap="(ref:gseaplot22scap)"}
+gseaplot2(edo2, geneSetID = 1:3)
+```
+
+User can also displaying the pvalue table on the plot via `pvalue_table`
+parameter:
+
+(ref:gseaplot23scap) Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).
+
+(ref:gseaplot23cap) **Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).** 
+
+```{r gseaplot23, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot23cap)", fig.scap="(ref:gseaplot23scap)"}
+gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
+          color = c("#E495A5", "#86B875", "#7DB0DD"), ES_geom = "dot")
+```
+
+
+User can specify `subplots` to only display a subset of plots:
+
+(ref:gseaplot24scap) Gseaplot2 for GSEA result of multile gene sets(add subplots).
+
+(ref:gseaplot24cap) **Gseaplot2 for GSEA result of multile gene sets(add subplots).** `subplots = 1` (A),`subplots = 1:2` (B)
+
+```{r gseaplot24, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot24cap)", fig.scap="(ref:gseaplot24scap)"}
+p1 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1)
+p2 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1:2)
+cowplot::plot_grid(p1, p2, ncol=1, labels=LETTERS[1:2])
+```
+
+
+
+The `gsearank` function plot the ranked list of genes belong to the specific
+gene set.
+
+(ref:gsearankscap) Ranked list of genes belong to the specific gene set.
+
+(ref:gsearankcap) **Ranked list of genes belong to the specific gene set.**
+
+```{r gsearank, fig.width=8, fig.height=4, fig.cap="(ref:gsearankcap)", fig.scap="(ref:gsearankscap)"}
+gsearank(edo2, 1, title = edo2[1, "Description"])
+```
+
+Multiple gene sets can be aligned using `cowplot`:
+
+(ref:gsearank2scap) Gsearank for multiple gene sets.
+
+(ref:gsearank2cap) **Gsearank for multiple gene sets.**
+
+```{r gsearank2, fig.width=8, fig.height=12, fig.cap="(ref:gsearank2cap)", fig.scap="(ref:gsearank2scap)"}
+library(ggplot2)
+library(cowplot)
+
+pp <- lapply(1:3, function(i) {
+    anno <- edo2[i, c("NES", "pvalue", "p.adjust")]
+    lab <- paste0(names(anno), "=",  round(anno, 3), collapse="\n")
+
+    gsearank(edo2, i, edo2[i, 2]) + xlab(NULL) +ylab(NULL) +
+        annotate("text", 10000, edo2[i, "enrichmentScore"] * .75, label = lab, hjust=0, vjust=0)
+})
+plot_grid(plotlist=pp, ncol=1)
+```
+
+
+
+## pubmed trend of enriched terms
+
+One of the problem of enrichment analysis is to find pathways for further
+investigation. Here, we provide `pmcplot` function to plot the number/proportion
+of publications trend based on the query result from PubMed Central. Of course,
+users can use `pmcplot` in other scenarios. All text that can be queried on PMC
+is valid as input of `pmcplot`.
+
+(ref:pmcplotscap) Pmcplot of enrichment analysis.
+
+(ref:pmcplotcap) **Pmcplot of enrichment analysis.**
+
+```{r pmcplot, fig.width=14, fig.height=6, fig.cap="(ref:pmcplotcap)", fig.scap="(ref:pmcplotscap)"}
+terms <- edo$Description[1:5]
+p <- pmcplot(terms, 2010:2020)
+p2 <- pmcplot(terms, 2010:2020, proportion=FALSE)
+plot_grid(p, p2, ncol=2)
+```
+
+
+
+<!--
+
+using ggplot2 api
+
+`[` accessor
+
+
+ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    scale_fill_continuous(low="blue", high="red") +
+    labs(x = "", y = "", fill = "p.adjust") +
+    theme(axis.text=element_text(size=11))
+
+-->
+

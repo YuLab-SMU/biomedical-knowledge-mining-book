@@ -1,0 +1,142 @@
+# GO semantic similarity analysis {#GOSemSim}
+
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods and one graph-based method. 
+
+## Semantic data {#semantic-data}
+
+To measure semantic similarity, we need to prepare GO annotations including GO structure (i.e. GO term relationships) and gene to GO mapping. For IC-based methods, information of GO term is species specific. We need to calculate `IC` for all GO terms of a species before we measure semantic similarity.
+
+
+`r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene simiarlity. It internally used the `r Biocpkg("GO.db")` package to obtain GO strucuture and `OrgDb` for gene to GO mapping. 
+
+
+```{r godata}
+library(GOSemSim)
+hsGO <- godata('org.Hs.eg.db', ont="MF")
+```
+
+User can set `computeIC=FALSE` if they only want to use Wang's method.
+
+
+## Supported organisms {#gosemsim-supported-organisms}
+
+`r Biocpkg("GOSemSim")` supports all organisms that have an `OrgDb` object available.
+
+Bioconductor have already provided `OrgDb` for [about 20 species](http://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
+
+We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
+
+```{r eval=FALSE}
+library(AnnotationHub)
+hub <- AnnotationHub()
+q <- query(hub, "Cricetulus")
+id <- q$ah_id[length(q)]
+Cgriseus <- hub[[id]]
+```
+
+If an organism is not supported by `r Biocpkg("AnnotationHub")`, user can use the `r Biocpkg("AnnotationForge")` package to build `OrgDb` manually.
+
+Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSim")` via `godata()` function described previously.
+
+
+## GO semantic similarity measurement {#go-semantic-simiarlity}
+
+The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
+
+
+```{r gosemsim-gosim}
+goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Jiang")
+goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Wang")
+go1 = c("GO:0004022","GO:0004024","GO:0004174")
+go2 = c("GO:0009055","GO:0005515")
+mgoSim(go1, go2, semData=hsGO, measure="Wang", combine=NULL)
+mgoSim(go1, go2, semData=hsGO, measure="Wang", combine="BMA")
+```
+
+## Gene semantic similarity measurement {#gene-go-semantic-similarity}
+
+On the basis of semantic similarity between GO terms, [GOSemSim](https://www.bioconductor.org/packages/GOSemSim) can
+also compute semantic similarity among sets of GO terms, gene products, and gene clusters.
+
+Suppose we have gene $g_1$ annotated by GO terms sets $GO_{1}=\{go_{11},go_{12} \cdots go_{1m}\}$
+and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, `r Biocpkg("GOSemSim")` implemented four combine methods, including __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__, to aggregate semantic similarity scores of multiple GO terms (see also [session 1.3](#combine-methods)). The similarities
+among gene products and gene clusters which annotated by multiple GO
+terms are also calculated by the these combine methods.
+
+
+`r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
+
+```{r gosemsim-genesim}
+geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
+mgeneSim(genes=c("835", "5261","241", "994"),
+         semData=hsGO, measure="Wang",verbose=FALSE)
+mgeneSim(genes=c("835", "5261","241", "994"),
+       semData=hsGO, measure="Rel",verbose=FALSE)
+```
+
+By default, `godata` function use `ENTREZID` as keytype, and the input ID type is `ENTREZID`. User can use other ID types such as `ENSEMBL`, `UNIPROT`, `REFSEQ`, `ACCNUM`, `SYMBOL` _et al_.
+
+Here as an example, we use `SYMBOL` as `keytype` and calculate semantic similarities among several genes by using their gene symbol as input.
+
+```{r gosemsim-mgeneSim}
+hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE)
+genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
+mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
+```
+
+Users can also use [`clusterProfiler::bitr`](#bitr) to translate biological IDs.
+
+## Gene cluster semantic similarity measurement {#gene-cluster-go-semantic-similarity}
+
+
+`r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
+
+```{r gosemsim-clusterSim}
+gs1 <- c("835", "5261","241", "994", "514", "533")
+gs2 <- c("578","582", "400", "409", "411")
+clusterSim(gs1, gs2, semData=hsGO, measure="Wang", combine="BMA")
+
+library(org.Hs.eg.db)
+x <- org.Hs.egGO
+hsEG <- mappedkeys(x)
+set.seed <- 123
+clusters <- list(a=sample(hsEG, 20), b=sample(hsEG, 20), c=sample(hsEG, 20))
+mclusterSim(clusters, semData=hsGO, measure="Wang", combine="BMA")
+```
+
+
+
+
+<!--
+
+
+## Applications
+
+[GOSemSim](https://www.bioconductor.org/packages/GOSemSim) was cited by more than [200 papers](https://scholar.google.com.hk/scholar?oi=bibs&hl=en&cites=9484177541993722322,17633835198940746971,18126401808149291947) and had been applied to many research domains, including:
+
++ [Disease or Drug analysis](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#diease-or-drug-analysis)
++ [Gene/Protein functional analysis](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#geneprotein-functional-analysis)
++ [Protein-Protein interaction](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#protein-protein-interaction)
++ [miRNA-mRNA interaction](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#mirna-mrna-interaction)
++ [sRNA regulation](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#srna-regulation)
++ [Evolution](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#evolution)
+
+Find out more on <https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/>.
+
+
+# GO enrichment analysis
+
+GO enrichment analysis can be supported by our package [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@yu2012], which supports hypergeometric test and Gene Set Enrichment Analysis (GSEA). Enrichment results across different gene clusters can be compared using __*compareCluster*__ function.
+
+# Disease Ontology Semantic and Enrichment analysis
+
+Disease Ontology (DO) annotates human genes in the context of disease. DO is an important annotation in translating molecular findings from high-throughput data to clinical relevance.
+[DOSE](https://www.bioconductor.org/packages/DOSE)[@yu_dose_2015] supports semantic similarity computation among DO terms and genes.
+Enrichment analysis including hypergeometric model and GSEA are also implemented to support discovering disease associations of high-throughput biological data.
+
+# MeSH enrichment and semantic analyses
+
+MeSH (Medical Subject Headings) is the NLM controlled vocabulary used to manually index articles for MEDLINE/PubMed. [meshes](https://www.bioconductor.org/packages/meshes) supports enrichment (hypergeometric test and GSEA) and semantic similarity analyses for more than 70 species.
+
+
+-->

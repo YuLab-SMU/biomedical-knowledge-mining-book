@@ -1,0 +1,102 @@
+# (APPENDIX) Appendix {-}
+
+# Frequently asked questions {#faq}
+
+## How to prepare your own geneList {#genelist}
+
+GSEA analysis requires a ranked gene list, which contains three features:
+
+
++ numeric vector: fold change or other type of numerical variable
++ named vector: every number has a name, the corresponding gene ID
++ sorted vector: number should be sorted in decreasing order
+
+
+If you import your data from a `csv` file, the file should contains two columns, one for gene ID (no duplicated ID allowed) and another one for fold change. You can prepare your own `geneList` via the following command:
+
+
+```r
+d = read.csv(your_csv_file)
+## assume 1st column is ID
+## 2nd column is FC
+
+## feature 1: numeric vector
+geneList = d[,2]
+
+## feature 2: named vector
+names(geneList) = as.character(d[,1])
+
+## feature 3: decreasing orde
+geneList = sort(geneList, decreasing = TRUE)
+```
+
+
+
+<!--
+
+
+# DAVID functional analysis
+
+[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides enrichment and GSEA analysis with GO, KEGG, DO and Reactome pathway supported internally, some user may prefer GO and KEGG analysis with DAVID[@huang_david_2007] and still attracted by the visualization methods provided by [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@paranjpe_genome_wid_2013]. To bridge the gap between DAVID and clusterProfiler, we implemented `enrichDAVID`. This function query enrichment analysis result from DAVID webserver via [RDAVIDWebService](https://www.bioconductor.org/packages/RDAVIDWebService)[@fresno_rdavidwebservice_2013] and stored the result as an `enrichResult` instance, so that we can use all the visualization functions in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) to visualize DAVID results. `enrichDAVID` is fully compatible with `compareCluster` function and comparing enrichment results from different gene clusters is now available with DAVID.
+
+```{r eval=FALSE}
+library(clusterProfiler)
+data(geneList, package="DOSE")
+gene = names(geneList)[abs(geneList) > 2]
+david <- enrichDAVID(gene = gene,
+                     idType = "ENTREZ_GENE_ID",
+                     listType = "Gene",
+                     annotation = "KEGG_PATHWAY",
+                     david.user = "clusterProfiler@hku.hk")
+```
+
+DAVID Web Service has the following limitations:
+
++ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
++ No more than 200 jobs in a day from one user or computer.
++ DAVID Team reserves right to suspend any improper uses of the web service without notice.
+
+For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
+
+As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
+
+
+-->
+
+
+## No gene can be mapped
+
++ <https://www.biostars.org/p/431270/>
++ <https://github.com/YuLab-SMU/clusterProfiler/issues/280>
+
+
+## Showing specific pathways
+
+By default, all the visualization methods provided by `r Biocpkg("enrichplot")` display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the `showCategory` parameter in `dotplot()`, `barplot()`, `cnetplot()` and `emapplot()` etc.
+
+
+(ref:selectedPathsscap) Showing specific pathways.
+
+(ref:selectedPathscap) **Showing specific pathways.** Top ten most significant pathways (A), selected ten pathways (B).
+
+```{r selectedPaths, fig.height=6, fig.width=15, fig.cap="(ref:selectedPathscap)", fig.scap="(ref:selectedPathsscap)"}
+library(DOSE)
+library(enrichplot)
+data(geneList)
+de <- names(geneList)[1:100]
+
+x <- enrichDO(de)
+
+## show top 10 most significant pathways and want to exclude the second one
+## dotplot(x, showCategory = x$Description[1:10][-2])
+
+set.seed(2020-10-27)
+selected_pathways <- sample(x$Description, 10)
+selected_pathways
+
+p1 <- dotplot(x, showCategory = 10, font.size=14)
+p2 <- dotplot(x, showCategory = selected_pathways, font.size=14)
+
+
+cowplot::plot_grid(p1, p2, labels=LETTERS[1:2])
+```
