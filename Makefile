@@ -1,3 +1,6 @@
+bs4:
+	Rscript -e 'library(bookdown); render_book("index.Rmd", "bs4_book")'
+
 gitbook:
 	Rscript -e 'library(bookdown); render_book("index.Rmd", "gitbook")'
 
@@ -13,3 +16,10 @@ clean:
 
 cover:
 	Rscript -e 'source("book-cover.R")'
+
+publish:
+	cd gh-pages;\
+	git add .;\
+	git commit -m 'update';\
+	git push -u origin gh-pages
+	

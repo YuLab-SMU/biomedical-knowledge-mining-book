@@ -1,6 +1,6 @@
 book_filename: "biomedicalKnowledge"
 chapter_name: "Chapter "
-output_dir: docs
+output_dir: gh-pages
 delete_merged_file: true
 rmd_files: ["index.Rmd",
   "01_overview_semantic_similarity.Rmd",
