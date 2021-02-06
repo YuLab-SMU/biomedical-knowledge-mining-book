@@ -161,10 +161,11 @@ In Figure \@ref(fig:simplify-emapplot)A, we can found that there are many redund
 
 
 
-```{r simplify-emapplot,fig.width=16, fig.height=8, fig.cap="(ref:emapplotSimplifycap)", fig.scap="(ref:emapplotSimplifyscap)"}
+```{r simplify-emapplot, fig.width=16, fig.height=8, fig.cap="(ref:emapplotSimplifycap)", fig.scap="(ref:emapplotSimplifyscap)"}
 data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 2]
 bp <- enrichGO(de, ont="BP", OrgDb = 'org.Hs.eg.db')
+bp <- pairwise_termsim(bp)
 bp2 <- simplify(bp, cutoff=0.7, by="p.adjust", select_fun=min)
 p1 <- emapplot(bp)
 p2 <- emapplot(bp2)

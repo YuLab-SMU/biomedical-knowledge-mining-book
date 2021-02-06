@@ -36,7 +36,7 @@ gene <- names(geneList)[abs(geneList) > 2]
 kk <- enrichKEGG(gene         = gene,
                  organism     = 'hsa',
                  pvalueCutoff = 0.05)
-head(kk) 
+head(kk)
 ```
 
 Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also [session 16.1.2](#bitr_kegg)). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the [`setReadable()` function](#setReadable) if there is an `OrgDb` available for the species.

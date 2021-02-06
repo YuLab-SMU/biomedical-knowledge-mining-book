@@ -132,7 +132,7 @@ The `emapplot` function supports results obtained from hypergeometric test and g
 
 (ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `cex_category=1.5` (B), `layout="kk"` (C) and `cex_category=1.5,layout="kk"` (D).
 
-```{r Enrichment, dev='svg', fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
+```{r Enrichment, fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
 edo <- pairwise_termsim(edo)
 p1 <- emapplot(edo)
 p2 <- emapplot(edo, cex_category=1.5)

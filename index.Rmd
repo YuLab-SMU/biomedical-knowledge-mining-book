@@ -56,11 +56,15 @@ badge_version <- function(pkg, color="green") {
 
 
 library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE, dev='svg')
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, 
+    echo=TRUE, cache=TRUE, dev="CairoPNG")
 
 
 library(emojifont)
 library(org.Hs.eg.db)
+library(clusterProfiler)
+
+#options(clusterProfiler.download.method = "wget")
 ```
 
 

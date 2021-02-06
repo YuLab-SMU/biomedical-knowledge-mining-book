@@ -79,7 +79,7 @@ By default, `godata` function use `ENTREZID` as keytype, and the input ID type i
 Here as an example, we use `SYMBOL` as `keytype` and calculate semantic similarities among several genes by using their gene symbol as input.
 
 ```{r gosemsim-mgeneSim}
-hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE)
+hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE) 
 genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
 mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
 ```
