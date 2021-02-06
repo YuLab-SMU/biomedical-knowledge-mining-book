@@ -82,7 +82,9 @@ library(clusterProfiler)
 
 hello
 
-![](figures/clusterProfiler-diagram.png)
+```{r summaryDiagram, echo=FALSE}
+knitr::include_graphics("figures/clusterProfiler-diagram.png")
+```
 
 <!--
 In recently years, high-throughput experimental techniques such as
