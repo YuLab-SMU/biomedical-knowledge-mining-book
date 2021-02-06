@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 10 Disease enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<meta name="author" content="Guangchuang Yu">
+<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.5.2/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.5.2/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.1.9000/tabs.js"></script><script src="libs/bs3compat-0.2.1.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">📖 Introduction</a></li>
+<li class="book-part">Part I: Semantic Similarity Analysis</li>
+<li><a class="" href="semantic-similarity-overview.html"><span class="header-section-number">1</span> Overview of semantic similarity analysis</a></li>
+<li><a class="" href="GOSemSim.html"><span class="header-section-number">2</span> GO semantic similarity analysis</a></li>
+<li><a class="" href="DOSE-semantic-similarity.html"><span class="header-section-number">3</span> DO semantic similarity analysis</a></li>
+<li><a class="" href="meshes-semantic-similarity.html"><span class="header-section-number">4</span> MeSH semantic similarity analysis</a></li>
+<li class="book-part">Part II: Enrichment analysis</li>
+<li><a class="" href="enrichment-overview.html"><span class="header-section-number">5</span> Overview of enrichment analysis</a></li>
+<li><a class="" href="clusterprofiler-go.html"><span class="header-section-number">6</span> GO enrichment analysis</a></li>
+<li><a class="" href="clusterprofiler-kegg.html"><span class="header-section-number">7</span> KEGG enrichment analysis</a></li>
+<li><a class="" href="wikipathways-analysis.html"><span class="header-section-number">8</span> WikiPathways analysis</a></li>
+<li><a class="" href="reactomepa.html"><span class="header-section-number">9</span> Reactome enrichment analysis</a></li>
+<li><a class="active" href="dose-enrichment.html"><span class="header-section-number">10</span> Disease enrichment analysis</a></li>
+<li><a class="" href="meshes-enrichment.html"><span class="header-section-number">11</span> MeSH enrichment analysis</a></li>
+<li><a class="" href="universal-api.html"><span class="header-section-number">12</span> Universal enrichment analysis</a></li>
+<li><a class="" href="chipseeker-enrichment.html"><span class="header-section-number">13</span> Functional enrichment analysis of genomic coordinations</a></li>
+<li><a class="" href="clusterprofiler-comparecluster.html"><span class="header-section-number">14</span> Biological theme comparison</a></li>
+<li><a class="" href="enrichplot.html"><span class="header-section-number">15</span> Visualization of functional enrichment result</a></li>
+<li class="book-part">Part III: Miscellaneous topics</li>
+<li><a class="" href="clusterProfiler-dplyr.html"><span class="header-section-number">16</span> dplyr verbs for manipulating enrichment result</a></li>
+<li><a class="" href="useful-utilities.html"><span class="header-section-number">17</span> Useful utilities</a></li>
+<li class="book-part">Appendix</li>
+<li><a class="" href="faq.html"><span class="header-section-number">A</span> Frequently asked questions</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="dose-enrichment" class="section level1" number="10">
+<h1>
+<span class="header-section-number">10</span> Disease enrichment analysis<a class="anchor" aria-label="anchor" href="#dose-enrichment"><i class="fas fa-link"></i></a>
+</h1>
+<p>We developed <a href="http://bioconductor.org/packages/DOSE">DOSE</a> <span class="citation">(G. Yu et al. <a href="references.html#ref-yu_dose_2015" role="doc-biblioref">2015</a>)</span> package to promote the investigation of diseases. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> provides five methods for <a href="DOSE-semantic-similarity.html#DOSE-semantic-similarity">measuring semantic similarities among DO terms and gene products</a>, hypergeometric model and gene set enrichment analysis (GSEA) for associating disease with gene list and extracting disease association insight from genome wide expression profiles.</p>
+<div id="dose-ora" class="section level2" number="10.1">
+<h2>
+<span class="header-section-number">10.1</span> Disease over-representation analysis<a class="anchor" aria-label="anchor" href="#dose-ora"><i class="fas fa-link"></i></a>
+</h2>
+<p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> supports enrichment analysis of Disease Ontology (DO) <span class="citation">(Schriml et al. <a href="references.html#ref-schriml_disease_2011" role="doc-biblioref">2011</a>)</span>, <a href="http://ncg.kcl.ac.uk/">Network of Cancer Gene</a> <span class="citation">(A. et al. <a href="references.html#ref-omer_ncg" role="doc-biblioref">2016</a>)</span> and <a href="http://disgenet.org/">Disease Gene Network</a> (DisGeNET) <span class="citation">(Janet et al. <a href="references.html#ref-janet_disgenet" role="doc-biblioref">2015</a>)</span>. In addition, several visualization methods were provided by <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> to help interpreting semantic and enrichment results.</p>
+<div id="dose-do-ora" class="section level3" number="10.1.1">
+<h3>
+<span class="header-section-number">10.1.1</span> Over-representation analysis for disease ontology<a class="anchor" aria-label="anchor" href="#dose-do-ora"><i class="fas fa-link"></i></a>
+</h3>
+<p>In the following example, we selected fold change above 1.5 as the differential genes and analyzing their disease association.</p>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">DOSE</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>
+<span class="va">gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1.5</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "4312"  "8318"  "10874" "55143" "55388" "991"</code></pre>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO</a></span><span class="op">(</span>gene          <span class="op">=</span> <span class="va">gene</span>,
+              ont           <span class="op">=</span> <span class="st">"DO"</span>,
+              pvalueCutoff  <span class="op">=</span> <span class="fl">0.05</span>,
+              pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,
+              universe      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>,
+              minGSSize     <span class="op">=</span> <span class="fl">5</span>,
+              maxGSSize     <span class="op">=</span> <span class="fl">500</span>,
+              qvalueCutoff  <span class="op">=</span> <span class="fl">0.05</span>,
+              readable      <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<pre><code>##                    ID                    Description GeneRatio  BgRatio
+## DOID:170     DOID:170         endocrine gland cancer    48/331 472/6268
+## DOID:10283 DOID:10283                prostate cancer    40/331 394/6268
+## DOID:3459   DOID:3459               breast carcinoma    37/331 357/6268
+## DOID:3856   DOID:3856 male reproductive organ cancer    40/331 404/6268
+## DOID:824     DOID:824                  periodontitis    16/331 109/6268
+## DOID:3905   DOID:3905                 lung carcinoma    43/331 465/6268
+##                  pvalue    p.adjust      qvalue
+## DOID:170   5.662129e-06 0.004784499 0.003826407
+## DOID:10283 3.859157e-05 0.013921739 0.011133923
+## DOID:3459  4.942629e-05 0.013921739 0.011133923
+## DOID:3856  6.821467e-05 0.014410349 0.011524689
+## DOID:824   1.699304e-04 0.018859464 0.015082872
+## DOID:3905  1.749754e-04 0.018859464 0.015082872
+##                                                                                                                                                                                                                                                   geneID
+## DOID:170   10874/7153/1381/6241/11065/10232/332/6286/2146/10112/891/9232/4171/993/5347/4318/3576/1515/4821/8836/3159/7980/5888/333/898/9768/4288/3551/2152/9590/185/7043/3357/2952/5327/3667/1634/1287/4582/7122/3479/4680/6424/80310/652/8839/9547/1524
+## DOID:10283                                          4312/6280/6279/597/3627/332/6286/2146/4321/4521/891/5347/4102/4318/701/3576/79852/10321/6352/4288/3551/2152/247/2952/3487/367/3667/4128/4582/563/3679/4117/7031/3479/6424/10451/80310/652/4036/10551
+## DOID:3459                                                          4312/6280/6279/7153/4751/890/4085/332/6286/6790/891/9232/10855/4171/5347/4318/701/2633/3576/9636/898/8792/4288/2952/4982/4128/4582/7031/3479/771/4250/2066/3169/10647/5304/5241/10551
+## DOID:3856                                           4312/6280/6279/597/3627/332/6286/2146/4321/4521/891/5347/4102/4318/701/3576/79852/10321/6352/4288/3551/2152/247/2952/3487/367/3667/4128/4582/563/3679/4117/7031/3479/6424/10451/80310/652/4036/10551
+## DOID:824                                                                                                                                                                   4312/6279/820/7850/4321/3595/4318/4069/3576/1493/6352/8842/185/2952/5327/4982
+## DOID:3905                          4312/6280/2305/9133/6279/7153/6278/6241/55165/11065/8140/10232/332/6286/3002/9212/4521/891/4171/9928/8061/4318/3576/1978/1894/7980/7083/898/6352/8842/4288/2152/2697/2952/3572/4582/7049/563/3479/1846/3117/2532/2922
+##            Count
+## DOID:170      48
+## DOID:10283    40
+## DOID:3459     37
+## DOID:3856     40
+## DOID:824      16
+## DOID:3905     43</code></pre>
+<p>The <code><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO()</a></code> function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. Please refer to <a href="useful-utilities.html#id-convert">session 16.1</a> if you need to conver other gene ID types to entrezgene ID.</p>
+<p>The <code>ont</code> parameter can be “DO” or “DOLite”, DOLite <span class="citation">(Du et al. <a href="references.html#ref-Du15062009" role="doc-biblioref">2009</a>)</span> was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use <code>ont="DO"</code>. <code>pvalueCutoff</code> setting the cutoff value of <em>p</em> value and adjusted <em>p</em> value; <code>pAdjustMethod</code> setting the <em>p</em> value correction methods, include the Bonferroni correction (“bonferroni”), Holm (“holm”), Hochberg (“hochberg”), Hommel (“hommel”), Benjamini &amp; Hochberg (“BH”) and Benjamini &amp; Yekutieli (“BY”) while <code>qvalueCutoff</code> is used to control <em>q</em>-values.</p>
+<p>The <code>universe</code> setting the background gene universe for testing. If user do not explicitly setting this parameter, <code><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO()</a></code> will set the universe to all human genes that have DO annotation.</p>
+<p>The <code>minGSSize</code> (and <code>maxGSSize</code>) indicates that only those DO terms that have more than <code>minGSSize</code> (and less than <code>maxGSSize</code>) genes annotated will be tested.</p>
+<p>The <code>readable</code> is a logical parameter, indicates whether the entrezgene IDs will mapping to gene symbols or not (see also <a href="useful-utilities.html#setReadable">setReadable</a>).</p>
+</div>
+<div id="dose-ncg-ora" class="section level3" number="10.1.2">
+<h3>
+<span class="header-section-number">10.1.2</span> Over-representation analysis for the network of cancer gene<a class="anchor" aria-label="anchor" href="#dose-ncg-ora"><i class="fas fa-link"></i></a>
+</h3>
+<p><a href="http://ncg.kcl.ac.uk/">Network of Cancer Gene</a> (NCG) <span class="citation">(A. et al. <a href="references.html#ref-omer_ncg" role="doc-biblioref">2016</a>)</span> is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.</p>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gene2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">3</span><span class="op">]</span>
+<span class="va">ncg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichNCG.html">enrichNCG</a></span><span class="op">(</span><span class="va">gene2</span><span class="op">)</span> 
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ncg</span><span class="op">)</span></code></pre></div>
+<pre><code>##                                                                      ID
+## pan-cancer_paediatric                             pan-cancer_paediatric
+## triple_negative_breast_cancer             triple_negative_breast_cancer
+## breast_cancer                                             breast_cancer
+## soft_tissue_sarcoma                                 soft_tissue_sarcoma
+## paediatric_high-grade_glioma               paediatric_high-grade_glioma
+## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
+##                                                             Description
+## pan-cancer_paediatric                             pan-cancer_paediatric
+## triple_negative_breast_cancer             triple_negative_breast_cancer
+## breast_cancer                                             breast_cancer
+## soft_tissue_sarcoma                                 soft_tissue_sarcoma
+## paediatric_high-grade_glioma               paediatric_high-grade_glioma
+## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
+##                                     GeneRatio  BgRatio       pvalue
+## pan-cancer_paediatric                161/1782 182/2372 2.748816e-06
+## triple_negative_breast_cancer         71/1782  75/2372 6.564667e-06
+## breast_cancer                        146/1782 171/2372 5.249102e-04
+## soft_tissue_sarcoma                   26/1782  26/2372 5.633144e-04
+## paediatric_high-grade_glioma          25/1782  25/2372 7.524752e-04
+## pancreatic_cancer_(all_histologies)   39/1782  41/2372 7.825494e-04
+##                                         p.adjust       qvalue
+## pan-cancer_paediatric               0.0002226541 0.0001504615
+## triple_negative_breast_cancer       0.0002658690 0.0001796646
+## breast_cancer                       0.0105644165 0.0071390469
+## soft_tissue_sarcoma                 0.0105644165 0.0071390469
+## paediatric_high-grade_glioma        0.0105644165 0.0071390469
+## pancreatic_cancer_(all_histologies) 0.0105644165 0.0071390469
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           geneID
+## pan-cancer_paediatric               2146/55353/4609/1029/3575/22806/3418/3066/2120/30012/867/7468/7545/3195/865/64109/4613/613/11177/7490/238/10736/10054/5771/4893/140885/1785/9760/3417/6597/6476/9126/4869/10320/7307/80204/1050/8028/2312/6608/896/894/2196/4849/7023/5093/5079/5293/5727/55181/171017/51322/5781/3718/55294/60/673/8085/5897/4851/51176/1108/7764/10664/6098/2332/2201/6495/3845/7015/1441/2782/64919/4298/23512/8239/29102/6929/8021/6134/6598/4209/5290/22941/8726/207/3717/2033/10716/4928/6932/694/5156/10019/6886/9968/7080/2623/7874/1654/4149/3020/23219/55252/55729/10735/5728/4853/23451/51341/387/3206/6146/79718/2624/63035/3815/171023/23269/25/9839/23592/5896/7403/2260/54880/3716/9203/57178/6777/5789/4297/29072/90/546/120/25836/8289/4345/9611/5925/4763/1997/1499/7157/3399/5295/1387/4602/51564/1027/4005/2322/2078/678/6403/55709/1277/7494/64061/2625
+## triple_negative_breast_cancer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 6790/898/4609/1029/1789/4436/2120/867/7128/1788/1030/7490/2271/238/675/2047/4914/1316/5291/5293/5781/55294/8085/4851/4170/3845/355/1616/4854/5290/207/2033/4233/29110/2903/5979/5728/4853/2624/3815/10000/7403/2260/55193/472/5789/4297/2065/4286/8626/8405/8289/10499/55164/5925/4763/23405/1499/4921/7157/5295/1387/2078/324/7248/7048/22894/3480/2045/2066/2625
+## breast_cancer                                                                                                                     4751/701/898/639/29028/4609/7399/1029/1520/4436/83990/11200/10849/2072/4771/865/999/1788/26191/1030/10801/83737/6262/1956/672/8590/675/4893/6597/8202/2778/208/51412/896/2132/677/4849/4221/65220/2854/55294/673/4193/8085/4851/57127/841/3265/7764/10664/9721/3845/3956/868/9175/6602/11174/8239/9860/6954/5290/1523/207/2033/2334/3782/8312/9514/5156/186/54897/71/79728/545/143/2064/4089/8471/8314/91/5289/1021/10735/5979/5728/4853/23451/9439/6738/387/55770/79718/4301/171023/23013/51135/80243/4292/149076/10983/6103/7403/54880/4916/55193/9203/1635/1495/2309/472/5076/2909/5789/4297/2065/29072/2263/546/8289/2874/9611/5925/6416/4763/7157/4088/23152/5295/6794/1387/4602/1027/5737/324/595/7188/4681/4214/7494/2099/3480/4485/2891/6926/3169/2625
+## soft_tissue_sarcoma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             999/6850/4914/4342/2185/55294/2041/4851/2044/4058/5290/4486/5297/5728/3815/2324/7403/546/5925/4763/1499/7157/5159/2045/3667/2066
+## paediatric_high-grade_glioma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             4609/1029/1019/4613/1030/1956/4914/896/894/673/8493/5290/4233/5156/1021/63035/54880/4916/90/546/4763/7157/5295/595/4915
+## pancreatic_cancer_(all_histologies)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      1029/4771/8997/7159/2011/6597/7307/3710/6710/55294/7091/3845/23654/7046/3096/4089/91/8241/54549/92/23451/63035/7403/55193/23309/472/800/29072/23077/23499/8289/54894/6416/7157/4088/182/7048/2199/26960
+##                                     Count
+## pan-cancer_paediatric                 161
+## triple_negative_breast_cancer          71
+## breast_cancer                         146
+## soft_tissue_sarcoma                    26
+## paediatric_high-grade_glioma           25
+## pancreatic_cancer_(all_histologies)    39</code></pre>
+</div>
+<div id="dose-dgn-ora" class="section level3" number="10.1.3">
+<h3>
+<span class="header-section-number">10.1.3</span> Over-representation analysis for the disease gene network<a class="anchor" aria-label="anchor" href="#dose-dgn-ora"><i class="fas fa-link"></i></a>
+</h3>
+<p><a href="http://disgenet.org/">DisGeNET</a><span class="citation">(Janet et al. <a href="references.html#ref-janet_disgenet" role="doc-biblioref">2015</a>)</span> is an integrative and comprehensive resources of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.</p>
+<p>The enrichment analysis of disease-gene associations is supported by the <code>enrichDGN</code> function and analysis of snp-gene-disease associations is supported by the <code>enrichDGNv</code> function.</p>
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dgn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichDGN.html">enrichDGN</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> 
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dgn</span><span class="op">)</span></code></pre></div>
+<pre><code>##                ID                              Description GeneRatio   BgRatio
+## C0010278 C0010278                         Craniosynostosis    43/497 488/21671
+## C0853879 C0853879             Invasive carcinoma of breast    42/497 473/21671
+## C4733092 C4733092 estrogen receptor-negative breast cancer    34/497 356/21671
+## C3642347 C3642347              Basal-Like Breast Carcinoma    28/497 245/21671
+## C3642345 C3642345               Luminal A Breast Carcinoma    22/497 153/21671
+## C0036202 C0036202                              Sarcoidosis    36/497 413/21671
+##                pvalue     p.adjust       qvalue
+## C0010278 4.609534e-14 2.267976e-10 1.636811e-10
+## C0853879 7.105190e-14 2.267976e-10 1.636811e-10
+## C4733092 2.446675e-12 4.864593e-09 3.510804e-09
+## C3642347 3.047991e-12 4.864593e-09 3.510804e-09
+## C3642345 7.034749e-12 8.438458e-09 6.090082e-09
+## C0036202 7.930882e-12 8.438458e-09 6.090082e-09
+##                                                                                                                                                                                                                           geneID
+## C0010278 4312/8318/6280/1062/6279/6278/3627/820/27299/6362/81620/2146/3002/29968/990/4318/4069/3576/6890/23594/26279/1493/6352/4998/2152/2697/185/4330/5327/4982/1300/3667/2200/9607/3572/563/7031/3479/6424/1846/3117/1308/2625
+## C0853879        4312/7153/6278/9787/9582/51203/890/983/5080/2146/1111/9232/10855/4171/6664/4102/2173/4318/701/3576/1978/8836/53335/1894/7980/8792/8842/2151/185/2952/367/4982/4582/6926/3479/1602/23158/2066/3169/5304/2625/5241
+## C4733092                                         2305/6278/79733/6241/81930/81620/2146/3620/29968/11004/8061/3576/1894/2491/7083/8792/214/5327/367/4982/3667/4582/27324/3479/1846/80129/4137/8839/3169/1408/5304/2625/5241/10551
+## C3642347                                                                          2305/1062/4605/9833/7368/11065/10232/55765/5163/2146/2568/3620/6790/6664/29127/2173/4318/3576/3159/8792/6663/27324/3479/1846/18/3169/2625/5241
+## C3642345                                                                                                         2305/9833/7153/55355/1111/3161/4318/3576/2001/6663/4288/2152/185/4128/4582/27324/80129/3169/5304/8614/2625/5241
+## C0036202                               4312/6280/6279/10403/3627/6373/4283/27299/6362/3002/4321/6355/6364/29851/4318/5004/4069/3576/26227/6890/6352/4485/23541/185/7043/6863/2952/4982/25802/4582/2053/3479/3117/2167/80736/1524
+##          Count
+## C0010278    43
+## C0853879    42
+## C4733092    34
+## C3642347    28
+## C3642345    22
+## C0036202    36</code></pre>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">snp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rs1401296"</span>, <span class="st">"rs9315050"</span>, <span class="st">"rs5498"</span>, <span class="st">"rs1524668"</span>, <span class="st">"rs147377392"</span>,
+         <span class="st">"rs841"</span>, <span class="st">"rs909253"</span>, <span class="st">"rs7193343"</span>, <span class="st">"rs3918232"</span>, <span class="st">"rs3760396"</span>,
+         <span class="st">"rs2231137"</span>, <span class="st">"rs10947803"</span>, <span class="st">"rs17222919"</span>, <span class="st">"rs386602276"</span>, <span class="st">"rs11053646"</span>,
+         <span class="st">"rs1805192"</span>, <span class="st">"rs139564723"</span>, <span class="st">"rs2230806"</span>, <span class="st">"rs20417"</span>, <span class="st">"rs966221"</span><span class="op">)</span>
+<span class="va">dgnv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichDGNv.html">enrichDGNv</a></span><span class="op">(</span><span class="va">snp</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dgnv</span><span class="op">)</span></code></pre></div>
+<pre><code>##                ID               Description GeneRatio    BgRatio       pvalue
+## C0010054 C0010054 Coronary Arteriosclerosis      6/17 440/194515 1.568917e-12
+## C0151744 C0151744       Myocardial Ischemia      4/17 103/194515 1.754840e-10
+## C0031099 C0031099             Periodontitis      4/17 116/194515 2.839985e-10
+## C0007785 C0007785       Cerebral Infarction      4/17 123/194515 3.599531e-10
+## C0003850 C0003850          Arteriosclerosis      4/17 267/194515 8.145389e-09
+## C0004153 C0004153           Atherosclerosis      4/17 281/194515 9.996713e-09
+##              p.adjust qvalue
+## C0010054 2.761295e-10     NA
+## C0151744 1.544259e-08     NA
+## C0031099 1.583793e-08     NA
+## C0007785 1.583793e-08     NA
+## C0003850 2.867177e-07     NA
+## C0004153 2.932369e-07     NA
+##                                                             geneID Count
+## C0010054 rs5498/rs147377392/rs11053646/rs1805192/rs2230806/rs20417     6
+## C0151744                   rs5498/rs147377392/rs11053646/rs1805192     4
+## C0031099                         rs5498/rs909253/rs1805192/rs20417     4
+## C0007785                rs147377392/rs11053646/rs1805192/rs2230806     4
+## C0003850                        rs5498/rs1805192/rs2230806/rs20417     4
+## C0004153                        rs5498/rs1805192/rs2230806/rs20417     4</code></pre>
+</div>
+</div>
+<div id="dose-gsea" class="section level2" number="10.2">
+<h2>
+<span class="header-section-number">10.2</span> Disease gene set enrichment analysis<a class="anchor" aria-label="anchor" href="#dose-gsea"><i class="fas fa-link"></i></a>
+</h2>
+<div id="gsedo-fuction" class="section level3" number="10.2.1">
+<h3>
+<span class="header-section-number">10.2.1</span> <code>gseDO</code> fuction<a class="anchor" aria-label="anchor" href="#gsedo-fuction"><i class="fas fa-link"></i></a>
+</h3>
+<p>In the following example, in order to speedup the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.</p>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">DOSE</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>
+<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/gseDO.html">gseDO</a></span><span class="op">(</span><span class="va">geneList</span>,
+           minGSSize     <span class="op">=</span> <span class="fl">120</span>,
+           pvalueCutoff  <span class="op">=</span> <span class="fl">0.2</span>,
+           pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,
+           verbose       <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<pre><code>##                        ID                          Description setSize
+## DOID:0050338 DOID:0050338 primary bacterial infectious disease     214
+## DOID:104         DOID:104         bacterial infectious disease     243
+## DOID:399         DOID:399                         tuberculosis     140
+##              enrichmentScore      NES       pvalue     p.adjust      qvalues
+## DOID:0050338       0.4569856 2.042460 1.363997e-09 2.141476e-07 8.183983e-08
+## DOID:104           0.4286201 1.954745 6.508681e-09 5.109314e-07 1.952604e-07
+## DOID:399           0.4999969 2.105697 2.492603e-08 1.304462e-06 4.985205e-07
+##              rank                   leading_edge
+## DOID:0050338 1850 tags=35%, list=15%, signal=30%
+## DOID:104     1808 tags=32%, list=14%, signal=28%
+## DOID:399     1808 tags=36%, list=14%, signal=31%
+##                                                                                                                                                                                                                                                                                                                                                                                            core_enrichment
+## DOID:0050338                 4312/597/3627/6373/820/3620/6364/29851/4318/3576/26227/6890/952/1493/6352/3934/54210/3932/5551/3559/6347/6402/639/94025/3126/3001/6351/1236/5698/3948/919/3458/959/7296/79139/3804/4159/942/3329/9235/1234/7096/3383/4068/6367/5806/100/3659/4360/939/6891/4210/671/7422/929/26191/6504/27087/4282/7124/5027/5329/3569/4049/7097/56244/7852/1378/5133/5743/348/1118/3119/7415
+## DOID:104     4312/597/3627/6373/820/3620/6364/29851/4318/3576/26227/6890/952/1493/6352/3934/54210/10663/3932/5551/3559/6772/6347/6402/639/94025/3126/3001/6351/1236/3654/5698/3948/919/3458/959/7296/79139/3804/4159/942/3329/9235/3689/1234/7096/3383/4068/6367/5806/100/3659/4360/939/6891/4210/671/7422/929/26191/6504/27087/4282/7124/5027/5329/3569/4049/7097/56244/7852/1378/5133/5743/348/1118/3119
+## DOID:399                                                                                                                                             4312/597/3627/820/6364/29851/4318/3576/26227/1493/6352/3934/5551/3559/6347/94025/3001/6351/3948/919/3458/959/4159/942/9235/7096/3383/4068/6367/5806/100/3659/4360/939/671/929/26191/27087/4282/7124/5027/3569/7097/56244/7852/1378/5133/348/1118/3119</code></pre>
+</div>
+<div id="gsencg-fuction" class="section level3" number="10.2.2">
+<h3>
+<span class="header-section-number">10.2.2</span> <code>gseNCG</code> fuction<a class="anchor" aria-label="anchor" href="#gsencg-fuction"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ncg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/gseNCG.html">gseNCG</a></span><span class="op">(</span><span class="va">geneList</span>,
+              minGSSize     <span class="op">=</span> <span class="fl">120</span>,
+              pvalueCutoff  <span class="op">=</span> <span class="fl">0.2</span>,
+              pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,
+              verbose       <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">ncg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="st">'org.Hs.eg.db'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="fl">3</span><span class="op">)</span> </code></pre></div>
+<pre><code>## [1] ID              Description     setSize         enrichmentScore
+## [5] NES             pvalue          p.adjust        qvalues        
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+</div>
+<div id="gsedgn-fuction" class="section level3" number="10.2.3">
+<h3>
+<span class="header-section-number">10.2.3</span> <code>gseDGN</code> fuction<a class="anchor" aria-label="anchor" href="#gsedgn-fuction"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dgn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/gseDGN.html">gseDGN</a></span><span class="op">(</span><span class="va">geneList</span>,
+              minGSSize     <span class="op">=</span> <span class="fl">120</span>,
+              pvalueCutoff  <span class="op">=</span> <span class="fl">0.2</span>,
+              pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>,
+              verbose       <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">dgn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">dgn</span>, <span class="st">'org.Hs.eg.db'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dgn</span>, <span class="fl">3</span><span class="op">)</span> </code></pre></div>
+<pre><code>##                ID                  Description setSize enrichmentScore
+## C0024266 C0024266 Lymphocytic Choriomeningitis     120       0.5712593
+## C0151779 C0151779           Cutaneous Melanoma     415       0.3963772
+## C0205682 C0205682              Waist-Hip Ratio     401      -0.4425633
+##                NES pvalue p.adjust  qvalues rank                   leading_edge
+## C0024266  2.380210  1e-10 2.69e-08 1.75e-08 2579 tags=48%, list=21%, signal=38%
+## C0151779  1.942344  1e-10 2.69e-08 1.75e-08 1864 tags=27%, list=15%, signal=24%
+## C0205682 -1.935937  1e-10 2.69e-08 1.75e-08 2011 tags=28%, list=16%, signal=24%
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
+## C0024266                                                                                                                                                                                                                                                                                                                                                                                S100A9/CXCL10/CXCL9/EZH2/GZMB/ICOS/USP18/CXCL8/CTLA4/TREM1/PRF1/ADM/CA9/STAT1/CCL2/SELL/CDKN2A/IL7/IL7R/IFNG/CCR5/IL27RA/SH2D1A/FCER1G/CDK2AP2/CPVL/CD27/PSMB10/PTPN22/SLAMF1/KDM1A/TNF/IL6/FGL2/TLR2/RPAIN/NELFCD/PDCD1/WAS/HIF1A/ATP5F1B/FCGR2B/EGR2/STX11/CXCR3/TYROBP/YME1L1/SOSTDC1/PTPN2/TRAF1/HNF1A/IRF9/PML/NR0B2/IL2/TOX/AGFG1
+## C0151779                                                          MMP1/CDCA8/S100A8/TOP2A/PBK/ISG20/NEK2/CCL18/PDK1/EZH2/AURKB/CHAF1B/KIF18B/MMP12/LAG3/DTL/PTTG1/SOX11/CDKN3/PRAME/PLK1/FABP7/MMP9/GBP1/CXCL8/CTLA4/SOX10/PROM1/MKI67/FANCA/MCM6/MCM4/PITX1/DBF4/IL2RA/TYMS/PLA2G2A/MYC/PCNA/NDRG1/CDKAL1/BLM/E2F1/OCA2/CD163/CDKN2A/NME1/TCF21/KMO/VCAM1/RUNX3/IFNG/MCM7/KYNU/STIP1/CCDC88C/GSTP1/CHAF1A/MSH2/CYP27B1/MAGEA1/CDKN2C/PRDM16/MX2/CDK4/GAPDH/MCM3/ICAM1/CCL22/CHEK2/CXCL5/ERCC4/SPP1/TEAD4/MTAP/HCP5/MRC1/TUBB3/CD27/S100B/CSPG4/PLP2/NBN/VEGFA/IFNW1/CDK16/CDH1/CCNF/CBLIF/SOX4/PARP1/SLC16A1/DNMT1/MAP2K1/ATG5/TNF/NXT1/CDKN2B/RBX1/IL6/TLR2/CXCR4/PDCD1/PTGS2/HIF1A/JMJD6/XRCC3/HLA-DQB1/PVR/CASP10/TGFA/EGFR
+## C0205682 RETREG3/JMJD1C/SH2B1/BDNF/ARHGEF26/PDE5A/BPTF/SMAD3/TTC39A/ATP2B1/ARID4A/HOXC4/NID1/LAMA4/LRRC36/NUDT18/ANKRD28/HECTD4/COL11A1/MEIS1/INSR/CUL9/NRIP3/BCL2/CD34/EZH1/DYM/NDST1/COL15A1/VGLL3/CCND1/ZCCHC10/HOXC6/RAB26/QTRT1/MEIS2/ARID5B/AHNAK/FGF1/CAPRIN2/LAMB1/CPEB3/ELOVL4/CDADC1/PDE8B/ZNF268/NRP1/SYTL2/NR5A2/DGLUCY/SEMA3B/NID2/SIK3/PRR5L/FGF2/COL8A1/RAPGEF3/RBM6/CDH13/JCAD/NAV3/TRIM8/PPIEL/PTPRG/NBL1/CALCRL/PPL/LPL/BCKDHB/MAPKBP1/CNTLN/BBS4/P4HTM/FTO/PDZRN4/PDGFC/SGCD/NRXN3/AFF3/IGF1R/ABCC8/MPPED2/COL5A1/COL6A2/LOXL1/CYP21A2/LTBP2/TTC28/PATJ/PCSK5/WNT4/TTC12/NISCH/ASTN2/TCEA2/MN1/SETBP1/TAOK1/MAST4/ITGA7/ITGBL1/COL14A1/C1QTNF3/ZNF423/IQCH/MYH11/ADH1B/ABLIM3/MAPT/STC2/TFAP2B/CYBRD1/SCUBE2</code></pre>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="reactomepa.html"><span class="header-section-number">9</span> Reactome enrichment analysis</a></div>
+<div class="next"><a href="meshes-enrichment.html"><span class="header-section-number">11</span> MeSH enrichment analysis</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#dose-enrichment"><span class="header-section-number">10</span> Disease enrichment analysis</a></li>
+<li>
+<a class="nav-link" href="#dose-ora"><span class="header-section-number">10.1</span> Disease over-representation analysis</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#dose-do-ora"><span class="header-section-number">10.1.1</span> Over-representation analysis for disease ontology</a></li>
+<li><a class="nav-link" href="#dose-ncg-ora"><span class="header-section-number">10.1.2</span> Over-representation analysis for the network of cancer gene</a></li>
+<li><a class="nav-link" href="#dose-dgn-ora"><span class="header-section-number">10.1.3</span> Over-representation analysis for the disease gene network</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#dose-gsea"><span class="header-section-number">10.2</span> Disease gene set enrichment analysis</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#gsedo-fuction"><span class="header-section-number">10.2.1</span> gseDO fuction</a></li>
+<li><a class="nav-link" href="#gsencg-fuction"><span class="header-section-number">10.2.2</span> gseNCG fuction</a></li>
+<li><a class="nav-link" href="#gsedgn-fuction"><span class="header-section-number">10.2.3</span> gseDGN fuction</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-02-06.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+</html>
