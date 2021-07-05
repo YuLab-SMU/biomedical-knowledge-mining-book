@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.2/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.2/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.1.9000/tabs.js"></script><script src="libs/bs3compat-0.2.1.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -128,7 +128,7 @@
 <h2>
 <span class="header-section-number">5.2</span> Over Representation Analysis<a class="anchor" aria-label="anchor" href="#ora-algorithm"><i class="fas fa-link"></i></a>
 </h2>
-<p>Over Representation Analysis (ORA) <span class="citation">(Boyle et al. <a href="references.html#ref-boyle2004" role="doc-biblioref">2004</a>)</span> is a widely used approach to determine whether known biological functions or processes are over-represented (= enriched) in an experimentally-derived gene list, <em>e.g.</em> a list of differentially expressed genes (DEGs).</p>
+<p>Over Representation Analysis (ORA) <span class="citation">(<a href="references.html#ref-boyle2004" role="doc-biblioref">Boyle et al. 2004</a>)</span> is a widely used approach to determine whether known biological functions or processes are over-represented (= enriched) in an experimentally-derived gene list, <em>e.g.</em> a list of differentially expressed genes (DEGs).</p>
 <p>The <em>p</em>-value can be calculated by hypergeometric distribution.</p>
 <p><span class="math inline">\(p = 1 - \displaystyle\sum_{i = 0}^{k-1}\frac{{M \choose i}{{N-M} \choose {n-i}}} {{N \choose n}}\)</span></p>
 <p>In this equation, <code>N</code> is the total number of genes in the background distribution,
@@ -163,14 +163,14 @@ all the genes that have annotation. <em>P</em>-values should be adjusted for <a 
 <h2>
 <span class="header-section-number">5.3</span> Gene Set Enrichment Analysis<a class="anchor" aria-label="anchor" href="#gsea-algorithm"><i class="fas fa-link"></i></a>
 </h2>
-<p>A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The <a href="enrichment-overview.html#ora-algorithm">ORA enrichment analysis</a> is based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(Subramanian et al. <a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span> directly addresses this limitation.
+<p>A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The <a href="enrichment-overview.html#ora-algorithm">ORA enrichment analysis</a> is based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span> directly addresses this limitation.
 All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. Since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.</p>
 <p>Genes are ranked based on their phenotypes. Given a priori defined set of gene <em>S</em> (e.g., genes shareing the same <em>DO</em> category), the goal of GSEA is to determine whether the members of <em>S</em> are randomly distributed throughout the ranked gene list (<em>L</em>) or primarily found at the top or bottom.</p>
 <p>There are three key elements of the GSEA method:</p>
 <ul>
 <li>Calculation of an Enrichment Score.
 <ul>
-<li>The enrichment score (<em>ES</em>) represent the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov-like statistic <span class="citation">(Subramanian et al. <a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span>.</li>
+<li>The enrichment score (<em>ES</em>) represent the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov-like statistic <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>.</li>
 </ul>
 </li>
 <li>Esimation of Significance Level of <em>ES</em>.
@@ -184,7 +184,7 @@ All genes can be used in GSEA; GSEA aggregates the per gene statistics across ge
 </ul>
 </li>
 </ul>
-<p>We implemented GSEA algorithm proposed by Subramanian <span class="citation">(Subramanian et al. <a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">2005</a>)</span>. Alexey Sergushichev implemented an algorithm for fast GSEA calculation in the <a href="http://bioconductor.org/packages/fgsea">fgsea</a> <span class="citation">(Korotkevich, Sukhov, and Sergushichev <a href="references.html#ref-korotkevich_fast_2019" role="doc-biblioref">2019</a>)</span> package. In our packages (<a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>), users can use GSEA algorithm implemented in <code>DOSE</code> or <code>fgsea</code> by specifying the parameter <code>by="DOSE"</code> or <code>by="fgsea"</code>. By default, the <code>fgsea</code> method will be used since it is much more faster.</p>
+<p>We implemented GSEA algorithm proposed by Subramanian <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>. Alexey Sergushichev implemented an algorithm for fast GSEA calculation in the <a href="http://bioconductor.org/packages/fgsea">fgsea</a> <span class="citation">(<a href="references.html#ref-korotkevich_fast_2019" role="doc-biblioref">Korotkevich, Sukhov, and Sergushichev 2019</a>)</span> package. In our packages (<a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>), users can use GSEA algorithm implemented in <code>DOSE</code> or <code>fgsea</code> by specifying the parameter <code>by="DOSE"</code> or <code>by="fgsea"</code>. By default, the <code>fgsea</code> method will be used since it is much more faster.</p>
 </div>
 <div id="leading-edge-analysis-and-core-enriched-genes" class="section level2" number="5.4">
 <h2>
@@ -230,7 +230,7 @@ All genes can be used in GSEA; GSEA aggregates the per gene statistics across ge
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-02-06.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-07-05.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

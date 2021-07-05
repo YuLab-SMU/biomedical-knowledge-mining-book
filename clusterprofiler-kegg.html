@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 7 KEGG enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.2/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.2/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.1.9000/tabs.js"></script><script src="libs/bs3compat-0.2.1.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -246,7 +246,7 @@
 <h2>
 <span class="header-section-number">7.6</span> Visualize enriched KEGG pathways<a class="anchor" aria-label="anchor" href="#visualize-enriched-kegg-pathways"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package implemented <a href="enrichplot.html#enrichplot">several methods</a> to visualize enriched terms. Most of them are general methods that can be used to GO, KEGG, MSigDb and other gene set annotations. Here, we introduce <code><a href="https://rdrr.io/pkg/clusterProfiler/man/browseKEGG.html">clusterProfiler::browseKEGG()</a></code> and <code>pathview::pathview()</code> functions to help users exploring enriched KEGG pathway with interested genes.</p>
+<p>The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package implemented <a href="enrichplot.html#enrichplot">several methods</a> to visualize enriched terms. Most of them are general methods that can be used to GO, KEGG, MSigDb and other gene set annotations. Here, we introduce <code><a href="https://rdrr.io/pkg/clusterProfiler/man/browseKEGG.html">clusterProfiler::browseKEGG()</a></code> and <code><a href="https://rdrr.io/pkg/pathview/man/pathview.html">pathview::pathview()</a></code> functions to help users exploring enriched KEGG pathway with interested genes.</p>
 <p>To view the KEGG pathway, user can use <code>browseKEGG</code> function, which will open web browser and highlight enriched genes.</p>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/browseKEGG.html">browseKEGG</a></span><span class="op">(</span><span class="va">kk</span>, <span class="st">'hsa04110'</span><span class="op">)</span></code></pre></div>
@@ -258,11 +258,11 @@
 Figure 7.1: <strong>Explore selected KEGG pathway.</strong> Differentially expressed genes that enriched in the selected pathway will be highlighted.
 </p>
 </div>
-<p>Users can also use the <code>pathview()</code> function from the <a href="http://bioconductor.org/packages/pathview">pathview</a> <span class="citation">(Luo and Brouwer <a href="references.html#ref-luo_pathview" role="doc-biblioref">2013</a>)</span> to visualize enriched KEGG pathways identify by the <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package <span class="citation">(Yu et al. <a href="references.html#ref-yu2012" role="doc-biblioref">2012</a>)</span>.</p>
+<p>Users can also use the <code><a href="https://rdrr.io/pkg/pathview/man/pathview.html">pathview()</a></code> function from the <a href="http://bioconductor.org/packages/pathview">pathview</a> <span class="citation">(<a href="references.html#ref-luo_pathview" role="doc-biblioref">Luo and Brouwer 2013</a>)</span> to visualize enriched KEGG pathways identify by the <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>.</p>
 <p>The following example illustrate how to visualize “hsa04110” pathway, which was enriched in our previous analysis.</p>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"pathview"</span><span class="op">)</span>
-<span class="va">hsa04110</span> <span class="op">&lt;-</span> <span class="fu">pathview</span><span class="op">(</span>gene.data  <span class="op">=</span> <span class="va">geneList</span>,
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/datapplab/pathview">"pathview"</a></span><span class="op">)</span>
+<span class="va">hsa04110</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/pathview/man/pathview.html">pathview</a></span><span class="op">(</span>gene.data  <span class="op">=</span> <span class="va">geneList</span>,
                      pathway.id <span class="op">=</span> <span class="st">"hsa04110"</span>,
                      species    <span class="op">=</span> <span class="st">"hsa"</span>,
                      limit      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gene<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">)</span>, cpd<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -271,7 +271,7 @@ Figure 7.1: <strong>Explore selected KEGG pathway.</strong> Differentially expre
 <div class="figure">
 <span id="fig:pathview"></span>
 <img src="figures/hsa04110_pathview.png" alt="Visualize selected KEGG pathway by pathview(). Gene expression values can be mapped to gradient color scale." width="100%"><p class="caption">
-Figure 7.2: <strong>Visualize selected KEGG pathway by <code>pathview()</code>.</strong> Gene expression values can be mapped to gradient color scale.
+Figure 7.2: <strong>Visualize selected KEGG pathway by <code><a href="https://rdrr.io/pkg/pathview/man/pathview.html">pathview()</a></code>.</strong> Gene expression values can be mapped to gradient color scale.
 </p>
 </div>
 
@@ -306,7 +306,7 @@ Figure 7.2: <strong>Visualize selected KEGG pathway by <code>pathview()</code>.<
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-02-06.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-07-05.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 14 Biological theme comparison | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- CSS --><!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.6/header-attrs.js"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.2/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.2/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.1.9000/tabs.js"></script><script src="libs/bs3compat-0.2.1.9000/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -66,7 +66,7 @@
 <h1>
 <span class="header-section-number">14</span> Biological theme comparison<a class="anchor" aria-label="anchor" href="#clusterprofiler-comparecluster"><i class="fas fa-link"></i></a>
 </h1>
-<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package was developed for biological theme comparison <span class="citation">(Yu et al. <a href="references.html#ref-yu2012" role="doc-biblioref">2012</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional categories of each gene clusters.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package was developed for biological theme comparison <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional categories of each gene clusters.</p>
 <div id="comparing-multiple-gene-lists" class="section level2" number="14.1">
 <h2>
 <span class="header-section-number">14.1</span> Comparing multiple gene lists<a class="anchor" aria-label="anchor" href="#comparing-multiple-gene-lists"><i class="fas fa-link"></i></a>
@@ -224,7 +224,7 @@ be plotted.</p>
 <p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure <a href="#fig:compareclusterGenelists"><strong>??</strong></a>.</p>
 <p>The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by
 parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
-<p>In <span class="citation">(Yu et al. <a href="references.html#ref-yu2012" role="doc-biblioref">2012</a>)</span>, we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus) <span class="citation">(Schmidt et al. <a href="references.html#ref-schmidt2008" role="doc-biblioref">2008</a>)</span>. We identified 8 gene clusters from differentially expressed genes, and using the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function to compare these gene clusters by their enriched biological process.</p>
+<p>In <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus) <span class="citation">(<a href="references.html#ref-schmidt2008" role="doc-biblioref">Schmidt et al. 2008</a>)</span>. We identified 8 gene clusters from differentially expressed genes, and using the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function to compare these gene clusters by their enriched biological process.</p>
 <p>The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only `=<a href="clusterprofiler-go.html#go-classification">groupGO</a>, <a href="clusterprofiler-go.html#clusterprofiler-go-ora">enrichGO</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-ora">enrichKEGG</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora">enrichMKEGG</a>, <a href="wikipathways-analysis.html#clusterprofiler-wikipathway-ora">enrichWP</a> and <a href="universal-api.html#universal-api">enricher</a> that were provided in this package, but also other biological and biomedical ontologies, including but not limited to <a href="reactomepa.html#reactomepa-ora">enrichPathway</a>, <a href="dose-enrichment.html#dose-do-ora">enrichDO</a>, <a href="dose-enrichment.html#dose-ncg-ora">enrichNCG</a>, <a href="dose-enrichment.html#dose-dgn-ora">enrichDGN</a> and <a href="meshes-enrichment.html#meshes-ora">enrichMeSH</a>.</p>
 
 </div>
@@ -255,7 +255,7 @@ parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</c
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-02-06.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-07-05.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
