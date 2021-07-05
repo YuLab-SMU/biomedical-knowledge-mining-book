@@ -1,4 +1,5 @@
 bs4:
+	rm -rf gh-pages/libs;\
 	Rscript -e 'library(bookdown); render_book("index.Rmd", "bs4_book")'
 
 gitbook:
