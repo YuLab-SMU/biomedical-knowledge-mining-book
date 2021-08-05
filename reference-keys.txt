@@ -149,3 +149,4 @@ faq
 genelist
 no-gene-can-be-mapped
 showing-specific-pathways
+how-to-extract-genes-of-a-specific-termpathway
