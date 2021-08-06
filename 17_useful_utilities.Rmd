@@ -39,6 +39,17 @@ head(ids)
 For GO analysis, user don't need to convert ID, all ID type provided by `OrgDb` can be used in `groupGO`, `enrichGO` and `gseGO` by specifying `keyType` parameter.
 
 
+Users can use the `bitr` function to convert IDs using any ID types that available in the `OrbDb` object. For example, users may want to know the genes in background that are belong to a specific GO term. Such information can be easily accessed using `bitr`.
+
+```{r}
+m <- bitr("GO:0006805", fromType="GO", toType = "SYMBOL", OrgDb=org.Hs.eg.db)
+dim(m)
+head(m)
+```
+
+Note: If you want to extract genes in your input gene list that are belong to a specific term/pathway, you can use the [geneInCategory](#how-to-extract-genes-of-a-specific-termpathway) function.
+
+
 ### `bitr_kegg`: converting biological IDs using KEGG API {#bitr_kegg}
 
 
