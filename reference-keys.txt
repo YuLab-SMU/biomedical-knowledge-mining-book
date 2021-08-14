@@ -3,11 +3,8 @@ fig:goplot
 fig:browseKEGG
 fig:pathview
 fig:viewpathway
-fig:compareclusterGenelists-1
-fig:compareclusterGenelists-2
-fig:compareclusterGenelists-3
-fig:compareclusterFormula-1
-fig:compareclusterFormula-2
+fig:ccn
+fig:ccf
 fig:Barplot
 fig:Dotplotcap
 fig:Networkplot
@@ -117,6 +114,7 @@ clusterprofiler-comparecluster
 comparing-multiple-gene-lists
 formula-interface-of-comparecluster
 visualization-of-profile-comparison
+summary-1
 enrichplot
 bar-plot
 dot-plot

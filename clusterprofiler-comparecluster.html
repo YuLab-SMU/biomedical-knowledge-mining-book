@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 14 Biological theme comparison | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.9/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
@@ -66,12 +66,12 @@
 <h1>
 <span class="header-section-number">14</span> Biological theme comparison<a class="anchor" aria-label="anchor" href="#clusterprofiler-comparecluster"><i class="fas fa-link"></i></a>
 </h1>
-<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package was developed for biological theme comparison <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional categories of each gene clusters.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package was developed for biological theme comparison <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>; <a href="references.html#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional profiles of each gene clusters and aggregate the results into a single object. Comparing functional profiles can reveal functional consensus and differences among different experiments and helps in identifying differential functional modules in omics datasets.</p>
 <div id="comparing-multiple-gene-lists" class="section level2" number="14.1">
 <h2>
 <span class="header-section-number">14.1</span> Comparing multiple gene lists<a class="anchor" aria-label="anchor" href="#comparing-multiple-gene-lists"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function applies selected function (via the <code>fun</code> parameter) to perform enrichment analysis for each gene list. All the results for the input gene lists will be aggregated into a single object.</p>
+<p>The <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function applies selected function (via the <code>fun</code> parameter) to perform enrichment analysis for each gene list.</p>
 <div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gcSample</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gcSample</span><span class="op">)</span> </code></pre></div>
@@ -84,7 +84,7 @@
 ##  $ X6: chr [1:585] "5337" "9295" "4035" "811" ...
 ##  $ X7: chr [1:582] "2621" "2665" "5690" "3608" ...
 ##  $ X8: chr [1:237] "2665" "4735" "1327" "3192" ...</code></pre>
-<p>The input for <code>geneCluster</code> parameter should be a named list of gene IDs.</p>
+<p>Users can use a named list of gene IDs as the input that passed to the <code>geneCluster</code> parameter.</p>
 <div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster</a></span><span class="op">(</span>geneCluster <span class="op">=</span> <span class="va">gcSample</span>, fun <span class="op">=</span> <span class="va">enrichKEGG</span><span class="op">)</span>
 <span class="va">ck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ck</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
@@ -122,7 +122,7 @@
 <h2>
 <span class="header-section-number">14.2</span> Formula interface of compareCluster<a class="anchor" aria-label="anchor" href="#formula-interface-of-comparecluster"><i class="fas fa-link"></i></a>
 </h2>
-<p>As an alternaitve to using named list, the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function also supports passing a formula of type <span class="math inline">\(Entrez \sim group\)</span> or <span class="math inline">\(Entrez \sim group + othergroup\)</span>.</p>
+<p>As an alternaitve to using named list, the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function also supports passing a formula to describe more complicated experimental designs (<em>e.g.</em>, <span class="math inline">\(Gene \sim time + treatment\)</span>).</p>
 <div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mydf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Entrez<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>, FC<span class="op">=</span><span class="va">geneList</span><span class="op">)</span>
 <span class="va">mydf</span> <span class="op">&lt;-</span> <span class="va">mydf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">mydf</span><span class="op">$</span><span class="va">FC</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span>,<span class="op">]</span>
@@ -175,44 +175,26 @@
 <span class="header-section-number">14.3</span> Visualization of profile comparison<a class="anchor" aria-label="anchor" href="#visualization-of-profile-comparison"><i class="fas fa-link"></i></a>
 </h2>
 <p>We can visualize the result using the <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> method.</p>
-
-
 <div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span><span class="op">)</span></code></pre></div>
+
+
 <div class="figure">
-<span id="fig:compareclusterGenelists-1"></span>
-<img src="biomedicalKnowledge_files/figure-html/compareclusterGenelists-1.png" alt="Comparing enrichment results of multiple gene lists. (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula." width="95%"><p class="caption">
+<span id="fig:ccn"></span>
+<img src="biomedicalKnowledge_files/figure-html/ccn-1.png" alt="Comparing enrichment results of multiple gene lists. (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula." width="95%"><p class="caption">
 Figure 14.1: <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.
 </p>
 </div>
-<div class="figure">
-<span id="fig:compareclusterGenelists-2"></span>
-<img src="biomedicalKnowledge_files/figure-html/compareclusterGenelists-2.png" alt="Comparing enrichment results of multiple gene lists. (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula." width="95%"><p class="caption">
-Figure 14.2: <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.
-</p>
-</div>
-<div class="figure">
-<span id="fig:compareclusterGenelists-3"></span>
-<img src="biomedicalKnowledge_files/figure-html/compareclusterGenelists-3.png" alt="Comparing enrichment results of multiple gene lists. (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula." width="95%"><p class="caption">
-Figure 14.3: <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.
-</p>
-</div>
-<p>The fomula interface allows more complicated gene cluster definition. In Figure <a href="#fig:compareclusterGenelists"><strong>??</strong></a>B, the gene clusters were defined by two variables (i.e. <code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure <a href="#fig:compareclusterFormula"><strong>??</strong></a>).</p>
+<p>The fomula interface allows more complicated gene cluster definition. In Figure <a href="clusterprofiler-comparecluster.html#fig:ccn">14.1</a>B, the gene clusters were defined by two variables (i.e. <code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure <a href="clusterprofiler-comparecluster.html#fig:ccf">14.2</a>).</p>
 
 
 <div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span>, x<span class="op">=</span><span class="st">"group"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">othergroup</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<span id="fig:compareclusterFormula-1"></span>
-<img src="biomedicalKnowledge_files/figure-html/compareclusterFormula-1.png" alt="Comparing enrichment results of multiple gene lists defined by multiple variable." width="95%"><p class="caption">
-Figure 14.4: <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong>
-</p>
-</div>
-<div class="figure">
-<span id="fig:compareclusterFormula-2"></span>
-<img src="biomedicalKnowledge_files/figure-html/compareclusterFormula-2.png" alt="Comparing enrichment results of multiple gene lists defined by multiple variable." width="95%"><p class="caption">
-Figure 14.5: <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong>
+<span id="fig:ccf"></span>
+<img src="biomedicalKnowledge_files/figure-html/ccf-1.png" alt="Comparing enrichment results of multiple gene lists defined by multiple variable. The results were visualized as a dot plot with an x-axis representing one level of conditions (the group variable) and a facet panel indicating another level of conditions (the othergroup variable)." width="95%"><p class="caption">
+Figure 14.2: <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong> The results were visualized as a dot plot with an x-axis representing one level of conditions (the <em>group</em> variable) and a facet panel indicating another level of conditions (the <em>othergroup</em> variable).
 </p>
 </div>
 <p>By default, only top 5 (most significant) categories of each cluster
@@ -220,12 +202,17 @@ was plotted. User can changes the parameter <code>showCategory</code> to
 specify how many categories of each cluster to be plotted, and if
 <code>showCategory</code> was set to <code>NULL</code>, the whole result will
 be plotted.</p>
-<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function accepts a parameter <code>by</code> for setting the scale of dot sizes. The default parameter <code>by</code> is setting to <code>geneRatio</code>, which corresponding to the <code>GeneRatio</code> column of the output. If it was setting to <code>count</code>, the comparison will be based on gene counts, while if setting to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code></p>
-<p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure <a href="#fig:compareclusterGenelists"><strong>??</strong></a>.</p>
-<p>The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by
-parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
-<p>In <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus) <span class="citation">(<a href="references.html#ref-schmidt2008" role="doc-biblioref">Schmidt et al. 2008</a>)</span>. We identified 8 gene clusters from differentially expressed genes, and using the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function to compare these gene clusters by their enriched biological process.</p>
-<p>The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only `=<a href="clusterprofiler-go.html#go-classification">groupGO</a>, <a href="clusterprofiler-go.html#clusterprofiler-go-ora">enrichGO</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-ora">enrichKEGG</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora">enrichMKEGG</a>, <a href="wikipathways-analysis.html#clusterprofiler-wikipathway-ora">enrichWP</a> and <a href="universal-api.html#universal-api">enricher</a> that were provided in this package, but also other biological and biomedical ontologies, including but not limited to <a href="reactomepa.html#reactomepa-ora">enrichPathway</a>, <a href="dose-enrichment.html#dose-do-ora">enrichDO</a>, <a href="dose-enrichment.html#dose-ncg-ora">enrichNCG</a>, <a href="dose-enrichment.html#dose-dgn-ora">enrichDGN</a> and <a href="meshes-enrichment.html#meshes-ora">enrichMeSH</a>.</p>
+<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function tries to make the comparison among different clusters more informative and reasonable. After extracting <em>e.g.</em> 10 categories for each clusters, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> tries to collect overlap of these categories among clusters. For example, <code>term A</code> is enriched in all the gene clusters (<em>e.g.</em>, <code>g1</code> and <code>g2</code>) and is in the 10 most significant categories of <code>g1</code> but not <code>g2</code>. <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> will capture this information and include <code>term A</code> in <code>g2</code> cluster to make the comparison in <code>dotplot</code> more reasonable. If users want to ignore these information, they can set <code>includeAll = FALSE</code> in <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code>, which is not recommended.</p>
+<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function accepts a parameter <code>by</code> for setting the scale of dot sizes. The default parameter <code>by</code> is setting to <code>geneRatio</code>, which corresponding to the <code>GeneRatio</code> column of the output. If it was setting to <code>count</code>, the comparison will be based on gene counts, while if setting to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code>. Users can also map the dot size to other derived variable (see <a href="clusterProfiler-dplyr.html#clusterProfiler-dplyr">Chapter 16</a>).</p>
+<p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure <a href="clusterprofiler-comparecluster.html#fig:ccn">14.1</a>.</p>
+<p>The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
+</div>
+<div id="summary-1" class="section level2" number="14.4">
+<h2>
+<span class="header-section-number">14.4</span> Summary<a class="anchor" aria-label="anchor" href="#summary-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only <a href="clusterprofiler-go.html#go-classification">groupGO</a>, <a href="clusterprofiler-go.html#clusterprofiler-go-ora">enrichGO</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-pathway-ora">enrichKEGG</a>, <a href="clusterprofiler-kegg.html#clusterprofiler-kegg-module-ora">enrichMKEGG</a>, <a href="wikipathways-analysis.html#clusterprofiler-wikipathway-ora">enrichWP</a> and <a href="universal-api.html#universal-api">enricher</a> that were provided in this package, but also other biological and biomedical ontologies, including but not limited to <a href="reactomepa.html#reactomepa-ora">enrichPathway</a>, <a href="dose-enrichment.html#dose-do-ora">enrichDO</a>, <a href="dose-enrichment.html#dose-ncg-ora">enrichNCG</a>, <a href="dose-enrichment.html#dose-dgn-ora">enrichDGN</a> and <a href="meshes-enrichment.html#meshes-ora">enrichMeSH</a>.</p>
+<p>In <span class="citation">(<a href="references.html#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus) <span class="citation">(<a href="references.html#ref-schmidt2008" role="doc-biblioref">Schmidt et al. 2008</a>)</span>. We identified 8 gene clusters from differentially expressed genes, and using the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function to compare these gene clusters by their enriched biological process. In <span class="citation">(<a href="references.html#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>, we analyzed the GSE8057 dataset which contains expression data from ovarian cancer cells at multiple time points and under two treatment conditions. Eight groups of DEG lists were analyzed simultaneously using <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> with WikiPathways. The result indicates that the two drgus have distinct effects at the begining but consistent effects in the later stages (Fig. 4 of <span class="citation">(<a href="references.html#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>).</p>
 
 </div>
 </div>
@@ -239,6 +226,7 @@ parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</c
 <li><a class="nav-link" href="#comparing-multiple-gene-lists"><span class="header-section-number">14.1</span> Comparing multiple gene lists</a></li>
 <li><a class="nav-link" href="#formula-interface-of-comparecluster"><span class="header-section-number">14.2</span> Formula interface of compareCluster</a></li>
 <li><a class="nav-link" href="#visualization-of-profile-comparison"><span class="header-section-number">14.3</span> Visualization of profile comparison</a></li>
+<li><a class="nav-link" href="#summary-1"><span class="header-section-number">14.4</span> Summary</a></li>
 </ul>
 
       <div class="book-extra">
@@ -255,7 +243,7 @@ parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</c
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-06.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
