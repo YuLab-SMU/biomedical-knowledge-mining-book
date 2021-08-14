@@ -1,5 +1,6 @@
 bs4:
 	rm -rf gh-pages/libs;\
+	rm -rf gh-pages/biomedicalKnowledge_files/figure-html;\
 	Rscript -e 'library(bookdown); render_book("index.Rmd", "bs4_book")'
 
 gitbook:
