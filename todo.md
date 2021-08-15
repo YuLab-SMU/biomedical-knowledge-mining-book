@@ -1,20 +1,19 @@
-wikipathway paper: https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa1024/5992285
-
-https://github.com/YuLab-SMU/enrichplot/pull/73
++ [](https://github.com/YuLab-SMU/enrichplot/pull/73)
 
 
-
-https://www.pathwaycommons.org/archives/PC2/v12/
-
-
-https://learn.gencore.bio.nyu.edu/rna-seq-analysis/over-representation-analysis/
++ [update \[ and \[\[ for compareClusterResult](https://github.com/YuLab-SMU/clusterProfiler/pull/296)
++ [update setReadable and geneInCategory.compareClusterResult](https://github.com/YuLab-SMU/DOSE/pull/44)
 
 
-https://www.biostars.org/p/435513/#9484170
 
-https://www.biostars.org/p/352631/#352666
 
-https://www.biostars.org/p/373147/
+
++ wikipathway paper: <https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa1024/5992285>
++ <https://www.pathwaycommons.org/archives/PC2/v12/>
++ <https://learn.gencore.bio.nyu.edu/rna-seq-analysis/over-representation-analysis/>
++ <https://www.biostars.org/p/435513/#9484170>
++ <https://www.biostars.org/p/352631/#352666>
++ <https://www.biostars.org/p/373147/>
 
 
 
