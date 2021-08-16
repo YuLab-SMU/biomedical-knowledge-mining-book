@@ -41,13 +41,33 @@ MeSH terms were associated with Entrez Gene ID by three methods,
 
 ## Supported organisms {#meshes-supported-organisms}
 
-The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring simiarlity. A list of `MeSHDb` can be found on Bioconductor, <https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb> and all the species (more than 70) that have MeSHDb available are supported by the `r Biocpkg("meshes")` package. 
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring simiarlity. `MeSHDb` can be downloaded from `r Biocpkg("AnnotationHub")` (see also `r Biocpkg("AHMeSHDbs")`) and about 200 species are available and are supported by the `r Biocpkg("meshes")` package. 
 
-The semantic data is prepare by the `meshdata()` function:
+First, we need to load/fetch species-specific MeSH annotation database:
+
+```{r meshdb}
+#############################
+## BioC 2.14 to BioC 3.13  ##
+#############################
+##
+## library(MeSH.Hsa.eg.db)
+## db <- MeSH.Hsa.eg.db
+##
+##---------------------------
+
+# From BioC 3.14 (Nov. 2021, with R-4.2.0)
+library(AnnotationHub)
+ah <- AnnotationHub()
+hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
+file_hsa <- hsa[[1]]
+db <- MeSHDbi::MeSHDb(file_hsa)
+```
+
+The semantic data can be prepared by the `meshdata()` function:
 
 ```{r meshdata}
 library(meshes)
-hsamd <- meshdata("MeSH.Hsa.eg.db", category='A', computeIC=T, database="gendoo")
+hsamd <- meshdata(db, category='A', computeIC=T, database="gendoo")
 
 ## you may want to save the result for future usage
 # 

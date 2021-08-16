@@ -6,10 +6,32 @@ The `r Biocpkg("meshes")` package [@yu_meshes_2018] supports enrichment analysis
 enrichment analysis) of gene list or whole expression profile using MeSH
 annotation. Data source from `gendoo`, `gene2pubmed` and `RBBH` are all
 supported. User can select interesting category to test. All 16
-categories of MeSH are supported. The analysis supports >70 species listed in [MeSHDb BiocView](https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb) (see also [Chapter 4](#meshes-semantic-similarity) for more details).
+categories of MeSH are supported. The analysis supports about 200 species (see also [Chapter 4](#meshes-semantic-similarity) for more details).
 
 
 ## MeSH over-representation analysis {#meshes-ora}
+
+
+First, we need to load/fetch species-specific MeSH annotation database:
+
+```{r meshdb2}
+#############################
+## BioC 2.14 to BioC 3.13  ##
+#############################
+##
+## library(MeSH.Hsa.eg.db)
+## db <- MeSH.Hsa.eg.db
+##
+##---------------------------
+
+# From BioC 3.14 (Nov. 2021, with R-4.2.0)
+library(AnnotationHub)
+ah <- AnnotationHub()
+hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
+file_hsa <- hsa[[1]]
+db <- MeSHDbi::MeSHDb(file_hsa)
+```
+
 
 In this example, we use data source from `gendoo` and `C` (Diseases) category.
 
@@ -18,7 +40,7 @@ In this example, we use data source from `gendoo` and `C` (Diseases) category.
 library(meshes)
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
-x <- enrichMeSH(de, MeSHDb = "MeSH.Hsa.eg.db", database='gendoo', category = 'C')
+x <- enrichMeSH(de, MeSHDb = db, database='gendoo', category = 'C')
 head(x)
 ```
 
@@ -31,7 +53,7 @@ head(x)
 In the following example, we use data source from `gene2pubmed` and test category `G` (Phenomena and Processes).
 
 ```{r}
-y <- gseMeSH(geneList, MeSHDb = "MeSH.Hsa.eg.db", database = 'gene2pubmed', category = "G")
+y <- gseMeSH(geneList, MeSHDb = db, database = 'gene2pubmed', category = "G")
 head(y)
 ```
 
