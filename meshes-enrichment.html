@@ -70,76 +70,93 @@
 enrichment analysis) of gene list or whole expression profile using MeSH
 annotation. Data source from <code>gendoo</code>, <code>gene2pubmed</code> and <code>RBBH</code> are all
 supported. User can select interesting category to test. All 16
-categories of MeSH are supported. The analysis supports &gt;70 species listed in <a href="https://bioconductor.org/packages/release/BiocViews.html#___MeSHDb">MeSHDb BiocView</a> (see also <a href="meshes-semantic-similarity.html#meshes-semantic-similarity">Chapter 4</a> for more details).</p>
+categories of MeSH are supported. The analysis supports about 200 species (see also <a href="meshes-semantic-similarity.html#meshes-semantic-similarity">Chapter 4</a> for more details).</p>
 <div id="meshes-ora" class="section level2" number="11.1">
 <h2>
 <span class="header-section-number">11.1</span> MeSH over-representation analysis<a class="anchor" aria-label="anchor" href="#meshes-ora"><i class="fas fa-link"></i></a>
 </h2>
+<p>First, we need to load/fetch species-specific MeSH annotation database:</p>
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#############################</span>
+<span class="co">## BioC 2.14 to BioC 3.13  ##</span>
+<span class="co">#############################</span>
+<span class="co">##</span>
+<span class="co">## library(MeSH.Hsa.eg.db)</span>
+<span class="co">## db &lt;- MeSH.Hsa.eg.db</span>
+<span class="co">##</span>
+<span class="co">##---------------------------</span>
+
+<span class="co"># From BioC 3.14 (Nov. 2021, with R-4.2.0)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">AnnotationHub</span><span class="op">)</span>
+<span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">hsa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MeSHDb"</span>, <span class="st">"Homo sapiens"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">file_hsa</span> <span class="op">&lt;-</span> <span class="va">hsa</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+<span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">MeSHDbi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MeSHDbi/man/MeSHDb.html">MeSHDb</a></span><span class="op">(</span><span class="va">file_hsa</span><span class="op">)</span></code></pre></div>
 <p>In this example, we use data source from <code>gendoo</code> and <code>C</code> (Diseases) category.</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">meshes</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span>, package<span class="op">=</span><span class="st">"DOSE"</span><span class="op">)</span>
 <span class="va">de</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/meshes/man/enrichMeSH.html">enrichMeSH</a></span><span class="op">(</span><span class="va">de</span>, MeSHDb <span class="op">=</span> <span class="st">"MeSH.Hsa.eg.db"</span>, database<span class="op">=</span><span class="st">'gendoo'</span>, category <span class="op">=</span> <span class="st">'C'</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/meshes/man/enrichMeSH.html">enrichMeSH</a></span><span class="op">(</span><span class="va">de</span>, MeSHDb <span class="op">=</span> <span class="va">db</span>, database<span class="op">=</span><span class="st">'gendoo'</span>, category <span class="op">=</span> <span class="st">'C'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
-<pre><code>##              ID              Description GeneRatio   BgRatio       pvalue
-## D043171 D043171  Chromosomal Instability     16/96 198/16528 2.794765e-14
-## D000782 D000782               Aneuploidy     17/96 320/16528 3.866830e-12
-## D042822 D042822      Genomic Instability     16/96 312/16528 3.007419e-11
-## D012595 D012595    Scleroderma, Systemic     11/96 279/16528 6.449334e-07
-## D009303 D009303 Nasopharyngeal Neoplasms     11/96 314/16528 2.049315e-06
-## D019698 D019698     Hepatitis C, Chronic     11/96 317/16528 2.246856e-06
+<pre><code>##              ID            Description GeneRatio   BgRatio       pvalue
+## D000705 D000705               Anaphase    26/100 232/26076 4.495523e-31
+## D019926 D019926               Cyclin B    30/100 428/26076 1.061989e-29
+## D018386 D018386           Kinetochores    24/100 224/26076 3.337217e-28
+## D020090 D020090 Chromosome Segregation    26/100 362/26076 5.663108e-26
+## D011123 D011123             Polyploidy    16/100 169/26076 3.951760e-18
+## D016547 D016547                   &lt;NA&gt;    22/100 476/26076 6.849607e-18
 ##             p.adjust       qvalue
-## D043171 2.459394e-11 1.815127e-11
-## D000782 1.701405e-09 1.255702e-09
-## D042822 8.821761e-09 6.510798e-09
-## D012595 1.418854e-04 1.047168e-04
-## D009303 3.295389e-04 2.432123e-04
-## D019698 3.295389e-04 2.432123e-04
-##                                                                                      geneID
-## D043171    4312/991/2305/1062/4605/10403/7153/55355/4751/4085/81620/332/7272/9212/1111/6790
-## D000782 4312/55143/991/1062/7153/4751/79019/55839/890/983/4085/332/7272/9212/8208/1111/6790
-## D042822     55143/991/1062/4605/7153/1381/9787/4751/10635/890/4085/81620/332/9212/1111/6790
-## D012595                              4312/6280/1062/4605/7153/3627/4283/6362/7850/3002/4321
-## D009303                                4312/7153/3627/6241/983/4085/5918/332/3002/4321/6790
-## D019698                               4312/3627/10563/6373/4283/983/6362/7850/332/3002/3620
+## D000705 2.036472e-27 1.360487e-27
+## D019926 2.405404e-26 1.606957e-26
+## D018386 5.039198e-25 3.366491e-25
+## D020090 6.413470e-23 4.284588e-23
+## D011123 3.580295e-15 2.391855e-15
+## D016547 5.171453e-15 3.454845e-15
+##                                                                                                                                                              geneID
+## D000705                    991/2305/9493/1062/9133/10403/7153/6241/55165/11065/220134/22974/4751/983/54821/10232/4085/81930/332/3832/7272/9212/1111/9055/10112/6790
+## D019926 991/2305/9493/1062/3868/4605/9133/10403/7153/23397/9787/11065/55872/83461/22974/890/983/10232/4085/5080/81620/332/3832/7272/64151/8208/1111/9055/10112/6790
+## D018386                             55143/991/1062/10403/7153/9787/11065/220134/22974/10460/4751/79019/55839/983/54821/4085/81930/332/3832/7272/9212/1111/9055/6790
+## D020090                   55143/991/2305/9493/1062/9133/10403/7153/9787/11065/51203/22974/10460/4751/79019/55839/983/54821/4085/81930/332/7272/64151/9212/1111/6790
+## D011123                                                                             55143/991/2305/9493/1062/4605/9133/7153/890/10232/4085/81620/332/9212/1111/6790
+## D016547                                        55143/2305/9493/1062/10403/7153/23397/9787/22974/983/4085/81930/332/3832/64151/9212/1111/9055/3833/146909/10112/6790
 ##         Count
-## D043171    16
-## D000782    17
-## D042822    16
-## D012595    11
-## D009303    11
-## D019698    11</code></pre>
+## D000705    26
+## D019926    30
+## D018386    24
+## D020090    26
+## D011123    16
+## D016547    22</code></pre>
 </div>
 <div id="meshes-gsea" class="section level2" number="11.2">
 <h2>
 <span class="header-section-number">11.2</span> MeSH gene set enrichment analysis<a class="anchor" aria-label="anchor" href="#meshes-gsea"><i class="fas fa-link"></i></a>
 </h2>
 <p>In the following example, we use data source from <code>gene2pubmed</code> and test category <code>G</code> (Phenomena and Processes).</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/meshes/man/gseMeSH.html">gseMeSH</a></span><span class="op">(</span><span class="va">geneList</span>, MeSHDb <span class="op">=</span> <span class="st">"MeSH.Hsa.eg.db"</span>, database <span class="op">=</span> <span class="st">'gene2pubmed'</span>, category <span class="op">=</span> <span class="st">"G"</span><span class="op">)</span>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/meshes/man/gseMeSH.html">gseMeSH</a></span><span class="op">(</span><span class="va">geneList</span>, MeSHDb <span class="op">=</span> <span class="va">db</span>, database <span class="op">=</span> <span class="st">'gene2pubmed'</span>, category <span class="op">=</span> <span class="st">"G"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
-<pre><code>##              ID        Description setSize enrichmentScore       NES pvalue
-## D000782 D000782         Aneuploidy     391       0.4154424  1.991027  1e-10
-## D007156 D007156 Immunologic Memory     444       0.3983485  1.927594  1e-10
-## D011123 D011123         Polyploidy     188       0.5235442  2.324306  1e-10
-## D011418 D011418           Prophase      80       0.6553019  2.568616  1e-10
-## D014690 D014690    Venous Pressure     140      -0.5849507 -2.309944  1e-10
-## D017735 D017735      Virus Latency     415       0.3891947  1.884672  1e-10
+<pre><code>##              ID        Description setSize enrichmentScore      NES pvalue
+## D000705 D000705           Anaphase     482       0.4830831 2.402905  1e-10
+## D000782 D000782         Aneuploidy     279       0.4471502 2.118962  1e-10
+## D002842 D002842         Chromatids     204       0.5069599 2.307263  1e-10
+## D007108 D007108   Immune Tolerance     476       0.4136918 2.053376  1e-10
+## D007111 D007111 Immunity, Cellular     488       0.3821435 1.902697  1e-10
+## D011123 D011123         Polyploidy     170       0.5607059 2.527232  1e-10
 ##             p.adjust      qvalues rank                   leading_edge
-## D000782 7.085714e-09 5.255639e-09 1826 tags=27%, list=15%, signal=24%
-## D007156 7.085714e-09 5.255639e-09 2111 tags=31%, list=17%, signal=27%
-## D011123 7.085714e-09 5.255639e-09 1905 tags=33%, list=15%, signal=28%
-## D011418 7.085714e-09 5.255639e-09  437  tags=22%, list=3%, signal=22%
-## D014690 7.085714e-09 5.255639e-09 1824 tags=51%, list=15%, signal=44%
-## D017735 7.085714e-09 5.255639e-09 1862 tags=25%, list=15%, signal=22%
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        core_enrichment
-## D000782                                                                                                                                         4312/991/2305/1062/10403/7153/23397/55165/11065/22974/10460/4751/79019/55839/890/983/4085/332/50852/7272/9212/8208/1111/9319/9055/3833/6790/891/24137/9232/4171/11004/5347/701/11130/79682/2491/9700/5888/7083/898/4288/10733/2237/6502/8538/9918/1058/699/4609/5111/10397/84823/55506/51053/1869/1029/1763/136/4904/55159/5613/5471/2950/54512/23310/3066/9496/79915/995/10606/51471/5885/5616/2762/79017/7428/22827/3195/7283/6636/5440/54908/1445/7422/5315/999/6573/138046/10376/142/54584/5129/9775/4613/9978/3619/11335/613/5133/81552/4363/3091/7517/6629/26047
-## D007156 6280/8685/3627/10563/6373/4283/6362/3002/3620/891/10578/3695/6364/23532/29851/3576/7083/952/1493/6352/4288/10663/80380/5551/3559/6772/3507/6402/639/914/64581/57823/50802/4609/3561/6351/1237/6614/917/1236/51053/10859/1029/55423/3574/3575/919/915/22806/4067/6354/608/3458/959/1789/3903/11151/8525/3162/3702/925/11314/50615/942/1880/3329/969/867/3783/4064/25939/6361/1794/3689/5788/1234/916/7096/3383/4068/962/6367/30009/100/7374/3600/6513/923/940/939/5588/3965/9308/4683/6404/3738/930/6318/929/8115/26191/3601/27087/6850/7124/912/5027/10875/7097/7852/1378/2208/5133/3692/7454/51293/5817/951/3820/843/27033/5142/2213/7490/1536/5795/3135/60489/6376/3596/2000/7293/2833/655/356/1380/958/1672
-## D011123                                                                                                                                                                                                                                                                                                                                                                                             2305/4605/9133/7153/79733/890/983/4085/81620/332/2146/7272/9212/51659/1111/6790/891/9232/990/5347/701/1978/9700/898/23594/6502/699/4609/5111/10397/26271/51053/1869/1029/4830/3925/5693/8565/2810/8607/58/1019/11200/2072/7283/7422/5315/865/86/63967/999/5604/3014/9978/4049/3619/7454/58477/1000/1956/28985/6119
-## D011418                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      991/1062/259266/22974/4751/890/983/4085/3832/6790/891/5347/701/79682/10615/1058/699/26271
-## D014690                                                                                                                                                                                                                                                                                                                                         4811/3910/3371/2662/1291/3490/7450/80781/1280/1306/8425/10085/4054/4256/3912/2817/1278/1511/2934/4060/1277/7078/5549/22795/10516/1293/1295/1012/8076/5118/2192/1281/1290/7058/2202/2199/11117/3339/1462/1289/1292/3908/4016/3909/4053/6678/633/1191/165/5654/10631/1805/2331/347/1359/3913/8404/2200/1634/4059/7177/563/7373/1307/9370/79148/1311/8483/54829/4239/4969
-## D017735                                                                                                                                                                           6280/4605/6279/3627/6373/4283/332/2146/9212/6355/6364/9768/4599/54210/54962/5551/200315/6772/639/914/3015/699/4609/85236/5111/10397/917/55506/330/6590/1029/1051/3574/8970/8357/919/915/51191/22806/3458/2957/1789/5435/92815/3066/5499/8336/9088/6283/9235/25939/5788/1234/916/467/3383/5885/9188/54496/11200/11168/7374/940/8345/6873/1024/5440/5588/3965/8914/865/10148/6404/3276/3018/929/142/6504/6839/23028/10969/5467/1786/27087/4781/3014/7124/3569/6749/11335/83737/7852/51497/2208/5133/5743/5433/4363/3091/3119/8290/9681</code></pre>
+## D000705 8.108333e-09 5.991228e-09 1499 tags=23%, list=12%, signal=21%
+## D000782 8.108333e-09 5.991228e-09  535  tags=17%, list=4%, signal=17%
+## D002842 8.108333e-09 5.991228e-09 1354 tags=23%, list=11%, signal=21%
+## D007108 8.108333e-09 5.991228e-09 2119 tags=34%, list=17%, signal=30%
+## D007111 8.108333e-09 5.991228e-09 1824 tags=27%, list=15%, signal=24%
+## D011123 8.108333e-09 5.991228e-09 1905 tags=34%, list=15%, signal=29%
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         core_enrichment
+## D000705                                                                                                                                                                                                                                                     991/2305/9493/1062/10403/7153/6241/55165/11065/220134/22974/4751/890/983/54821/10232/4085/81930/81620/332/3832/7272/9212/1111/9055/3833/10112/6790/891/24137/9232/4001/9928/1164/11004/990/5347/29127/701/11130/57405/10615/1894/8438/9700/5888/4288/29899/6502/1058/54478/699/4609/1063/5688/5709/26271/55055/51053/641/5698/3925/4860/5693/58516/5713/85377/3930/79980/9735/5721/5691/54205/5499/51224/10051/5685/78995/1019/23481/5479/5690/5684/5885/5686/5695/79017/11200/55131/203068/7027/2072/10213/191/23185/9425/7283/23198/1652/10808/6732/9100/5822/86/10436/999/5699/5714/1994
+## D000782                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              4312/991/1062/10403/7153/11065/22974/10460/4751/79019/55839/890/983/4085/332/7272/9212/8208/1111/6790/891/24137/9232/4171/11004/5347/701/11130/79682/2491/9700/5888/7083/898/4288/10733/2237/6502/1058/699/4609/5111/51053/1869/1029/1763/136/4904
+## D002842                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        8318/55143/991/1062/7153/11065/10635/983/54821/4085/9212/8208/9232/11004/5347/55215/701/10615/79075/9700/5888/2237/54962/5984/3838/1058/699/4609/5111/10212/4176/10036/79980/5982/9735/995/10051/55379/26502/4172/5885/11168/203068/5983/10592/8914/4683
+## D007108 4312/6280/6279/8685/7153/983/6362/3002/50852/3620/891/4174/4001/4171/3595/29851/4318/4061/3576/8792/1493/6352/7037/3934/4175/54210/3932/5551/3559/6772/51311/6347/712/639/94025/914/64581/3126/3112/10437/3561/5111/6351/9688/917/1236/10859/6590/3654/5698/3897/1051/3574/3575/919/915/22806/4067/8564/3806/7412/864/3495/11260/3458/959/6634/3903/3824/3162/925/5031/4436/942/80328/8876/969/995/1991/10288/9235/2956/1019/3689/5788/1234/916/467/259197/3383/4068/5885/30009/5806/6375/3600/3659/6696/940/23586/2219/939/4678/6360/5880/7128/5588/3965/9308/7422/865/10148/930/6282/4624/5047/1994/929/142/26191/6504/5467/6628/945/3601/4282/6850/6427/7124/912/5027/3569/7097/6749/11335/56244/83737/7852/613/2208/5133/5743/7454/6731/3119/5817/7186/2213/5971/7490/8625/3135/60489/9021/3596/834/4192/356/7305/7133/26986/958/5724/27350
+## D007111                                                                                                                                                                      8685/597/3627/820/983/6362/332/55765/3002/3620/10578/3595/11004/3576/6890/1521/952/1493/6352/4288/7037/4111/5551/3559/768/6772/6347/6402/914/64581/10437/4609/3001/5341/6351/1236/10859/4830/136/3574/3575/4904/919/4860/3806/7412/2730/4938/2821/3458/959/6564/2676/3824/5670/2950/3162/5449/925/4953/4436/1594/942/80328/578/1116/2224/11262/10288/9235/6361/9997/5788/1234/2023/916/259197/3383/4068/962/6367/30009/3394/5806/6375/7295/100/53637/3600/6696/923/940/23586/3735/6285/1464/7128/5588/3965/6891/9308/8914/81622/7422/10148/8477/930/5367/6504/3452/945/3601/6850/7124/912/51560/5996/5027/3569/4049/10875/7097/2048/7852/5133/7454/3091/3119/5817/3820/843
+## D011123                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 2305/4605/9133/7153/79733/890/983/4085/81620/332/2146/7272/9212/51659/1111/6790/891/9232/990/5347/701/1978/9700/898/23594/6502/699/4609/5111/10397/26271/51053/1869/1029/4830/3925/5693/2810/8607/58/1019/11200/2072/7283/7422/5315/865/86/63967/5604/9978/4049/3619/7454/58477/1956/28985/6119</code></pre>
 <p>User can use visualization methods implemented in <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> to visualize these enrichment results. With <a href="enrichplot.html#enrichplot">these visualization methods</a>, it’s much easier to interpret enriched results.</p>
 
 </div>
@@ -169,7 +186,7 @@ categories of MeSH are supported. The analysis supports &gt;70 species listed in
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

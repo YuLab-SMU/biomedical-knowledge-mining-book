@@ -137,7 +137,7 @@
 are annotated to the gene set. The background distribution by default is
 all the genes that have annotation. <em>P</em>-values should be adjusted for <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparison</a>.</p>
 <p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differential expressed genes, 28 are annotated to a gene set<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;example adopted from &lt;a href="https://guangchuangyu.github.io/2012/04/enrichment-analysis/" class="uri"&gt;https://guangchuangyu.github.io/2012/04/enrichment-analysis/&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>gene.not.interest<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2613</span>, <span class="fl">15310</span><span class="op">)</span>, gene.in.interest<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">29</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"In_category"</span>, <span class="st">"not_in_category"</span><span class="op">)</span>
 <span class="va">d</span></code></pre></div>
@@ -145,7 +145,7 @@ all the genes that have annotation. <em>P</em>-values should be adjusted for <a 
 ## In_category                  2613               28
 ## not_in_category             15310               29</code></pre>
 <p>whether the overlap of 25 genes are significantly over represented in the gene set can be assessed using hypergeometric distribution. This corresponding to a one-sided version of Fisher’s exact test.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/fisher.test.html">fisher.test</a></span><span class="op">(</span><span class="va">d</span>, alternative <span class="op">=</span> <span class="st">"greater"</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ##  Fisher's Exact Test for Count Data
@@ -230,7 +230,7 @@ All genes can be used in GSEA; GSEA aggregates the per gene statistics across ge
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

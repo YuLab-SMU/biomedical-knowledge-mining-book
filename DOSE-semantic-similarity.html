@@ -137,10 +137,10 @@ Figure 3.1: <strong>Similarity matrix visualization</strong>. The <code><a href=
 <code class="sourceCode R"><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"84842"</span>, <span class="st">"2524"</span>, <span class="st">"10590"</span>, <span class="st">"3070"</span>, <span class="st">"91746"</span><span class="op">)</span>
 <span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"84289"</span>, <span class="st">"6045"</span>, <span class="st">"56999"</span>, <span class="st">"9869"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">g2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
+<span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">g2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0.051</code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span>
 <span class="va">gs</span></code></pre></div>
 <pre><code>##       84289  6045 56999  9869
 ## 84842 0.051 0.135 0.355 0.103
@@ -156,12 +156,12 @@ Figure 3.1: <strong>Similarity matrix visualization</strong>. The <code><a href=
 </h2>
 <p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> also implemented <code>clusterSim</code> for calculating semantic similarity between two gene clusters and <code>mclusterSim</code> for calculating semantic similarities among multiple gene clusters.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0.549</code></pre>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"57491"</span>, <span class="st">"6296"</span>, <span class="st">"51438"</span>, <span class="st">"5504"</span>, <span class="st">"27319"</span>, <span class="st">"1643"</span><span class="op">)</span>
 <span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="va">g1</span>, b<span class="op">=</span><span class="va">g2</span>, c<span class="op">=</span><span class="va">g3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/mclusterSim.html">mclusterSim</a></span><span class="op">(</span><span class="va">clusters</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
+<span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/mclusterSim.html">mclusterSim</a></span><span class="op">(</span><span class="va">clusters</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
 <pre><code>##       a     b     c
 ## a 1.000 0.549 0.425
 ## b 0.549 1.000 0.645
@@ -212,7 +212,7 @@ similarity analyses for more than 70 species.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

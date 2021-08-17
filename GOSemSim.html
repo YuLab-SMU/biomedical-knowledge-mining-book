@@ -143,18 +143,18 @@ terms are also calculated by the these combine methods.</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mgeneSim.html">mgeneSim</a></span><span class="op">(</span>genes<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"835"</span>, <span class="st">"5261"</span>,<span class="st">"241"</span>, <span class="st">"994"</span><span class="op">)</span>,
          semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span>,verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##        835  5261   241   994
-## 835  1.000 0.465 0.448 0.562
-## 5261 0.465 1.000 0.433 0.499
-## 241  0.448 0.433 1.000 0.452
-## 994  0.562 0.499 0.452 1.000</code></pre>
+## 835  1.000 0.478 0.451 0.578
+## 5261 0.478 1.000 0.433 0.499
+## 241  0.451 0.433 1.000 0.452
+## 994  0.578 0.499 0.452 1.000</code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mgeneSim.html">mgeneSim</a></span><span class="op">(</span>genes<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"835"</span>, <span class="st">"5261"</span>,<span class="st">"241"</span>, <span class="st">"994"</span><span class="op">)</span>,
        semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Rel"</span>,verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##        835  5261   241   994
-## 835  0.945 0.413 0.257 0.482
-## 5261 0.413 0.907 0.332 0.473
-## 241  0.257 0.332 0.940 0.274
-## 994  0.482 0.473 0.274 0.906</code></pre>
+## 835  0.946 0.404 0.253 0.480
+## 5261 0.404 0.906 0.328 0.469
+## 241  0.253 0.328 0.940 0.271
+## 994  0.480 0.469 0.271 0.906</code></pre>
 <p>By default, <code>godata</code> function use <code>ENTREZID</code> as keytype, and the input ID type is <code>ENTREZID</code>. User can use other ID types such as <code>ENSEMBL</code>, <code>UNIPROT</code>, <code>REFSEQ</code>, <code>ACCNUM</code>, <code>SYMBOL</code> <em>et al</em>.</p>
 <p>Here as an example, we use <code>SYMBOL</code> as <code>keytype</code> and calculate semantic similarities among several genes by using their gene symbol as input.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -162,11 +162,11 @@ terms are also calculated by the these combine methods.</p>
 <span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CDC45"</span>, <span class="st">"MCM10"</span>, <span class="st">"CDC20"</span>, <span class="st">"NMU"</span>, <span class="st">"MMP1"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mgeneSim.html">mgeneSim</a></span><span class="op">(</span><span class="va">genes</span>, semData<span class="op">=</span><span class="va">hsGO2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##       CDC45 MCM10 CDC20   NMU  MMP1
-## CDC45 1.000 0.892 0.578 0.592 0.113
-## MCM10 0.892 1.000 0.574 0.587 0.105
-## CDC20 0.578 0.574 1.000 0.640 0.117
-## NMU   0.592 0.587 0.640 1.000 0.104
-## MMP1  0.113 0.105 0.117 0.104 1.000</code></pre>
+## CDC45 1.000 0.916 0.578 0.592 0.117
+## MCM10 0.916 1.000 0.605 0.620 0.113
+## CDC20 0.578 0.605 1.000 0.640 0.121
+## NMU   0.592 0.620 0.640 1.000 0.108
+## MMP1  0.117 0.113 0.121 0.108 1.000</code></pre>
 <p>Users can also use <a href="useful-utilities.html#bitr"><code>clusterProfiler::bitr</code></a> to translate biological IDs.</p>
 </div>
 <div id="gene-cluster-go-semantic-similarity" class="section level2" number="2.5">
@@ -178,7 +178,7 @@ terms are also calculated by the these combine methods.</p>
 <code class="sourceCode R"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"835"</span>, <span class="st">"5261"</span>,<span class="st">"241"</span>, <span class="st">"994"</span>, <span class="st">"514"</span>, <span class="st">"533"</span><span class="op">)</span>
 <span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"578"</span>,<span class="st">"582"</span>, <span class="st">"400"</span>, <span class="st">"409"</span>, <span class="st">"411"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">gs1</span>, <span class="va">gs2</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.609</code></pre>
+<pre><code>## [1] 0.613</code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">org.Hs.egGO</span>
@@ -187,9 +187,9 @@ terms are also calculated by the these combine methods.</p>
 <span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, c<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mclusterSim.html">mclusterSim</a></span><span class="op">(</span><span class="va">clusters</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
 <pre><code>##       a     b     c
-## a 1.000 0.720 0.722
-## b 0.720 1.000 0.709
-## c 0.722 0.709 1.000</code></pre>
+## a 1.000 0.744 0.556
+## b 0.744 1.000 0.630
+## c 0.556 0.630 1.000</code></pre>
 <!--
 
 
@@ -254,7 +254,7 @@ MeSH (Medical Subject Headings) is the NLM controlled vocabulary used to manuall
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

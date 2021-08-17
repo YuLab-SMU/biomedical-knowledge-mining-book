@@ -72,7 +72,7 @@
 <span class="header-section-number">14.1</span> Comparing multiple gene lists<a class="anchor" aria-label="anchor" href="#comparing-multiple-gene-lists"><i class="fas fa-link"></i></a>
 </h2>
 <p>The <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function applies selected function (via the <code>fun</code> parameter) to perform enrichment analysis for each gene list.</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gcSample</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">gcSample</span><span class="op">)</span> </code></pre></div>
 <pre><code>## List of 8
@@ -85,45 +85,45 @@
 ##  $ X7: chr [1:582] "2621" "2665" "5690" "3608" ...
 ##  $ X8: chr [1:237] "2665" "4735" "1327" "3192" ...</code></pre>
 <p>Users can use a named list of gene IDs as the input that passed to the <code>geneCluster</code> parameter.</p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster</a></span><span class="op">(</span>geneCluster <span class="op">=</span> <span class="va">gcSample</span>, fun <span class="op">=</span> <span class="va">enrichKEGG</span><span class="op">)</span>
 <span class="va">ck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ck</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span> </code></pre></div>
-<pre><code>##   Cluster       ID                             Description GeneRatio  BgRatio
-## 1      X2 hsa04110                              Cell cycle    18/380 124/8087
-## 2      X2 hsa05169            Epstein-Barr virus infection    23/380 202/8087
-## 3      X2 hsa05340                Primary immunodeficiency     8/380  38/8087
-## 4      X2 hsa05166 Human T-cell leukemia virus 1 infection    22/380 219/8087
-## 5      X3 hsa04512                ECM-receptor interaction     9/186  88/8087
-## 6      X3 hsa04060  Cytokine-cytokine receptor interaction    17/186 295/8087
+<pre><code>##   Cluster       ID                            Description GeneRatio  BgRatio
+## 1      X2 hsa04110                             Cell cycle    18/384 124/8091
+## 2      X2 hsa05169           Epstein-Barr virus infection    23/384 202/8091
+## 3      X2 hsa05340               Primary immunodeficiency     8/384  38/8091
+## 4      X3 hsa04512               ECM-receptor interaction     9/187  88/8091
+## 5      X3 hsa04060 Cytokine-cytokine receptor interaction    17/187 295/8091
+## 6      X3 hsa04151             PI3K-Akt signaling pathway    19/187 354/8091
 ##         pvalue    p.adjust      qvalue
-## 1 1.747566e-05 0.005242697 0.004874788
-## 2 6.970114e-05 0.010455171 0.009721475
-## 3 3.117722e-04 0.031177224 0.028989348
-## 4 5.993266e-04 0.044949493 0.041795143
-## 5 1.772661e-04 0.042517822 0.039650400
-## 6 4.326582e-04 0.042517822 0.039650400
+## 1 1.999785e-05 0.006099344 0.005704649
+## 2 8.119542e-05 0.012382301 0.011581030
+## 3 3.336022e-04 0.033916228 0.031721476
+## 4 1.839116e-04 0.045884681 0.042872735
+## 5 4.579455e-04 0.045884681 0.042872735
+## 6 5.155582e-04 0.045884681 0.042872735
 ##                                                                                                                          geneID
 ## 1                          CDC20/E2F1/CCNA2/E2F3/BUB1B/CDC6/DBF4/PKMYT1/CDC7/ESPL1/CCNE2/CDKN2A/SFN/BUB1/CHEK2/ORC6/CDC14B/MCM4
 ## 2 LYN/ICAM1/TNFAIP3/E2F1/CCNA2/E2F3/BAK1/RUNX3/BID/IKBKE/TAP2/FAS/CCNE2/RELB/CD3E/ENTPD3/SYK/TRAF3/IKBKB/CD247/NEDD4/CD40/STAT1
 ## 3                                                                                     ADA/TAP2/LCK/CD79A/CD3E/CD8A/CD40/DCLRE1C
-## 4 ICAM1/CDC20/E2F1/CCNA2/E2F3/ADCY7/BUB1B/ESPL1/LCK/CCNE2/RELB/CD3E/MSX1/IL15/CDKN2A/IKBKB/RANBP3/MSX2/CHEK2/NFATC4/MAP3K1/CD40
-## 5                                                                         THBS1/HSPG2/COL9A3/ITGB7/CHAD/ITGA7/LAMA4/ITGB8/ITGB5
-## 6                CXCL1/TNFRSF11B/LIFR/XCL1/GDF5/TNFRSF17/TNFRSF11A/IL5RA/EPOR/CSF2RA/TNFRSF25/BMP7/BMP4/GDF11/IL21R/IL23A/TGFB2
+## 4                                                                         THBS1/HSPG2/COL9A3/ITGB7/CHAD/ITGA7/LAMA4/ITGB8/ITGB5
+## 5                CXCL1/TNFRSF11B/LIFR/XCL1/GDF5/TNFRSF17/TNFRSF11A/IL5RA/EPOR/CSF2RA/TNFRSF25/BMP7/BMP4/GDF11/IL21R/IL23A/TGFB2
+## 6                    CCND2/THBS1/STK11/FGF2/COL9A3/ITGB7/FGF7/ERBB4/CHAD/FGF18/CDK6/PCK1/ITGA7/HGF/EPOR/LAMA4/IKBKB/ITGB8/ITGB5
 ##   Count
 ## 1    18
 ## 2    23
 ## 3     8
-## 4    22
-## 5     9
-## 6    17</code></pre>
+## 4     9
+## 5    17
+## 6    19</code></pre>
 </div>
 <div id="formula-interface-of-comparecluster" class="section level2" number="14.2">
 <h2>
 <span class="header-section-number">14.2</span> Formula interface of compareCluster<a class="anchor" aria-label="anchor" href="#formula-interface-of-comparecluster"><i class="fas fa-link"></i></a>
 </h2>
 <p>As an alternaitve to using named list, the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> function also supports passing a formula to describe more complicated experimental designs (<em>e.g.</em>, <span class="math inline">\(Gene \sim time + treatment\)</span>).</p>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mydf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Entrez<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>, FC<span class="op">=</span><span class="va">geneList</span><span class="op">)</span>
 <span class="va">mydf</span> <span class="op">&lt;-</span> <span class="va">mydf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">mydf</span><span class="op">$</span><span class="va">FC</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span>,<span class="op">]</span>
 <span class="va">mydf</span><span class="op">$</span><span class="va">group</span> <span class="op">&lt;-</span> <span class="st">"upregulated"</span>
@@ -142,19 +142,19 @@
 ## 5 downregulated.B downregulated          B hsa03320
 ## 6   upregulated.A   upregulated          A hsa04110
 ##                        Description GeneRatio  BgRatio       pvalue     p.adjust
-## 1 Protein digestion and absorption    16/316 103/8087 2.072453e-06 5.699245e-04
-## 2                   Focal adhesion    20/316 201/8087 1.083631e-04 1.489993e-02
-## 3       PI3K-Akt signaling pathway    28/316 354/8087 2.804784e-04 2.571052e-02
-## 4         ECM-receptor interaction    11/316  88/8087 5.920352e-04 4.070242e-02
-## 5           PPAR signaling pathway      5/43  76/8087 4.675122e-05 7.199689e-03
-## 6                       Cell cycle    20/219 124/8087 9.477515e-11 2.331469e-08
+## 1 Protein digestion and absorption    16/319 103/8091 2.330255e-06 6.501412e-04
+## 2                   Focal adhesion    20/319 201/8091 1.224881e-04 1.708709e-02
+## 3       PI3K-Akt signaling pathway    28/319 354/8091 3.251014e-04 3.023443e-02
+## 4         ECM-receptor interaction    11/319  88/8091 6.380818e-04 4.450620e-02
+## 5           PPAR signaling pathway      5/43  76/8091 4.664219e-05 7.276181e-03
+## 6                       Cell cycle    20/220 124/8091 1.020639e-10 2.551598e-08
 ##         qvalue
-## 1 5.388377e-04
-## 2 1.408721e-02
-## 3 2.430813e-02
-## 4 3.848229e-02
-## 5 6.791231e-03
-## 6 2.085053e-08
+## 1 6.181308e-04
+## 2 1.624579e-02
+## 3 2.874581e-02
+## 4 4.231490e-02
+## 5 6.824488e-03
+## 6 2.288380e-08
 ##                                                                                                                                             geneID
 ## 1                                                                 1281/50509/1290/477/1294/1360/1289/1292/1296/23428/1359/1300/1287/6505/2006/7373
 ## 2                                         55742/2317/7058/25759/56034/3693/3480/5159/857/1292/3908/3909/63923/3913/1287/3679/7060/3479/10451/80310
@@ -175,7 +175,7 @@
 <span class="header-section-number">14.3</span> Visualization of profile comparison<a class="anchor" aria-label="anchor" href="#visualization-of-profile-comparison"><i class="fas fa-link"></i></a>
 </h2>
 <p>We can visualize the result using the <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> method.</p>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span><span class="op">)</span></code></pre></div>
 
@@ -189,7 +189,7 @@ Figure 14.1: <strong>Comparing enrichment results of multiple gene lists.</stron
 <p>The fomula interface allows more complicated gene cluster definition. In Figure <a href="clusterprofiler-comparecluster.html#fig:ccn">14.1</a>B, the gene clusters were defined by two variables (i.e. <code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure <a href="clusterprofiler-comparecluster.html#fig:ccf">14.2</a>).</p>
 
 
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span>, x<span class="op">=</span><span class="st">"group"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">othergroup</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span id="fig:ccf"></span>
@@ -243,7 +243,7 @@ be plotted.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-14.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
