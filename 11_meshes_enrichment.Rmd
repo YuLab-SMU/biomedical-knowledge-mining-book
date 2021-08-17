@@ -14,7 +14,7 @@ categories of MeSH are supported. The analysis supports about 200 species (see a
 
 First, we need to load/fetch species-specific MeSH annotation database:
 
-```{r meshdb2}
+```{r meshdb2, warning=FALSE}
 #############################
 ## BioC 2.14 to BioC 3.13  ##
 #############################

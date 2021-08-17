@@ -63,6 +63,7 @@ opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE,
 library(emojifont)
 library(org.Hs.eg.db)
 library(clusterProfiler)
+library(cowplot)
 
 #options(clusterProfiler.download.method = "wget")
 ```

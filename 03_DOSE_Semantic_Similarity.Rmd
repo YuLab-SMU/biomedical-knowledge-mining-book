@@ -80,8 +80,8 @@ On the basis of semantic similarity between DO terms, `r Biocpkg("DOSE")` can al
 g1 <- c("84842", "2524", "10590", "3070", "91746")
 g2 <- c("84289", "6045", "56999", "9869")
 
-geneSim(g1[1], g2[1], measure="Wang", combine="BMA")
-gs <- geneSim(g1, g2, measure="Wang", combine="BMA")
+DOSE::geneSim(g1[1], g2[1], measure="Wang", combine="BMA")
+gs <- DOSE::geneSim(g1, g2, measure="Wang", combine="BMA")
 gs
 ```
 
@@ -93,13 +93,13 @@ The `geneSim` requires four parameter `geneID1`, `geneID2`, `measure` and `combi
 `r Biocpkg("DOSE")` also implemented `clusterSim` for calculating semantic similarity between two gene clusters and `mclusterSim` for calculating semantic similarities among multiple gene clusters.
 
 ```{r}
-clusterSim(g1, g2, measure="Wang", combine="BMA")
+DOSE::clusterSim(g1, g2, measure="Wang", combine="BMA")
 ```
 
 ```{r}
 g3 <- c("57491", "6296", "51438", "5504", "27319", "1643")
 clusters <- list(a=g1, b=g2, c=g3)
-mclusterSim(clusters, measure="Wang", combine="BMA")
+DOSE::mclusterSim(clusters, measure="Wang", combine="BMA")
 ```
 
 <!--

@@ -45,7 +45,7 @@ The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepar
 
 First, we need to load/fetch species-specific MeSH annotation database:
 
-```{r meshdb}
+```{r meshdb, warning=FALSE}
 #############################
 ## BioC 2.14 to BioC 3.13  ##
 #############################
@@ -57,6 +57,7 @@ First, we need to load/fetch species-specific MeSH annotation database:
 
 # From BioC 3.14 (Nov. 2021, with R-4.2.0)
 library(AnnotationHub)
+library(MeSHDbi)
 ah <- AnnotationHub()
 hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
 file_hsa <- hsa[[1]]
