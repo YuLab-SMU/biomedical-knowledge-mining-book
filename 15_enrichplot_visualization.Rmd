@@ -98,6 +98,26 @@ p4 <- cnetplot(edox, node_label="none")
 cowplot::plot_grid(p1, p2, p3, p4, ncol=2, labels=LETTERS[1:4])
 ```
 
+The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Users can use a named list as input as demonstrated in Figure \@ref(fig:cnetplotgeneral).
+
+(ref:cnetplotgeneralscap) Using `cnetplot` to visualize data relationships.
+
+(ref:cnetplotgeneralcap) **Using `cnetplot` to visualize data relationships.** relationships as a network diagram (A) and with associated data to color nodes (B).
+
+```{r cnetplotgeneral, fig.height=3, fig.width=7, fig.cap="(ref:cnetplotgeneralcap)", fig.scap="(ref:cnetplotgeneralscap)"}
+set.seed(123)
+x <- list(A = letters[1:10], B=letters[5:12], C=letters[sample(1:26, 15)])
+p1 <- cnetplot(x)
+
+set.seed(123)
+d <- setNames(rnorm(26), letters)
+p2 <- cnetplot(x, foldChange=d) + 
+    scale_color_gradient2(name='associated data', low='darkgreen', high='firebrick')
+
+cowplot::plot_grid(p1, p2, ncol=2, labels=LETTERS[1:2], label_size=20)    
+```
+
+
 
 ## Heatmap-like functional classification
 
