@@ -9,6 +9,7 @@ fig:Barplot
 fig:Dotplotcap
 fig:Networkplot
 fig:cnetNodeLabel
+fig:cnetplotgeneral
 fig:Heatplot
 fig:Enrichment
 fig:Enrichment2

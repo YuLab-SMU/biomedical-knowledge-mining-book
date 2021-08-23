@@ -6,10 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="library(DOSE) data(geneList) de = names(geneList)[1:100] x = enrichDO(de)  16.1 filter filter(x, p.adjust &lt; .05, qvalue &lt; 0.2) ## # ## # over-representation test ## # ## #...@organism   Homo...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
+<meta property="og:type" content="book">
+<meta property="og:description" content="library(DOSE) data(geneList) de = names(geneList)[1:100] x = enrichDO(de)  16.1 filter filter(x, p.adjust &lt; .05, qvalue &lt; 0.2) ## # ## # over-representation test ## # ## #...@organism   Homo...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 16 dplyr verbs for manipulating enrichment result | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
+<meta name="twitter:description" content="library(DOSE) data(geneList) de = names(geneList)[1:100] x = enrichDO(de)  16.1 filter filter(x, p.adjust &lt; .05, qvalue &lt; 0.2) ## # ## # over-representation test ## # ## #...@organism   Homo...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -66,7 +74,7 @@
 <h1>
 <span class="header-section-number">16</span> dplyr verbs for manipulating enrichment result<a class="anchor" aria-label="anchor" href="#clusterProfiler-dplyr"><i class="fas fa-link"></i></a>
 </h1>
-<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">DOSE</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>
 <span class="va">de</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>
@@ -75,7 +83,7 @@
 <h2>
 <span class="header-section-number">16.1</span> filter<a class="anchor" aria-label="anchor" href="#filter"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">p.adjust</span> <span class="op">&lt;</span> <span class="fl">.05</span>, <span class="va">qvalue</span> <span class="op">&lt;</span> <span class="fl">0.2</span><span class="op">)</span></code></pre></div>
 <pre><code>## #
 ## # over-representation test
@@ -105,7 +113,7 @@
 <h2>
 <span class="header-section-number">16.2</span> arrange<a class="anchor" aria-label="anchor" href="#arrange"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">x</span>, geneRatio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/parse_ratio.html">parse_ratio</a></span><span class="op">(</span><span class="va">GeneRatio</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">geneRatio</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## #
@@ -137,7 +145,7 @@
 <h2>
 <span class="header-section-number">16.3</span> select<a class="anchor" aria-label="anchor" href="#select"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">x</span>, <span class="op">-</span><span class="va">geneID</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
 <pre><code>##                        ID                   Description GeneRatio  BgRatio
 ## DOID:0060071 DOID:0060071        pre-malignant neoplasm      5/77  22/8007
@@ -160,7 +168,7 @@
 </h2>
 
 
-<div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># k/M</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">x</span>, richFactor <span class="op">=</span> <span class="va">Count</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">sub</a></span><span class="op">(</span><span class="st">"/\\d+"</span>, <span class="st">""</span>, <span class="va">BgRatio</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">y</span></code></pre></div>
@@ -188,29 +196,29 @@
 ##   Guangchuang Yu, Li-Gen Wang, Guang-Rong Yan, Qing-Yu He. DOSE: an
 ##   R/Bioconductor package for Disease Ontology Semantic and Enrichment
 ##   analysis. Bioinformatics 2015, 31(4):608-609</code></pre>
-<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://forcats.tidyverse.org">forcats</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">enrichplot</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">y</span>, showCategory <span class="op">=</span> <span class="fl">20</span>, 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">richFactor</span>, <span class="fu"><a href="https://rdrr.io/pkg/forcats/man/fct_reorder.html">fct_reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">richFactor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>xend<span class="op">=</span><span class="fl">0</span>, yend <span class="op">=</span> <span class="va">Description</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color<span class="op">=</span><span class="va">p.adjust</span>, size <span class="op">=</span> <span class="va">Count</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>guide<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>reverse<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size_continuous</a></span><span class="op">(</span>range<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"rich factor"</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Enriched Disease Ontology"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">y</span>, showCategory <span class="op">=</span> <span class="fl">20</span>, 
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span><span class="va">richFactor</span>, <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html">fct_reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">richFactor</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>xend<span class="op">=</span><span class="fl">0</span>, yend <span class="op">=</span> <span class="va">Description</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span>color<span class="op">=</span><span class="va">p.adjust</span>, size <span class="op">=</span> <span class="va">Count</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>guide<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>reverse<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_size.html">scale_size_continuous</a></span><span class="op">(</span>range<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"rich factor"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Enriched Disease Ontology"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<span id="fig:dot-richfactor"></span>
+<span style="display:block;" id="fig:dot-richfactor"></span>
 <img src="biomedicalKnowledge_files/figure-html/dot-richfactor-1.png" alt="Visualizing rich factor of enriched terms using lolliplot." width="95%"><p class="caption">
 Figure 16.1: <strong>Visualizing rich factor of enriched terms using lolliplot.</strong>
 </p>
 </div>
 <p>A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using <code>mutate</code> to add the fold enrichment variable is also easy:</p>
-<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">x</span>, FoldEnrichment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/parse_ratio.html">parse_ratio</a></span><span class="op">(</span><span class="va">GeneRatio</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/parse_ratio.html">parse_ratio</a></span><span class="op">(</span><span class="va">BgRatio</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="slice" class="section level2" number="16.5">
@@ -221,7 +229,7 @@ Figure 16.1: <strong>Visualizing rich factor of enriched terms using lolliplot.<
 <p>In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure <a href="clusterProfiler-dplyr.html#fig:sliceNES">16.2</a>.</p>
 
 
-<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">ReactomePA</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ReactomePA/man/gsePathway.html">gsePathway</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>
@@ -236,12 +244,12 @@ Figure 16.1: <strong>Visualizing rich factor of enriched terms using lolliplot.<
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lionel-/ggstance">ggstance</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">enrichplot</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">y</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">NES</span>, <span class="fu"><a href="https://rdrr.io/pkg/forcats/man/fct_reorder.html">fct_reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">NES</span><span class="op">)</span>, fill<span class="op">=</span><span class="va">qvalues</span><span class="op">)</span>, showCategory<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="op">+</span> 
+<span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span><span class="va">NES</span>, <span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_reorder.html">fct_reorder</a></span><span class="op">(</span><span class="va">Description</span>, <span class="va">NES</span><span class="op">)</span>, fill<span class="op">=</span><span class="va">qvalues</span><span class="op">)</span>, showCategory<span class="op">=</span><span class="fl">10</span><span class="op">)</span> <span class="op">+</span> 
     <span class="fu"><a href="https://rdrr.io/pkg/ggstance/man/geom_barh.html">geom_barh</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">'identity'</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_continuous.html">scale_fill_continuous</a></span><span class="op">(</span>low<span class="op">=</span><span class="st">'red'</span>, high<span class="op">=</span><span class="st">'blue'</span>, guide<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>reverse<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/scale_colour_continuous.html">scale_fill_continuous</a></span><span class="op">(</span>low<span class="op">=</span><span class="st">'red'</span>, high<span class="op">=</span><span class="st">'blue'</span>, guide<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>reverse<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<span id="fig:sliceNES"></span>
+<span style="display:block;" id="fig:sliceNES"></span>
 <img src="biomedicalKnowledge_files/figure-html/sliceNES-1.png" alt="Choose pathways by ordinal positions." width="95%"><p class="caption">
 Figure 16.2: <strong>Choose pathways by ordinal positions.</strong>
 </p>
@@ -253,18 +261,18 @@ Figure 16.2: <strong>Choose pathways by ordinal positions.</strong>
 </h2>
 
 
-<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbar</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">pi</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out<span class="op">=</span><span class="fl">11</span><span class="op">)</span>
 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">x</span>, pp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">p.adjust</span>, <span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">pp</span><span class="op">)</span> <span class="op">%&gt;%</span> 
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>cnt <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">pp</span>, <span class="va">cnt</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"p value intervals"</span><span class="op">)</span> <span class="op">+</span>
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Frequency"</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"p value distribution"</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/aes.html">aes</a></span><span class="op">(</span><span class="va">pp</span>, <span class="va">cnt</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/geom_bar.html">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">xlab</a></span><span class="op">(</span><span class="st">"p value intervals"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Frequency"</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"p value distribution"</span><span class="op">)</span>
 <span class="op">}</span>    
 
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO</a></span><span class="op">(</span><span class="va">de</span>, pvalueCutoff<span class="op">=</span><span class="fl">1</span>, qvalueCutoff<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
@@ -273,9 +281,9 @@ Figure 16.2: <strong>Choose pathways by ordinal positions.</strong>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO</a></span><span class="op">(</span><span class="va">random_genes</span>, pvalueCutoff<span class="op">=</span><span class="fl">1</span>, qvalueCutoff<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">pbar</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">pbar</span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
-<span id="fig:p-bar"></span>
+<span style="display:block;" id="fig:p-bar"></span>
 <img src="biomedicalKnowledge_files/figure-html/p-bar-1.png" alt="Distribution of adjusted p-values." width="95%"><p class="caption">
 Figure 16.3: <strong>Distribution of adjusted p-values.</strong>
 </p>
@@ -312,7 +320,7 @@ Figure 16.3: <strong>Distribution of adjusted p-values.</strong>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-23.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -332,6 +340,22 @@ Figure 16.3: <strong>Distribution of adjusted p-values.</strong>
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
 </script>
 </body>
 </html>

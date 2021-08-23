@@ -6,10 +6,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 7 KEGG enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The clusterProfiler package supports downloading...">
+<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta property="og:title" content="Chapter 7 KEGG enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
+<meta property="og:type" content="book">
+<meta property="og:description" content="The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The clusterProfiler package supports downloading...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 7 KEGG enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
+<meta name="twitter:description" content="The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The clusterProfiler package supports downloading...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -242,7 +250,7 @@
 
 
 <div class="figure">
-<span id="fig:browseKEGG"></span>
+<span style="display:block;" id="fig:browseKEGG"></span>
 <img src="figures/browseKEGG.png" alt="Explore selected KEGG pathway. Differentially expressed genes that enriched in the selected pathway will be highlighted." width="100%"><p class="caption">
 Figure 7.1: <strong>Explore selected KEGG pathway.</strong> Differentially expressed genes that enriched in the selected pathway will be highlighted.
 </p>
@@ -258,7 +266,7 @@ Figure 7.1: <strong>Explore selected KEGG pathway.</strong> Differentially expre
 
 
 <div class="figure">
-<span id="fig:pathview"></span>
+<span style="display:block;" id="fig:pathview"></span>
 <img src="figures/hsa04110_pathview.png" alt="Visualize selected KEGG pathway by pathview(). Gene expression values can be mapped to gradient color scale." width="100%"><p class="caption">
 Figure 7.2: <strong>Visualize selected KEGG pathway by <code><a href="https://rdrr.io/pkg/pathview/man/pathview.html">pathview()</a></code>.</strong> Gene expression values can be mapped to gradient color scale.
 </p>
@@ -295,7 +303,7 @@ Figure 7.2: <strong>Visualize selected KEGG pathway by <code><a href="https://rd
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-17.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-23.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -315,6 +323,22 @@ Figure 7.2: <strong>Visualize selected KEGG pathway by <code><a href="https://rd
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
 </script>
 </body>
 </html>
