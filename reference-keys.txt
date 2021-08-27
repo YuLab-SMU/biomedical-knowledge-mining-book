@@ -5,6 +5,7 @@ fig:pathview
 fig:viewpathway
 fig:ccn
 fig:ccf
+fig:mcnetplot
 fig:Barplot
 fig:Dotplotcap
 fig:Networkplot
@@ -30,6 +31,7 @@ fig:p-bar
 fig:gmtFormat
 fig:simplify-emapplot
 fig:selectedPaths
+fig:formatLabel
 semantic-similarity-overview
 information-content-based-methods
 resnik-method
@@ -114,13 +116,16 @@ chipseeker-enrichment
 clusterprofiler-comparecluster
 comparing-multiple-gene-lists
 formula-interface-of-comparecluster
-visualization-of-profile-comparison
+vis-compare-profile
+compare-dotplot
+compare-cnetplot
 summary-1
 enrichplot
 bar-plot
 dot-plot
-gene-concept-network
+cnetplot
 heatmap-like-functional-classification
+tree-plot
 enrichment-map
 biological-theme-comparison
 upset-plot
@@ -144,8 +149,10 @@ go-utilities
 drop-specific-go-terms-or-level
 test-go-at-sepcific-level
 reduce-redundancy-of-enriched-go-terms
+data-frame-interface-for-accessing-enriched-results
 faq
 genelist
 no-gene-can-be-mapped
 showing-specific-pathways
 how-to-extract-genes-of-a-specific-termpathway
+label-format

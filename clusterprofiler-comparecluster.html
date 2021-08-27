@@ -178,10 +178,14 @@
 ## 5     5
 ## 6    20</code></pre>
 </div>
-<div id="visualization-of-profile-comparison" class="section level2" number="14.3">
+<div id="vis-compare-profile" class="section level2" number="14.3">
 <h2>
-<span class="header-section-number">14.3</span> Visualization of profile comparison<a class="anchor" aria-label="anchor" href="#visualization-of-profile-comparison"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.3</span> Visualization of functional profile comparison<a class="anchor" aria-label="anchor" href="#vis-compare-profile"><i class="fas fa-link"></i></a>
 </h2>
+<div id="compare-dotplot" class="section level3" number="14.3.1">
+<h3>
+<span class="header-section-number">14.3.1</span> Dot plot<a class="anchor" aria-label="anchor" href="#compare-dotplot"><i class="fas fa-link"></i></a>
+</h3>
 <p>We can visualize the result using the <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> method.</p>
 <div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span>
@@ -198,7 +202,7 @@ Figure 14.1: <strong>Comparing enrichment results of multiple gene lists.</stron
 
 
 <div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span>, x<span class="op">=</span><span class="st">"group"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/ggplot2/man/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">othergroup</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot</a></span><span class="op">(</span><span class="va">formula_res</span>, x<span class="op">=</span><span class="st">"group"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">othergroup</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:ccf"></span>
 <img src="biomedicalKnowledge_files/figure-html/ccf-1.png" alt="Comparing enrichment results of multiple gene lists defined by multiple variable. The results were visualized as a dot plot with an x-axis representing one level of conditions (the group variable) and a facet panel indicating another level of conditions (the othergroup variable)." width="95%"><p class="caption">
@@ -209,11 +213,28 @@ Figure 14.2: <strong>Comparing enrichment results of multiple gene lists defined
 was plotted. User can changes the parameter <code>showCategory</code> to
 specify how many categories of each cluster to be plotted, and if
 <code>showCategory</code> was set to <code>NULL</code>, the whole result will
-be plotted.</p>
+be plotted. The <code>showCategory</code> parameter also allows passing a vector of selected categories to <a href="faq.html#showing-specific-pathways">plot pathway of interests</a></p>
 <p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function tries to make the comparison among different clusters more informative and reasonable. After extracting <em>e.g.</em> 10 categories for each clusters, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> tries to collect overlap of these categories among clusters. For example, <code>term A</code> is enriched in all the gene clusters (<em>e.g.</em>, <code>g1</code> and <code>g2</code>) and is in the 10 most significant categories of <code>g1</code> but not <code>g2</code>. <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> will capture this information and include <code>term A</code> in <code>g2</code> cluster to make the comparison in <code>dotplot</code> more reasonable. If users want to ignore these information, they can set <code>includeAll = FALSE</code> in <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code>, which is not recommended.</p>
-<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function accepts a parameter <code>by</code> for setting the scale of dot sizes. The default parameter <code>by</code> is setting to <code>geneRatio</code>, which corresponding to the <code>GeneRatio</code> column of the output. If it was setting to <code>count</code>, the comparison will be based on gene counts, while if setting to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code>. Users can also map the dot size to other derived variable (see <a href="clusterProfiler-dplyr.html#clusterProfiler-dplyr">Chapter 16</a>).</p>
+<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/dotplot.html">dotplot()</a></code> function accepts a parameter <code>size</code> for setting the scale of dot sizes. The default parameter <code>size</code> is setting to <code>geneRatio</code>, which corresponding to the <code>GeneRatio</code> column of the output. If it was setting to <code>count</code>, the comparison will be based on gene counts, while if setting to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code>. Users can also map the dot size to other variables or derived variables (see <a href="clusterProfiler-dplyr.html#clusterProfiler-dplyr">Chapter 16</a>).</p>
 <p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure <a href="clusterprofiler-comparecluster.html#fig:ccn">14.1</a>.</p>
 <p>The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
+</div>
+<div id="compare-cnetplot" class="section level3" number="14.3.2">
+<h3>
+<span class="header-section-number">14.3.2</span> Gene-Concept Network<a class="anchor" aria-label="anchor" href="#compare-cnetplot"><i class="fas fa-link"></i></a>
+</h3>
+<p>The <a href="enrichplot.html#cnetplot">cnetplot</a> also works with <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> result.</p>
+
+
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span></code></pre></div>
+<div class="figure">
+<span style="display:block;" id="fig:mcnetplot"></span>
+<img src="biomedicalKnowledge_files/figure-html/mcnetplot-1.png" alt="cnetplot() for comparing functional profiles of multiple gene clusters. Genes and functional categories (i.e., pathways) are encoded as pies to distinguish different gene clusters." width="95%"><p class="caption">
+Figure 14.3: <strong><code><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot()</a></code> for comparing functional profiles of multiple gene clusters.</strong> Genes and functional categories (<em>i.e.</em>, pathways) are encoded as pies to distinguish different gene clusters.
+</p>
+</div>
+</div>
 </div>
 <div id="summary-1" class="section level2" number="14.4">
 <h2>
@@ -233,7 +254,12 @@ be plotted.</p>
 <li><a class="nav-link" href="#clusterprofiler-comparecluster"><span class="header-section-number">14</span> Biological theme comparison</a></li>
 <li><a class="nav-link" href="#comparing-multiple-gene-lists"><span class="header-section-number">14.1</span> Comparing multiple gene lists</a></li>
 <li><a class="nav-link" href="#formula-interface-of-comparecluster"><span class="header-section-number">14.2</span> Formula interface of compareCluster</a></li>
-<li><a class="nav-link" href="#visualization-of-profile-comparison"><span class="header-section-number">14.3</span> Visualization of profile comparison</a></li>
+<li>
+<a class="nav-link" href="#vis-compare-profile"><span class="header-section-number">14.3</span> Visualization of functional profile comparison</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#compare-dotplot"><span class="header-section-number">14.3.1</span> Dot plot</a></li>
+<li><a class="nav-link" href="#compare-cnetplot"><span class="header-section-number">14.3.2</span> Gene-Concept Network</a></li>
+</ul>
+</li>
 <li><a class="nav-link" href="#summary-1"><span class="header-section-number">14.4</span> Summary</a></li>
 </ul>
 
@@ -251,7 +277,7 @@ be plotted.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-23.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-27.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
