@@ -1,10 +1,4 @@
-+ [](https://github.com/YuLab-SMU/enrichplot/pull/73)
-
-
-+ [update \[ and \[\[ for compareClusterResult](https://github.com/YuLab-SMU/clusterProfiler/pull/296)
-+ [update setReadable and geneInCategory.compareClusterResult](https://github.com/YuLab-SMU/DOSE/pull/44)
-
-
++ [replace ggsymbol::geom_symbol with ggstar::geom_star in dotplot](https://github.com/YuLab-SMU/enrichplot/pull/102)
 
 
 

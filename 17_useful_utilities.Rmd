@@ -86,7 +86,7 @@ bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
 
 ## `setReadable`: translating gene IDs to human readable symbols {#setReadable}
 
-Some of the functions, especially those internally supported for [DO](#chapter4), [GO](#chapter5), and [Reactome Pathway](#chapter8), support a parameter, `readable`.  If `readable = TRUE`, all the gene IDs will be translated to gene symbols. The `readable` parameter is not available for enrichment analysis of KEGG or using user's own annotation. KEGG analysis using `enrichKEGG` and `gseKEGG`, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn't provide gene ID to symbol mapping information. For analysis using user's own annotation data, we even don't know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the `setReadable` function if and only if there is an `OrgDb` available. 
+Some of the functions, especially those internally supported for [DO](#chapter4), [GO](#chapter5), and [Reactome Pathway](#chapter8), support a parameter, `readable`.  If `readable = TRUE`, all the gene IDs will be translated to gene symbols. The `readable` parameter is not available for enrichment analysis of KEGG or using user's own annotation. KEGG analysis using `enrichKEGG` and `gseKEGG`, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn't provide gene ID to symbol mapping information. For analysis using user's own annotation data, we even don't know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the `setReadable` function if and only if there is an `OrgDb` available. The `setReadable()` function also works with `compareCluster()` output. 
 
 
 ```{r}
@@ -184,4 +184,9 @@ cowplot::plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
 ```
 
 Alternatively, users can use slim version of GO and use the `enricher()` o r `gseGO()` functions to analyze. 
+
+## Data frame interface for accessing enriched results
+
+
+The `[` and `[[` (`asis` parameter).
 

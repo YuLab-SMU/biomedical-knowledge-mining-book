@@ -46,10 +46,11 @@ formula_res <- compareCluster(Entrez~group+othergroup, data=mydf, fun="enrichKEG
 head(formula_res)
 ```
 
-## Visualization of profile comparison
+## Visualization of functional profile comparison {#vis-compare-profile}
 
-We can visualize the result using the `dotplot()` method.
+### Dot plot {#compare-dotplot}
 
+We can visualize the result using the `dotplot()` method. 
 
 ```{r eval=FALSE}
 dotplot(ck)
@@ -86,15 +87,27 @@ By default, only top 5 (most significant) categories of each cluster
 was plotted. User can changes the parameter `showCategory` to
 specify how many categories of each cluster to be plotted, and if
 `showCategory` was set to `NULL`, the whole result will
-be plotted.
+be plotted. The `showCategory` parameter also allows passing a vector of selected categories to [plot pathway of interests](#showing-specific-pathways)
 
 The `dotplot()` function tries to make the comparison among different clusters more informative and reasonable. After extracting *e.g.* 10 categories for each clusters, `r Biocpkg("clusterProfiler")` tries to collect overlap of these categories among clusters. For example, `term A` is enriched in all the gene clusters (*e.g.*, `g1` and `g2`) and is in the 10 most significant categories of `g1` but not `g2`. `r Biocpkg("clusterProfiler")` will capture this information and include `term A` in `g2` cluster to make the comparison in `dotplot` more reasonable. If users want to ignore these information, they can set `includeAll = FALSE` in `dotplot()`, which is not recommended. 
 
-The `dotplot()` function accepts a parameter `by` for setting the scale of dot sizes. The default parameter `by` is setting to `geneRatio`, which corresponding to the `GeneRatio` column of the output. If it was setting to `count`, the comparison will be based on gene counts, while if setting to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other derived variable (see [Chapter 16](#clusterProfiler-dplyr)).
+The `dotplot()` function accepts a parameter `size` for setting the scale of dot sizes. The default parameter `size` is setting to `geneRatio`, which corresponding to the `GeneRatio` column of the output. If it was setting to `count`, the comparison will be based on gene counts, while if setting to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other variables or derived variables (see [Chapter 16](#clusterProfiler-dplyr)).
 
 To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when `by` is setting to `rowPercentage` and number of gene clusters in each cluster label (numbers in parentheses) when `by` is setting to `geneRatio`, as shown in Figure \@ref(fig:ccn). 
 
 The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter `pvalueCutoff`, and FDR can be estimated by `qvalue`.
+
+### Gene-Concept Network {#compare-cnetplot}
+
+The [cnetplot](#cnetplot) also works with `compareCluster()` result.
+
+(ref:mcnetplotscap) `cnetplot()` for comparing functional profiles of multiple gene clusters.
+
+(ref:mcnetplotcap) **`cnetplot()` for comparing functional profiles of multiple gene clusters.** Genes and functional categories (*i.e.*, pathways) are encoded as pies to distinguish different gene clusters.
+
+```{r mcnetplot, fig.width=12, fig.height=8, fig.cap="(ref:mcnetplotcap)", fig.scap="(ref:mcnetplotscap)"}
+cnetplot(ck)
+```
 
 
 

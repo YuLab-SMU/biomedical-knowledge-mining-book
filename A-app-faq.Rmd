@@ -70,9 +70,9 @@ As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webse
 + <https://github.com/YuLab-SMU/clusterProfiler/issues/280>
 
 
-## Showing specific pathways
+## Showing specific pathways {#showing-specific-pathways}
 
-By default, all the visualization methods provided by `r Biocpkg("enrichplot")` display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the `showCategory` parameter in `dotplot()`, `barplot()`, `cnetplot()` and `emapplot()` etc.
+By default, all the visualization methods provided by `r Biocpkg("enrichplot")` display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the `showCategory` parameter in `dotplot()`, `barplot()`, `treeplot()`, `cnetplot()` and `emapplot()` etc.
 
 
 (ref:selectedPathsscap) Showing specific pathways.
@@ -112,4 +112,25 @@ id
 x[[id[1]]]
 geneInCategory(x)[id]
 ```
+
+
+## Wrap long axis labels {#label-format}
+
+Most of the functions in `r Biocpkg("enrichplot")` can automatically split long labels across multiple lines. Users can passed a line width to the `label_format` parameter (default is 30). It also supports user defined function to format label strings. 
+
+(ref:formatLabelscap) Wrap long axis labels.
+
+(ref:formatLabelcap) **Wrap long axis labels.** Passing a numeric value to specify string width (A), a user specifiable labeller function (B).
+
+```{r formatLabel, fig.height=8, fig.width=10, fig.cap="(ref:formatLabelcap)", fig.scap="(ref:formatLabelscap)"}
+library(ReactomePA)
+y <- enrichPathway(de)
+
+p1 <- dotplot(y, label_format = 15) + theme_dose(16)
+p2 <- dotplot(y, label_format = function(x) stringr::str_wrap(x, width=20)) + theme_dose(16)
+cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"), label_size=20)
+```
+
+
+The `label_format` option works with `barplot()`, `dotplot()`, `heatplot()` and `ridgeplot()`.
 
