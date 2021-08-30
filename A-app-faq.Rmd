@@ -122,15 +122,15 @@ Most of the functions in `r Biocpkg("enrichplot")` can automatically split long 
 
 (ref:formatLabelcap) **Wrap long axis labels.** Passing a numeric value to specify string width (A), a user specifiable labeller function (B).
 
-```{r formatLabel, fig.height=8, fig.width=10, fig.cap="(ref:formatLabelcap)", fig.scap="(ref:formatLabelscap)"}
+```{r formatLabel, fig.height=6, fig.width=10, fig.cap="(ref:formatLabelcap)", fig.scap="(ref:formatLabelscap)"}
 library(ReactomePA)
 y <- enrichPathway(de)
 
-p1 <- dotplot(y, label_format = 15) + theme_dose(16)
-p2 <- dotplot(y, label_format = function(x) stringr::str_wrap(x, width=20)) + theme_dose(16)
-cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"), label_size=20)
+p1 <- dotplot(y, label_format = 20) 
+p2 <- dotplot(y, label_format = function(x) stringr::str_wrap(x, width=20))
+cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B")) 
 ```
 
 
-The `label_format` option works with `barplot()`, `dotplot()`, `heatplot()` and `ridgeplot()`.
+The `label_format` option works with `barplot()`, `dotplot()`, `heatplot()`, `treeplot` and `ridgeplot()`.
 

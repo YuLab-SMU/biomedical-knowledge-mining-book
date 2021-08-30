@@ -6,7 +6,7 @@
 
 Supported organisms can be listed by:
 
-```{r}
+```{r get-wp-organisms}
 get_wp_organisms()
 ```
 
@@ -59,7 +59,7 @@ head(ewp2)
 
 ## WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
 
-```{r}
+```{r enrichwp}
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
@@ -69,7 +69,7 @@ enrichWP(gene, organism = "Homo sapiens")
 ## WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
 
 
-```{r}
+```{r gsewp}
 gseWP(geneList, organism = "Homo sapiens")
 ```
 

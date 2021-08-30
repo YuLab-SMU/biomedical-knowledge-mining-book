@@ -67,7 +67,7 @@ terms are also calculated by the these combine methods.
 `r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
 
 ```{r gosemsim-genesim}
-geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
+GOSemSim::geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
 mgeneSim(genes=c("835", "5261","241", "994"),
          semData=hsGO, measure="Wang",verbose=FALSE)
 mgeneSim(genes=c("835", "5261","241", "994"),
@@ -90,6 +90,13 @@ Users can also use [`clusterProfiler::bitr`](#bitr) to translate biological IDs.
 
 
 `r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
+
+
+```{r echo=FALSE}
+clusterSim <- GOSemSim::clusterSim
+mclusterSim <- GOSemSim::mclusterSim
+```
+
 
 ```{r gosemsim-clusterSim}
 gs1 <- c("835", "5261","241", "994", "514", "533")

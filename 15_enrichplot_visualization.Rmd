@@ -1,5 +1,9 @@
 # Visualization of functional enrichment result {#enrichplot}
 
+```{r echo=FALSE}
+library(enrichplot)
+```
+
 
 The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpreting enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012; @wu_clusterprofiler_2021],
 `r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")` [@yu_meshes_2018]. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.
@@ -164,8 +168,23 @@ cowplot::plot_grid(p1, p2, ncol=1, labels=LETTERS[1:2])
 
 ## Tree plot
 
-hierarchical clustering of enriched terms.
+The `treeplot()` function performs hierarchical clustering of enriched terms. It relies on the pairwise similarities of the enriched terms calculated by the `pairwise_termsim()` function, which by default using Jaccard's similarity index (JC). Users can also use semantic similarity values if it is supported (*e.g.*, [GO](#GOSemSim), [DO](#DOSE-semantic-similarity) and [MeSH](#meshes-semantic-similarity)).
 
+
+The default agglomeration method in `treeplot()` is `ward.D` and users can specify other methods via the `hclust_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*, see also the document of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specify by the `nCluster` parameter (default is 5)) and labels subtrees using high-frequency words. This will reduce the complexity of the enriched result and improve user interpretation ability.
+
+
+
+(ref:treeplotscap) Heatmap plot of enriched terms.
+
+(ref:treeplotcap) **Heatmap plot of enriched terms.** default (A), `foldChange=geneList` (B)
+
+```{r treeplot, fig.width=14, fig.height=6, fig.cap="(ref:treeplotcap)", fig.scap="(ref:treeplotscap)"}
+edox2 <- pairwise_termsim(edox)
+p1 <- treeplot(edox2)
+p2 <- treeplot(edox2, hclust_method = "average")
+aplot::plot_list(list(p1, p2)) + plot_annotation(tag_levels='A')
+```
 
 
 ## Enrichment Map

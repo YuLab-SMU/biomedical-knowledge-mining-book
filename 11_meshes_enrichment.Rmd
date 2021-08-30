@@ -14,29 +14,14 @@ categories of MeSH are supported. The analysis supports about 200 species (see a
 
 First, we need to load/fetch species-specific MeSH annotation database:
 
-```{r meshdb2, warning=FALSE}
-#############################
-## BioC 2.14 to BioC 3.13  ##
-#############################
-##
-## library(MeSH.Hsa.eg.db)
-## db <- MeSH.Hsa.eg.db
-##
-##---------------------------
-
-# From BioC 3.14 (Nov. 2021, with R-4.2.0)
-library(AnnotationHub)
-ah <- AnnotationHub()
-hsa <- query(ah, c("MeSHDb", "Homo sapiens"))
-file_hsa <- hsa[[1]]
-db <- MeSHDbi::MeSHDb(file_hsa)
+```{r meshdb, warning=FALSE, cache=TRUE}
 ```
 
 
 In this example, we use data source from `gendoo` and `C` (Diseases) category.
 
 
-```{r}
+```{r enrichmesh, cache=TRUE}
 library(meshes)
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
@@ -52,7 +37,7 @@ head(x)
 
 In the following example, we use data source from `gene2pubmed` and test category `G` (Phenomena and Processes).
 
-```{r}
+```{r gsemesh, cache=TRUE}
 y <- gseMeSH(geneList, MeSHDb = db, database = 'gene2pubmed', category = "G")
 head(y)
 ```

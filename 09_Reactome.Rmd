@@ -26,7 +26,7 @@ themes. `r Biocpkg("ReactomePA")` implemented `enrichPathway()` that uses [hyper
 
 ```{r}
 library(ReactomePA)
-data(geneList)
+data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 1.5]
 head(de)
 x <- enrichPathway(gene=de, pvalueCutoff = 0.05, readable=TRUE)

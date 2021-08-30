@@ -89,7 +89,6 @@ In the following example, a GSEA result of Reactome pathway was sorted by the ab
 
 ```{r sliceNES, fig.width=9, fig.height=5, fig.cap="(ref:sliceNEScap)", fig.scap="(ref:sliceNESscap)"}
 library(ReactomePA)
-data(geneList)
 x <- gsePathway(geneList)
 
 
@@ -103,7 +102,7 @@ library(ggstance)
 library(enrichplot)
 
 ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalues), showCategory=10) + 
-    geom_barh(stat='identity') + 
+    geom_col(orientation='y') + 
     scale_fill_continuous(low='red', high='blue', guide=guide_colorbar(reverse=TRUE)) + 
     theme_minimal() + ylab(NULL)
 ```
