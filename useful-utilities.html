@@ -83,7 +83,7 @@
 <span class="header-section-number">17.1.1</span> <code>bitr</code>: Biological Id TranslatoR<a class="anchor" aria-label="anchor" href="#bitr"><i class="fas fa-link"></i></a>
 </h3>
 <p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg()</a></code> functions for converting ID types. Both <code><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg()</a></code> support many species including model and many non-model organisms.</p>
-<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"GPX3"</span>,  <span class="st">"GLRX"</span>,   <span class="st">"LBP"</span>,   <span class="st">"CRYAB"</span>, <span class="st">"DEFB1"</span>, <span class="st">"HCLS1"</span>,   <span class="st">"SOD2"</span>,   <span class="st">"HSPA2"</span>,
        <span class="st">"ORM1"</span>,  <span class="st">"IGFBP1"</span>, <span class="st">"PTHLH"</span>, <span class="st">"GPC3"</span>,  <span class="st">"IGFBP3"</span>,<span class="st">"TOB1"</span>,    <span class="st">"MITF"</span>,   <span class="st">"NDRG1"</span>,
        <span class="st">"NR1H4"</span>, <span class="st">"FGFR3"</span>,  <span class="st">"PVR"</span>,   <span class="st">"IL6"</span>,   <span class="st">"PTPRM"</span>, <span class="st">"ERBB2"</span>,   <span class="st">"NID2"</span>,   <span class="st">"LAMB1"</span>,
@@ -102,7 +102,7 @@
 ## 6  HCLS1     3059</code></pre>
 <p>User should provides an annotation package, both <code>fromType</code> and <code>toType</code> can accept any types that supported.</p>
 <p>User can use <code>keytypes</code> to list all supporting types.</p>
-<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/MeSHDbi/man/MeSHDb.html">keytypes</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS"
@@ -112,11 +112,11 @@
 ## [21] "PMID"         "PROSITE"      "REFSEQ"       "SYMBOL"       "UCSCKG"      
 ## [26] "UNIPROT"</code></pre>
 <p>We can translate from one type to other types.</p>
-<div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr</a></span><span class="op">(</span><span class="va">x</span>, fromType<span class="op">=</span><span class="st">"SYMBOL"</span>, toType<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"UNIPROT"</span>, <span class="st">"ENSEMBL"</span><span class="op">)</span>, OrgDb<span class="op">=</span><span class="st">"org.Hs.eg.db"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in bitr(x, fromType = "SYMBOL", toType = c("UNIPROT", "ENSEMBL"), :
 ## 1.79% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ids</span><span class="op">)</span></code></pre></div>
 <pre><code>##   SYMBOL    UNIPROT         ENSEMBL
 ## 1   GPX3     P22352 ENSG00000211445
@@ -127,11 +127,11 @@
 ## 6  CRYAB     P02511 ENSG00000109846</code></pre>
 <p>For GO analysis, user don’t need to convert ID, all ID type provided by <code>OrgDb</code> can be used in <code>groupGO</code>, <code>enrichGO</code> and <code>gseGO</code> by specifying <code>keyType</code> parameter.</p>
 <p>Users can use the <code>bitr</code> function to convert IDs using any ID types that available in the <code>OrbDb</code> object. For example, users may want to know the genes in background that are belong to a specific GO term. Such information can be easily accessed using <code>bitr</code>.</p>
-<div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr</a></span><span class="op">(</span><span class="st">"GO:0006805"</span>, fromType<span class="op">=</span><span class="st">"GO"</span>, toType <span class="op">=</span> <span class="st">"SYMBOL"</span>, OrgDb<span class="op">=</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 111   4</code></pre>
-<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
 <pre><code>##           GO EVIDENCE ONTOLOGY SYMBOL
 ## 1 GO:0006805      TAS       BP   NAT1
@@ -146,16 +146,16 @@
 <h3>
 <span class="header-section-number">17.1.2</span> <code>bitr_kegg</code>: converting biological IDs using KEGG API<a class="anchor" aria-label="anchor" href="#bitr_kegg"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">gcSample</span><span class="op">)</span>
 <span class="va">hg</span> <span class="op">&lt;-</span> <span class="va">gcSample</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">hg</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "4597"  "7111"  "5266"  "2175"  "755"   "23046"</code></pre>
-<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eg2np</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="va">hg</span>, fromType<span class="op">=</span><span class="st">'kegg'</span>, toType<span class="op">=</span><span class="st">'ncbi-proteinid'</span>, organism<span class="op">=</span><span class="st">'hsa'</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in bitr_kegg(hg, fromType = "kegg", toType = "ncbi-proteinid", organism
 ## = "hsa"): 3.7% of input gene IDs are fail to map...</code></pre>
-<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">eg2np</span><span class="op">)</span></code></pre></div>
 <pre><code>##    kegg ncbi-proteinid
 ## 1 10001      NP_005457
@@ -167,17 +167,17 @@
 <p>The ID type (both <code>fromType</code> &amp; <code>toType</code>) should be one of ‘kegg,’ ‘ncbi-geneid,’ ‘ncbi-proteinid’ or ‘uniprot.’ The ‘kegg’ is the primary ID used in KEGG database. The data source of KEGG was from NCBI. A rule of thumb for the ‘kegg’ ID is <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
 <p>Many prokaryote species don’t have entrezgene ID available. For example we can check the gene information of <code>ece:Z5100</code> in <a href="http://www.genome.jp/dbget-bin/www_bget?ece:Z5100" class="uri">http://www.genome.jp/dbget-bin/www_bget?ece:Z5100</a>, which have <code>NCBI-ProteinID</code> and <code>UnitProt</code> links in the <code>Other DBs</code> Entry, but not <code>NCBI-GeneID</code>.</p>
 <p>If we try to convert <code>Z5100</code> to <code>ncbi-geneid</code>, <code>bitr_kegg</code> will throw error of <code>ncbi-geneid is not supported</code>.</p>
-<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="st">"Z5100"</span>, fromType<span class="op">=</span><span class="st">"kegg"</span>, toType<span class="op">=</span><span class="st">'ncbi-geneid'</span>, organism<span class="op">=</span><span class="st">'ece'</span><span class="op">)</span>
 
 <span class="co">## Error in KEGG_convert(fromType, toType, organism) :</span>
 <span class="co">## ncbi-geneid is not supported for ece ...</span></code></pre></div>
 <p>We can of course convert it to <code>ncbi-proteinid</code> and <code>uniprot</code>:</p>
-<div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="st">"Z5100"</span>, fromType<span class="op">=</span><span class="st">"kegg"</span>, toType<span class="op">=</span><span class="st">'ncbi-proteinid'</span>, organism<span class="op">=</span><span class="st">'ece'</span><span class="op">)</span></code></pre></div>
 <pre><code>##    kegg ncbi-proteinid
 ## 1 Z5100       AAG58814</code></pre>
-<div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="st">"Z5100"</span>, fromType<span class="op">=</span><span class="st">"kegg"</span>, toType<span class="op">=</span><span class="st">'uniprot'</span>, organism<span class="op">=</span><span class="st">'ece'</span><span class="op">)</span></code></pre></div>
 <pre><code>##    kegg    uniprot
 ## 1 Z5100 A0A7Z3D5K5</code></pre>
@@ -188,7 +188,7 @@
 <span class="header-section-number">17.2</span> <code>setReadable</code>: translating gene IDs to human readable symbols<a class="anchor" aria-label="anchor" href="#setReadable"><i class="fas fa-link"></i></a>
 </h2>
 <p>Some of the functions, especially those internally supported for <a href="#chapter4">DO</a>, <a href="#chapter5">GO</a>, and <a href="#chapter8">Reactome Pathway</a>, support a parameter, <code>readable</code>. If <code>readable = TRUE</code>, all the gene IDs will be translated to gene symbols. The <code>readable</code> parameter is not available for enrichment analysis of KEGG or using user’s own annotation. KEGG analysis using <code>enrichKEGG</code> and <code>gseKEGG</code>, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn’t provide gene ID to symbol mapping information. For analysis using user’s own annotation data, we even don’t know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the <code>setReadable</code> function if and only if there is an <code>OrgDb</code> available. The <code><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable()</a></code> function also works with <code><a href="https://rdrr.io/pkg/clusterProfiler/man/compareCluster.html">compareCluster()</a></code> output.</p>
-<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">clusterProfiler</a></span><span class="op">)</span>
 
@@ -198,25 +198,25 @@
 <span class="co">## The geneID column is ENTREZID</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 124/8091 4.624799e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8091 2.849276e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 129/8091 9.185925e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8093 5.220887e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8093 2.844808e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8093 9.991522e-05
 ##              p.adjust       qvalue                               geneID Count
-## hsa04110 5.457262e-05 4.965573e-05 8318/991/9133/890/983/4085/7272/1111     8
-## hsa04218 1.681073e-03 1.529612e-03    2305/4605/9133/890/983/51806/1111     7
-## hsa04114 3.613130e-03 3.287594e-03         991/9133/983/4085/51806/6790     6</code></pre>
-<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
+## hsa04110 6.160647e-05 5.605584e-05 8318/991/9133/890/983/4085/7272/1111     8
+## hsa04218 1.678436e-03 1.527213e-03    2305/4605/9133/890/983/51806/1111     7
+## hsa04114 3.929999e-03 3.575913e-03         991/9133/983/4085/51806/6790     6</code></pre>
+<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">x</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
 <span class="co">## The geneID column is translated to symbol</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 124/8091 4.624799e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8091 2.849276e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 129/8091 9.185925e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8093 5.220887e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8093 2.844808e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8093 9.991522e-05
 ##              p.adjust       qvalue
-## hsa04110 5.457262e-05 4.965573e-05
-## hsa04218 1.681073e-03 1.529612e-03
-## hsa04114 3.613130e-03 3.287594e-03
+## hsa04110 6.160647e-05 5.605584e-05
+## hsa04218 1.678436e-03 1.527213e-03
+## hsa04114 3.929999e-03 3.575913e-03
 ##                                                 geneID Count
 ## hsa04110 CDC45/CDC20/CCNB2/CCNA2/CDK1/MAD2L1/TTK/CHEK1     8
 ## hsa04218     FOXM1/MYBL2/CCNB2/CCNA2/CDK1/CALML5/CHEK1     7
@@ -237,7 +237,7 @@ Figure 17.1: <strong>The GMT format.</strong> Figure taken from <a href="https:/
 </p>
 </div>
 <p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package implemented a function, <code><a href="https://rdrr.io/pkg/clusterProfiler/man/read-gmt.html">read.gmt()</a></code>, to parse GMT file into a <code>data.frame</code>. The WikiPathway GMT file encodes information of <code>version</code>, <code>wpid</code> and <code>species</code> into the <code>Description</code> column. The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> provides the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/read-gmt.html">read.gmt.wp()</a></code> function to parse WikiPathway GMT file and supports parsing information that encoded in the <code>Description</code> column.</p>
-<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&amp;libraryName=COVID-19_Related_Gene_Sets"</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="va">url</span>, destfile <span class="op">=</span> <span class="st">"COVID19_GeneSets.gmt"</span><span class="op">)</span>
 <span class="va">covid19_gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/read-gmt.html">read.gmt</a></span><span class="op">(</span><span class="st">"COVID19_GeneSets.gmt"</span><span class="op">)</span>
@@ -280,7 +280,7 @@ Figure 17.1: <strong>The GMT format.</strong> Figure taken from <a href="https:/
 <p>In Figure <a href="useful-utilities.html#fig:simplify-emapplot">17.2</a>A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/simplify-methods.html">simplify()</a></code> method, the result is more clear to view the whole story.</p>
 
 
-<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span>, package<span class="op">=</span><span class="st">"DOSE"</span><span class="op">)</span>
 <span class="va">de</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2</span><span class="op">]</span>
 <span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO</a></span><span class="op">(</span><span class="va">de</span>, ont<span class="op">=</span><span class="st">"BP"</span>, OrgDb <span class="op">=</span> <span class="st">'org.Hs.eg.db'</span><span class="op">)</span>
@@ -288,10 +288,10 @@ Figure 17.1: <strong>The GMT format.</strong> Figure taken from <a href="https:/
 <span class="va">bp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/simplify-methods.html">simplify</a></span><span class="op">(</span><span class="va">bp</span>, cutoff<span class="op">=</span><span class="fl">0.7</span>, by<span class="op">=</span><span class="st">"p.adjust"</span>, select_fun<span class="op">=</span><span class="va">min</span><span class="op">)</span>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">bp</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">bp2</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:simplify-emapplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/simplify-emapplot-1.png" alt="Visualize enriched terms by EnrichmentMap using the emapplot() function. (A) original result. (B) simplify result." width="95%"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/simplify-emapplot-1.png" alt="Visualize enriched terms by EnrichmentMap using the emapplot() function. (A) original result. (B) simplify result." width="1536"><p class="caption">
 Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot()</a></code> function.</strong> (A) original result. (B) simplify result.
 </p>
 </div>
@@ -348,7 +348,7 @@ Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code><
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-27.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-01.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

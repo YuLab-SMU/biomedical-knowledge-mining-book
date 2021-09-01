@@ -191,7 +191,7 @@ MEDLINE/PubMed. MeSH is a comprehensive life science vocabulary. MeSH has
 <span class="co"># From BioC 3.14 (Nov. 2021, with R-4.2.0)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">AnnotationHub</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">MeSHDbi</span><span class="op">)</span>
-<span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span>localHub<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">hsa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"MeSHDb"</span>, <span class="st">"Homo sapiens"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">file_hsa</span> <span class="op">&lt;-</span> <span class="va">hsa</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="va">db</span> <span class="op">&lt;-</span> <span class="fu">MeSHDbi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MeSHDbi/man/MeSHDb.html">MeSHDb</a></span><span class="op">(</span><span class="va">file_hsa</span><span class="op">)</span></code></pre></div>
@@ -275,7 +275,7 @@ Lin <span class="citation">(<a href="references.html#ref-lin_information-theoret
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-08-27.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-01.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

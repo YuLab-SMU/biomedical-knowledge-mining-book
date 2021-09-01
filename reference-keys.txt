@@ -12,6 +12,7 @@ fig:Networkplot
 fig:cnetNodeLabel
 fig:cnetplotgeneral
 fig:Heatplot
+fig:treeplot
 fig:Enrichment
 fig:Enrichment2
 fig:upsetORA
