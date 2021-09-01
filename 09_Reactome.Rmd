@@ -24,9 +24,10 @@ Enrichment analysis is a widely used approach to identify biological
 themes. `r Biocpkg("ReactomePA")` implemented `enrichPathway()` that uses [hypergeometric model](#ora-algorithm) to assess whether the number of selected genes associated with a reactome pathway is larger than expected. 
 
 
-```{r}
+```{r enrichpathway}
 library(ReactomePA)
-data(geneList, package="DOSE")
+data(geneList, package="DOSE"
+)
 de <- names(geneList)[abs(geneList) > 1.5]
 head(de)
 x <- enrichPathway(gene=de, pvalueCutoff = 0.05, readable=TRUE)
@@ -37,7 +38,7 @@ head(x)
 ## Reactome pathway gene set enrichment analysis {#reactomepa-gsea}
 
 
-```{r}
+```{r gsepathway}
 y <- gsePathway(geneList, 
                 pvalueCutoff = 0.2,
                 pAdjustMethod = "BH", 

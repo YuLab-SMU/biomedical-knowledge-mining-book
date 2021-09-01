@@ -31,7 +31,17 @@ geometry: "left=35mm,right=35mm,top=25mm,bottom=25mm"
 ---
 
 
-```{r include=FALSE}
+```{r initial, include=FALSE}
+
+library(emojifont)
+library(org.Hs.eg.db)
+library(clusterProfiler)
+library(cowplot)
+library(aplot)
+library(patchwork)
+#options(clusterProfiler.download.method = "wget")
+
+
 CRANpkg <- function (pkg) {
     cran <- "https://CRAN.R-project.org/package"
     fmt <- "[%s](%s=%s)"
@@ -70,21 +80,9 @@ svg2png <- function(path, options) {
 
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, 
-    echo=TRUE, cache=TRUE, dev="svg", out.width="98%", 
+    echo=TRUE, cache=TRUE, dev="svg", 
     fig.process=svg2png
 )
-
-
-library(emojifont)
-library(org.Hs.eg.db)
-library(clusterProfiler)
-library(cowplot)
-library(aplot)
-library(patchwork)
-#options(clusterProfiler.download.method = "wget")
-
-
-
 ```
 
 

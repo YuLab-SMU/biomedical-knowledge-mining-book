@@ -21,7 +21,7 @@ library(clusterProfiler)
 
 In the following example, we selected fold change above 1.5 as the differential genes and analyzing their disease association.
 
-```{r}
+```{r enrichdo}
 library(DOSE)
 data(geneList)
 gene <- names(geneList)[abs(geneList) > 1.5]
@@ -54,7 +54,7 @@ The `readable` is a logical parameter, indicates whether the entrezgene IDs will
 
 [Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG) [@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
 
-```{r}
+```{r enrichncg}
 gene2 <- names(geneList)[abs(geneList) < 3]
 ncg <- enrichNCG(gene2) 
 head(ncg)
@@ -67,7 +67,7 @@ head(ncg)
 
 The enrichment analysis of disease-gene associations is supported by the `enrichDGN` function and analysis of snp-gene-disease associations is supported by the `enrichDGNv` function.
 
-```{r}
+```{r enrichdgn}
 dgn <- enrichDGN(gene) 
 head(dgn)
 
@@ -85,7 +85,7 @@ head(dgnv)
 
 In the following example, in order to speedup the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.
 
-```{r}
+```{r gsedo}
 library(DOSE)
 data(geneList)
 y <- gseDO(geneList,
@@ -98,10 +98,9 @@ head(y, 3)
 
 ### `gseNCG` fuction
 
-```{r}
+```{r gsencg}
 ncg <- gseNCG(geneList,
-              minGSSize     = 120,
-              pvalueCutoff  = 0.2,
+              pvalueCutoff  = 0.5,
               pAdjustMethod = "BH",
               verbose       = FALSE)
 ncg <- setReadable(ncg, 'org.Hs.eg.db')
@@ -110,9 +109,8 @@ head(ncg, 3)
 
 ### `gseDGN` fuction
 
-```{r}
+```{r gsedgn}
 dgn <- gseDGN(geneList,
-              minGSSize     = 120,
               pvalueCutoff  = 0.2,
               pAdjustMethod = "BH",
               verbose       = FALSE)
