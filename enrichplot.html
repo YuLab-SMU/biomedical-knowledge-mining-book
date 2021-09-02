@@ -100,7 +100,7 @@ and color (Figure <a href="enrichplot.html#fig:Barplot">15.1</a>A). Users can sp
 
 <div class="figure">
 <span style="display:block;" id="fig:Barplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/Barplot-1.png" alt="Bar plot of enriched terms." width="960"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Barplot-1.png" alt="Bar plot of enriched terms." width="98%"><p class="caption">
 Figure 15.1: <strong>Bar plot of enriched terms.</strong>
 </p>
 </div>
@@ -118,7 +118,7 @@ Figure 15.1: <strong>Bar plot of enriched terms.</strong>
 
 <div class="figure">
 <span style="display:block;" id="fig:Dotplotcap"></span>
-<img src="biomedicalKnowledge_files/figure-html/Dotplotcap-1.png" alt="Dot plot of enriched terms." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Dotplotcap-1.png" alt="Dot plot of enriched terms." width="98%"><p class="caption">
 Figure 15.2: <strong>Dot plot of enriched terms.</strong>
 </p>
 </div>
@@ -142,11 +142,11 @@ with only core enriched genes displayed.</p>
 <span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, foldChange<span class="op">=</span><span class="va">geneList</span><span class="op">)</span>
 <span class="co">## categorySize can be scaled by 'pvalue' or 'geneNum'</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, categorySize<span class="op">=</span><span class="st">"pvalue"</span>, foldChange<span class="op">=</span><span class="va">geneList</span><span class="op">)</span>
-<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, foldChange<span class="op">=</span><span class="va">geneList</span>, circular <span class="op">=</span> <span class="cn">TRUE</span>, colorEdge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, ncol<span class="op">=</span><span class="fl">3</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, rel_widths<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.8</span>, <span class="fl">.8</span>, <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, foldChange<span class="op">=</span><span class="va">geneList</span>, circular <span class="op">=</span> <span class="cn">TRUE</span>, colorEdge <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> 
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, ncol<span class="op">=</span><span class="fl">3</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, rel_widths<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.8</span>, <span class="fl">.8</span>, <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:Networkplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/Networkplot-1.png" alt="Network plot of enriched terms." width="1920"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Networkplot-1.png" alt="Network plot of enriched terms." width="98%"><p class="caption">
 Figure 15.3: <strong>Network plot of enriched terms.</strong>
 </p>
 </div>
@@ -155,17 +155,17 @@ Figure 15.3: <strong>Network plot of enriched terms.</strong>
 
 <div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, node_label<span class="op">=</span><span class="st">"category"</span>, 
-        cex_label_category <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> 
+        cex_label_category <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span> 
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, node_label<span class="op">=</span><span class="st">"gene"</span>, 
-        cex_label_gene <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> 
+        cex_label_gene <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> 
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, node_label<span class="op">=</span><span class="st">"all"</span><span class="op">)</span> 
 <span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">edox</span>, node_label<span class="op">=</span><span class="st">"none"</span>, 
         color_category<span class="op">=</span><span class="st">'firebrick'</span>, 
         color_gene<span class="op">=</span><span class="st">'steelblue'</span><span class="op">)</span> 
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:cnetNodeLabel"></span>
-<img src="biomedicalKnowledge_files/figure-html/cnetNodeLabel-1.png" alt="Labelling nodes by selected subset. gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D)." width="1536"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/cnetNodeLabel-1.png" alt="Labelling nodes by selected subset. gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D)." width="98%"><p class="caption">
 Figure 15.4: <strong>Labelling nodes by selected subset.</strong> gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D).
 </p>
 </div>
@@ -182,10 +182,10 @@ Figure 15.4: <strong>Labelling nodes by selected subset.</strong> gene category 
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.html">cnetplot</a></span><span class="op">(</span><span class="va">x</span>, foldChange<span class="op">=</span><span class="va">d</span><span class="op">)</span> <span class="op">+</span> 
     <span class="fu">scale_color_gradient2</span><span class="op">(</span>name<span class="op">=</span><span class="st">'associated data'</span>, low<span class="op">=</span><span class="st">'darkgreen'</span>, high<span class="op">=</span><span class="st">'firebrick'</span><span class="op">)</span>
 
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, label_size<span class="op">=</span><span class="fl">20</span><span class="op">)</span>    </code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>    </code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:cnetplotgeneral"></span>
-<img src="biomedicalKnowledge_files/figure-html/cnetplotgeneral-1.png" alt="Using cnetplot to visualize data relationships. relationships as a network diagram (A) and with associated data to color nodes (B)." width="672"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/cnetplotgeneral-1.png" alt="Using cnetplot to visualize data relationships. relationships as a network diagram (A) and with associated data to color nodes (B)." width="98%"><p class="caption">
 Figure 15.5: <strong>Using <code>cnetplot</code> to visualize data relationships.</strong> relationships as a network diagram (A) and with associated data to color nodes (B).
 </p>
 </div>
@@ -202,12 +202,12 @@ and more easy to identify expression patterns.</p>
 
 
 <div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/heatplot.html">heatplot</a></span><span class="op">(</span><span class="va">edox</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/heatplot.html">heatplot</a></span><span class="op">(</span><span class="va">edox</span>, foldChange<span class="op">=</span><span class="va">geneList</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/heatplot.html">heatplot</a></span><span class="op">(</span><span class="va">edox</span>, showCategory<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/heatplot.html">heatplot</a></span><span class="op">(</span><span class="va">edox</span>, foldChange<span class="op">=</span><span class="va">geneList</span>, showCategory<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:Heatplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/Heatplot-1.png" alt="Heatmap plot of enriched terms. default (A), foldChange=geneList (B)" width="1536"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Heatplot-1.png" alt="Heatmap plot of enriched terms. default (A), foldChange=geneList (B)" width="98%"><p class="caption">
 Figure 15.6: <strong>Heatmap plot of enriched terms.</strong> default (A), <code>foldChange=geneList</code> (B)
 </p>
 </div>
@@ -227,7 +227,7 @@ Figure 15.6: <strong>Heatmap plot of enriched terms.</strong> default (A), <code
 <span class="fu">aplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/aplot/man/plot_list.html">plot_list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">plot_annotation</span><span class="op">(</span>tag_levels<span class="op">=</span><span class="st">'A'</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:treeplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/treeplot-1.png" alt="Heatmap plot of enriched terms. default (A), foldChange=geneList (B)" width="1344"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/treeplot-1.png" alt="Heatmap plot of enriched terms. default (A), foldChange=geneList (B)" width="98%"><p class="caption">
 Figure 15.7: <strong>Heatmap plot of enriched terms.</strong> default (A), <code>foldChange=geneList</code> (B)
 </p>
 </div>
@@ -248,10 +248,10 @@ cluster together, making it easy to identify functional module.</p>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">edo</span>, cex_category<span class="op">=</span><span class="fl">1.5</span><span class="op">)</span>
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">edo</span>, layout<span class="op">=</span><span class="st">"kk"</span><span class="op">)</span>
 <span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">edo</span>, cex_category<span class="op">=</span><span class="fl">1.5</span>,layout<span class="op">=</span><span class="st">"kk"</span><span class="op">)</span> 
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:Enrichment"></span>
-<img src="biomedicalKnowledge_files/figure-html/Enrichment-1.png" alt="Plot for results obtained from hypergeometric test and gene set enrichment analysis. default (A), cex_category=1.5 (B), layout=" kk and cex_category='1.5,layout="kk"' width="1536"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Enrichment-1.png" alt="Plot for results obtained from hypergeometric test and gene set enrichment analysis. default (A), cex_category=1.5 (B), layout=" kk and cex_category='1.5,layout="kk"' width="98%"><p class="caption">
 Figure 15.8: <strong>Plot for results obtained from hypergeometric test and gene set enrichment analysis.</strong> default (A), <code>cex_category=1.5</code> (B), <code>layout="kk"</code> (C) and <code>cex_category=1.5,layout="kk"</code> (D).
 </p>
 </div>
@@ -273,10 +273,10 @@ Figure 15.8: <strong>Plot for results obtained from hypergeometric test and gene
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">xx</span>, legend_n<span class="op">=</span><span class="fl">2</span><span class="op">)</span> 
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">xx</span>, pie<span class="op">=</span><span class="st">"count"</span><span class="op">)</span>
 <span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/emapplot.html">emapplot</a></span><span class="op">(</span><span class="va">xx</span>, pie<span class="op">=</span><span class="st">"count"</span>, cex_category<span class="op">=</span><span class="fl">1.5</span>, layout<span class="op">=</span><span class="st">"kk"</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, <span class="va">p4</span>, ncol<span class="op">=</span><span class="fl">2</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:Enrichment2"></span>
-<img src="biomedicalKnowledge_files/figure-html/Enrichment2-1.png" alt="Plot for results obtained from compareCluster function of clusterProfiler package. default (A), legend_n=2 (B), pie=" count and pie="count" cex_category="1.5," layout="kk" width="1536"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/Enrichment2-1.png" alt="Plot for results obtained from compareCluster function of clusterProfiler package. default (A), legend_n=2 (B), pie=" count and pie="count" cex_category="1.5," layout="kk" width="98%"><p class="caption">
 Figure 15.9: <strong>Plot for results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package.</strong> default (A), <code>legend_n=2</code> (B), <code>pie="count"</code> (C) and <code>pie="count", cex_category=1.5, layout="kk"</code> (D).
 </p>
 </div>
@@ -294,7 +294,7 @@ among different gene sets.</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/upsetplot-methods.html">upsetplot</a></span><span class="op">(</span><span class="va">edo</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:upsetORA"></span>
-<img src="biomedicalKnowledge_files/figure-html/upsetORA-1.png" alt="Upsetplot for over-representation analysis." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/upsetORA-1.png" alt="Upsetplot for over-representation analysis." width="98%"><p class="caption">
 Figure 15.10: <strong>Upsetplot for over-representation analysis.</strong>
 </p>
 </div>
@@ -305,7 +305,7 @@ Figure 15.10: <strong>Upsetplot for over-representation analysis.</strong>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/upsetplot-methods.html">upsetplot</a></span><span class="op">(</span><span class="va">kk2</span><span class="op">)</span> </code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:upsetGSEA"></span>
-<img src="biomedicalKnowledge_files/figure-html/upsetGSEA-1.png" alt="Upsetplot for gene set enrichment analysis." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/upsetGSEA-1.png" alt="Upsetplot for gene set enrichment analysis." width="98%"><p class="caption">
 Figure 15.11: <strong>Upsetplot for gene set enrichment analysis.</strong>
 </p>
 </div>
@@ -322,7 +322,7 @@ for GSEA enriched categories. It helps users to interpret up/down-regulated path
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/ridgeplot.html">ridgeplot</a></span><span class="op">(</span><span class="va">edo2</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:ridgeplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/ridgeplot-1.png" alt="Ridgeplot for gene set enrichment analysis." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/ridgeplot-1.png" alt="Ridgeplot for gene set enrichment analysis." width="98%"><p class="caption">
 Figure 15.12: <strong>Ridgeplot for gene set enrichment analysis.</strong>
 </p>
 </div>
@@ -340,10 +340,10 @@ the distribution of the gene set and the enrichment score.</p>
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot.html">gseaplot</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="st">"runningScore"</span>, title <span class="op">=</span> <span class="va">edo2</span><span class="op">$</span><span class="va">Description</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot.html">gseaplot</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="st">"preranked"</span>, title <span class="op">=</span> <span class="va">edo2</span><span class="op">$</span><span class="va">Description</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot.html">gseaplot</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span>, title <span class="op">=</span> <span class="va">edo2</span><span class="op">$</span><span class="va">Description</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gseaplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/gseaplot-1.png" alt="gseaplot for GSEA result(by = " runningscore by="runningScore" default width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gseaplot-1.png" alt="gseaplot for GSEA result(by = " runningscore by="runningScore" default width="98%"><p class="caption">
 Figure 15.13: <strong>gseaplot for GSEA result(<code>by = "runningScore"</code>).</strong> <code>by = "runningScore"</code> (A), <code>by = "preranked"</code> (B), default (C)
 </p>
 </div>
@@ -354,7 +354,7 @@ Figure 15.13: <strong>gseaplot for GSEA result(<code>by = "runningScore"</code>)
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot2.html">gseaplot2</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span>, title <span class="op">=</span> <span class="va">edo2</span><span class="op">$</span><span class="va">Description</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gseaplot2"></span>
-<img src="biomedicalKnowledge_files/figure-html/gseaplot2-1.png" alt="Gseaplot2 for GSEA result." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gseaplot2-1.png" alt="Gseaplot2 for GSEA result." width="98%"><p class="caption">
 Figure 15.14: <strong>Gseaplot2 for GSEA result.</strong>
 </p>
 </div>
@@ -365,7 +365,7 @@ Figure 15.14: <strong>Gseaplot2 for GSEA result.</strong>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot2.html">gseaplot2</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gseaplot22"></span>
-<img src="biomedicalKnowledge_files/figure-html/gseaplot22-1.png" alt="Gseaplot2 for GSEA result of multile gene sets." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gseaplot22-1.png" alt="Gseaplot2 for GSEA result of multile gene sets." width="98%"><p class="caption">
 Figure 15.15: <strong>Gseaplot2 for GSEA result of multile gene sets.</strong>
 </p>
 </div>
@@ -378,7 +378,7 @@ parameter:</p>
           color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#E495A5"</span>, <span class="st">"#86B875"</span>, <span class="st">"#7DB0DD"</span><span class="op">)</span>, ES_geom <span class="op">=</span> <span class="st">"dot"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gseaplot23"></span>
-<img src="biomedicalKnowledge_files/figure-html/gseaplot23-1.png" alt="Gseaplot2 for GSEA result of multile gene sets(add pvalue_table)." width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gseaplot23-1.png" alt="Gseaplot2 for GSEA result of multile gene sets(add pvalue_table)." width="98%"><p class="caption">
 Figure 15.16: <strong>Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).</strong>
 </p>
 </div>
@@ -388,10 +388,10 @@ Figure 15.16: <strong>Gseaplot2 for GSEA result of multile gene sets(add pvalue_
 <div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot2.html">gseaplot2</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, subplots <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gseaplot2.html">gseaplot2</a></span><span class="op">(</span><span class="va">edo2</span>, geneSetID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, subplots <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>
-<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">1</span>, labels<span class="op">=</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gseaplot24"></span>
-<img src="biomedicalKnowledge_files/figure-html/gseaplot24-1.png" alt="Gseaplot2 for GSEA result of multile gene sets(add subplots). subplots = 1 (A),subplots = 1:2 (B)" width="1152"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gseaplot24-1.png" alt="Gseaplot2 for GSEA result of multile gene sets(add subplots). subplots = 1 (A),subplots = 1:2 (B)" width="98%"><p class="caption">
 Figure 15.17: <strong>Gseaplot2 for GSEA result of multile gene sets(add subplots).</strong> <code>subplots = 1</code> (A),<code>subplots = 1:2</code> (B)
 </p>
 </div>
@@ -403,7 +403,7 @@ gene set.</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gsearank.html">gsearank</a></span><span class="op">(</span><span class="va">edo2</span>, <span class="fl">1</span>, title <span class="op">=</span> <span class="va">edo2</span><span class="op">[</span><span class="fl">1</span>, <span class="st">"Description"</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gsearank"></span>
-<img src="biomedicalKnowledge_files/figure-html/gsearank-1.svg" alt="Ranked list of genes belong to the specific gene set." width="768"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gsearank-1.svg" alt="Ranked list of genes belong to the specific gene set." width="98%"><p class="caption">
 Figure 15.18: <strong>Ranked list of genes belong to the specific gene set.</strong>
 </p>
 </div>
@@ -421,10 +421,10 @@ Figure 15.18: <strong>Ranked list of genes belong to the specific gene set.</str
     <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/gsearank.html">gsearank</a></span><span class="op">(</span><span class="va">edo2</span>, <span class="va">i</span>, <span class="va">edo2</span><span class="op">[</span><span class="va">i</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span>
         <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, <span class="fl">10000</span>, <span class="va">edo2</span><span class="op">[</span><span class="va">i</span>, <span class="st">"enrichmentScore"</span><span class="op">]</span> <span class="op">*</span> <span class="fl">.75</span>, label <span class="op">=</span> <span class="va">lab</span>, hjust<span class="op">=</span><span class="fl">0</span>, vjust<span class="op">=</span><span class="fl">0</span><span class="op">)</span>
 <span class="op">}</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist<span class="op">=</span><span class="va">pp</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist<span class="op">=</span><span class="va">pp</span>, ncol<span class="op">=</span><span class="fl">1</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:gsearank2"></span>
-<img src="biomedicalKnowledge_files/figure-html/gsearank2-1.png" alt="Gsearank for multiple gene sets." width="768"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/gsearank2-1.png" alt="Gsearank for multiple gene sets." width="98%"><p class="caption">
 Figure 15.19: <strong>Gsearank for multiple gene sets.</strong>
 </p>
 </div>
@@ -444,10 +444,10 @@ is valid as input of <code>pmcplot</code>.</p>
 <code class="sourceCode R"><span class="va">terms</span> <span class="op">&lt;-</span> <span class="va">edo</span><span class="op">$</span><span class="va">Description</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/pmcplot.html">pmcplot</a></span><span class="op">(</span><span class="va">terms</span>, <span class="fl">2010</span><span class="op">:</span><span class="fl">2020</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/enrichplot/man/pmcplot.html">pmcplot</a></span><span class="op">(</span><span class="va">terms</span>, <span class="fl">2010</span><span class="op">:</span><span class="fl">2020</span>, proportion<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">p2</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:pmcplot"></span>
-<img src="biomedicalKnowledge_files/figure-html/pmcplot-1.png" alt="Pmcplot of enrichment analysis." width="1344"><p class="caption">
+<img src="biomedicalKnowledge_files/figure-html/pmcplot-1.png" alt="Pmcplot of enrichment analysis." width="98%"><p class="caption">
 Figure 15.20: <strong>Pmcplot of enrichment analysis.</strong>
 </p>
 </div>
@@ -506,7 +506,7 @@ ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-01.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
