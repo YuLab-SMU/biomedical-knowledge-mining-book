@@ -32,7 +32,6 @@ geometry: "left=35mm,right=35mm,top=25mm,bottom=25mm"
 
 
 ```{r initial, include=FALSE}
-
 library(emojifont)
 library(org.Hs.eg.db)
 library(clusterProfiler)
@@ -80,7 +79,7 @@ svg2png <- function(path, options) {
 
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, 
-    echo=TRUE, cache=TRUE, dev="svg", 
+    echo=TRUE, cache=TRUE, dev="svg", out.width="98%", 
     fig.process=svg2png
 )
 ```
