@@ -92,6 +92,7 @@ Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and o
 The `meshSim()` function is designed to measure semantic similarity between two MeSH term vectors.
 
 ```{r meshSim, cache=TRUE}
+library(meshes)
 meshSim("D000009", "D009130", semData=hsamd, measure="Resnik")
 meshSim("D000009", "D009130", semData=hsamd, measure="Rel")
 meshSim("D000009", "D009130", semData=hsamd, measure="Jiang")
