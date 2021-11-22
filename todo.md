@@ -1,3 +1,5 @@
+<https://github.com/YuLab-SMU/enrichplot/issues/150>
+
 + [replace ggsymbol::geom_symbol with ggstar::geom_star in dotplot](https://github.com/YuLab-SMU/enrichplot/pull/102)
 
 
