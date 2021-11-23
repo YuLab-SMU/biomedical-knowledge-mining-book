@@ -183,7 +183,7 @@ The default agglomeration method in `treeplot()` is `ward.D` and users can speci
 edox2 <- pairwise_termsim(edox)
 p1 <- treeplot(edox2)
 p2 <- treeplot(edox2, hclust_method = "average")
-aplot::plot_list(list(p1, p2)) + plot_annotation(tag_levels='A')
+aplot::plot_list(p1, p2, tag_levels='A')
 ```
 
 
