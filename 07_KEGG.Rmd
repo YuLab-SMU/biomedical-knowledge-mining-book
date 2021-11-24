@@ -7,12 +7,12 @@ opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 library(clusterProfiler)
 ```
 
-The KEGG FTP service is not freely available for academic since 2012, and there are many software packages using out-dated KEGG annotation data. The `r Biocpkg("clusterProfiler")` package supports downloading latest online version of KEGG data using the [KEGG website](https://www.kegg.jp), which is freely available for academic users. Both KEGG pathway and module are supported in `r Biocpkg("clusterProfiler")`.
+The KEGG FTP service is not freely available for academic use since 2012, and there are many software packages using out-dated KEGG annotation data. The `r Biocpkg("clusterProfiler")` package supports downloading the latest online version of KEGG data using the [KEGG website](https://www.kegg.jp), which is freely available for academic users. Both the KEGG pathway and module are supported in `r Biocpkg("clusterProfiler")`.
 
 
 ## Supported organisms {#clusterProfiler-kegg-supported-organisms}
 
-The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in KEGG database. User should pass abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <http://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
+The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in the KEGG database. Users should pass an abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <http://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
 
 
 The `r Biocpkg("clusterProfiler")` package provides `search_kegg_organism()` function to help searching supported organisms.
@@ -81,10 +81,10 @@ head(mkk2)
 
 ## Visualize enriched KEGG pathways
 
-The `r Biocpkg("enrichplot")` package implemented [several methods](#enrichplot) to visualize enriched terms. Most of them are general methods that can be used to GO, KEGG, MSigDb and other gene set annotations. Here, we introduce `clusterProfiler::browseKEGG()` and `pathview::pathview()`  functions to help users exploring enriched KEGG pathway with interested genes.
+The `r Biocpkg("enrichplot")` package implements [several methods](#enrichplot) to visualize enriched terms. Most of them are general methods that can be used on GO, KEGG, MSigDb, and other gene set annotations. Here, we introduce the `clusterProfiler::browseKEGG()` and `pathview::pathview()` functions to help users explore enriched KEGG pathways with genes of interest.
 
 
-To view the KEGG pathway, user can use `browseKEGG` function, which will open web browser and highlight enriched genes.
+To view the KEGG pathway, users can use the `browseKEGG` function, which will open a web browser and highlight enriched genes.
 
 
 ```{r eval=FALSE}
@@ -95,7 +95,7 @@ browseKEGG(kk, 'hsa04110')
 
 (ref:browseKEGGscap) Explore selected KEGG pathway.
 
-(ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that enriched in the selected pathway will be highlighted.
+(ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that are enriched in the selected pathway will be highlighted.
 
 ```{r browseKEGG, out.width="100%", echo=FALSE, fig.cap="(ref:browseKEGGcap)", fig.scap="(ref:browseKEGGscap)"}
 knitr::include_graphics("figures/browseKEGG.png")
@@ -103,9 +103,9 @@ knitr::include_graphics("figures/browseKEGG.png")
 
 
 
-Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identify by the `r Biocpkg("clusterProfiler")` package [@yu2012].
+Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identified by the `r Biocpkg("clusterProfiler")` package [@yu2012].
 
-The following example illustrate how to visualize "hsa04110" pathway, which was enriched in our previous analysis.
+The following example illustrates how to visualize the "hsa04110" pathway, which was enriched in our previous analysis.
 
 ```{r eval=FALSE}
 library("pathview")
