@@ -7,16 +7,16 @@
 <title>Chapter 2 GO semantic similarity analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="GOSemSim implemented all methods described in Chapter 1, including four IC-based methods and one graph-based method.  2.1 Semantic data To measure semantic similarity, we need to prepare GO...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 2 GO semantic similarity analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="GOSemSim implemented all methods described in Chapter 1, including four IC-based methods and one graph-based method.  2.1 Semantic data To measure semantic similarity, we need to prepare GO...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 2 GO semantic similarity analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="GOSemSim implemented all methods described in Chapter 1, including four IC-based methods and one graph-based method.  2.1 Semantic data To measure semantic similarity, we need to prepare GO...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -109,7 +109,7 @@
 <p>The <code><a href="https://rdrr.io/pkg/GOSemSim/man/goSim.html">goSim()</a></code> function calculates semantic similarity between two GO terms, while the <code><a href="https://rdrr.io/pkg/GOSemSim/man/mgoSim.html">mgoSim()</a></code> function calculates semantic similarity between two sets of GO terms.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/goSim.html">goSim</a></span><span class="op">(</span><span class="st">"GO:0004022"</span>, <span class="st">"GO:0005515"</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Jiang"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.16</code></pre>
+<pre><code>## [1] 0.158</code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/goSim.html">goSim</a></span><span class="op">(</span><span class="st">"GO:0004022"</span>, <span class="st">"GO:0005515"</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0.116</code></pre>
@@ -159,10 +159,10 @@ terms are also calculated by the these combine methods.</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mgeneSim.html">mgeneSim</a></span><span class="op">(</span>genes<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"835"</span>, <span class="st">"5261"</span>,<span class="st">"241"</span>, <span class="st">"994"</span><span class="op">)</span>,
        semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Rel"</span>,verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##        835  5261   241   994
-## 835  0.946 0.404 0.253 0.480
-## 5261 0.404 0.906 0.328 0.469
-## 241  0.253 0.328 0.940 0.271
-## 994  0.480 0.469 0.271 0.906</code></pre>
+## 835  0.947 0.400 0.255 0.488
+## 5261 0.400 0.908 0.325 0.462
+## 241  0.255 0.325 0.941 0.273
+## 994  0.488 0.462 0.273 0.907</code></pre>
 <p>By default, <code>godata</code> function use <code>ENTREZID</code> as keytype, and the input ID type is <code>ENTREZID</code>. User can use other ID types such as <code>ENSEMBL</code>, <code>UNIPROT</code>, <code>REFSEQ</code>, <code>ACCNUM</code>, <code>SYMBOL</code> <em>et al</em>.</p>
 <p>Here as an example, we use <code>SYMBOL</code> as <code>keytype</code> and calculate semantic similarities among several genes by using their gene symbol as input.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -186,18 +186,18 @@ terms are also calculated by the these combine methods.</p>
 <code class="sourceCode R"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"835"</span>, <span class="st">"5261"</span>,<span class="st">"241"</span>, <span class="st">"994"</span>, <span class="st">"514"</span>, <span class="st">"533"</span><span class="op">)</span>
 <span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"578"</span>,<span class="st">"582"</span>, <span class="st">"400"</span>, <span class="st">"409"</span>, <span class="st">"411"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">gs1</span>, <span class="va">gs2</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.613</code></pre>
+<pre><code>## [1] 0.621</code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">org.Hs.egGO</span>
-<span class="va">hsEG</span> <span class="op">&lt;-</span> <span class="fu">mappedkeys</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="va">hsEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/Bimap-keys.html">mappedkeys</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="va">set.seed</span> <span class="op">&lt;-</span> <span class="fl">123</span>
-<span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, c<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
+<span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/Bimap-envirAPI.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/Bimap-envirAPI.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span>, c<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/Bimap-envirAPI.html">sample</a></span><span class="op">(</span><span class="va">hsEG</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/GOSemSim/man/mclusterSim.html">mclusterSim</a></span><span class="op">(</span><span class="va">clusters</span>, semData<span class="op">=</span><span class="va">hsGO</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></code></pre></div>
 <pre><code>##       a     b     c
-## a 1.000 0.718 0.697
-## b 0.718 1.000 0.720
-## c 0.697 0.720 1.000</code></pre>
+## a 1.000 0.630 0.672
+## b 0.630 1.000 0.605
+## c 0.672 0.605 1.000</code></pre>
 <!--
 
 
@@ -262,7 +262,7 @@ MeSH (Medical Subject Headings) is the NLM controlled vocabulary used to manuall
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

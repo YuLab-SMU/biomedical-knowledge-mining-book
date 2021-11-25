@@ -6,17 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<meta name="description" content="GO comprises of three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="description" content="GO comprises three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
-<meta property="og:description" content="GO comprises of three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
+<meta property="og:description" content="GO comprises three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 6 GO enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
-<meta name="twitter:description" content="GO comprises of three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="twitter:description" content="GO comprises three orthogonal ontologies, i.e. molecular function (MF), biological process (BP), and cellular component (CC).  6.1 Supported organisms GO analyses (groupGO(), enrichGO() and...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -74,21 +74,21 @@
 <h1>
 <span class="header-section-number">6</span> GO enrichment analysis<a class="anchor" aria-label="anchor" href="#clusterprofiler-go"><i class="fas fa-link"></i></a>
 </h1>
-<p>GO comprises of three orthogonal ontologies, i.e. molecular function (MF), biological
+<p>GO comprises three orthogonal ontologies, i.e. molecular function (MF), biological
 process (BP), and cellular component (CC).</p>
 <div id="clusterProfiler-go-supported-organisms" class="section level2" number="6.1">
 <h2>
 <span class="header-section-number">6.1</span> Supported organisms<a class="anchor" aria-label="anchor" href="#clusterProfiler-go-supported-organisms"><i class="fas fa-link"></i></a>
 </h2>
 <p>GO analyses (<code><a href="https://rdrr.io/pkg/clusterProfiler/man/groupGO.html">groupGO()</a></code>, <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code>) support organisms that have an <code>OrgDb</code> object available (see also <a href="GOSemSim.html#gosemsim-supported-organisms">session 2.2</a>).</p>
-<p>If user have GO annotation data (in data.frame format with first column of gene ID and second column of GO ID), they can use <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> functions to perform over-representation test and gene set enrichment analysis.</p>
-<p>If genes are annotated by direction annotation, it should also annotated by its ancestor GO nodes (indirect annation). If user only has direct annotation, they can pass their annotation to <code>buildGOmap</code> function, which will infer indirection annotation and generate a <code>data.frame</code> that suitable for both <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code>.</p>
+<p>If a user has GO annotation data (in a <code>data.frame</code> format with the first column as gene ID and the second column as GO ID), they can use the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> functions to perform an over-representation test and gene set enrichment analysis.</p>
+<p>If the genes are annotated by direction annotation, they should also be annotated by their ancestor GO nodes (indirect annotation). If a user only has direct annotation, they can pass their annotation to the <code>buildGOmap</code> function, which will infer indirect annotation and generate a <code>data.frame</code> that is suitable for both <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code>.</p>
 </div>
 <div id="go-classification" class="section level2" number="6.2">
 <h2>
 <span class="header-section-number">6.2</span> GO classification<a class="anchor" aria-label="anchor" href="#go-classification"><i class="fas fa-link"></i></a>
 </h2>
-<p>In <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/groupGO.html">groupGO()</a></code> is designed for gene classification based on GO distribution at a specific level. Here we use the dataset <code>geneList</code> provided by <a href="http://bioconductor.org/packages/DOSE">DOSE</a>.</p>
+<p>In <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/groupGO.html">groupGO()</a></code> function is designed for gene classification based on GO distribution at a specific level. Here we use the dataset <code>geneList</code> provided by <a href="http://bioconductor.org/packages/DOSE">DOSE</a>.</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/">clusterProfiler</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span>, package<span class="op">=</span><span class="st">"DOSE"</span><span class="op">)</span>
@@ -106,19 +106,19 @@ process (BP), and cellular component (CC).</p>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ggo</span><span class="op">)</span></code></pre></div>
 <pre><code>##                    ID                Description Count GeneRatio geneID
-## GO:0044423 GO:0044423                virion part     0     0/207       
 ## GO:0000133 GO:0000133                 polarisome     0     0/207       
 ## GO:0000408 GO:0000408          EKC/KEOPS complex     0     0/207       
 ## GO:0000417 GO:0000417                HIR complex     0     0/207       
 ## GO:0000444 GO:0000444    MIS12/MIND type complex     0     0/207       
-## GO:0000808 GO:0000808 origin recognition complex     0     0/207</code></pre>
-<p>The <code>gene</code> parameter is a vector of gene IDs (can be any ID type that supported by corresponding <code>OrgDb</code>, see also <a href="useful-utilities.html#id-convert">session 16.1</a>). If <code>readable</code> is set to <code>TRUE</code>, the input gene IDs will be converted to gene symbols.</p>
+## GO:0000808 GO:0000808 origin recognition complex     0     0/207       
+## GO:0000930 GO:0000930      gamma-tubulin complex     0     0/207</code></pre>
+<p>The <code>gene</code> parameter is a vector of gene IDs (can be any ID type that is supported by the corresponding <code>OrgDb</code>, see also <a href="useful-utilities.html#id-convert">session 16.1</a>). If <code>readable</code> is set to <code>TRUE</code>, the input gene IDs will be converted to gene symbols.</p>
 </div>
 <div id="clusterprofiler-go-ora" class="section level2" number="6.3">
 <h2>
 <span class="header-section-number">6.3</span> GO over-representation analysis<a class="anchor" aria-label="anchor" href="#clusterprofiler-go-ora"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package implemented <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO()</a></code> function for gene ontology over-representation test.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package implements <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO()</a></code> for gene ontology over-representation test.</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ego</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO</a></span><span class="op">(</span>gene          <span class="op">=</span> <span class="va">gene</span>,
                 universe      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span>,
@@ -131,33 +131,33 @@ process (BP), and cellular component (CC).</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ego</span><span class="op">)</span></code></pre></div>
 <pre><code>##                    ID                              Description GeneRatio
 ## GO:0005819 GO:0005819                                  spindle    26/201
+## GO:0000779 GO:0000779 condensed chromosome, centromeric region    16/201
 ## GO:0072686 GO:0072686                          mitotic spindle    17/201
 ## GO:0000775 GO:0000775           chromosome, centromeric region    18/201
 ## GO:0098687 GO:0098687                       chromosomal region    23/201
-## GO:0000779 GO:0000779 condensed chromosome, centromeric region    14/201
 ## GO:0000776 GO:0000776                              kinetochore    15/201
 ##              BgRatio       pvalue     p.adjust       qvalue
-## GO:0005819 299/11840 6.490593e-12 1.908234e-09 1.735380e-09
-## GO:0072686 129/11840 5.480692e-11 8.056617e-09 7.326819e-09
-## GO:0000775 156/11840 1.385677e-10 1.206452e-08 1.097168e-08
-## GO:0098687 269/11840 1.641432e-10 1.206452e-08 1.097168e-08
-## GO:0000779  90/11840 3.056082e-10 1.796976e-08 1.634199e-08
-## GO:0000776 109/11840 4.155863e-10 2.036373e-08 1.851911e-08
+## GO:0005819 306/11853 1.072029e-11 3.151766e-09 2.888837e-09
+## GO:0000779 114/11853 7.709944e-11 8.659125e-09 7.936756e-09
+## GO:0072686 133/11853 8.835841e-11 8.659125e-09 7.936756e-09
+## GO:0000775 158/11853 1.684987e-10 1.179661e-08 1.081250e-08
+## GO:0098687 272/11853 2.006225e-10 1.179661e-08 1.081250e-08
+## GO:0000776 106/11853 2.733425e-10 1.339378e-08 1.227644e-08
 ##                                                                                                                                                               geneID
 ## GO:0005819 CDCA8/CDC20/KIF23/CENPE/ASPM/DLGAP5/SKA1/NUSAP1/TPX2/TACC3/NEK2/CDK1/MAD2L1/KIF18A/BIRC5/KIF11/TRAT1/TTK/AURKB/PRC1/KIFC1/KIF18B/KIF20A/AURKA/CCNB1/KIF4A
+## GO:0000779                                                             CENPE/NDC80/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/NCAPG/AURKB/CCNB1
 ## GO:0072686                                                      KIF23/CENPE/ASPM/SKA1/NUSAP1/TPX2/TACC3/CDK1/MAD2L1/KIF18A/KIF11/TRAT1/AURKB/PRC1/KIFC1/KIF18B/AURKA
 ## GO:0000775                                                 CDCA8/CENPE/NDC80/TOP2A/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/NCAPG/AURKB/CCNB1
 ## GO:0098687                   CDCA8/CENPE/NDC80/TOP2A/HJURP/SKA1/NEK2/CENPM/RAD51AP1/CENPN/CDK1/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/EZH2/TTK/NCAPG/AURKB/CHEK1/CCNB1/MCM5
-## GO:0000779                                                                        CENPE/NDC80/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/CDT1/BIRC5/NCAPG/AURKB/CCNB1
 ## GO:0000776                                                                   CENPE/NDC80/HJURP/SKA1/NEK2/CENPM/CENPN/ERCC6L/MAD2L1/KIF18A/CDT1/BIRC5/TTK/AURKB/CCNB1
 ##            Count
 ## GO:0005819    26
+## GO:0000779    16
 ## GO:0072686    17
 ## GO:0000775    18
 ## GO:0098687    23
-## GO:0000779    14
 ## GO:0000776    15</code></pre>
-<p>Any gene ID type that supported in <code>OrgDb</code> can be directly used in GO analyses. User need to specify the <code>keyType</code> parameter to specify the input gene ID type.</p>
+<p>Any gene ID type that is supported in <code>OrgDb</code> can be directly used in GO analyses. Users need to specify the <code>keyType</code> parameter to specify the input gene ID type.</p>
 <div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gene.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr</a></span><span class="op">(</span><span class="va">gene</span>, fromType <span class="op">=</span> <span class="st">"ENTREZID"</span>,
         toType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSEMBL"</span>, <span class="st">"SYMBOL"</span><span class="op">)</span>,
@@ -171,29 +171,29 @@ process (BP), and cellular component (CC).</p>
                 pvalueCutoff  <span class="op">=</span> <span class="fl">0.01</span>,
                 qvalueCutoff  <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ego2</span>, <span class="fl">3</span><span class="op">)</span>                </code></pre></div>
-<pre><code>##                    ID                    Description GeneRatio   BgRatio
-## GO:0005819 GO:0005819                        spindle    30/233 410/21841
-## GO:0072686 GO:0072686                mitotic spindle    21/233 175/21841
-## GO:0000775 GO:0000775 chromosome, centromeric region    19/233 212/21841
-##                  pvalue     p.adjust       qvalue
-## GO:0005819 9.737364e-17 2.784886e-14 2.121720e-14
-## GO:0072686 2.623396e-16 3.751456e-14 2.858121e-14
-## GO:0000775 1.506065e-12 9.096876e-11 6.930634e-11
+<pre><code>##                    ID                              Description GeneRatio
+## GO:0005819 GO:0005819                                  spindle    30/233
+## GO:0072686 GO:0072686                          mitotic spindle    21/233
+## GO:0000779 GO:0000779 condensed chromosome, centromeric region    17/233
+##              BgRatio       pvalue     p.adjust       qvalue
+## GO:0005819 422/21916 1.954166e-16 5.413039e-14 4.175744e-14
+## GO:0072686 179/21916 3.911063e-16 5.416822e-14 4.178662e-14
+## GO:0000779 154/21916 7.525516e-13 6.948560e-11 5.360280e-11
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     geneID
 ## GO:0005819 ENSG00000134690/ENSG00000117399/ENSG00000137807/ENSG00000138778/ENSG00000066279/ENSG00000126787/ENSG00000154839/ENSG00000262634/ENSG00000137804/ENSG00000088325/ENSG00000013810/ENSG00000117650/ENSG00000170312/ENSG00000164109/ENSG00000121621/ENSG00000089685/ENSG00000138160/ENSG00000163519/ENSG00000112742/ENSG00000178999/ENSG00000198901/ENSG00000237649/ENSG00000233450/ENSG00000056678/ENSG00000204197/ENSG00000186185/ENSG00000112984/ENSG00000087586/ENSG00000134057/ENSG00000090889
 ## GO:0072686                                                                                                                                                 ENSG00000137807/ENSG00000138778/ENSG00000066279/ENSG00000154839/ENSG00000262634/ENSG00000137804/ENSG00000088325/ENSG00000013810/ENSG00000170312/ENSG00000164109/ENSG00000121621/ENSG00000138160/ENSG00000163519/ENSG00000178999/ENSG00000198901/ENSG00000237649/ENSG00000233450/ENSG00000056678/ENSG00000204197/ENSG00000186185/ENSG00000087586
-## GO:0000775                                                                                                                                                                                 ENSG00000134690/ENSG00000138778/ENSG00000080986/ENSG00000131747/ENSG00000123485/ENSG00000154839/ENSG00000262634/ENSG00000117650/ENSG00000100162/ENSG00000166451/ENSG00000186871/ENSG00000164109/ENSG00000121621/ENSG00000167513/ENSG00000089685/ENSG00000112742/ENSG00000109805/ENSG00000178999/ENSG00000134057
+## GO:0000779                                                                                                                                                                                                                 ENSG00000138778/ENSG00000080986/ENSG00000123485/ENSG00000154839/ENSG00000262634/ENSG00000117650/ENSG00000100162/ENSG00000166451/ENSG00000186871/ENSG00000164109/ENSG00000121621/ENSG00000167513/ENSG00000089685/ENSG00000112742/ENSG00000109805/ENSG00000178999/ENSG00000134057
 ##            Count
 ## GO:0005819    30
 ## GO:0072686    21
-## GO:0000775    19</code></pre>
-<p>Gene ID can be mapped to gene Symbol by using paramter <code>readable=TRUE</code> or <a href="useful-utilities.html#setReadable"><code>setReadable()</code> function</a>.</p>
+## GO:0000779    17</code></pre>
+<p>Gene IDs can be mapped to gene Symbols by using the parameter <code>readable=TRUE</code> or <a href="useful-utilities.html#setReadable"><code>setReadable()</code> function</a>.</p>
 </div>
 <div id="go-gene-set-enrichment-analysis" class="section level2" number="6.4">
 <h2>
 <span class="header-section-number">6.4</span> GO Gene Set Enrichment Analysis<a class="anchor" aria-label="anchor" href="#go-gene-set-enrichment-analysis"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> function for <a href="enrichment-overview.html#gsea-algorithm">gene set enrichment analysis</a> using gene ontology.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> function for <a href="enrichment-overview.html#gsea-algorithm">gene set enrichment analysis</a> using gene ontology.</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ego3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO</a></span><span class="op">(</span>geneList     <span class="op">=</span> <span class="va">geneList</span>,
               OrgDb        <span class="op">=</span> <span class="va">org.Hs.eg.db</span>,
@@ -208,13 +208,13 @@ process (BP), and cellular component (CC).</p>
 <h2>
 <span class="header-section-number">6.5</span> GO analysis for non-model organisms<a class="anchor" aria-label="anchor" href="#clusterprofiler-go-non-model"><i class="fas fa-link"></i></a>
 </h2>
-<p>Both <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> functions require an <code>OrgDb</code> object as background annotation. For organisms that don’t have <code>OrgDb</code> provided by Bioconductor, users can query one (if available) online via <a href="http://bioconductor.org/packages/AnnotationHub">AnnotationHub</a>. If there is no <code>OrgDb</code> available, users can obtain GO annotation from other sources, e.g. from <a href="http://bioconductor.org/packages/biomaRt">biomaRt</a> or <a href="https://www.blast2go.com/">Blast2GO</a>. Then the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> or <code><a href="https://rdrr.io/pkg/clusterProfiler/man/GSEA.html">GSEA()</a></code> functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create <code>OrgDb</code> by your own using <a href="http://bioconductor.org/packages/AnnotationForge">AnnotationForge</a> package.</p>
+<p>Both the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichGO.html">enrichGO()</a></code> and <code><a href="https://rdrr.io/pkg/clusterProfiler/man/gseGO.html">gseGO()</a></code> functions require an <code>OrgDb</code> object as the background annotation. For organisms that don’t have <code>OrgDb</code> provided by <code>Bioconductor</code>, users can query one (if available) online via <a href="http://bioconductor.org/packages/AnnotationHub">AnnotationHub</a>. If there is no <code>OrgDb</code> available, users can obtain GO annotation from other sources, e.g. from <a href="http://bioconductor.org/packages/biomaRt">biomaRt</a> or <a href="https://www.blast2go.com/">Blast2GO</a>. Then the <code><a href="https://rdrr.io/pkg/clusterProfiler/man/enricher.html">enricher()</a></code> or <code><a href="https://rdrr.io/pkg/clusterProfiler/man/GSEA.html">GSEA()</a></code> functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create an <code>OrgDb</code> on your own using <a href="http://bioconductor.org/packages/AnnotationForge">AnnotationForge</a> package.</p>
 </div>
 <div id="visualize-enriched-go-terms-as-a-directed-acyclic-graph" class="section level2" number="6.6">
 <h2>
 <span class="header-section-number">6.6</span> Visualize enriched GO terms as a directed acyclic graph<a class="anchor" aria-label="anchor" href="#visualize-enriched-go-terms-as-a-directed-acyclic-graph"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/goplot.html">goplot()</a></code> can accept output of <code>enrichGO</code> and visualized the enriched GO induced graph.</p>
+<p>The <code><a href="https://rdrr.io/pkg/enrichplot/man/goplot.html">goplot()</a></code> function can accept the output of <code>enrichGO</code> and visualize the enriched GO induced graph.</p>
 
 
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
@@ -264,7 +264,7 @@ Figure 6.1: <strong>Goplot of enrichment analysis.</strong>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

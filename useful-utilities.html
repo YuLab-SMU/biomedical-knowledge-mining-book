@@ -7,16 +7,16 @@
 <title>Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -104,7 +104,7 @@
 <p>User can use <code>keytypes</code> to list all supporting types.</p>
 <div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/MeSHDbi/man/MeSHDb.html">keytypes</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html">keytypes</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS"
 ##  [6] "ENTREZID"     "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"    
 ## [11] "GENETYPE"     "GO"           "GOALL"        "IPI"          "MAP"         
@@ -130,16 +130,16 @@
 <div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr.html">bitr</a></span><span class="op">(</span><span class="st">"GO:0006805"</span>, fromType<span class="op">=</span><span class="st">"GO"</span>, toType <span class="op">=</span> <span class="st">"SYMBOL"</span>, OrgDb<span class="op">=</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 111   4</code></pre>
+<pre><code>## [1] 114   4</code></pre>
 <div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></code></pre></div>
-<pre><code>##           GO EVIDENCE ONTOLOGY SYMBOL
-## 1 GO:0006805      TAS       BP   NAT1
-## 2 GO:0006805      TAS       BP   NAT2
-## 3 GO:0006805      TAS       BP  AADAC
-## 4 GO:0006805      TAS       BP   AOC1
-## 5 GO:0006805      TAS       BP   ACY1
-## 6 GO:0006805      TAS       BP    AHR</code></pre>
+<pre><code>##           GO EVIDENCE ONTOLOGY  SYMBOL
+## 1 GO:0006805      TAS       BP    NAT1
+## 2 GO:0006805      TAS       BP    NAT2
+## 3 GO:0006805      TAS       BP   AADAC
+## 4 GO:0006805      TAS       BP     AHR
+## 5 GO:0006805      TAS       BP ALDH3A1
+## 6 GO:0006805      TAS       BP    AOC2</code></pre>
 <p>Note: If you want to extract genes in your input gene list that are belong to a specific term/pathway, you can use the <a href="faq.html#how-to-extract-genes-of-a-specific-termpathway">geneInCategory</a> function.</p>
 </div>
 <div id="bitr_kegg" class="section level3" number="17.1.2">
@@ -180,7 +180,7 @@
 <div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="st">"Z5100"</span>, fromType<span class="op">=</span><span class="st">"kegg"</span>, toType<span class="op">=</span><span class="st">'uniprot'</span>, organism<span class="op">=</span><span class="st">'ece'</span><span class="op">)</span></code></pre></div>
 <pre><code>##    kegg    uniprot
-## 1 Z5100 A0A7Z3D5K5</code></pre>
+## 1 Z5100 A0A4P8B4C9</code></pre>
 </div>
 </div>
 <div id="setReadable" class="section level2" number="17.2">
@@ -198,25 +198,25 @@
 <span class="co">## The geneID column is ENTREZID</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 126/8093 5.220887e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8093 2.844808e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8093 9.991522e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8113 5.125227e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8113 2.800556e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8113 9.857875e-05
 ##              p.adjust       qvalue                               geneID Count
-## hsa04110 6.160647e-05 5.605584e-05 8318/991/9133/890/983/4085/7272/1111     8
-## hsa04218 1.678436e-03 1.527213e-03    2305/4605/9133/890/983/51806/1111     7
-## hsa04114 3.929999e-03 3.575913e-03         991/9133/983/4085/51806/6790     6</code></pre>
+## hsa04110 6.047768e-05 5.502876e-05 8318/991/9133/890/983/4085/7272/1111     8
+## hsa04218 1.652328e-03 1.503456e-03    2305/4605/9133/890/983/51806/1111     7
+## hsa04114 3.877431e-03 3.528082e-03         991/9133/983/4085/51806/6790     6</code></pre>
 <div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">x</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
 <span class="co">## The geneID column is translated to symbol</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 126/8093 5.220887e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8093 2.844808e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8093 9.991522e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8113 5.125227e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8113 2.800556e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8113 9.857875e-05
 ##              p.adjust       qvalue
-## hsa04110 6.160647e-05 5.605584e-05
-## hsa04218 1.678436e-03 1.527213e-03
-## hsa04114 3.929999e-03 3.575913e-03
+## hsa04110 6.047768e-05 5.502876e-05
+## hsa04218 1.652328e-03 1.503456e-03
+## hsa04114 3.877431e-03 3.528082e-03
 ##                                                 geneID Count
 ## hsa04110 CDC45/CDC20/CCNB2/CCNA2/CDK1/MAD2L1/TTK/CHEK1     8
 ## hsa04218     FOXM1/MYBL2/CCNB2/CCNA2/CDK1/CALML5/CHEK1     7
@@ -302,7 +302,7 @@ Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code><
 <h2>
 <span class="header-section-number">17.5</span> Data frame interface for accessing enriched results<a class="anchor" aria-label="anchor" href="#data-frame-interface-for-accessing-enriched-results"><i class="fas fa-link"></i></a>
 </h2>
-<p>The <code><a href="https://rdrr.io/r/base/Extract.html">[</a></code> and <code><a href="https://rdrr.io/r/base/Extract.html">[[</a></code> (<code>asis</code> parameter).</p>
+<p>The <code>[</code> and <code>[[</code> (<code>asis</code> parameter).</p>
 
 </div>
 </div>
@@ -348,7 +348,7 @@ Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code><
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

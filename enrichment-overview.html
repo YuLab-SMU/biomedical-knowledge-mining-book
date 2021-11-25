@@ -6,17 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
-<meta name="description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functional related. A pathway can be interpreted as a gene set by ignoring functional...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functionally related. A pathway can be interpreted as a gene set by ignoring functional...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
-<meta property="og:description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functional related. A pathway can be interpreted as a gene set by ignoring functional...">
+<meta property="og:description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functionally related. A pathway can be interpreted as a gene set by ignoring functional...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 5 Overview of enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
-<meta name="twitter:description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functional related. A pathway can be interpreted as a gene set by ignoring functional...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="twitter:description" content="5.1 Terminology  5.1.1 Gene sets and pathway A gene set is an unordered collection of genes that are functionally related. A pathway can be interpreted as a gene set by ignoring functional...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -82,7 +82,7 @@
 <h3>
 <span class="header-section-number">5.1.1</span> Gene sets and pathway<a class="anchor" aria-label="anchor" href="#gene-sets-and-pathway"><i class="fas fa-link"></i></a>
 </h3>
-<p>A gene set is an unordered collection of genes that are functional related. A pathway can be interpreted as a gene set by ignoring functional relationships among genes.</p>
+<p>A gene set is an unordered collection of genes that are functionally related. A pathway can be interpreted as a gene set by ignoring functional relationships among genes.</p>
 </div>
 <div id="gene-ontology-go" class="section level3" number="5.1.2">
 <h3>
@@ -106,13 +106,13 @@
 </ul>
 </li>
 </ul>
-<p>GO terms are organized in a directed acyclic graph, where edge between the terms represent parent-child relationship.</p>
+<p>GO terms are organized in a directed acyclic graph, where edges between terms represent parent-child relationship.</p>
 </div>
 <div id="kyoto-encyclopedia-of-genes-and-genomes-kegg" class="section level3" number="5.1.3">
 <h3>
 <span class="header-section-number">5.1.3</span> Kyoto Encyclopedia of Genes and Genomes (KEGG)<a class="anchor" aria-label="anchor" href="#kyoto-encyclopedia-of-genes-and-genomes-kegg"><i class="fas fa-link"></i></a>
 </h3>
-<p><a href="https://www.genome.jp/kegg/">KEGG</a> is a collection of manually drawn pathway maps representing molecular interaction and reaction networks. These pathways cover a wide range of biochemical processes that can be divided in <a href="https://www.genome.jp/kegg/pathway.html">7 broad categories</a>:</p>
+<p><a href="https://www.genome.jp/kegg/">KEGG</a> is a collection of manually drawn pathway maps representing molecular interaction and reaction networks. These pathways cover a wide range of biochemical processes that can be divided into <a href="https://www.genome.jp/kegg/pathway.html">7 broad categories</a>:</p>
 <ol style="list-style-type: decimal">
 <li>Metabolism</li>
 <li>Genetic information processing</li>
@@ -128,8 +128,8 @@
 <h3>
 <span class="header-section-number">5.1.4</span> Other gene sets<a class="anchor" aria-label="anchor" href="#other-gene-sets"><i class="fas fa-link"></i></a>
 </h3>
-<p>GO and KEGG are most frequently used for the functional analysis. They are typically the first choice because their long-standing curation and availability for a wide range of species.</p>
-<p>Other gene sets including but not limited to Disease Ontology (<a href="http://disease-ontology.org/">DO</a>), Disease Gene Network (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/">DisGeNET</a>), <a href="https://www.wikipathways.org">wikiPathways</a>, Molecular Signatures Database (<a href="http://software.broadinstitute.org/gsea/msigdb">MSigDb</a>).</p>
+<p>GO and KEGG are the most frequently used for functional analysis. They are typically the first choice because of their long-standing curation and availability for a wide range of species.</p>
+<p>Other gene sets include but are not limited to Disease Ontology (<a href="http://disease-ontology.org/">DO</a>), Disease Gene Network (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/">DisGeNET</a>), <a href="https://www.wikipathways.org">wikiPathways</a>, Molecular Signatures Database (<a href="http://software.broadinstitute.org/gsea/msigdb">MSigDb</a>).</p>
 </div>
 </div>
 <div id="ora-algorithm" class="section level2" number="5.2">
@@ -141,10 +141,8 @@
 <p><span class="math inline">\(p = 1 - \displaystyle\sum_{i = 0}^{k-1}\frac{{M \choose i}{{N-M} \choose {n-i}}} {{N \choose n}}\)</span></p>
 <p>In this equation, <code>N</code> is the total number of genes in the background distribution,
 <code>M</code> is the number of genes within that distribution that are annotated (either directly or indirectly) to the gene set of interest,
-<code>n</code> is the size of the list of genes of interest and <code>k</code> is the number of genes within that list which
-are annotated to the gene set. The background distribution by default is
-all the genes that have annotation. <em>P</em>-values should be adjusted for <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparison</a>.</p>
-<p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differential expressed genes, 28 are annotated to a gene set<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;example adopted from &lt;a href="https://guangchuangyu.github.io/2012/04/enrichment-analysis/" class="uri"&gt;https://guangchuangyu.github.io/2012/04/enrichment-analysis/&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>.</p>
+<code>n</code> is the size of the list of genes of interest and <code>k</code> is the number of genes within that list which are annotated to the gene set. The background distribution by default is all the genes that have annotation. <em>P</em>-values should be adjusted for <a href="https://en.wikipedia.org/wiki/Multiple_comparisons_problem">multiple comparison</a>.</p>
+<p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differentially expressed genes, 28 are annotated to a gene set<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;example adopted from &lt;a href="https://guangchuangyu.github.io/2012/04/enrichment-analysis/" class="uri"&gt;https://guangchuangyu.github.io/2012/04/enrichment-analysis/&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>.</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>gene.not.interest<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2613</span>, <span class="fl">15310</span><span class="op">)</span>, gene.in.interest<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">28</span>, <span class="fl">29</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/row.names.html">row.names</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"In_category"</span>, <span class="st">"not_in_category"</span><span class="op">)</span>
@@ -152,7 +150,7 @@ all the genes that have annotation. <em>P</em>-values should be adjusted for <a 
 <pre><code>##                 gene.not.interest gene.in.interest
 ## In_category                  2613               28
 ## not_in_category             15310               29</code></pre>
-<p>whether the overlap of 25 genes are significantly over represented in the gene set can be assessed using hypergeometric distribution. This corresponding to a one-sided version of Fisher’s exact test.</p>
+<p>Whether the overlap(s) of 25 genes are significantly over represented in the gene set can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher’s exact test.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/fisher.test.html">fisher.test</a></span><span class="op">(</span><span class="va">d</span>, alternative <span class="op">=</span> <span class="st">"greater"</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
@@ -171,28 +169,28 @@ all the genes that have annotation. <em>P</em>-values should be adjusted for <a 
 <h2>
 <span class="header-section-number">5.3</span> Gene Set Enrichment Analysis<a class="anchor" aria-label="anchor" href="#gsea-algorithm"><i class="fas fa-link"></i></a>
 </h2>
-<p>A common approach in analyzing gene expression profiles was identifying differential expressed genes that are deemed interesting. The <a href="enrichment-overview.html#ora-algorithm">ORA enrichment analysis</a> is based on these differential expressed genes. This approach will find genes where the difference is large, but it will not detect a situation where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span> directly addresses this limitation.
-All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. Since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.</p>
-<p>Genes are ranked based on their phenotypes. Given a priori defined set of gene <em>S</em> (e.g., genes shareing the same <em>DO</em> category), the goal of GSEA is to determine whether the members of <em>S</em> are randomly distributed throughout the ranked gene list (<em>L</em>) or primarily found at the top or bottom.</p>
+<p>A common approach to analyzing gene expression profiles is identifying differentially expressed genes that are deemed interesting. The <a href="enrichment-overview.html#ora-algorithm">ORA enrichment analysis</a> is based on these differentially expressed genes. This approach will find genes where the difference is large and will fail where the difference is small, but evidenced in coordinated way in a set of related genes. Gene Set Enrichment Analysis (GSEA)<span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span> directly addresses this limitation.
+All genes can be used in GSEA; GSEA aggregates the per gene statistics across genes within a gene set, therefore making it possible to detect situations where all genes in a predefined set change in a small but coordinated way. This is important since it is likely that many relevant phenotypic differences are manifested by small but consistent changes in a set of genes.</p>
+<p>Genes are ranked based on their phenotypes. Given apriori defined set of gene <em>S</em> (e.g., genes sharing the same <em>DO</em> category), the goal of GSEA is to determine whether the members of <em>S</em> are randomly distributed throughout the ranked gene list (<em>L</em>) or primarily found at the top or bottom.</p>
 <p>There are three key elements of the GSEA method:</p>
 <ul>
 <li>Calculation of an Enrichment Score.
 <ul>
-<li>The enrichment score (<em>ES</em>) represent the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov-like statistic <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>.</li>
+<li>The enrichment score (<em>ES</em>) represents the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not encountered. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov(KS)-like statistic <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>.</li>
 </ul>
 </li>
 <li>Esimation of Significance Level of <em>ES</em>.
 <ul>
-<li>The <em>p</em>-value of the <em>ES</em> is calculated using permutation test. Specifically, we permute the gene labels of the gene list <em>L</em> and recompute the <em>ES</em> of the gene set for the permutated data, which generate a null distribution for the <em>ES</em>. The <em>p</em>-value of the observed <em>ES</em> is then calculated relative to this null distribution.</li>
+<li>The <em>p</em>-value of the <em>ES</em> is calculated using a permutation test. Specifically, we permute the gene labels of the gene list <em>L</em> and recompute the <em>ES</em> of the gene set for the permutated data, which generate a null distribution for the <em>ES</em>. The <em>p</em>-value of the observed <em>ES</em> is then calculated relative to this null distribution.</li>
 </ul>
 </li>
 <li>Adjustment for Multiple Hypothesis Testing.
 <ul>
-<li>When the entire gene sets were evaluated, the estimated significance level was adjusted to account for multiple hypothesis testing and also <em>q</em>-values were calculated for FDR control.</li>
+<li>When the entire gene sets are evaluated, the estimated significance level is adjusted to account for multiple hypothesis testing and also <em>q</em>-values are calculated for FDR control.</li>
 </ul>
 </li>
 </ul>
-<p>We implemented GSEA algorithm proposed by Subramanian <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>. Alexey Sergushichev implemented an algorithm for fast GSEA calculation in the <a href="http://bioconductor.org/packages/fgsea">fgsea</a> <span class="citation">(<a href="references.html#ref-korotkevich_fast_2019" role="doc-biblioref">Korotkevich, Sukhov, and Sergushichev 2019</a>)</span> package. In our packages (<a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>), users can use GSEA algorithm implemented in <code>DOSE</code> or <code>fgsea</code> by specifying the parameter <code>by="DOSE"</code> or <code>by="fgsea"</code>. By default, the <code>fgsea</code> method will be used since it is much more faster.</p>
+<p>We implemented the GSEA algorithm proposed by Subramanian <span class="citation">(<a href="references.html#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>. Alexey Sergushichev implemented an algorithm for fast GSEA calculation in the <a href="http://bioconductor.org/packages/fgsea">fgsea</a> <span class="citation">(<a href="references.html#ref-korotkevich_fast_2019" role="doc-biblioref">Korotkevich, Sukhov, and Sergushichev 2019</a>)</span> package. In our packages (<a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>, <a href="http://bioconductor.org/packages/DOSE">DOSE</a>, <a href="http://bioconductor.org/packages/meshes">meshes</a> and <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a>), users can use the GSEA algorithm implemented in <code>DOSE</code> or <code>fgsea</code> by specifying the parameter <code>by="DOSE"</code> or <code>by="fgsea"</code>. By default, the <code>fgsea</code> method will be used since it is much more faster.</p>
 </div>
 <div id="leading-edge-analysis-and-core-enriched-genes" class="section level2" number="5.4">
 <h2>
@@ -238,7 +236,7 @@ All genes can be used in GSEA; GSEA aggregates the per gene statistics across ge
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

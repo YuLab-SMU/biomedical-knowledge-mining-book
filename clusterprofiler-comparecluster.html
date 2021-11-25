@@ -7,16 +7,16 @@
 <title>Chapter 14 Biological theme comparison | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="The clusterProfiler package was developed for biological theme comparison (Yu et al. 2012; Wu et al. 2021), and it provides a function, compareCluster, to automatically calculate enriched...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 14 Biological theme comparison | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="The clusterProfiler package was developed for biological theme comparison (Yu et al. 2012; Wu et al. 2021), and it provides a function, compareCluster, to automatically calculate enriched...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 14 Biological theme comparison | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="The clusterProfiler package was developed for biological theme comparison (Yu et al. 2012; Wu et al. 2021), and it provides a function, compareCluster, to automatically calculate enriched...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -98,19 +98,19 @@
 <span class="va">ck</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ck</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ck</span><span class="op">)</span> </code></pre></div>
 <pre><code>##   Cluster       ID                            Description GeneRatio  BgRatio
-## 1      X2 hsa04110                             Cell cycle    18/384 126/8093
-## 2      X2 hsa05169           Epstein-Barr virus infection    23/384 202/8093
-## 3      X2 hsa05340               Primary immunodeficiency     8/384  38/8093
-## 4      X3 hsa04512               ECM-receptor interaction     9/187  88/8093
-## 5      X3 hsa04060 Cytokine-cytokine receptor interaction    17/187 295/8093
-## 6      X3 hsa04151             PI3K-Akt signaling pathway    19/187 354/8093
-##         pvalue    p.adjust     qvalue
-## 1 2.489396e-05 0.007592658 0.00710133
-## 2 8.089523e-05 0.012336522 0.01153821
-## 3 3.330480e-04 0.033859880 0.03166877
-## 4 1.835745e-04 0.045747075 0.04274416
-## 5 4.566657e-04 0.045747075 0.04274416
-## 6 5.140121e-04 0.045747075 0.04274416
+## 1      X2 hsa04110                             Cell cycle    18/385 126/8113
+## 2      X2 hsa05169           Epstein-Barr virus infection    23/385 202/8113
+## 3      X2 hsa05340               Primary immunodeficiency     8/385  38/8113
+## 4      X3 hsa04512               ECM-receptor interaction     9/187  88/8113
+## 5      X3 hsa04060 Cytokine-cytokine receptor interaction    17/187 295/8113
+## 6      X3 hsa04151             PI3K-Akt signaling pathway    19/187 354/8113
+##         pvalue    p.adjust      qvalue
+## 1 2.495029e-05 0.007634788 0.007143661
+## 2 8.110987e-05 0.012409810 0.011611518
+## 3 3.333855e-04 0.034005323 0.031817846
+## 4 1.802417e-04 0.044560547 0.041655185
+## 5 4.440714e-04 0.044560547 0.041655185
+## 6 4.988121e-04 0.044560547 0.041655185
 ##                                                                                                                          geneID
 ## 1                          CDC20/E2F1/CCNA2/E2F3/BUB1B/CDC6/DBF4/PKMYT1/CDC7/ESPL1/CCNE2/CDKN2A/SFN/BUB1/CHEK2/ORC6/CDC14B/MCM4
 ## 2 LYN/ICAM1/TNFAIP3/E2F1/CCNA2/E2F3/BAK1/RUNX3/BID/IKBKE/TAP2/FAS/CCNE2/RELB/CD3E/ENTPD3/SYK/TRAF3/IKBKB/CD247/NEDD4/CD40/STAT1
@@ -150,19 +150,19 @@
 ## 5 downregulated.B downregulated          B hsa03320
 ## 6   upregulated.A   upregulated          A hsa04110
 ##                        Description GeneRatio  BgRatio       pvalue     p.adjust
-## 1 Protein digestion and absorption    16/319 103/8093 2.322875e-06 6.480820e-04
-## 2                   Focal adhesion    20/319 201/8093 1.220834e-04 1.703063e-02
-## 3       PI3K-Akt signaling pathway    28/319 354/8093 3.238142e-04 3.011472e-02
-## 4         ECM-receptor interaction    11/319  88/8093 6.367805e-04 4.441544e-02
-## 5           PPAR signaling pathway      5/43  76/8093 4.658778e-05 7.267694e-03
-## 6                       Cell cycle    20/220 126/8093 1.370622e-10 3.426556e-08
+## 1 Protein digestion and absorption    16/321 103/8113 2.441830e-06 6.812706e-04
+## 2                   Focal adhesion    20/321 201/8113 1.286148e-04 1.794176e-02
+## 3       PI3K-Akt signaling pathway    28/321 354/8113 3.448073e-04 3.206708e-02
+## 4         ECM-receptor interaction    11/321  88/8113 6.573283e-04 4.584865e-02
+## 5           PPAR signaling pathway      5/43  75/8113 4.318697e-05 6.737167e-03
+## 6                       Cell cycle    20/220 126/8113 1.312862e-10 3.308412e-08
 ##         qvalue
-## 1 6.161731e-04
-## 2 1.619211e-02
-## 3 2.863199e-02
-## 4 4.222860e-02
-## 5 6.816528e-03
-## 6 3.073080e-08
+## 1 6.477275e-04
+## 2 1.705838e-02
+## 3 3.048822e-02
+## 4 4.359125e-02
+## 5 6.318935e-03
+## 6 2.971214e-08
 ##                                                                                                                                             geneID
 ## 1                                                                 1281/50509/1290/477/1294/1360/1289/1292/1296/23428/1359/1300/1287/6505/2006/7373
 ## 2                                         55742/2317/7058/25759/56034/3693/3480/5159/857/1292/3908/3909/63923/3913/1287/3679/7060/3479/10451/80310
@@ -277,7 +277,7 @@ Figure 14.3: <strong><code><a href="https://rdrr.io/pkg/enrichplot/man/cnetplot.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

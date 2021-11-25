@@ -7,16 +7,16 @@
 <title>Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
-<meta name="generator" content="bookdown 0.23 with bs4_book()">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.10/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.1/tabs.js"></script><script src="libs/bs3compat-0.2.5.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -112,12 +112,12 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 ## R-HSA-141444  Amplification  of signal from unattached  kinetochores via a MAD2  inhibitory signal
 ## R-HSA-9648025                                           EML4 and NUDC in mitotic spindle formation
 ##               GeneRatio   BgRatio       pvalue     p.adjust       qvalue
-## R-HSA-69620      38/328 294/10856 2.142796e-14 1.647810e-11 1.470635e-11
-## R-HSA-69618      22/328 113/10856 2.206937e-12 7.273823e-10 6.491729e-10
-## R-HSA-2500257    23/328 126/10856 2.837642e-12 7.273823e-10 6.491729e-10
-## R-HSA-141424     20/328  96/10856 6.071311e-12 9.337676e-10 8.333673e-10
-## R-HSA-141444     20/328  96/10856 6.071311e-12 9.337676e-10 8.333673e-10
-## R-HSA-9648025    20/328 117/10856 2.674965e-10 3.428414e-08 3.059785e-08
+## R-HSA-69620      38/330 294/10867 2.529789e-14 1.970705e-11 1.754874e-11
+## R-HSA-69618      22/330 113/10867 2.443911e-12 8.189225e-10 7.292344e-10
+## R-HSA-2500257    23/330 126/10867 3.153745e-12 8.189225e-10 7.292344e-10
+## R-HSA-141424     20/330  96/10867 6.665836e-12 1.038537e-09 9.247970e-10
+## R-HSA-141444     20/330  96/10867 6.665836e-12 1.038537e-09 9.247970e-10
+## R-HSA-9648025    20/330 117/10867 2.927596e-10 3.800995e-08 3.384712e-08
 ##                                                                                                                                                                                                                                       geneID
 ## R-HSA-69620   CDC45/CDCA8/MCM10/CDC20/CENPE/CCNB2/NDC80/UBE2C/SKA1/CENPM/CENPN/UBE2S/CCNA2/CDK1/ERCC6L/MAD2L1/KIF18A/BIRC5/AURKB/CHEK1/CCNB1/MCM5/MCM2/KIF2C/CDC25A/CDC6/PLK1/BUB1B/GTSE1/EXO1/ZWINT/CENPU/SPC25/CENPI/CCNE1/ORC6/ORC1/TAOK1
 ## R-HSA-69618                                                                                             CDCA8/CDC20/CENPE/NDC80/UBE2C/SKA1/CENPM/CENPN/UBE2S/ERCC6L/MAD2L1/KIF18A/BIRC5/AURKB/KIF2C/PLK1/BUB1B/ZWINT/CENPU/SPC25/CENPI/TAOK1
@@ -157,13 +157,13 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
 ## R-HSA-174143                                                        APC/C-mediated degradation of cell cycle proteins
 ## R-HSA-174178 APC/C:Cdh1 mediated degradation of Cdc20 and other APC/C:Cdh1 targeted proteins in late mitosis/early G1
 ## R-HSA-174184                                                     Cdc20:Phospho-APC/C mediated degradation of Cyclin A
-##              setSize enrichmentScore      NES pvalue     p.adjust      qvalues
-## R-HSA-141424      81       0.7111667 2.765939  1e-10 4.111429e-09 3.037594e-09
-## R-HSA-141444      81       0.7111667 2.765939  1e-10 4.111429e-09 3.037594e-09
-## R-HSA-162909     122       0.5860187 2.458552  1e-10 4.111429e-09 3.037594e-09
-## R-HSA-174143      79       0.6940241 2.703229  1e-10 4.111429e-09 3.037594e-09
-## R-HSA-174178      65       0.6868145 2.591780  1e-10 4.111429e-09 3.037594e-09
-## R-HSA-174184      64       0.6941964 2.628589  1e-10 4.111429e-09 3.037594e-09
+##              setSize enrichmentScore      NES pvalue  p.adjust      qvalues
+## R-HSA-141424      81       0.7111667 2.843589  1e-10 4.025e-09 2.994152e-09
+## R-HSA-141444      81       0.7111667 2.843589  1e-10 4.025e-09 2.994152e-09
+## R-HSA-162909     122       0.5860187 2.491899  1e-10 4.025e-09 2.994152e-09
+## R-HSA-174143      79       0.6940241 2.774785  1e-10 4.025e-09 2.994152e-09
+## R-HSA-174178      65       0.6868145 2.604406  1e-10 4.025e-09 2.994152e-09
+## R-HSA-174184      64       0.6941964 2.630528  1e-10 4.025e-09 2.994152e-09
 ##              rank                   leading_edge
 ## R-HSA-141424  759  tags=31%, list=6%, signal=29%
 ## R-HSA-141444  759  tags=31%, list=6%, signal=29%
@@ -281,7 +281,7 @@ dotplot(res)
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-09-02.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
