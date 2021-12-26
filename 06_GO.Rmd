@@ -19,7 +19,7 @@ library(clusterProfiler)
 GO analyses (`groupGO()`, `enrichGO()` and `gseGO()`) support organisms that have an `OrgDb` object available (see also [session 2.2](#gosemsim-supported-organisms)).
 
 
-If a user has GO annotation data (in a `data.frame` format with the first column as gene ID and the second column as GO ID), they can use the `enricher()` and `gseGO()` functions to perform an over-representation test and gene set enrichment analysis.
+If a user has GO annotation data (in a `data.frame` format with the first column as gene ID and the second column as GO ID), they can use the `enricher()` and `GSEA()` functions to perform an over-representation test and gene set enrichment analysis.
 
 If the genes are annotated by direction annotation, they should also be annotated by their ancestor GO nodes (indirect annotation). If a user only has direct annotation, they can pass their annotation to the `buildGOmap` function, which will infer indirect annotation and generate a `data.frame` that is suitable for both `enricher()` and `gseGO()`.
 
