@@ -2,7 +2,7 @@
 
 + [replace ggsymbol::geom_symbol with ggstar::geom_star in dotplot](https://github.com/YuLab-SMU/enrichplot/pull/102)
 
-
+<https://support.bioconductor.org/p/130608/#130634>
 
 + wikipathway paper: <https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa1024/5992285>
 + <https://www.pathwaycommons.org/archives/PC2/v12/>
