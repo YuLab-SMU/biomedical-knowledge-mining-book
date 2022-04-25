@@ -7,17 +7,42 @@
 <title>Chapter 12 Universal enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="The clusterProfiler package (Yu et al. 2012) supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it’s still not enough for users may want to analyze...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
 <meta property="og:title" content="Chapter 12 Universal enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="The clusterProfiler package (Yu et al. 2012) supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it’s still not enough for users may want to analyze...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 12 Universal enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="The clusterProfiler package (Yu et al. 2012) supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it’s still not enough for users may want to analyze...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -139,47 +164,47 @@
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/GSEA.html">GSEA</a></span><span class="op">(</span><span class="va">geneList</span>, TERM2GENE <span class="op">=</span> <span class="va">cells</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                                            ID
-## FOXN4+ cell                                       FOXN4+ cell
-## Leydig precursor cell                   Leydig precursor cell
 ## Neural progenitor cell                 Neural progenitor cell
+## FOXN4+ cell                                       FOXN4+ cell
 ## Paneth cell                                       Paneth cell
-## FGFR1HighNME5- epithelial cell FGFR1HighNME5- epithelial cell
+## Leydig precursor cell                   Leydig precursor cell
 ## Ciliated epithelial cell             Ciliated epithelial cell
+## FGFR1HighNME5- epithelial cell FGFR1HighNME5- epithelial cell
 ##                                                   Description setSize
-## FOXN4+ cell                                       FOXN4+ cell      63
-## Leydig precursor cell                   Leydig precursor cell     184
 ## Neural progenitor cell                 Neural progenitor cell     149
+## FOXN4+ cell                                       FOXN4+ cell      63
 ## Paneth cell                                       Paneth cell     261
-## FGFR1HighNME5- epithelial cell FGFR1HighNME5- epithelial cell     131
+## Leydig precursor cell                   Leydig precursor cell     184
 ## Ciliated epithelial cell             Ciliated epithelial cell     217
+## FGFR1HighNME5- epithelial cell FGFR1HighNME5- epithelial cell     131
 ##                                enrichmentScore       NES       pvalue
-## FOXN4+ cell                          0.7136090  2.692248 1.000000e-10
-## Leydig precursor cell               -0.5710583 -2.320793 1.000000e-10
-## Neural progenitor cell               0.7160571  3.101991 1.000000e-10
-## Paneth cell                          0.5381280  2.488963 1.000000e-10
-## FGFR1HighNME5- epithelial cell      -0.5739472 -2.221754 1.816054e-10
-## Ciliated epithelial cell            -0.5012031 -2.072409 2.105307e-10
+## Neural progenitor cell               0.7160571  3.059580 1.000000e-10
+## FOXN4+ cell                          0.7136090  2.666139 1.000000e-10
+## Paneth cell                          0.5381280  2.473211 1.000000e-10
+## Leydig precursor cell               -0.5710583 -2.305756 1.000000e-10
+## Ciliated epithelial cell            -0.5012031 -2.056223 1.888989e-10
+## FGFR1HighNME5- epithelial cell      -0.5739472 -2.205135 2.745857e-10
 ##                                    p.adjust      qvalues rank
-## FOXN4+ cell                    4.125000e-09 2.394737e-09 1419
-## Leydig precursor cell          4.125000e-09 2.394737e-09 2609
-## Neural progenitor cell         4.125000e-09 2.394737e-09  684
-## Paneth cell                    4.125000e-09 2.394737e-09 2187
-## FGFR1HighNME5- epithelial cell 5.789594e-09 3.361104e-09 1404
-## Ciliated epithelial cell       5.789594e-09 3.361104e-09 1440
+## Neural progenitor cell         4.125000e-09 2.421053e-09  684
+## FOXN4+ cell                    4.125000e-09 2.421053e-09 1419
+## Paneth cell                    4.125000e-09 2.421053e-09 2187
+## Leydig precursor cell          4.125000e-09 2.421053e-09 2609
+## Ciliated epithelial cell       6.233665e-09 3.658674e-09 1440
+## FGFR1HighNME5- epithelial cell 7.551107e-09 4.431910e-09 1404
 ##                                                  leading_edge
-## FOXN4+ cell                    tags=51%, list=11%, signal=45%
-## Leydig precursor cell          tags=45%, list=21%, signal=36%
 ## Neural progenitor cell          tags=47%, list=5%, signal=45%
+## FOXN4+ cell                    tags=51%, list=11%, signal=45%
 ## Paneth cell                    tags=45%, list=18%, signal=38%
-## FGFR1HighNME5- epithelial cell tags=39%, list=11%, signal=35%
+## Leydig precursor cell          tags=45%, list=21%, signal=36%
 ## Ciliated epithelial cell       tags=29%, list=12%, signal=27%
+## FGFR1HighNME5- epithelial cell tags=39%, list=11%, signal=35%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         core_enrichment
-## FOXN4+ cell                                                                                                                                                                                                                                                                                                                                                                                                                                                                   79733/4751/79019/983/81620/4069/8836/3070/10733/81831/3932/10926/56938/7298/6491/262/1029/1719/8894/5902/10950/5496/2023/124222/10263/51142/11168/3638/51491/8751/6637/86
-## Leydig precursor cell                                                                                                                                                                                   7169/120/2949/22871/79822/7070/3624/10761/3671/80114/6326/25959/2013/9902/8654/4017/4811/26010/1291/92689/126393/7474/7168/27303/51454/1306/678/8425/7837/590/5919/23635/8829/1831/30008/1277/7078/4747/6591/56944/8406/1281/11167/1290/9037/2946/283298/1009/4313/6320/3075/6387/5159/1289/1292/116039/3908/5101/1909/83716/5376/633/6857/10631/54674/54587/30846/83468/3487/8404/2200/1634/1287/3479/5348/2006/7373/730/10234/4239/79901/4969
 ## Neural progenitor cell                                                                                                                                                                                                                                            991/9493/9833/9133/10403/7153/259266/6241/9787/11065/55355/55872/51203/83461/22974/10460/79019/55839/890/983/4085/5080/332/3832/9212/51659/9055/891/4174/9232/4171/1033/1164/11004/51512/11130/79682/26227/57405/10615/3149/23594/56992/9768/11339/3070/4288/1163/4175/4173/2237/29028/3838/54478/3015/699/81611/1063/5111/26271/51053/10535/1719/8543/9289/4176/1841/7112/58516/3148
+## FOXN4+ cell                                                                                                                                                                                                                                                                                                                                                                                                                                                                   79733/4751/79019/983/81620/4069/8836/3070/10733/81831/3932/10926/56938/7298/6491/262/1029/1719/8894/5902/10950/5496/2023/124222/10263/51142/11168/3638/51491/8751/6637/86
 ## Paneth cell                    597/3627/8140/1844/4283/7850/2921/7941/4318/4069/3576/1075/10797/56833/713/1230/200315/712/51338/64581/57823/10437/8767/5341/91543/6351/3055/6614/10859/330/9332/313/51765/1051/22797/4067/80896/864/5226/9046/5336/8942/3162/4688/29887/5641/11314/79888/942/6916/1439/1116/10288/7127/4064/1794/483/963/3689/5788/3383/962/23250/3937/2207/3394/5552/54504/1514/79879/64092/409/7805/4360/3936/4689/5880/7128/10105/9308/51296/10148/10287/8477/6503/929/945/10261/4794/9775/8013/5912/7124/5329/10875/7097/7852/1378/5743/6398/7454/3119/951/6039/1240/5142/1536/3071/834/8676/7305/7133/3310/958/5724/728/11309/3059
-## FGFR1HighNME5- epithelial cell                                                                                                                                                                                                                                                                                                                                            3931/6586/23284/7106/5919/316/8829/4060/10559/8642/2846/58494/79987/8835/8076/64221/5118/83700/79776/50509/1513/7058/4313/55314/91851/10536/2674/3305/5159/443/3908/5101/2690/55733/2550/6857/10631/81035/4330/83468/576/2200/5157/7049/51380/1307/196740/2532/1308/8483/4239
-## Ciliated epithelial cell                                                                                                                                                                                                                                                          9666/1490/9284/7840/51281/126070/5021/55779/80823/79781/11001/81890/79645/79411/8777/4753/2701/2259/9854/8100/323/55152/51364/9940/23345/216/146542/22832/582/57728/4246/7220/55064/79819/54681/5002/79884/10610/26018/79659/6542/53832/7033/8938/23245/26960/55638/9576/114327/54585/1287/9358/55259/643314/64799/6038/80129/4857/80736/2066/79083/79846/11122/79838</code></pre>
+## Leydig precursor cell                                                                                                                                                                                   7169/120/2949/22871/79822/7070/3624/10761/3671/80114/6326/25959/2013/9902/8654/4017/4811/26010/1291/92689/126393/7474/7168/27303/51454/1306/678/8425/7837/590/5919/23635/8829/1831/30008/1277/7078/4747/6591/56944/8406/1281/11167/1290/9037/2946/283298/1009/4313/6320/3075/6387/5159/1289/1292/116039/3908/5101/1909/83716/5376/633/6857/10631/54674/54587/30846/83468/3487/8404/2200/1634/1287/3479/5348/2006/7373/730/10234/4239/79901/4969
+## Ciliated epithelial cell                                                                                                                                                                                                                                                          9666/1490/9284/7840/51281/126070/5021/55779/80823/79781/11001/81890/79645/79411/8777/4753/2701/2259/9854/8100/323/55152/51364/9940/23345/216/146542/22832/582/57728/4246/7220/55064/79819/54681/5002/79884/10610/26018/79659/6542/53832/7033/8938/23245/26960/55638/9576/114327/54585/1287/9358/55259/643314/64799/6038/80129/4857/80736/2066/79083/79846/11122/79838
+## FGFR1HighNME5- epithelial cell                                                                                                                                                                                                                                                                                                                                            3931/6586/23284/7106/5919/316/8829/4060/10559/8642/2846/58494/79987/8835/8076/64221/5118/83700/79776/50509/1513/7058/4313/55314/91851/10536/2674/3305/5159/443/3908/5101/2690/55733/2550/6857/10631/81035/4330/83468/576/2200/5157/7049/51380/1307/196740/2532/1308/8483/4239</code></pre>
 </div>
 </div>
 <div id="msigdb-analysis" class="section level2" number="12.3">
@@ -258,12 +283,12 @@
 ## RB_P107_DN.V1_UP             RB_P107_DN.V1_UP       RB_P107_DN.V1_UP    10/183
 ## E2F1_UP.V1_UP                   E2F1_UP.V1_UP          E2F1_UP.V1_UP    12/183
 ##                          BgRatio       pvalue     p.adjust       qvalue
-## RPS14_DN.V1_DN         186/10915 4.716365e-13 7.970657e-11 6.503619e-11
-## GCNP_SHH_UP_LATE.V1_UP 181/10915 5.815455e-08 4.914059e-06 4.009603e-06
-## PRC2_EZH2_UP.V1_DN     192/10915 7.635020e-07 3.446929e-05 2.812505e-05
-## VEGF_A_UP.V1_DN        193/10915 8.158412e-07 3.446929e-05 2.812505e-05
-## RB_P107_DN.V1_UP       130/10915 6.428560e-05 2.024672e-03 1.652021e-03
-## E2F1_UP.V1_UP          188/10915 7.522623e-05 2.024672e-03 1.652021e-03
+## RPS14_DN.V1_DN         186/10922 4.657342e-13 7.870908e-11 6.422230e-11
+## GCNP_SHH_UP_LATE.V1_UP 181/10922 5.765032e-08 4.871452e-06 3.974838e-06
+## PRC2_EZH2_UP.V1_DN     192/10922 7.574546e-07 3.419660e-05 2.790255e-05
+## VEGF_A_UP.V1_DN        193/10922 8.093869e-07 3.419660e-05 2.790255e-05
+## RB_P107_DN.V1_UP       130/10922 6.394609e-05 2.013355e-03 1.642787e-03
+## E2F1_UP.V1_UP          188/10922 7.477287e-05 2.013355e-03 1.642787e-03
 ##                                                                                                                                        geneID
 ## RPS14_DN.V1_DN         10874/55388/991/9493/1062/4605/9133/23397/79733/9787/55872/83461/54821/51659/9319/9055/10112/4174/5105/2532/7021/79901
 ## GCNP_SHH_UP_LATE.V1_UP                                      55388/7153/79733/6241/9787/51203/983/9212/1111/9319/9055/3833/6790/4174/3169/1580
@@ -301,33 +326,33 @@
 <code class="sourceCode R"><span class="va">em2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/GSEA.html">GSEA</a></span><span class="op">(</span><span class="va">geneList</span>, TERM2GENE <span class="op">=</span> <span class="va">C3_t2g</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">em2</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                        ID          Description setSize
-## E2F1_Q3                           E2F1_Q3              E2F1_Q3     187
 ## HSD17B8_TARGET_GENES HSD17B8_TARGET_GENES HSD17B8_TARGET_GENES     401
+## E2F1_Q3                           E2F1_Q3              E2F1_Q3     187
 ## E2F1_Q6                           E2F1_Q6              E2F1_Q6     185
 ## SGCGSSAAA_E2F1DP2_01 SGCGSSAAA_E2F1DP2_01 SGCGSSAAA_E2F1DP2_01     129
-## E2F1DP1_01                     E2F1DP1_01           E2F1DP1_01     184
-## E2F1DP2_01                     E2F1DP2_01           E2F1DP2_01     184
+## E2F_Q4                             E2F_Q4               E2F_Q4     193
+## E2F_Q6                             E2F_Q6               E2F_Q6     190
 ##                      enrichmentScore      NES       pvalue     p.adjust
-## E2F1_Q3                    0.4983913 2.233536 1.000000e-10 1.655000e-07
-## HSD17B8_TARGET_GENES       0.6368099 3.083278 1.000000e-10 1.655000e-07
-## E2F1_Q6                    0.4906657 2.196727 1.805154e-10 1.991687e-07
-## SGCGSSAAA_E2F1DP2_01       0.5408182 2.289376 3.350887e-10 2.772859e-07
-## E2F1DP1_01                 0.4675989 2.091731 1.587524e-09 7.506719e-07
-## E2F1DP2_01                 0.4675989 2.091731 1.587524e-09 7.506719e-07
+## HSD17B8_TARGET_GENES       0.6368099 3.065382 1.000000e-10 1.503229e-07
+## E2F1_Q3                    0.4983913 2.222218 1.000000e-10 1.503229e-07
+## E2F1_Q6                    0.4906657 2.191042 1.362443e-10 1.503229e-07
+## SGCGSSAAA_E2F1DP2_01       0.5408182 2.298186 4.030580e-10 3.335305e-07
+## E2F_Q4                     0.4685394 2.100798 1.297983e-09 8.592650e-07
+## E2F_Q6                     0.4672345 2.086952 4.380543e-09 1.318145e-06
 ##                           qvalues rank                   leading_edge
-## E2F1_Q3              1.300526e-07 2045 tags=36%, list=16%, signal=30%
-## HSD17B8_TARGET_GENES 1.300526e-07 1042  tags=36%, list=8%, signal=34%
-## E2F1_Q6              1.565101e-07 1819 tags=34%, list=15%, signal=30%
-## SGCGSSAAA_E2F1DP2_01 2.178958e-07 1797 tags=38%, list=14%, signal=33%
-## E2F1DP1_01           5.898904e-07 1797 tags=33%, list=14%, signal=28%
-## E2F1DP2_01           5.898904e-07 1797 tags=33%, list=14%, signal=28%
+## HSD17B8_TARGET_GENES 1.161662e-07 1042  tags=36%, list=8%, signal=34%
+## E2F1_Q3              1.161662e-07 2045 tags=36%, list=16%, signal=30%
+## E2F1_Q6              1.161662e-07 1819 tags=34%, list=15%, signal=30%
+## SGCGSSAAA_E2F1DP2_01 2.577450e-07 1797 tags=38%, list=14%, signal=33%
+## E2F_Q4               6.640210e-07 1663 tags=29%, list=13%, signal=26%
+## E2F_Q6               1.018634e-06 1663 tags=29%, list=13%, signal=25%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             core_enrichment
-## E2F1_Q3                                                                                                                                                                                                                                                                                                                                                                                                                                                 79733/6241/983/5080/2146/8715/4171/993/990/56992/9768/4998/10733/7037/4175/54962/54954/29028/3015/2643/85236/5111/64785/26271/51053/1869/3925/114/5427/4176/7112/4436/1871/79915/9088/6632/284403/7290/2597/7398/4172/5424/124222/1633/10849/9824/4678/6646/29902/63967/56886/6059/23234/1786/204/51087/23636/2048/83463/10393/79173/688/3007/79677/9462/56946/9221
 ## HSD17B8_TARGET_GENES 55143/55388/991/2305/9493/1062/4605/9833/9133/10403/7153/23397/79733/259266/6241/55165/9787/11065/55355/9582/220134/55872/83461/10460/4751/10635/55839/890/9415/983/54821/4085/9837/5080/332/7272/64151/2842/9212/51659/9319/9055/3833/146909/10112/51514/4174/9232/1033/9928/3161/11004/993/4603/79801/990/5347/55215/701/55723/51512/55635/9156/11130/10024/57405/10615/1894/2491/8438/9700/5888/7083/898/3149/56992/9768/4288/10733/1163/4175/5307/2237/29899/55010/59336/56942/5984/29028/3838/1058/54478/3015/699/6491/81611/1063/27346/64785/9401/26271/51026/641/1869/10535/1029/28998/1763/8970/54892/55159/864/93594/1789/4176/7111/3148/116832/9585/9735/55732/81624/23310/1871/1031/79915/995/10051/30012/1104/80178/78995/7468/284403/5230/8549/7884/5558/4172/5424/79866/3182/56902/83990
+## E2F1_Q3                                                                                                                                                                                                                                                                                                                                                                                                                                                 79733/6241/983/5080/2146/8715/4171/993/990/56992/9768/4998/10733/7037/4175/54962/54954/29028/3015/2643/85236/5111/64785/26271/51053/1869/3925/114/5427/4176/7112/4436/1871/79915/9088/6632/284403/7290/2597/7398/4172/5424/124222/1633/10849/9824/4678/6646/29902/63967/56886/6059/23234/1786/204/51087/23636/2048/83463/10393/79173/688/3007/79677/9462/56946/9221
 ## E2F1_Q6                                                                                                                                                                                                                                                                                                                                                                                                                                                                          79733/6241/983/5080/81620/2146/4171/993/990/3159/9768/4998/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/3925/5427/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7374/9824/2189/4678/2289/6646/29902/50/63967/56886/23234/6839/1786/204/51087/23636/11335/1174/83463/10492/79173/688
 ## SGCGSSAAA_E2F1DP2_01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     79733/6241/4171/993/990/3159/9768/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/5427/4176/5902/4436/1871/79915/9088/6632/284403/7290/4172/5424/124222/1633/7374/2189/4678/2289/50/63967/56886/23234/6839/1786/204/51087/23636/1174/83463/10492/79173
-## E2F1DP1_01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       79733/6241/983/5080/2146/4171/993/990/3159/9768/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/3925/5427/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7374/9824/2189/4678/2289/6646/50/63967/5457/56886/23234/6839/1786/204/51087/23636/11335/1174/83463/10492/79173
-## E2F1DP2_01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       79733/6241/983/5080/2146/4171/993/990/3159/9768/4175/4173/29028/3015/4609/85236/5111/64785/26271/51053/1869/3925/5427/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7374/9824/2189/4678/2289/6646/50/63967/5457/56886/23234/6839/1786/204/51087/23636/11335/1174/83463/10492/79173</code></pre>
+## E2F_Q4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 8318/79733/6241/983/5080/81620/2146/4171/993/990/5888/9768/4175/4173/29028/3015/85236/5111/64785/26271/51053/1869/3925/5427/23649/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7473/7374/9824/7353/4678/6646/50/63967/56886/23234/1786/204/6427/51087/23636
+## E2F_Q6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      8318/79733/6241/983/5080/81620/2146/4171/993/990/5888/9768/4175/4173/29028/3015/85236/5111/64785/26271/51053/1869/3925/5427/23649/4176/7112/5902/4436/1871/79915/9088/6632/284403/7290/2597/4172/5424/124222/1633/10849/7374/9824/7353/4678/6646/50/63967/56886/23234/1786/204/6427/51087/23636</code></pre>
 
 </div>
 </div>
@@ -368,7 +393,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2022-04-24.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

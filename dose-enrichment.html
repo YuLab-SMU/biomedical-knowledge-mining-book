@@ -7,17 +7,42 @@
 <title>Chapter 10 Disease enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="We developed DOSE (Yu et al. 2015) package to promote the investigation of diseases. DOSE provides five methods for measuring semantic similarities among DO terms and gene products, hypergeometric...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
 <meta property="og:title" content="Chapter 10 Disease enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="We developed DOSE (Yu et al. 2015) package to promote the investigation of diseases. DOSE provides five methods for measuring semantic similarities among DO terms and gene products, hypergeometric...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 10 Disease enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="We developed DOSE (Yu et al. 2015) package to promote the investigation of diseases. DOSE provides five methods for measuring semantic similarities among DO terms and gene products, hypergeometric...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -131,7 +156,7 @@
 ## DOID:824      16
 ## DOID:3905     43</code></pre>
 <p>The <code><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO()</a></code> function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. Please refer to <a href="useful-utilities.html#id-convert">session 16.1</a> if you need to conver other gene ID types to entrezgene ID.</p>
-<p>The <code>ont</code> parameter can be “DO” or “DOLite,” DOLite <span class="citation">(<a href="references.html#ref-Du15062009" role="doc-biblioref">Du et al. 2009</a>)</span> was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use <code>ont="DO"</code>. <code>pvalueCutoff</code> setting the cutoff value of <em>p</em> value and adjusted <em>p</em> value; <code>pAdjustMethod</code> setting the <em>p</em> value correction methods, include the Bonferroni correction (“bonferroni”), Holm (“holm”), Hochberg (“hochberg”), Hommel (“hommel”), Benjamini &amp; Hochberg (“BH”) and Benjamini &amp; Yekutieli (“BY”) while <code>qvalueCutoff</code> is used to control <em>q</em>-values.</p>
+<p>The <code>ont</code> parameter can be “DO” or “DOLite”, DOLite <span class="citation">(<a href="references.html#ref-Du15062009" role="doc-biblioref">Du et al. 2009</a>)</span> was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use <code>ont="DO"</code>. <code>pvalueCutoff</code> setting the cutoff value of <em>p</em> value and adjusted <em>p</em> value; <code>pAdjustMethod</code> setting the <em>p</em> value correction methods, include the Bonferroni correction (“bonferroni”), Holm (“holm”), Hochberg (“hochberg”), Hommel (“hommel”), Benjamini &amp; Hochberg (“BH”) and Benjamini &amp; Yekutieli (“BY”) while <code>qvalueCutoff</code> is used to control <em>q</em>-values.</p>
 <p>The <code>universe</code> setting the background gene universe for testing. If user do not explicitly setting this parameter, <code><a href="https://rdrr.io/pkg/DOSE/man/enrichDO.html">enrichDO()</a></code> will set the universe to all human genes that have DO annotation.</p>
 <p>The <code>minGSSize</code> (and <code>maxGSSize</code>) indicates that only those DO terms that have more than <code>minGSSize</code> (and less than <code>maxGSSize</code>) genes annotated will be tested.</p>
 <p>The <code>readable</code> is a logical parameter, indicates whether the entrezgene IDs will mapping to gene symbols or not (see also <a href="useful-utilities.html#setReadable">setReadable</a>).</p>
@@ -148,45 +173,45 @@
 <pre><code>##                                                                      ID
 ## pan-cancer_paediatric                             pan-cancer_paediatric
 ## triple_negative_breast_cancer             triple_negative_breast_cancer
-## breast_cancer                                             breast_cancer
+## bladder_cancer                                           bladder_cancer
+## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
 ## soft_tissue_sarcoma                                 soft_tissue_sarcoma
 ## paediatric_high-grade_glioma               paediatric_high-grade_glioma
-## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
 ##                                                             Description
 ## pan-cancer_paediatric                             pan-cancer_paediatric
 ## triple_negative_breast_cancer             triple_negative_breast_cancer
-## breast_cancer                                             breast_cancer
+## bladder_cancer                                           bladder_cancer
+## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
 ## soft_tissue_sarcoma                                 soft_tissue_sarcoma
 ## paediatric_high-grade_glioma               paediatric_high-grade_glioma
-## pancreatic_cancer_(all_histologies) pancreatic_cancer_(all_histologies)
 ##                                     GeneRatio  BgRatio       pvalue
-## pan-cancer_paediatric                161/1782 182/2372 2.748816e-06
-## triple_negative_breast_cancer         71/1782  75/2372 6.564667e-06
-## breast_cancer                        146/1782 171/2372 5.249102e-04
-## soft_tissue_sarcoma                   26/1782  26/2372 5.633144e-04
-## paediatric_high-grade_glioma          25/1782  25/2372 7.524752e-04
-## pancreatic_cancer_(all_histologies)   39/1782  41/2372 7.825494e-04
+## pan-cancer_paediatric                162/2281 183/3177 1.833773e-08
+## triple_negative_breast_cancer         71/2281  75/3177 4.290660e-07
+## bladder_cancer                        97/2281 112/3177 1.253690e-04
+## pancreatic_cancer_(all_histologies)   40/2281  42/3177 1.262162e-04
+## soft_tissue_sarcoma                   26/2281  26/3177 1.742793e-04
+## paediatric_high-grade_glioma          25/2281  25/3177 2.434966e-04
 ##                                         p.adjust       qvalue
-## pan-cancer_paediatric               0.0002226541 0.0001504615
-## triple_negative_breast_cancer       0.0002658690 0.0001796646
-## breast_cancer                       0.0105644165 0.0071390469
-## soft_tissue_sarcoma                 0.0105644165 0.0071390469
-## paediatric_high-grade_glioma        0.0105644165 0.0071390469
-## pancreatic_cancer_(all_histologies) 0.0105644165 0.0071390469
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           geneID
-## pan-cancer_paediatric               2146/55353/4609/1029/3575/22806/3418/3066/2120/30012/867/7468/7545/3195/865/64109/4613/613/11177/7490/238/10736/10054/5771/4893/140885/1785/9760/3417/6597/6476/9126/4869/10320/7307/80204/1050/8028/2312/6608/896/894/2196/4849/7023/5093/5079/5293/5727/55181/171017/51322/5781/3718/55294/60/673/8085/5897/4851/51176/1108/7764/10664/6098/2332/2201/6495/3845/7015/1441/2782/64919/4298/23512/8239/29102/6929/8021/6134/6598/4209/5290/22941/8726/207/3717/2033/10716/4928/6932/694/5156/10019/6886/9968/7080/2623/7874/1654/4149/3020/23219/55252/55729/10735/5728/4853/23451/51341/387/3206/6146/79718/2624/63035/3815/171023/23269/25/9839/23592/5896/7403/2260/54880/3716/9203/57178/6777/5789/4297/29072/90/546/120/25836/8289/4345/9611/5925/4763/1997/1499/7157/3399/5295/1387/4602/51564/1027/4005/2322/2078/678/6403/55709/1277/7494/64061/2625
-## triple_negative_breast_cancer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 6790/898/4609/1029/1789/4436/2120/867/7128/1788/1030/7490/2271/238/675/2047/4914/1316/5291/5293/5781/55294/8085/4851/4170/3845/355/1616/4854/5290/207/2033/4233/29110/2903/5979/5728/4853/2624/3815/10000/7403/2260/55193/472/5789/4297/2065/4286/8626/8405/8289/10499/55164/5925/4763/23405/1499/4921/7157/5295/1387/2078/324/7248/7048/22894/3480/2045/2066/2625
-## breast_cancer                                                                                                                     4751/701/898/639/29028/4609/7399/1029/1520/4436/83990/11200/10849/2072/4771/865/999/1788/26191/1030/10801/83737/6262/1956/672/8590/675/4893/6597/8202/2778/208/51412/896/2132/677/4849/4221/65220/2854/55294/673/4193/8085/4851/57127/841/3265/7764/10664/9721/3845/3956/868/9175/6602/11174/8239/9860/6954/5290/1523/207/2033/2334/3782/8312/9514/5156/186/54897/71/79728/545/143/2064/4089/8471/8314/91/5289/1021/10735/5979/5728/4853/23451/9439/6738/387/55770/79718/4301/171023/23013/51135/80243/4292/149076/10983/6103/7403/54880/4916/55193/9203/1635/1495/2309/472/5076/2909/5789/4297/2065/29072/2263/546/8289/2874/9611/5925/6416/4763/7157/4088/23152/5295/6794/1387/4602/1027/5737/324/595/7188/4681/4214/7494/2099/3480/4485/2891/6926/3169/2625
-## soft_tissue_sarcoma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             999/6850/4914/4342/2185/55294/2041/4851/2044/4058/5290/4486/5297/5728/3815/2324/7403/546/5925/4763/1499/7157/5159/2045/3667/2066
-## paediatric_high-grade_glioma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             4609/1029/1019/4613/1030/1956/4914/896/894/673/8493/5290/4233/5156/1021/63035/54880/4916/90/546/4763/7157/5295/595/4915
-## pancreatic_cancer_(all_histologies)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      1029/4771/8997/7159/2011/6597/7307/3710/6710/55294/7091/3845/23654/7046/3096/4089/91/8241/54549/92/23451/63035/7403/55193/23309/472/800/29072/23077/23499/8289/54894/6416/7157/4088/182/7048/2199/26960
+## pan-cancer_paediatric               1.613721e-06 7.721152e-07
+## triple_negative_breast_cancer       1.887890e-05 9.032967e-06
+## bladder_cancer                      2.776757e-03 1.328592e-03
+## pancreatic_cancer_(all_histologies) 2.776757e-03 1.328592e-03
+## soft_tissue_sarcoma                 3.067315e-03 1.467615e-03
+## paediatric_high-grade_glioma        3.073768e-03 1.470702e-03
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 geneID
+## pan-cancer_paediatric               2146/55353/4609/1029/3575/22806/3418/3066/2120/30012/867/7468/7545/3195/865/64109/4613/613/11177/7490/238/10736/10054/5771/4893/140885/1785/9760/3417/6597/6476/9126/4869/10320/7307/80204/1050/10992/8028/2312/6608/896/894/2196/4849/7023/5093/5079/5293/5727/55181/171017/51322/5781/3718/55294/60/673/8085/5897/4851/1665/51176/1108/7764/10664/6098/2332/2201/6495/3845/7015/1441/2782/64919/4298/23512/8239/29102/6929/8021/6134/6598/4209/5290/22941/8726/207/3717/2033/10716/4928/6932/694/5156/10019/6886/9968/7080/2623/7874/1654/4149/3020/23219/55252/55729/10735/5728/4853/23451/51341/387/3206/6146/79718/2624/63035/3815/171023/23269/25/23592/5896/7403/2260/54880/3716/9203/57178/6777/5789/4297/29072/90/546/120/25836/8289/4345/9611/5925/4763/1997/1499/7157/3399/5295/1387/4602/51564/1027/4005/2322/2078/678/6403/55709/1277/7494/64061/2625
+## triple_negative_breast_cancer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       6790/898/4609/1029/1789/4436/2120/867/7128/1788/1030/7490/2271/238/675/2047/4914/1316/5291/5293/5781/55294/8085/4851/4170/3845/355/1616/4854/5290/207/2033/4233/29110/2903/5979/5728/4853/2624/3815/10000/7403/2260/55193/472/5789/4297/2065/4286/8626/8405/8289/10499/55164/5925/4763/23405/1499/4921/7157/5295/1387/2078/324/7248/7048/22894/3480/2045/2066/2625
+## bladder_cancer                                                                                                                                                                                                                                                                                                                                                            9700/57211/2175/9603/1029/11168/2072/8997/79949/54663/688/6882/4893/8454/6693/56288/2195/10992/1026/64783/896/677/26038/6256/55294/60/8085/4851/841/3265/7175/1999/730051/3845/23484/7015/8243/10605/8295/4854/5290/51043/2033/4780/23224/23217/2064/23385/55252/10735/8241/10672/5728/4853/23451/374291/387/7799/171023/288/30849/4152/9794/7403/287/57634/463/472/4297/2065/2262/3280/23232/8289/9611/5925/2068/56339/4763/7157/2186/1387/3910/7536/2261/7248/23037/6709/54961/23345/57125/7832/79633/10628/22906/388/3169
+## pancreatic_cancer_(all_histologies)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      1029/4771/8997/7159/2011/6597/7307/10992/3710/6710/55294/7091/3845/23654/7046/3096/4089/91/8241/54549/92/23451/63035/7403/55193/23309/472/800/29072/23077/23499/8289/54894/6416/7157/4088/182/7048/2199/26960
+## soft_tissue_sarcoma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   999/6850/4914/4342/2185/55294/2041/4851/2044/4058/5290/4486/5297/5728/3815/2324/7403/546/5925/4763/1499/7157/5159/2045/3667/2066
+## paediatric_high-grade_glioma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   4609/1029/1019/4613/1030/1956/4914/896/894/673/8493/5290/4233/5156/1021/63035/54880/4916/90/546/4763/7157/5295/595/4915
 ##                                     Count
-## pan-cancer_paediatric                 161
+## pan-cancer_paediatric                 162
 ## triple_negative_breast_cancer          71
-## breast_cancer                         146
+## bladder_cancer                         97
+## pancreatic_cancer_(all_histologies)    40
 ## soft_tissue_sarcoma                    26
-## paediatric_high-grade_glioma           25
-## pancreatic_cancer_(all_histologies)    39</code></pre>
+## paediatric_high-grade_glioma           25</code></pre>
 </div>
 <div id="dose-dgn-ora" class="section level3" number="10.1.3">
 <h3>
@@ -275,20 +300,20 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                        ID                          Description setSize
 ## DOID:0050338 DOID:0050338 primary bacterial infectious disease     214
-## DOID:104         DOID:104         bacterial infectious disease     243
 ## DOID:399         DOID:399                         tuberculosis     140
+## DOID:104         DOID:104         bacterial infectious disease     243
 ##              enrichmentScore      NES       pvalue     p.adjust      qvalues
-## DOID:0050338       0.4569856 2.071122 5.693002e-10 8.938013e-08 3.475727e-08
-## DOID:104           0.4286201 1.957722 3.089961e-09 2.425620e-07 9.432513e-08
-## DOID:399           0.4999969 2.147844 1.032616e-08 5.404023e-07 2.101464e-07
+## DOID:0050338       0.4569856 2.082577 9.784704e-10 1.536199e-07 5.973820e-08
+## DOID:399           0.4999969 2.154362 4.812537e-09 3.777842e-07 1.469090e-07
+## DOID:104           0.4286201 1.969547 1.028755e-08 5.383820e-07 2.093607e-07
 ##              rank                   leading_edge
 ## DOID:0050338 1850 tags=35%, list=15%, signal=30%
-## DOID:104     1808 tags=32%, list=14%, signal=28%
 ## DOID:399     1808 tags=36%, list=14%, signal=31%
+## DOID:104     1808 tags=32%, list=14%, signal=28%
 ##                                                                                                                                                                                                                                                                                                                                                                                            core_enrichment
 ## DOID:0050338                 4312/597/3627/6373/820/3620/6364/29851/4318/3576/26227/6890/952/1493/6352/3934/54210/3932/5551/3559/6347/6402/639/94025/3126/3001/6351/1236/5698/3948/919/3458/959/7296/79139/3804/4159/942/3329/9235/1234/7096/3383/4068/6367/5806/100/3659/4360/939/6891/4210/671/7422/929/26191/6504/27087/4282/7124/5027/5329/3569/4049/7097/56244/7852/1378/5133/5743/348/1118/3119/7415
-## DOID:104     4312/597/3627/6373/820/3620/6364/29851/4318/3576/26227/6890/952/1493/6352/3934/54210/10663/3932/5551/3559/6772/6347/6402/639/94025/3126/3001/6351/1236/3654/5698/3948/919/3458/959/7296/79139/3804/4159/942/3329/9235/3689/1234/7096/3383/4068/6367/5806/100/3659/4360/939/6891/4210/671/7422/929/26191/6504/27087/4282/7124/5027/5329/3569/4049/7097/56244/7852/1378/5133/5743/348/1118/3119
-## DOID:399                                                                                                                                             4312/597/3627/820/6364/29851/4318/3576/26227/1493/6352/3934/5551/3559/6347/94025/3001/6351/3948/919/3458/959/4159/942/9235/7096/3383/4068/6367/5806/100/3659/4360/939/671/929/26191/27087/4282/7124/5027/3569/7097/56244/7852/1378/5133/348/1118/3119</code></pre>
+## DOID:399                                                                                                                                             4312/597/3627/820/6364/29851/4318/3576/26227/1493/6352/3934/5551/3559/6347/94025/3001/6351/3948/919/3458/959/4159/942/9235/7096/3383/4068/6367/5806/100/3659/4360/939/671/929/26191/27087/4282/7124/5027/3569/7097/56244/7852/1378/5133/348/1118/3119
+## DOID:104     4312/597/3627/6373/820/3620/6364/29851/4318/3576/26227/6890/952/1493/6352/3934/54210/10663/3932/5551/3559/6772/6347/6402/639/94025/3126/3001/6351/1236/3654/5698/3948/919/3458/959/7296/79139/3804/4159/942/3329/9235/3689/1234/7096/3383/4068/6367/5806/100/3659/4360/939/6891/4210/671/7422/929/26191/6504/27087/4282/7124/5027/5329/3569/4049/7097/56244/7852/1378/5133/5743/348/1118/3119</code></pre>
 </div>
 <div id="gsencg-fuction" class="section level3" number="10.2.2">
 <h3>
@@ -302,25 +327,25 @@
 <span class="va">ncg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="st">'org.Hs.eg.db'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="fl">3</span><span class="op">)</span> </code></pre></div>
 <pre><code>##                                                            ID
+## pan-gynecological and breast     pan-gynecological and breast
+## pan-gastric                                       pan-gastric
 ## breast_fibroepithelial_tumours breast_fibroepithelial_tumours
-## soft_tissue_sarcoma                       soft_tissue_sarcoma
-## mucinous_gastric_cancer               mucinous_gastric_cancer
 ##                                                   Description setSize
-## breast_fibroepithelial_tumours breast_fibroepithelial_tumours      18
-## soft_tissue_sarcoma                       soft_tissue_sarcoma      26
-## mucinous_gastric_cancer               mucinous_gastric_cancer      20
-##                                enrichmentScore       NES      pvalue  p.adjust
-## breast_fibroepithelial_tumours      -0.6508122 -1.704384 0.004587552 0.3532415
-## soft_tissue_sarcoma                 -0.5286359 -1.538676 0.021833884 0.3883363
-## mucinous_gastric_cancer             -0.5722120 -1.567607 0.023818699 0.3883363
-##                                  qvalues rank                   leading_edge
-## breast_fibroepithelial_tumours 0.3380301 2700 tags=56%, list=22%, signal=44%
-## soft_tissue_sarcoma            0.3716137 2596 tags=35%, list=21%, signal=27%
-## mucinous_gastric_cancer        0.3716137  562  tags=35%, list=4%, signal=33%
-##                                                                      core_enrichment
-## breast_fibroepithelial_tumours SETD2/RB1/PCNX4/NF1/TP53/PCLO/RARA/SYNE1/MAP3K1/ERBB4
-## soft_tissue_sarcoma                 ATRX/RB1/NF1/CTNNB1/TP53/PDGFRB/EPHA7/IRS1/ERBB4
-## mucinous_gastric_cancer               ARID1A/TP53/AHNAK2/CACNA1C/PIEZO2/SETBP1/MAGI2</code></pre>
+## pan-gynecological and breast     pan-gynecological and breast      43
+## pan-gastric                                       pan-gastric      49
+## breast_fibroepithelial_tumours breast_fibroepithelial_tumours      17
+##                                enrichmentScore       NES      pvalue   p.adjust
+## pan-gynecological and breast        -0.5263429 -1.709808 0.001878160 0.07927729
+## pan-gastric                         -0.4993803 -1.679020 0.001957464 0.07927729
+## breast_fibroepithelial_tumours      -0.6421576 -1.656489 0.004208555 0.08522323
+##                                   qvalues rank                   leading_edge
+## pan-gynecological and breast   0.07417758 2464 tags=44%, list=20%, signal=36%
+## pan-gastric                    0.07417758 3280 tags=49%, list=26%, signal=36%
+## breast_fibroepithelial_tumours 0.07974104 2700 tags=59%, list=22%, signal=46%
+##                                                                                                                                                               core_enrichment
+## pan-gynecological and breast                                 ATM/ZC3H13/NIPBL/SPOP/ARID1A/RASA1/RB1/RNF43/MAP2K4/NF1/CTNNB1/TP53/PIK3R1/CDKN1B/CCND1/ARID5B/MAP3K1/TBX3/GATA3
+## pan-gastric                    BCOR/SOX9/TCF7L2/ATM/CALD1/SEMG2/HTR7/ARID1A/RASA1/RB1/TTBK2/RNF43/CTNNB1/TP53/BCL9/SMAD3/APC/ZFP36L2/TGFBR2/MUC6/MAP3K1/CACNA1C/ATP8B1/CYP4B1
+## breast_fibroepithelial_tumours                                                                                          BCOR/SETD2/RB1/PCNX4/NF1/TP53/RARA/SYNE1/MAP3K1/ERBB4</code></pre>
 </div>
 <div id="gsedgn-fuction" class="section level3" number="10.2.3">
 <h3>
@@ -335,19 +360,19 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dgn</span>, <span class="fl">3</span><span class="op">)</span> </code></pre></div>
 <pre><code>##                ID                  Description setSize enrichmentScore
 ## C0024266 C0024266 Lymphocytic Choriomeningitis     120       0.5712593
-## C0151779 C0151779           Cutaneous Melanoma     415       0.3963772
+## C4721414 C4721414         Mantle cell lymphoma     368       0.4107437
 ## C0205682 C0205682              Waist-Hip Ratio     401      -0.4425633
 ##                NES pvalue    p.adjust      qvalues rank
-## C0024266  2.389004  1e-10 2.05275e-07 1.761053e-07 2579
-## C0151779  1.905406  1e-10 2.05275e-07 1.761053e-07 1864
-## C0205682 -1.933974  1e-10 2.05275e-07 1.761053e-07 2011
+## C0024266  2.395470  1e-10 2.05275e-07 1.762105e-07 2579
+## C4721414  1.950101  1e-10 2.05275e-07 1.762105e-07 1745
+## C0205682 -1.943479  1e-10 2.05275e-07 1.762105e-07 2011
 ##                            leading_edge
 ## C0024266 tags=48%, list=21%, signal=38%
-## C0151779 tags=27%, list=15%, signal=24%
+## C4721414 tags=26%, list=14%, signal=23%
 ## C0205682 tags=28%, list=16%, signal=24%
 ##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
 ## C0024266                                                                                                                                                                                                                                                                                                                                                                                S100A9/CXCL10/CXCL9/EZH2/GZMB/ICOS/USP18/CXCL8/CTLA4/TREM1/PRF1/ADM/CA9/STAT1/CCL2/SELL/CDKN2A/IL7/IL7R/IFNG/CCR5/IL27RA/SH2D1A/FCER1G/CDK2AP2/CPVL/CD27/PSMB10/PTPN22/SLAMF1/KDM1A/TNF/IL6/FGL2/TLR2/RPAIN/NELFCD/PDCD1/WAS/HIF1A/ATP5F1B/FCGR2B/EGR2/STX11/CXCR3/TYROBP/YME1L1/SOSTDC1/PTPN2/TRAF1/HNF1A/IRF9/PML/NR0B2/IL2/TOX/AGFG1
-## C0151779                                                          MMP1/CDCA8/S100A8/TOP2A/PBK/ISG20/NEK2/CCL18/PDK1/EZH2/AURKB/CHAF1B/KIF18B/MMP12/LAG3/DTL/PTTG1/SOX11/CDKN3/PRAME/PLK1/FABP7/MMP9/GBP1/CXCL8/CTLA4/SOX10/PROM1/MKI67/FANCA/MCM6/MCM4/PITX1/DBF4/IL2RA/TYMS/PLA2G2A/MYC/PCNA/NDRG1/CDKAL1/BLM/E2F1/OCA2/CD163/CDKN2A/NME1/TCF21/KMO/VCAM1/RUNX3/IFNG/MCM7/KYNU/STIP1/CCDC88C/GSTP1/CHAF1A/MSH2/CYP27B1/MAGEA1/CDKN2C/PRDM16/MX2/CDK4/GAPDH/MCM3/ICAM1/CCL22/CHEK2/CXCL5/ERCC4/SPP1/TEAD4/MTAP/HCP5/MRC1/TUBB3/CD27/S100B/CSPG4/PLP2/NBN/VEGFA/IFNW1/CDK16/CDH1/CCNF/CBLIF/SOX4/PARP1/SLC16A1/DNMT1/MAP2K1/ATG5/TNF/NXT1/CDKN2B/RBX1/IL6/TLR2/CXCR4/PDCD1/PTGS2/HIF1A/JMJD6/XRCC3/HLA-DQB1/PVR/CASP10/TGFA/EGFR
+## C4721414                                                                                                                                                                     CDC20/MELK/E2F8/APOBEC3B/PBK/TPX2/RAD51AP1/DUSP2/CDT1/EZH2/AURKB/CHEK1/AURKA/CCNB1/PSAT1/SOX11/PRAME/CDC6/PLK1/MMP9/EIF4EBP1/SPIB/RAD51/CD38/MMP7/MCM6/CTSC/LCK/MNX1/SKP2/STAT1/PRDM1/MS4A4A/IGK/MYC/PCNA/IFI27/PSMG1/CCR7/GMNN/E2F1/CDKN2A/PSMB9/NME1/LTB/IGHD/CD40LG/LAIR1/IGF2BP3/LBR/COL11A2/MSH2/CD79B/APRT/NSD2/CDK4/PTPRC/PLSCR1/CCR5/G6PD/CHEK2/HILPDA/DCK/PIM2/WNT3/CD6/CD28/MTAP/PRDX1/MRC1/TUBB3/VEGFA/CD19/HACD1/SOX4/PMCH/ST14/PARP1/TCL1A/DNMT1/IGLL5/SYK/TNF/MYCN/CD1D/NXT1/CDKN2B/RANGAP1/IL6/LTA/PSMD2/CXCR4/BCR/FCER2/FADD/PTGS2
 ## C0205682 RETREG3/JMJD1C/SH2B1/BDNF/ARHGEF26/PDE5A/BPTF/SMAD3/TTC39A/ATP2B1/ARID4A/HOXC4/NID1/LAMA4/LRRC36/NUDT18/ANKRD28/HECTD4/COL11A1/MEIS1/INSR/CUL9/NRIP3/BCL2/CD34/EZH1/DYM/NDST1/COL15A1/VGLL3/CCND1/ZCCHC10/HOXC6/RAB26/QTRT1/MEIS2/ARID5B/AHNAK/FGF1/CAPRIN2/LAMB1/CPEB3/ELOVL4/CDADC1/PDE8B/ZNF268/NRP1/SYTL2/NR5A2/DGLUCY/SEMA3B/NID2/SIK3/PRR5L/FGF2/COL8A1/RAPGEF3/RBM6/CDH13/JCAD/NAV3/TRIM8/PPIEL/PTPRG/NBL1/CALCRL/PPL/LPL/BCKDHB/MAPKBP1/CNTLN/BBS4/P4HTM/FTO/PDZRN4/PDGFC/SGCD/NRXN3/AFF3/IGF1R/ABCC8/MPPED2/COL5A1/COL6A2/LOXL1/CYP21A2/LTBP2/TTC28/PATJ/PCSK5/WNT4/TTC12/NISCH/ASTN2/TCEA2/MN1/SETBP1/TAOK1/MAST4/ITGA7/ITGBL1/COL14A1/C1QTNF3/ZNF423/IQCH/MYH11/ADH1B/ABLIM3/MAPT/STC2/TFAP2B/CYBRD1/SCUBE2</code></pre>
 
 </div>
@@ -390,7 +415,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2022-04-24.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

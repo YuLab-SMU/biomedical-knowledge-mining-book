@@ -7,17 +7,42 @@
 <title>Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
 <meta property="og:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 9 Reactome enrichment analysis | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="ReactomePA is designed for reactome pathway based analysis (Yu and He 2016). Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.  9.1 Supported organisms...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -79,7 +104,7 @@
 <h2>
 <span class="header-section-number">9.1</span> Supported organisms<a class="anchor" aria-label="anchor" href="#reactomepa-supported-organisms"><i class="fas fa-link"></i></a>
 </h2>
-<p>Currently <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> supports several model organisms, including ‘celegans,’ ‘fly,’ ‘human,’ ‘mouse,’ ‘rat,’ ‘yeast’ and ‘zebrafish.’ The input gene ID should be Entrez gene ID. We recommend using <a href="useful-utilities.html#bitr"><code>clusterProfiler::bitr()</code></a> to convert biological IDs.</p>
+<p>Currently <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> supports several model organisms, including ‘celegans’, ‘fly’, ‘human’, ‘mouse’, ‘rat’, ‘yeast’ and ‘zebrafish’. The input gene ID should be Entrez gene ID. We recommend using <a href="useful-utilities.html#bitr"><code>clusterProfiler::bitr()</code></a> to convert biological IDs.</p>
 </div>
 <div id="reactomepa-ora" class="section level2" number="9.2">
 <h2>
@@ -143,41 +168,34 @@ themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> imp
                 pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>, 
                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
-<pre><code>##                        ID
-## R-HSA-141424 R-HSA-141424
-## R-HSA-141444 R-HSA-141444
-## R-HSA-162909 R-HSA-162909
-## R-HSA-174143 R-HSA-174143
-## R-HSA-174178 R-HSA-174178
-## R-HSA-174184 R-HSA-174184
-##                                                                                                           Description
-## R-HSA-141424                                                            Amplification of signal from the kinetochores
-## R-HSA-141444                     Amplification  of signal from unattached  kinetochores via a MAD2  inhibitory signal
-## R-HSA-162909                                                                         Host Interactions of HIV factors
-## R-HSA-174143                                                        APC/C-mediated degradation of cell cycle proteins
-## R-HSA-174178 APC/C:Cdh1 mediated degradation of Cdc20 and other APC/C:Cdh1 targeted proteins in late mitosis/early G1
-## R-HSA-174184                                                     Cdc20:Phospho-APC/C mediated degradation of Cyclin A
-##              setSize enrichmentScore      NES pvalue  p.adjust      qvalues
-## R-HSA-141424      81       0.7111667 2.843589  1e-10 4.025e-09 2.994152e-09
-## R-HSA-141444      81       0.7111667 2.843589  1e-10 4.025e-09 2.994152e-09
-## R-HSA-162909     122       0.5860187 2.491899  1e-10 4.025e-09 2.994152e-09
-## R-HSA-174143      79       0.6940241 2.774785  1e-10 4.025e-09 2.994152e-09
-## R-HSA-174178      65       0.6868145 2.604406  1e-10 4.025e-09 2.994152e-09
-## R-HSA-174184      64       0.6941964 2.630528  1e-10 4.025e-09 2.994152e-09
-##              rank                   leading_edge
-## R-HSA-141424  759  tags=31%, list=6%, signal=29%
-## R-HSA-141444  759  tags=31%, list=6%, signal=29%
-## R-HSA-162909 3321 tags=57%, list=27%, signal=43%
-## R-HSA-174143 1851 tags=47%, list=15%, signal=40%
-## R-HSA-174178 1851 tags=46%, list=15%, signal=40%
-## R-HSA-174184 1851 tags=45%, list=15%, signal=39%
-##                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
-## R-HSA-141424                                                                                                                                                                                                                             55143/991/1062/10403/220134/79019/55839/54821/4085/81930/332/9212/11004/5347/701/11130/79682/57405/2491/1058/699/1063/55055/79980/9735
-## R-HSA-141444                                                                                                                                                                                                                             55143/991/1062/10403/220134/79019/55839/54821/4085/81930/332/9212/11004/5347/701/11130/79682/57405/2491/1058/699/1063/55055/79980/9735
-## R-HSA-162909 3159/3932/5688/9688/3055/5709/5698/919/5693/5902/5713/5721/5691/292/1104/5685/1794/9631/5690/5684/5686/5695/11168/10213/940/23198/7979/6396/23165/5699/5714/6921/55706/8815/5702/23636/9978/5905/5708/1174/5692/5704/5901/164/60489/4927/79902/5683/10762/1175/5694/8480/11097/5718/5682/5716/9972/904/81929/162/5707/57122/4869/926/5696/7514/79023/3837/920/9818
-## R-HSA-174143                                                                                                                                                                          991/11065/4751/27338/890/983/4085/9212/6790/891/9232/5347/701/6502/5688/5709/26271/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704
-## R-HSA-174178                                                                                                                                                                                                          991/11065/27338/9212/6790/9232/5347/6502/5688/5709/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704
-## R-HSA-174184                                                                                                                                                                                                                  991/11065/27338/890/983/4085/701/5688/5709/5698/5693/5713/5721/5691/5685/5690/5684/5686/5695/10213/23198/7979/5699/5714/5702/5708/5692/10393/5704</code></pre>
+<pre><code>##                          ID                          Description setSize
+## R-HSA-69620     R-HSA-69620               Cell Cycle Checkpoints     238
+## R-HSA-453279   R-HSA-453279 Mitotic G1 phase and G1/S transition     142
+## R-HSA-69306     R-HSA-69306                      DNA Replication     117
+## R-HSA-69278     R-HSA-69278                  Cell Cycle, Mitotic     457
+## R-HSA-69206     R-HSA-69206                      G1/S Transition     124
+## R-HSA-2555396 R-HSA-2555396       Mitotic Metaphase and Anaphase     200
+##               enrichmentScore      NES pvalue p.adjust      qvalues rank
+## R-HSA-69620         0.6675566 3.073841  1e-10 4.14e-09 3.055639e-09 1905
+## R-HSA-453279        0.7016040 3.031248  1e-10 4.14e-09 3.055639e-09 1155
+## R-HSA-69306         0.7233886 3.012019  1e-10 4.14e-09 3.055639e-09 1769
+## R-HSA-69278         0.6077642 2.980196  1e-10 4.14e-09 3.055639e-09 1769
+## R-HSA-69206         0.7046866 2.973447  1e-10 4.14e-09 3.055639e-09 1155
+## R-HSA-2555396       0.6499708 2.937479  1e-10 4.14e-09 3.055639e-09 1857
+##                                 leading_edge
+## R-HSA-69620   tags=43%, list=15%, signal=37%
+## R-HSA-453279   tags=41%, list=9%, signal=37%
+## R-HSA-69306   tags=53%, list=14%, signal=46%
+## R-HSA-69278   tags=36%, list=14%, signal=32%
+## R-HSA-69206    tags=42%, list=9%, signal=38%
+## R-HSA-2555396 tags=40%, list=15%, signal=34%
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     core_enrichment
+## R-HSA-69620                                                                                                                                                                                                                                                                                                                                                          8318/55143/55388/991/1062/9133/10403/11065/220134/79019/55839/27338/890/983/54821/4085/81930/332/9212/1111/891/4174/4171/11004/993/990/5347/701/51512/9156/11130/79682/57405/2491/898/23594/4998/9134/4175/4173/10926/5984/1058/699/1063/85236/5688/5709/55055/641/1029/5698/1763/8970/5693/8317/4176/5713/79980/5982/9735/5721/2810/5691/9088/995/5685/7468/4172/7336/5690/5684/83990/5686/5695/11200/10213/8345/7534/80010/23198/5983/7979/54908/6396/4683/63967/3018/5699/5714/5702/3014/5905/3619/5708/55166/5692/10393/8290/5704/580/6119
+## R-HSA-453279                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   8318/55388/4605/7153/6241/890/983/81620/891/4174/4171/993/990/7083/898/23594/4998/1163/9134/4175/4173/10926/6502/7298/4609/5111/28227/5688/5709/26271/51053/1869/1029/5698/1719/4067/5693/8317/5427/23649/4176/5713/5557/5721/5691/1871/1031/5685/1019/5558/4172/5690/5684/5686/5695/7027/10213/1875
+## R-HSA-69306                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       8318/55388/11065/27338/890/9837/81620/51659/4174/4171/990/898/23594/4998/9134/4175/4173/2237/10926/6502/5984/84296/5111/5688/64785/5709/51053/1869/5698/1763/5693/8317/5427/23649/4176/5713/5982/5557/5721/5691/1871/5685/5558/4172/5424/5690/5684/5686/5695/10213/23198/5983/7979/5699/5714/5702/9978/5425/5708/5692/10393/54107
+## R-HSA-69278   8318/55143/55388/991/2305/9493/1062/4605/9133/10403/7153/23397/6241/11065/220134/22974/4751/79019/55839/27338/890/983/54821/4085/9837/81930/81620/332/64151/9212/51659/10112/6790/891/4174/9232/4001/4171/3161/11004/993/990/5347/701/51512/11130/79682/57405/2491/9700/7083/898/23594/4998/10733/1163/54801/9134/4175/4173/2237/10926/6502/5984/994/9918/7298/1058/84296/3015/699/4609/1063/85236/5111/28227/5688/9688/64785/5709/26271/55055/51053/1869/1029/5698/1763/1719/8970/54892/8357/4067/5693/8317/7277/5427/23649/4176/7112/5713/3930/79980/5982/9735/5557/5721/23310/5691/1871/1031/9088/995/10051/1104/5685/84790/1019/5558/4172/9631/5424/7444/79866/5690/5684/5885/5686/5695/203068/7027/10213/1875/23175/8345/7283/23198/10381/5983/7979/54908/10592/6396/23165/10383/3018/5699/22822/5714/10376/7443/55706/8815/5702/3014/1030/23636/9978/5905/3619/5425/5708/55166/5692/10393/54107
+## R-HSA-69206                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  8318/55388/6241/890/983/81620/891/4174/4171/993/990/7083/898/23594/4998/1163/9134/4175/4173/10926/6502/7298/4609/5111/28227/5688/5709/26271/51053/1869/5698/1719/5693/8317/5427/23649/4176/5713/5557/5721/5691/5685/1019/5558/4172/5690/5684/5686/5695/7027/10213/1875
+## R-HSA-2555396                                                                                                                                                                                                                                                                                                                                                                                                                                                                     55143/991/1062/9133/10403/11065/220134/79019/55839/27338/983/54821/4085/81930/332/9212/891/9232/4001/11004/5347/701/11130/79682/57405/2491/9700/1058/699/1063/5688/9688/5709/26271/55055/5698/5693/7277/7112/5713/3930/79980/9735/5721/5691/1104/5685/84790/9631/7444/5690/5684/5885/5686/5695/10213/23198/10381/7979/54908/6396/23165/10383/5699/5714/10376/7443/55706/8815/5702/23636/5905/3619/5708/55166/5692/10393/5704/5901</code></pre>
 </div>
 <div id="pathway-visualization" class="section level2" number="9.4">
 <h2>
@@ -281,7 +299,7 @@ dotplot(res)
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2022-04-24.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

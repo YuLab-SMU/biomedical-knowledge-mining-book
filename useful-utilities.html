@@ -7,17 +7,42 @@
 <title>Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
 <meta name="author" content="Guangchuang Yu">
 <meta name="description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
-<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
 <meta property="og:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta property="og:type" content="book">
 <meta property="og:description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 17 Useful utilities | Biomedical Knowledge Mining using GOSemSim and clusterProfiler">
 <meta name="twitter:description" content="17.1 Translating Biological ID  17.1.1 bitr: Biological Id TranslatoR The clusterProfiler package provides the bitr() and bitr_kegg() functions for converting ID types. Both bitr() and bitr_kegg()...">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.11/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS -->
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -154,7 +179,7 @@
 <div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eg2np</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/bitr_kegg.html">bitr_kegg</a></span><span class="op">(</span><span class="va">hg</span>, fromType<span class="op">=</span><span class="st">'kegg'</span>, toType<span class="op">=</span><span class="st">'ncbi-proteinid'</span>, organism<span class="op">=</span><span class="st">'hsa'</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning in bitr_kegg(hg, fromType = "kegg", toType = "ncbi-proteinid", organism
-## = "hsa"): 3.7% of input gene IDs are fail to map...</code></pre>
+## = "hsa"): 4.17% of input gene IDs are fail to map...</code></pre>
 <div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">eg2np</span><span class="op">)</span></code></pre></div>
 <pre><code>##    kegg ncbi-proteinid
@@ -164,7 +189,7 @@
 ## 4 10324      NP_006054
 ## 5 10411   NP_001092002
 ## 6 10614      NP_006451</code></pre>
-<p>The ID type (both <code>fromType</code> &amp; <code>toType</code>) should be one of ‘kegg,’ ‘ncbi-geneid,’ ‘ncbi-proteinid’ or ‘uniprot.’ The ‘kegg’ is the primary ID used in KEGG database. The data source of KEGG was from NCBI. A rule of thumb for the ‘kegg’ ID is <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
+<p>The ID type (both <code>fromType</code> &amp; <code>toType</code>) should be one of ‘kegg’, ‘ncbi-geneid’, ‘ncbi-proteinid’ or ‘uniprot’. The ‘kegg’ is the primary ID used in KEGG database. The data source of KEGG was from NCBI. A rule of thumb for the ‘kegg’ ID is <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
 <p>Many prokaryote species don’t have entrezgene ID available. For example we can check the gene information of <code>ece:Z5100</code> in <a href="http://www.genome.jp/dbget-bin/www_bget?ece:Z5100" class="uri">http://www.genome.jp/dbget-bin/www_bget?ece:Z5100</a>, which have <code>NCBI-ProteinID</code> and <code>UnitProt</code> links in the <code>Other DBs</code> Entry, but not <code>NCBI-GeneID</code>.</p>
 <p>If we try to convert <code>Z5100</code> to <code>ncbi-geneid</code>, <code>bitr_kegg</code> will throw error of <code>ncbi-geneid is not supported</code>.</p>
 <div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
@@ -198,25 +223,25 @@
 <span class="co">## The geneID column is ENTREZID</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 126/8113 5.125227e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8113 2.800556e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8113 9.857875e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8142 4.990001e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8142 2.737780e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8142 9.667769e-05
 ##              p.adjust       qvalue                               geneID Count
-## hsa04110 6.047768e-05 5.502876e-05 8318/991/9133/890/983/4085/7272/1111     8
-## hsa04218 1.652328e-03 1.503456e-03    2305/4605/9133/890/983/51806/1111     7
-## hsa04114 3.877431e-03 3.528082e-03         991/9133/983/4085/51806/6790     6</code></pre>
+## hsa04110 5.988001e-05 5.462738e-05 8318/991/9133/890/983/4085/7272/1111     8
+## hsa04218 1.642668e-03 1.498574e-03    2305/4605/9133/890/983/51806/1111     7
+## hsa04114 3.867107e-03 3.527888e-03         991/9133/983/4085/51806/6790     6</code></pre>
 <div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">x</span>, OrgDb <span class="op">=</span> <span class="va">org.Hs.eg.db</span>, keyType<span class="op">=</span><span class="st">"ENTREZID"</span><span class="op">)</span>
 <span class="co">## The geneID column is translated to symbol</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##                ID         Description GeneRatio  BgRatio       pvalue
-## hsa04110 hsa04110          Cell cycle      8/47 126/8113 5.125227e-07
-## hsa04218 hsa04218 Cellular senescence      7/47 156/8113 2.800556e-05
-## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8113 9.857875e-05
+## hsa04110 hsa04110          Cell cycle      8/47 126/8142 4.990001e-07
+## hsa04218 hsa04218 Cellular senescence      7/47 156/8142 2.737780e-05
+## hsa04114 hsa04114      Oocyte meiosis      6/47 131/8142 9.667769e-05
 ##              p.adjust       qvalue
-## hsa04110 6.047768e-05 5.502876e-05
-## hsa04218 1.652328e-03 1.503456e-03
-## hsa04114 3.877431e-03 3.528082e-03
+## hsa04110 5.988001e-05 5.462738e-05
+## hsa04218 1.642668e-03 1.498574e-03
+## hsa04114 3.867107e-03 3.527888e-03
 ##                                                 geneID Count
 ## hsa04110 CDC45/CDC20/CCNB2/CCNA2/CDK1/MAD2L1/TTK/CHEK1     8
 ## hsa04218     FOXM1/MYBL2/CCNB2/CCNA2/CDK1/CALML5/CHEK1     7
@@ -348,7 +373,7 @@ Figure 17.2: <strong>Visualize enriched terms by EnrichmentMap using the <code><
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2021-11-25.</p>
+    <p>"<strong>Biomedical Knowledge Mining using GOSemSim and clusterProfiler</strong>" was written by Guangchuang Yu. It was last built on 2022-04-24.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
