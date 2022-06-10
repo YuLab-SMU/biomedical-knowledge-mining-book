@@ -105,9 +105,17 @@ The format of input data, `geneList`, was documented in the [FAQ](#genelist). Be
 
 ## GO analysis for non-model organisms {#clusterprofiler-go-non-model}
 
-Both the `enrichGO()` and `gseGO()` functions require an `OrgDb` object as the  background annotation. For organisms that don't have `OrgDb` provided by `Bioconductor`, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")` or [Blast2GO](https://www.blast2go.com/). Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create an `OrgDb` on your own using `r Biocpkg("AnnotationForge")` package.
+Both the `enrichGO()` and `gseGO()` functions require an `OrgDb` object as the  background annotation. For organisms that don't have `OrgDb` provided by `Bioconductor`, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")`, or annotate the genes using [Blast2GO](https://www.blast2go.com/) or the [Trinotate](https://rnabio.org/module-07-trinotate/0007/02/01/Trinotate/) pipeline. Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create an `OrgDb` on your own using `r Biocpkg("AnnotationForge")` package.
 
 
+Here is an example of querying GO annotation from Ensembl using `r Biocpkg("biomaRt")`. 
+
+
+```{r eval=FALSE}
+library(biomaRt)
+ensembl <- useEnsemblGenomes(biomart = "plants_mart", dataset = "nattenuata_eg_gene")
+gene2go <- getBM(attributes =c("ensembl_gene_id", "go_id"), mart=ensembl)
+```
 
 ## Visualize enriched GO terms as a directed acyclic graph
 
