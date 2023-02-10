@@ -44,13 +44,19 @@ head(gene)
 
 
 ```{r}
-cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
+## cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
+url <- "http://yikedaxue.slwshop.cn/Cell_marker_Human.xlsx"
+f <- tempfile(fileext = ".xlsx")
+download.file(url, f)
+
+cell_marker_data <- readxl::read_excel(f, 1)
+
 
 ## instead of `cellName`, users can use other features (e.g. `cancerType`)
 cells <- cell_marker_data %>%
-    dplyr::select(cellName, geneID) %>%
-    dplyr::mutate(geneID = strsplit(geneID, ', ')) %>%
-    tidyr::unnest()
+    dplyr::select('Cell name', GeneID) %>%
+    dplyr::mutate(GeneID = strsplit(GeneID, ', ')) %>%
+    tidyr::unnest(cols = c(GeneID))
 ```
 
 ### Cell Marker over-presentaton analysis {#cell-marker-ora}
