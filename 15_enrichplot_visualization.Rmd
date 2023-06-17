@@ -175,9 +175,9 @@ The default agglomeration method in `treeplot()` is `ward.D` and users can speci
 
 
 
-(ref:treeplotscap) Heatmap plot of enriched terms.
+(ref:treeplotscap) Tree plot of enriched terms.
 
-(ref:treeplotcap) **Heatmap plot of enriched terms.** default (A), `foldChange=geneList` (B)
+(ref:treeplotcap) **Tree plot of enriched terms.** default (A), `hclust_method = "average"` (B)
 
 ```{r treeplot, fig.width=14, fig.height=6, fig.cap="(ref:treeplotcap)", fig.scap="(ref:treeplotscap)"}
 edox2 <- pairwise_termsim(edox)
