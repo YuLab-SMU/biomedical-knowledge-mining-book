@@ -63,17 +63,17 @@ In this equation, `N` is the total number of genes in the background distributio
 `n` is the size of the list of genes of interest and `k` is the number of genes within that list which are annotated to the gene set. The background distribution by default is all the genes that have annotation. _P_-values should be adjusted for [multiple comparison](https://en.wikipedia.org/wiki/Multiple_comparisons_problem).
 
 
-**Example:** Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. Among the differentially expressed genes, 28 are annotated to a gene set^[example adopted from <https://guangchuangyu.github.io/2012/04/enrichment-analysis/>]. 
+**Example:** Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. From these, 2641 are annotated to gene set of interest. 57 genes were differentially expressed, and among the differentially expressed genes, 28 belong to the gene set^[example adopted from <https://guangchuangyu.github.io/2012/04/enrichment-analysis/>]. 
 
 
 ```{r}
-d <- data.frame(gene.not.interest=c(2613, 15310), gene.in.interest=c(28, 29))
+d <- data.frame(gene.in.interest=c(28, 29), gene.not.interest=c(2613, 15310))
 row.names(d) <- c("In_category", "not_in_category")
 d
 ```                        
 
 
-Whether the overlap(s) of 25 genes are significantly over represented in the gene set can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
+Whether the gene set of interest is significantly over represented in the differentially expressed genes can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
 
 ```{r}
 fisher.test(d, alternative = "greater")
