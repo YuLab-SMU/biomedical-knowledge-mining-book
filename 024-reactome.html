@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Guangchuang Yu">
+<title>7&nbsp; Reactome enrichment analysis – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./025-do-enrichment.html" rel="next">
+<link href="./023-wikipathways.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-70a47bd5681a7291082a5b9f83d58762.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./024-reactome.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-wikipathways.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">WikiPathways analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#reactomepa-supported-organisms" id="toc-reactomepa-supported-organisms" class="nav-link active" data-scroll-target="#reactomepa-supported-organisms"><span class="header-section-number">7.1</span> Supported organisms</a></li>
+  <li><a href="#reactomepa-ora" id="toc-reactomepa-ora" class="nav-link" data-scroll-target="#reactomepa-ora"><span class="header-section-number">7.2</span> Reactome pathway over-representation analysis</a></li>
+  <li><a href="#reactomepa-gsea" id="toc-reactomepa-gsea" class="nav-link" data-scroll-target="#reactomepa-gsea"><span class="header-section-number">7.3</span> Reactome pathway gene set enrichment analysis</a></li>
+  <li><a href="#pathway-visualization" id="toc-pathway-visualization" class="nav-link" data-scroll-target="#pathway-visualization"><span class="header-section-number">7.4</span> Pathway Visualization</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/024-reactome.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./024-reactome.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="reactomepa" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p><a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> is designed for reactome pathway based analysis <span class="citation" data-cites="yu_reactomepa_2016">(<a href="#ref-yu_reactomepa_2016" role="doc-biblioref">Yu and He 2016</a>)</span>. Reactome is an open-source, open access, manually curated and peer-reviewed pathway database.</p>
+<section id="reactomepa-supported-organisms" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="reactomepa-supported-organisms">
+<span class="header-section-number">7.1</span> Supported organisms</h2>
+<p>Currently <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> supports several model organisms, including ‘celegans’, ‘fly’, ‘human’, ‘mouse’, ‘rat’, ‘yeast’ and ‘zebrafish’. The input gene ID should be Entrez gene ID. We recommend using <a href="utilities.html#bitr"><code>clusterProfiler::bitr()</code></a> to convert biological IDs.</p>
+</section><section id="reactomepa-ora" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="reactomepa-ora">
+<span class="header-section-number">7.2</span> Reactome pathway over-representation analysis</h2>
+<p>Enrichment analysis is a widely used approach to identify biological themes. <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented <code><a href="https://rdrr.io/pkg/ReactomePA/man/enrichPathway.html">enrichPathway()</a></code> that uses <a href="02-Enrichment.html#ora-algorithm">hypergeometric model</a> to assess whether the number of selected genes associated with a reactome pathway is larger than expected.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yulab-smu.top/contribution-knowledge-mining/">ReactomePA</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">geneList</span>, package<span class="op">=</span><span class="st">"DOSE"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">de</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">geneList</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1.5</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">de</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "4312"  "8318"  "10874" "55143" "55388" "991"  </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ReactomePA/man/enrichPathway.html">enrichPathway</a></span><span class="op">(</span>gene<span class="op">=</span><span class="va">de</span>, pvalueCutoff <span class="op">=</span> <span class="fl">0.05</span>, readable<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         ID
+R-HSA-69278     R-HSA-69278
+R-HSA-69620     R-HSA-69620
+R-HSA-69618     R-HSA-69618
+R-HSA-2500257 R-HSA-2500257
+R-HSA-141424   R-HSA-141424
+R-HSA-141444   R-HSA-141444
+                                                                                       Description
+R-HSA-69278                                                                    Cell Cycle, Mitotic
+R-HSA-69620                                                                 Cell Cycle Checkpoints
+R-HSA-69618                                                             Mitotic Spindle Checkpoint
+R-HSA-2500257                                              Resolution of Sister Chromatid Cohesion
+R-HSA-141424                                         Amplification of signal from the kinetochores
+R-HSA-141444  Amplification  of signal from unattached  kinetochores via a MAD2  inhibitory signal
+              GeneRatio   BgRatio RichFactor FoldEnrichment   zScore
+R-HSA-69278      49/314 479/10173  0.1022965       3.314210 9.259137
+R-HSA-69620      33/314 244/10173  0.1352459       4.381709 9.541792
+R-HSA-69618      19/314  94/10173  0.2021277       6.548550 9.644646
+R-HSA-2500257    20/314 109/10173  0.1834862       5.944604 9.262132
+R-HSA-141424     17/314  79/10173  0.2151899       6.971741 9.508990
+R-HSA-141444     17/314  79/10173  0.2151899       6.971741 9.508990
+                    pvalue     p.adjust       qvalue
+R-HSA-69278   6.635185e-14 5.288243e-11 4.742411e-11
+R-HSA-69620   5.785253e-13 2.305423e-10 2.067467e-10
+R-HSA-69618   5.135524e-11 1.364337e-08 1.223516e-08
+R-HSA-2500257 1.006794e-10 2.006036e-08 1.798981e-08
+R-HSA-141424  1.923239e-10 2.554702e-08 2.291016e-08
+R-HSA-141444  1.923239e-10 2.554702e-08 2.291016e-08
+                                                                                                                                                                                                                                                                                                   geneID
+R-HSA-69278   CDC45/CDCA8/CDC20/FOXM1/CENPE/MYBL2/CCNB2/NDC80/TOP2A/NCAPH/RRM2/UBE2C/HJURP/SKA1/TPX2/NEK2/CENPM/CENPN/UBE2S/CCNA2/CDK1/ERCC6L/GINS1/KIF18A/CDT1/NCAPG/AURKB/GINS2/KIF20A/AURKA/CCNB1/MCM5/PTTG1/MCM2/KIF2C/CDC25A/CDC6/PLK1/BUB1B/GTSE1/ZWINT/SPC25/CENPI/ESPL1/TK1/CCNE1/ORC6/ORC1/TAOK1
+R-HSA-69620                                                                                              CDC45/CDCA8/CDC20/CENPE/CCNB2/NDC80/UBE2C/SKA1/CENPM/CENPN/UBE2S/CCNA2/CDK1/ERCC6L/KIF18A/AURKB/CHEK1/CCNB1/MCM5/MCM2/KIF2C/CDC25A/CDC6/PLK1/BUB1B/GTSE1/ZWINT/SPC25/CENPI/CCNE1/ORC6/ORC1/TAOK1
+R-HSA-69618                                                                                                                                                                             CDCA8/CDC20/CENPE/NDC80/UBE2C/SKA1/CENPM/CENPN/UBE2S/ERCC6L/KIF18A/AURKB/KIF2C/PLK1/BUB1B/ZWINT/SPC25/CENPI/TAOK1
+R-HSA-2500257                                                                                                                                                                      CDCA8/CDC20/CENPE/CCNB2/NDC80/SKA1/CENPM/CENPN/CDK1/ERCC6L/KIF18A/AURKB/CCNB1/KIF2C/PLK1/BUB1B/ZWINT/SPC25/CENPI/TAOK1
+R-HSA-141424                                                                                                                                                                                        CDCA8/CDC20/CENPE/NDC80/SKA1/CENPM/CENPN/ERCC6L/KIF18A/AURKB/KIF2C/PLK1/BUB1B/ZWINT/SPC25/CENPI/TAOK1
+R-HSA-141444                                                                                                                                                                                        CDCA8/CDC20/CENPE/NDC80/SKA1/CENPM/CENPN/ERCC6L/KIF18A/AURKB/KIF2C/PLK1/BUB1B/ZWINT/SPC25/CENPI/TAOK1
+              Count
+R-HSA-69278      49
+R-HSA-69620      33
+R-HSA-69618      19
+R-HSA-2500257    20
+R-HSA-141424     17
+R-HSA-141444     17</code></pre>
+</div>
+</div>
+</section><section id="reactomepa-gsea" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="reactomepa-gsea">
+<span class="header-section-number">7.3</span> Reactome pathway gene set enrichment analysis</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ReactomePA/man/gsePathway.html">gsePathway</a></span><span class="op">(</span><span class="va">geneList</span>, </span>
+<span>                pvalueCutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>                pAdjustMethod <span class="op">=</span> <span class="st">"BH"</span>, </span>
+<span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         ID                          Description setSize
+R-HSA-69278     R-HSA-69278                  Cell Cycle, Mitotic     382
+R-HSA-69620     R-HSA-69620               Cell Cycle Checkpoints     194
+R-HSA-453279   R-HSA-453279 Mitotic G1 phase and G1/S transition     113
+R-HSA-69239     R-HSA-69239                     Synthesis of DNA      89
+R-HSA-69206     R-HSA-69206                      G1/S Transition     100
+R-HSA-2555396 R-HSA-2555396       Mitotic Metaphase and Anaphase     156
+              enrichmentScore      NES pvalue     p.adjust       qvalue rank
+R-HSA-69278         0.6235874 3.013833  1e-10 4.751613e-09 3.517827e-09 1769
+R-HSA-69620         0.6662086 3.004230  1e-10 4.751613e-09 3.517827e-09 1768
+R-HSA-453279        0.7235270 2.998042  1e-10 4.751613e-09 3.517827e-09 1155
+R-HSA-69239         0.7294921 2.918545  1e-10 4.751613e-09 3.517827e-09 1769
+R-HSA-69206         0.7204590 2.911402  1e-10 4.751613e-09 3.517827e-09 1155
+R-HSA-2555396       0.6639936 2.892897  1e-10 4.751613e-09 3.517827e-09 1768
+                                leading_edge
+R-HSA-69278   tags=38%, list=14%, signal=34%
+R-HSA-69620   tags=42%, list=14%, signal=36%
+R-HSA-453279   tags=44%, list=9%, signal=41%
+R-HSA-69239   tags=55%, list=14%, signal=48%
+R-HSA-69206    tags=45%, list=9%, signal=41%
+R-HSA-2555396 tags=42%, list=14%, signal=36%
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 core_enrichment
+R-HSA-69278   8318/55143/991/2305/1062/4605/9133/10403/7153/23397/6241/11065/55355/220134/22974/4751/79019/55839/27338/890/983/54821/9837/81930/81620/64151/9212/51659/10112/6790/891/4174/9232/4171/11004/993/990/5347/701/51512/11130/57405/2491/9700/7083/898/23594/4998/10733/1163/54801/9134/4175/4173/2237/5984/994/9918/7298/84296/699/4609/1063/85236/5111/28227/9688/64785/5709/26271/55055/51053/1869/1029/1763/1719/8970/54892/8357/5693/8317/7277/5427/23649/7112/5713/3930/79980/9735/55732/11047/5557/23310/5691/1871/1031/80086/995/10051/1104/5685/84790/1019/5558/4172/9631/5424/79866/5690/5885/5686/5695/203068/7027/10213/1875/23175/8345/7283/10381/5983/7979/54908/10592/23165/10383/3018/22822/5714/10376/7443/55706/8815/5702/3014/1030/23636/9978/5905/5425/5708/55166/5692/10393/54107
+R-HSA-69620                                                                                                                                                                                                                                                                                                                                                                 8318/55143/991/1062/9133/10403/11065/220134/79019/55839/27338/890/983/54821/81930/9212/1111/891/4174/4171/11004/993/990/5347/701/51512/11130/57405/2491/898/23594/4998/9134/4175/4173/5984/699/1063/85236/5709/55055/641/1029/1763/8970/5693/8317/5713/79980/9735/11047/2810/5691/995/5685/4172/7336/5690/83990/5686/5695/11200/10213/8345/7534/80010/5983/7979/54908/4683/63967/3018/5714/5702/3014/9978/5905/5708/55166/5692/10393
+R-HSA-453279                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         8318/4605/7153/6241/890/983/81620/891/4174/4171/993/990/7083/898/23594/4998/1163/9134/4175/4173/7298/4609/5111/28227/5709/26271/51053/1869/1029/1719/5693/8317/5427/23649/5713/11047/5557/5691/1871/1031/5685/1019/5558/4172/5690/5686/5695/7027/10213/1875
+R-HSA-69239                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       8318/11065/27338/890/9837/81620/51659/4174/4171/990/898/23594/4998/9134/4175/4173/2237/5984/84296/5111/64785/5709/51053/1763/5693/5427/23649/5713/11047/5557/5691/5685/5558/4172/5424/5690/5686/5695/10213/5983/7979/5714/5702/9978/5425/5708/5692/10393/54107
+R-HSA-69206                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   8318/6241/890/983/81620/891/4174/4171/993/990/7083/898/23594/4998/1163/9134/4175/4173/7298/4609/5111/28227/5709/26271/51053/1869/1719/5693/8317/5427/23649/5713/11047/5557/5691/5685/1019/5558/4172/5690/5686/5695/7027/10213/1875
+R-HSA-2555396                                                                                                                                                                                                                                                                                                                                                                                                                                       55143/991/1062/9133/10403/11065/220134/79019/55839/27338/983/54821/81930/9212/891/9232/11004/5347/701/11130/57405/2491/9700/699/1063/9688/5709/26271/55055/5693/7277/7112/5713/3930/79980/9735/11047/5691/80086/1104/5685/84790/9631/5690/5885/5686/5695/10213/10381/7979/54908/23165/10383/5714/10376/7443/55706/8815/5702/23636/5905/5708/55166/5692/10393</code></pre>
+</div>
+</div>
+</section><section id="pathway-visualization" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="pathway-visualization">
+<span class="header-section-number">7.4</span> Pathway Visualization</h2>
+<p><a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> implemented the <code><a href="https://rdrr.io/pkg/ReactomePA/man/viewPathway.html">viewPathway()</a></code> to visualized selected reactome pathway. More general purpose of visualization methods for ORA and GSEA results are provided in the <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package and are documented on <a href="enrichplot.html">Chapter 14</a>.</p>
+<p>(ref:viewpathwayscap) Visualize reactome pathway.</p>
+<p>(ref:viewpathwaycap) <strong>Visualize reactome pathway.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/ReactomePA/man/viewPathway.html">viewPathway</a></span><span class="op">(</span><span class="st">"E2F mediated regulation of DNA replication"</span>, </span>
+<span>            readable <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>            foldChange <span class="op">=</span> <span class="va">geneList</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="024-reactome_files/figure-html/viewpathway-1.svg" class="img-fluid figure-img" style="width:98.0%"></p>
+<figcaption>(ref:viewpathwaycap)</figcaption></figure>
+</div>
+</div>
+</div>
+<!--
+
+## Pathway analysis of NGS data
+
+Pathway analysis using NGS data (eg, RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via [ChIPseeker](http://bioconductor.org/packages/ChIPseeker) package, which can annotates genomic regions to their nearest genes, host genes, and flanking genes respectivly. In addtion, it provides a function, __*seq2gene*__, that simultaneously considering host genes, promoter region and flanking gene from intergenic region that may under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitate functional analysis. For more details, please refer to [ChIPseeker](http://bioconductor.org/packages/ChIPseeker)[@yu_chipseeker_2015].
+
+
+## Visualize enrichment result
+
+We implement barplot, dotplot enrichment map and category-gene-network for visualization. It is very common to visualize the enrichment result in bar or pie chart. We believe the pie chart is misleading and only provide bar chart.
+```r fig.height=6, fig.width=12}
+barplot(x, showCategory=8)
+```
+```r fig.height=6, fig.width=12}
+dotplot(x, showCategory=15)
+```
+
+Enrichment map can be viusalized by __*enrichMap*__:
+```r fig.height=10, fig.width=10}
+emapplot(x)
+```
+
+
+
+In order to consider the potentially biological complexities in which a gene may belong to multiple annotation categories, we developed __*cnetplot*__ function to extract the complex association between genes and diseases.
+```r fig.height=8, fig.width=8}
+cnetplot(x, categorySize="pvalue", foldChange=geneList)
+```
+
+
+## Visualize GSEA result
+
+```r fig.height=8, fig.width=8}
+emapplot(y, color="pvalue")
+```
+
+
+```r fig.height=7, fig.width=10}
+gseaplot(y, geneSetID = "R-HSA-69242")
+```
+
+
+## Comparing enriched reactome pathways among gene clusters with clusterProfiler
+
+We have developed an `R` package [clusterProfiler](http://bioconductor.org/packages/clusterProfiler)[@yu_clusterprofiler:_2012] for comparing biological themes among gene clusters. [ReactomePA](http://bioconductor.org/packages/ReactomePA) works fine with [clusterProfiler](http://bioconductor.org/packages/clusterProfiler) and can compare biological themes at reactome pathway perspective.
+
+```r fig.height=8, fig.width=13, eval=FALSE}
+require(clusterProfiler)
+data(gcSample)
+res <- compareCluster(gcSample, fun="enrichPathway")
+dotplot(res)
+```
+
+
+-->
+</section><section id="references" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-yu_reactomepa_2016" class="csl-entry" role="listitem">
+Yu, Guangchuang, and Qing-Yu He. 2016. <span>“<span>ReactomePA</span>: An r/Bioconductor Package for Reactome Pathway Analysis and Visualization.”</span> <em>Molecular <span>BioSystems</span></em> 12 (2): 477–79. <a href="https://doi.org/10.1039/C5MB00663E">https://doi.org/10.1039/C5MB00663E</a>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./023-wikipathways.html" class="pagination-link" aria-label="WikiPathways analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">WikiPathways analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./025-do-enrichment.html" class="pagination-link" aria-label="Disease enrichment analysis">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/024-reactome.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>
