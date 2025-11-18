@@ -1,0 +1,67 @@
+project:
+  type: book
+  output-dir: gh-pages
+
+book:
+  title: "Biomedical Knowledge Mining using GOSemSim and clusterProfiler"
+  reader-mode: true
+  author: "Guangchuang Yu"
+  date: "11/18/2025"
+
+  page-footer:
+    left: |
+      Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.
+    right: |
+      This book was built with <a href="https://quarto.org/">Quarto</a>.
+  site-url: https://yulab-smu.top/biomedical-knowledge-mining-book/
+  repo-url: https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/
+  repo-branch: main
+  repo-actions: [edit, issue]
+  chapters:
+    - index.qmd
+
+    - part: 01-semantic-similarity.qmd
+      chapters:
+        - 011-GOSemSim.qmd
+        - 012-DOSE-semantic-similarity.qmd
+        - 013-meshes-semantic-similarity.qmd
+
+    - part: 02-Enrichment.qmd
+      chapters:
+        - 021-go.qmd
+        - 022-kegg.qmd
+        - 023-wikipathways.qmd
+        - 024-reactome.qmd
+        - 025-do-enrichment.qmd
+        - 026-meshes-enrichment.qmd
+        - 027-universal-enrichment.qmd
+        - 028-chipseeker.qmd
+        - 029-compareCluster.qmd
+        - enrichplot.qmd
+
+    - part: misc.qmd
+      chapters:
+        - dplyr.qmd
+        - utilities.qmd
+
+    - part: appendix.qmd
+      chapters:
+        - FAQ.qmd
+
+bibliography: references.bib
+
+execute: 
+  cache: true
+
+format:
+  html:
+    theme:
+      - cosmo
+    code-link: true
+
+    author-meta: "Guangchuang Yu"
+    callout-appearance: simple
+
+editor: source
+
+

@@ -1,11 +1,14 @@
 # KEGG enrichment analysis {#clusterprofiler-kegg}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
 
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+source("_common.R")
 library(clusterProfiler)
 ```
+
 
 The KEGG FTP service is not freely available for academic use since 2012, and there are many software packages using out-dated KEGG annotation data. The `r Biocpkg("clusterProfiler")` package supports downloading the latest online version of KEGG data using the [KEGG website](https://www.kegg.jp), which is freely available for academic users. Both the KEGG pathway and module are supported in `r Biocpkg("clusterProfiler")`.
 
@@ -125,3 +128,4 @@ knitr::include_graphics("figures/hsa04110_pathview.png")
 
 
 
+## References {-}

@@ -2,11 +2,15 @@
 
 
 
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
 library(clusterProfiler)
 ```
+
 
 
 The `r Biocpkg("clusterProfiler")` package [@yu2012] supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it's still not enough for users may want to analyze their data with unsupported organisms, slim version of GO, novel functional annotation (e.g. GO via BlastGO or KEGG via KAAS), unsupported ontologies/pathways or customized annotations.
@@ -43,7 +47,9 @@ head(gene)
 <!--     # tidyr::unite("cellMarker", tissueType, cancerType, cellName, sep=", ")  -->
 
 
-```{r}
+```{r eval=FALSE}
+# not execcute, as the url is no longer valid
+
 ## cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
 url <- "http://yikedaxue.slwshop.cn/Cell_marker_Human.xlsx"
 f <- tempfile(fileext = ".xlsx")
@@ -62,14 +68,14 @@ cells <- cell_marker_data %>%
 ### Cell Marker over-presentaton analysis {#cell-marker-ora}
 
 
-```{r}
+```{r eval=FALSE}
 x <- enricher(gene, TERM2GENE = cells)
 head(x)
 ```
 
 ### Cell Marker gene set enrichment analysis {#cell-marker-gsea}
 
-```{r}
+```{r eval=FALSE}
 y <- GSEA(geneList, TERM2GENE = cells)
 head(y)
 ```
@@ -96,22 +102,34 @@ It supports several specices:
 
 ```{r}
 library(msigdbr)
-msigdbr_show_species()
+msigdbr_species()
 ```
 
 We can retrieve all human gene sets:
 
 ```{r}
-m_df <- msigdbr(species = "Homo sapiens")
-head(m_df, 2) %>% as.data.frame
+#| include: false
+#| echo: false
+set_proxy()
 ```
 
+```{r}
+m_df <- msigdbr(species = "Homo sapiens")
+head(m_df, 2) |> as.data.frame()
+```
+
+```{r}
+#| include: false
+#| echo: false
+unset_proxy()
+```
 
 Or specific collection. Here we use C6, oncogenic gene sets as an example:
 
 ```{r}
-m_t2g <- msigdbr(species = "Homo sapiens", category = "C6") %>% 
-  dplyr::select(gs_name, entrez_gene)
+m_t2g <- m_df |>
+  dplyr::filter(gs_collection == "C6") |>
+  dplyr::select(gs_name, ncbi_gene)
 head(m_t2g)
 ```
 
@@ -131,11 +149,14 @@ In over-presentaton analysis, we use oncogenic gene sets (i.e. C6) to test wheth
 
 
 ```{r}
-C3_t2g <- msigdbr(species = "Homo sapiens", category = "C3") %>% 
-  dplyr::select(gs_name, entrez_gene)
+C3_t2g <- m_df |>
+  dplyr::filter(gs_collection == "C3") |>
+  dplyr::select(gs_name, ncbi_gene)
 head(C3_t2g)
 
 em2 <- GSEA(geneList, TERM2GENE = C3_t2g)
 head(em2)
 ```
 
+
+## References {-}

@@ -1,5 +1,14 @@
 # GO enrichment analysis {#clusterprofiler-go}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+loadNamespace("Rcpp")
+```
+
 
 GO comprises three orthogonal ontologies, i.e. molecular function (MF), biological
 process (BP), and cellular component (CC).
@@ -133,3 +142,5 @@ goplot(ego)
 ## Summary {#clusterprofiler-go-summary}
 
 GO semantic similarity can be calculated by `r Biocpkg("GOSemSim")` [@yu2010]. We can use it to cluster genes/proteins into different clusters based on their functional similarity and can also use it to measure the similarities among GO terms to reduce the redundancy of GO enrichment results.
+
+## References {-}

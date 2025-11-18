@@ -1,7 +1,8 @@
-# (PART\*) Part I: Semantic Similarity Analysis {-}
 
 
-# Overview of semantic similarity analysis {#semantic-similarity-overview}
+
+# Semantic Similarity Analysis {#semantic-similarity-overview}
+
 
 
 Functional similarity of gene products can be estimated by controlled

@@ -1,5 +1,13 @@
 # DO semantic similarity analysis {#DOSE-semantic-similarity}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+#| 
+source("_common.R")
+```
+
 
 ```{r include=FALSE}
 geneSim <- DOSE::geneSim
@@ -119,3 +127,6 @@ supports enrichment (hypergeometric test and GSEA) and semantic
 similarity analyses for more than 70 species.
 
 -->
+
+
+## References {-}

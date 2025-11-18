@@ -2,9 +2,13 @@
 
 
 
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
 library(clusterProfiler)
 library(ReactomePA)
 ```
@@ -117,3 +121,7 @@ dotplot(res)
 
 
 -->
+
+
+## References {-}
+

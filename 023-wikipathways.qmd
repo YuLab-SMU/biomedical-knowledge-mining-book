@@ -1,5 +1,13 @@
 # WikiPathways analysis
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+```
 
 [WikiPathways](https://www.wikipathways.org) is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of gmt files for supported organisms at [data.wikipathways.org](http://data.wikipathways.org/current/gmt/). The `r Biocpkg("clusterProfiler")` package [@yu2012] supports enrichment analysis (either ORA or GSEA) for WikiPathways using the `enrichWP()` and `gseWP()` functions. These functions will automatically download and parse latest WikiPathways GMT file for selected organism.
 
@@ -7,6 +15,7 @@
 Supported organisms can be listed by:
 
 ```{r get-wp-organisms}
+library(clusterProfiler)
 get_wp_organisms()
 ```
 
@@ -79,3 +88,4 @@ If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](#bi
 
 
 
+## References {-}

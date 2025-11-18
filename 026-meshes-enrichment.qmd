@@ -1,6 +1,12 @@
 # MeSH enrichment analysis {#meshes-enrichment}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
 
+source("_common.R")
+```
 
 The `r Biocpkg("meshes")` package [@yu_meshes_2018] supports enrichment analysis (over-representation analysis and gene set
 enrichment analysis) of gene list or whole expression profile using MeSH
@@ -12,10 +18,7 @@ categories of MeSH are supported. The analysis supports about 200 species (see a
 ## MeSH over-representation analysis {#meshes-ora}
 
 
-First, we need to load/fetch species-specific MeSH annotation database:
-
-```{r meshdb, warning=FALSE, cache=TRUE, eval=FALSE}
-```
+First, we need to load/fetch species-specific MeSH annotation database, please refer to @sec-meshes-semantic-similarity.
 
 
 In this example, we use data source from `gendoo` and `C` (Diseases) category.
@@ -58,4 +61,7 @@ head(y)
 
 
 User can use visualization methods implemented in `r Biocpkg("enrichplot")` to visualize these enrichment results. With [these visualization methods](#enrichplot), it's much easier to interpret enriched results.
+
+
+## References {-}
 

@@ -1,9 +1,15 @@
-# (PART\*) Part II: Enrichment analysis {-}
-
-# Overview of enrichment analysis {#enrichment-overview}
 
 
+# Enrichment Analysis {#enrichment-overview}
 
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
 
 ## Terminology
 
@@ -106,3 +112,4 @@ Leading edge analysis reports `Tags` to indicate the percentage of genes contrib
 
 It would also be very interesting to get the core enriched genes that contribute to the enrichment. Our packages (`r Biocpkg("clusterProfiler")`, `r Biocpkg("DOSE")`, `r Biocpkg("meshes")` and `r Biocpkg("ReactomePA")`) support leading edge analysis and report core enriched genes in GSEA analysis.
 
+## References {-}

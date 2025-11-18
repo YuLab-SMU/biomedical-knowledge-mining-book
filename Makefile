@@ -1,23 +1,16 @@
-bs4:
-	rm -rf gh-pages/libs;\
-	#rm -rf gh-pages/biomedicalKnowledge_files/figure-html;\
-	Rscript -e 'library(bookdown); render_book("index.Rmd", "bs4_book")'
+book:
+	quarto render
+	# Rscript -e 'quarto::quarto_render()'
 
-gitbook:
-	Rscript -e 'library(bookdown); render_book("index.Rmd", "gitbook")'
+fresh:
+	quarto render --cache-refresh 
+
+nocache:
+	quarto render example.qmd --no-cache 	
+
 
 pdfbook:
-	Rscript -e 'library(bookdown); render_book("index.Rmd", "pdf_book")'
-
-epub:
-	Rscript -e 'library(bookdown); render_book("index.Rmd", "epub_book")'
-
-clean:
-	Rscript -e 'bookdown::clean_book()';\
-	rm -rf _bookdown_files
-
-cover:
-	Rscript -e 'source("book-cover.R")'
+	quarto render --to pdf
 
 publish:
 	cd gh-pages;\

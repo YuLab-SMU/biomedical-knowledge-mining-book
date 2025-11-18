@@ -1,5 +1,15 @@
 # GO semantic similarity analysis {#GOSemSim}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+loadNamespace("Rcpp")
+```
+
+
 `r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods and one graph-based method. 
 
 ## Semantic data {#semantic-data}
@@ -12,7 +22,7 @@ To measure semantic similarity, we need to prepare GO annotations including GO s
 
 ```{r godata}
 library(GOSemSim)
-hsGO <- godata('org.Hs.eg.db', ont="MF")
+hsGO <- godata(annoDb = 'org.Hs.eg.db', ont="MF")
 ```
 
 User can set `computeIC=FALSE` if they only want to use Wang's method.
@@ -147,3 +157,5 @@ MeSH (Medical Subject Headings) is the NLM controlled vocabulary used to manuall
 
 
 -->
+
+## References {-}

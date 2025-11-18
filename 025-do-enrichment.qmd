@@ -1,14 +1,18 @@
 # Disease enrichment analysis {#dose-enrichment}
 
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+```
+
 We developed `r Biocpkg("DOSE")` [@yu_dose_2015] package to promote the investigation of diseases. `r Biocpkg("DOSE")` provides five methods for [measuring semantic similarities among DO terms and gene products](#DOSE-semantic-similarity), hypergeometric model and gene set enrichment analysis (GSEA) for associating disease with gene list and extracting disease association insight from genome wide expression profiles.
 
 
-```{r include=FALSE}
-library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
-library(clusterProfiler)
-```
 
 ## Disease over-representation analysis {#dose-ora}
 
@@ -27,7 +31,7 @@ data(geneList)
 gene <- names(geneList)[abs(geneList) > 1.5]
 head(gene)
 x <- enrichDO(gene          = gene,
-              ont           = "DO",
+              ont           = "HDO",
               pvalueCutoff  = 0.05,
               pAdjustMethod = "BH",
               universe      = names(geneList),
@@ -41,7 +45,7 @@ head(x)
 The `enrichDO()` function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. Please refer to [session 16.1](#id-convert) if you need to conver other gene ID types to entrezgene ID. 
 
 
-The `ont` parameter can be "DO" or "DOLite", DOLite [@Du15062009] was constructed to aggregate the redundant DO terms. The DOLite data is not updated, we recommend user use `ont="DO"`. `pvalueCutoff` setting the cutoff value of *p* value and adjusted *p* value; `pAdjustMethod` setting the *p* value correction methods, include the Bonferroni correction ("bonferroni"), Holm ("holm"), Hochberg ("hochberg"), Hommel ("hommel"), Benjamini \& Hochberg ("BH") and Benjamini \& Yekutieli ("BY") while `qvalueCutoff` is used to control *q*-values.
+The `ont` parameter can be "HDO" (Human Disease Ontology), "HPO" (Human Phenotype Ontology) or "MPO" (Mouse Phenotype Ontology). `pvalueCutoff` setting the cutoff value of *p* value and adjusted *p* value; `pAdjustMethod` setting the *p* value correction methods, include the Bonferroni correction ("bonferroni"), Holm ("holm"), Hochberg ("hochberg"), Hommel ("hommel"), Benjamini \& Hochberg ("BH") and Benjamini \& Yekutieli ("BY") while `qvalueCutoff` is used to control *q*-values.
 
 The `universe` setting the background gene universe for testing. If user do not explicitly setting this parameter, `enrichDO()` will set the universe to all human genes that have DO annotation.
 
@@ -117,3 +121,5 @@ dgn <- gseDGN(geneList,
 dgn <- setReadable(dgn, 'org.Hs.eg.db')
 head(dgn, 3) 
 ```
+
+## References {-}

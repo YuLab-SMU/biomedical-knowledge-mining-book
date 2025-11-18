@@ -1,5 +1,12 @@
 # MeSH semantic similarity analysis {#meshes-semantic-similarity}
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
 
 ```{r meshes-geneSim, include=FALSE}
 geneSim <- meshes::geneSim
@@ -114,3 +121,4 @@ geneSim("241", "251", semData=hsamd, measure="Wang", combine="BMA")
 geneSim(c("241", "251"), c("835", "5261","241", "994"), semData=hsamd, measure="Wang", combine="BMA")
 ```
 
+## References {-}

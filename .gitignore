@@ -4,3 +4,9 @@ gh-pages
 biomedicalKnowledge.Rmd
 biomedicalKnowledge_cache
 biomedicalKnowledge_files
+
+/.quarto/
+**/*.quarto_ipynb
+*_files/
+*_cache/
+*.html

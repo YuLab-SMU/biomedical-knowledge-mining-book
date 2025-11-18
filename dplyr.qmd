@@ -1,15 +1,26 @@
-# (PART\*) Part III: Miscellaneous topics {-}
 
 # dplyr verbs for manipulating enrichment result {#clusterProfiler-dplyr}
 
 
-```{r include=F}
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+library(ReactomePA)
 library(DOSE)
-library(ggplot2)
 library(forcats)
 library(enrichplot)
+library(dplyr)
+
+library(ggplot2)
 theme_set(theme_grey())
+
 select <- clusterProfiler:::select.enrichResult
+slice <- clusterProfiler:::slice.enrichResult
 ```
 
 
@@ -23,7 +34,6 @@ x = enrichDO(de)
 ## filter
 
 ```{r}
-
 filter(x, p.adjust < .05, qvalue < 0.2)
 ```
 
@@ -98,10 +108,9 @@ y <- arrange(x, abs(NES)) %>%
 
 library(forcats)
 library(ggplot2)
-library(ggstance)
 library(enrichplot)
 
-ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalues), showCategory=10) + 
+ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalue), showCategory=10) + 
     geom_col(orientation='y') + 
     scale_fill_continuous(low='red', high='blue', guide=guide_colorbar(reverse=TRUE)) + 
     theme_minimal() + ylab(NULL)
@@ -116,12 +125,16 @@ ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalues), showCategory=10
 
 
 ```{r p-bar, fig.width=8, fig.height=6, fig.cap="(ref:pBarplotcap)", fig.scap="(ref:pBarplotscap)"}
+#| eval: false
+#| 
+library(ggplot2)
+
 pbar <- function(x) {
   pi=seq(0, 1, length.out=11)
 
-  mutate(x, pp = cut(p.adjust, pi)) %>%
-    group_by(pp) %>% 
-    summarise(cnt = n()) %>% 
+  mutate(x, pp = cut(p.adjust, pi)) |>
+    group_by(pp) |>
+    summarise(cnt = n()) |> 
     ggplot(aes(pp, cnt)) + geom_col() + 
     theme_minimal() +
     xlab("p value intervals") +
@@ -135,6 +148,6 @@ random_genes <- sample(names(geneList), 100)
 y <- enrichDO(random_genes, pvalueCutoff=1, qvalueCutoff=1)
 p1 <- pbar(x)
 p2 <- pbar(y)
-cowplot::plot_grid(p1, p2, ncol=1, labels = LETTERS[1:2])
+aplot::plot_list(p1, p2, ncol=1, tag_levels = 'A')
 ```
 

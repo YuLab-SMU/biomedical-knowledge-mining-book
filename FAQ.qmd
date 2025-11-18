@@ -1,6 +1,14 @@
-# (APPENDIX) Appendix {-}
+
 
 # Frequently asked questions {#faq}
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
 
 ## How to prepare your own geneList {#genelist}
 

@@ -2,6 +2,15 @@
 # Useful utilities {#useful-utilities}
 
 
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+library(enrichplot)
+```
 
 ## Translating Biological ID {#id-convert}
 
@@ -32,6 +41,7 @@ keytypes(org.Hs.eg.db)
 
 We can translate from one type to other types.
 ```{r message=FALSE, warning=TRUE}
+library(clusterProfiler)
 ids <- bitr(x, fromType="SYMBOL", toType=c("UNIPROT", "ENSEMBL"), OrgDb="org.Hs.eg.db")
 head(ids)
 ```
@@ -90,9 +100,6 @@ Some of the functions, especially those internally supported for [DO](#chapter4)
 
 
 ```{r}
-library(org.Hs.eg.db)
-library(clusterProfiler)
-
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
 x <- enrichKEGG(de)
@@ -124,15 +131,14 @@ knitr::include_graphics("figures/Gmt_format_snapshot.gif")
 
 The `r Biocpkg("clusterProfiler")` package implemented a function, `read.gmt()`, to parse GMT file into a `data.frame`. The WikiPathway GMT file encodes information of `version`, `wpid` and `species` into the `Description` column. The `r Biocpkg("clusterProfiler")` provides the `read.gmt.wp()` function to parse WikiPathway GMT file and supports parsing information that encoded in the `Description` column. 
 
-```{r echo=FALSE}
-options(download.file.method = "wget")
-options(download.file.extra = "-c")
-```
 
 
 ```{r}
+# use `wget -c` in `download.file`
+wget::wget_set()
 url <- "https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&libraryName=COVID-19_Related_Gene_Sets"
 download.file(url, destfile = "COVID19_GeneSets.gmt")
+
 covid19_gs <- read.gmt("COVID19_GeneSets.gmt")
 head(covid19_gs)
 ```
@@ -173,6 +179,7 @@ In Figure \@ref(fig:simplify-emapplot)A, we can found that there are many redund
 
 
 ```{r simplify-emapplot, fig.width=16, fig.height=8, fig.cap="(ref:emapplotSimplifycap)", fig.scap="(ref:emapplotSimplifyscap)"}
+library(enrichplot)
 data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 2]
 bp <- enrichGO(de, ont="BP", OrgDb = 'org.Hs.eg.db')
@@ -180,7 +187,7 @@ bp <- pairwise_termsim(bp)
 bp2 <- simplify(bp, cutoff=0.7, by="p.adjust", select_fun=min)
 p1 <- emapplot(bp)
 p2 <- emapplot(bp2)
-cowplot::plot_grid(p1, p2, ncol=2, labels = LETTERS[1:2])
+plot_list(p1, p2, ncol=2, tag_levels = 'A')
 ```
 
 Alternatively, users can use slim version of GO and use the `enricher()` o r `gseGO()` functions to analyze. 
@@ -190,3 +197,4 @@ Alternatively, users can use slim version of GO and use the `enricher()` o r `gs
 
 The `[` and `[[` (`asis` parameter).
 
+## References {-}
