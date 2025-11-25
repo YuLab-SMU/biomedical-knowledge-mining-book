@@ -561,19 +561,19 @@ C0004153                        rs5498/rs1805192/rs2230806/rs20417     4</code><
 <pre><code>                       ID                      Description setSize
 DOID:612         DOID:612 primary immunodeficiency disease     194
 DOID:0050117 DOID:0050117      disease by infectious agent     466
-DOID:3082       DOID:3082        interstitial lung disease     149
+DOID:934         DOID:934         viral infectious disease     297
              enrichmentScore      NES       pvalue     p.adjust       qvalue
-DOID:612           0.4861389 2.173118 1.000000e-10 1.540000e-08 9.578947e-09
-DOID:0050117       0.3382869 1.655880 9.518882e-08 7.329539e-06 4.559044e-06
-DOID:3082          0.4182272 1.797816 6.441891e-06 3.306837e-04 2.056885e-04
+DOID:612           0.4861389 2.195667 1.441403e-10 2.219760e-08 1.441403e-08
+DOID:0050117       0.3382869 1.654190 1.060502e-07 8.165866e-06 5.302511e-06
+DOID:934           0.3461519 1.635336 1.832569e-05 9.407189e-04 6.108564e-04
              rank                   leading_edge
 DOID:612     2521 tags=45%, list=20%, signal=36%
 DOID:0050117 2199 tags=31%, list=18%, signal=27%
-DOID:3082    1864 tags=28%, list=15%, signal=24%
+DOID:934     2197 tags=32%, list=18%, signal=27%
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       core_enrichment
 DOID:612                                                                                                                                                                                                                                                                                                     55388/7153/9837/29851/6890/9636/1503/1493/7037/4173/3932/3559/6772/51311/3507/3561/917/3574/3575/919/4860/915/22806/4938/1535/3458/959/5336/11151/3702/925/4688/64135/28755/50615/974/1794/3689/5788/916/4068/3937/30009/3394/10525/100/7374/3659/939/4689/5880/7128/6891/6789/930/6573/11322/204/6850/10095/7852/8772/64170/3119/28985/1053/5971/1536/10125/8456/8625/3071/7293/4478/1380/958/5591/9437/10379/54440/3570/3978/3593/10625/29927/3558/735
 DOID:0050117 4312/6279/8685/3627/4283/6362/3002/3620/6355/2921/6364/4318/3576/6890/875/1493/6352/4288/3934/59272/4599/54210/3932/80380/713/5551/133/3559/768/1230/6772/51311/6347/6402/5320/64581/4609/81611/3561/91543/6351/6590/9332/1029/1051/3574/6354/3806/7412/1535/3458/81873/959/4783/2950/3162/925/1594/50615/942/2529/51224/1991/1557/10576/9235/25939/6361/3689/1234/916/467/7096/259197/3383/6367/30009/2539/5806/6374/100/2525/1088/3600/3659/2919/6696/3549/940/58528/10541/6646/6285/6891/6396/671/7422/6059/6573/929/142/26191/4282/468/1312/7124/29949/912/1030/5329/3569/4049/7097/10096/56244/50506/2048/345/1378/5133/5743/348/4151/3119/3053/1956/2213/5971/3135/6376/9021/3596/2833/1080/356/1380/286/7133/887/958/4504/728/9402/5610/5054/4880
-DOID:3082                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          4312/8685/3627/6373/4283/3002/4318/3576/6890/1493/6352/3559/6772/6347/2643/1482/1237/727897/6354/2950/3162/942/3329/1116/1991/6361/1234/3383/6367/6374/3600/940/10059/7422/999/142/27087/7124/56244/5743/3119/1956</code></pre>
+DOID:934                                                                                                                                                                                                                                                                      4312/6279/3627/4283/3002/3620/6355/2921/6364/3576/1493/6352/4288/3934/59272/4599/54210/3932/713/5551/3559/768/1230/6772/51311/6347/5320/4609/3561/91543/6351/6590/9332/1029/1051/3574/6354/3806/3458/959/4783/925/1594/50615/1991/9235/25939/6361/3689/1234/916/259197/3383/5806/6374/1088/3600/3659/2919/940/6285/6891/671/7422/6059/929/142/4282/468/7124/912/1030/5329/3569/7097/2048/345/5133/5743/348/4151/3119/1956/3135/6376/9021/3596/356/1380/7133/958/4504/728/9402/5610/5054</code></pre>
 </div>
 </div>
 </section><section id="gsencg-fuction" class="level3" data-number="8.2.2"><h3 data-number="8.2.2" class="anchored" data-anchor-id="gsencg-fuction">
@@ -586,26 +586,26 @@ DOID:3082                                                                       
 <span><span class="va">ncg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="st">'org.Hs.eg.db'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ncg</span>, <span class="fl">3</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                                                       ID
-pan-gynecological and breast pan-gynecological and breast
-pan-gastric                                   pan-gastric
-esophageal_adenocarcinoma       esophageal_adenocarcinoma
-                                              Description setSize
-pan-gynecological and breast pan-gynecological and breast      43
-pan-gastric                                   pan-gastric      49
-esophageal_adenocarcinoma       esophageal_adenocarcinoma      92
-                             enrichmentScore       NES      pvalue p.adjust
-pan-gynecological and breast      -0.5263429 -1.686853 0.004849844 0.138968
-pan-gastric                       -0.4993803 -1.651234 0.005146964 0.138968
-esophageal_adenocarcinoma         -0.4235434 -1.570026 0.004691119 0.138968
-                                qvalue rank                   leading_edge
-pan-gynecological and breast 0.1282226 2464 tags=44%, list=20%, signal=36%
-pan-gastric                  0.1282226 3280 tags=49%, list=26%, signal=36%
-esophageal_adenocarcinoma    0.1282226 2464 tags=34%, list=20%, signal=27%
-                                                                                                                                                                                                       core_enrichment
-pan-gynecological and breast                                                                          ATM/ZC3H13/NIPBL/SPOP/ARID1A/RASA1/RB1/RNF43/MAP2K4/NF1/CTNNB1/TP53/PIK3R1/CDKN1B/CCND1/ARID5B/MAP3K1/TBX3/GATA3
-pan-gastric                                                             BCOR/SOX9/TCF7L2/ATM/CALD1/SEMG2/HTR7/ARID1A/RASA1/RB1/TTBK2/RNF43/CTNNB1/TP53/BCL9/SMAD3/APC/ZFP36L2/TGFBR2/MUC6/MAP3K1/CACNA1C/ATP8B1/CYP4B1
-esophageal_adenocarcinoma    NIPBL/ARID1A/RASA1/MSH3/RNF43/CTNNB1/DNAH7/TP53/GATAD1/PIK3R1/STK11/CDKN1B/SPART/APC/SLIT3/LIN7A/SLIT2/TGFBR2/EPHA3/MUC6/ABCB1/NAV3/SYNE1/MAP3K1/SEMA5A/FTO/NUAK1/PCDH9/CHL1/ABCG2/TRIM58</code></pre>
+<pre><code>                                                           ID
+pan-gynecological and breast     pan-gynecological and breast
+pan-gastric                                       pan-gastric
+breast_fibroepithelial_tumours breast_fibroepithelial_tumours
+                                                  Description setSize
+pan-gynecological and breast     pan-gynecological and breast      43
+pan-gastric                                       pan-gastric      49
+breast_fibroepithelial_tumours breast_fibroepithelial_tumours      17
+                               enrichmentScore       NES      pvalue  p.adjust
+pan-gynecological and breast        -0.5263429 -1.728298 0.003304610 0.1243685
+pan-gastric                         -0.4993803 -1.697203 0.004015524 0.1243685
+breast_fibroepithelial_tumours      -0.6421576 -1.692469 0.006141654 0.1243685
+                                  qvalue rank                   leading_edge
+pan-gynecological and breast   0.1115195 2464 tags=44%, list=20%, signal=36%
+pan-gastric                    0.1115195 3280 tags=49%, list=26%, signal=36%
+breast_fibroepithelial_tumours 0.1115195 2700 tags=59%, list=22%, signal=46%
+                                                                                                                                                              core_enrichment
+pan-gynecological and breast                                 ATM/ZC3H13/NIPBL/SPOP/ARID1A/RASA1/RB1/RNF43/MAP2K4/NF1/CTNNB1/TP53/PIK3R1/CDKN1B/CCND1/ARID5B/MAP3K1/TBX3/GATA3
+pan-gastric                    BCOR/SOX9/TCF7L2/ATM/CALD1/SEMG2/HTR7/ARID1A/RASA1/RB1/TTBK2/RNF43/CTNNB1/TP53/BCL9/SMAD3/APC/ZFP36L2/TGFBR2/MUC6/MAP3K1/CACNA1C/ATP8B1/CYP4B1
+breast_fibroepithelial_tumours                                                                                          BCOR/SETD2/RB1/PCNX4/NF1/TP53/RARA/SYNE1/MAP3K1/ERBB4</code></pre>
 </div>
 </div>
 </section><section id="gsedgn-fuction" class="level3" data-number="8.2.3"><h3 data-number="8.2.3" class="anchored" data-anchor-id="gsedgn-fuction">
@@ -618,22 +618,22 @@ esophageal_adenocarcinoma    NIPBL/ARID1A/RASA1/MSH3/RNF43/CTNNB1/DNAH7/TP53/GAT
 <span><span class="va">dgn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/setReadable.html">setReadable</a></span><span class="op">(</span><span class="va">dgn</span>, <span class="st">'org.Hs.eg.db'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dgn</span>, <span class="fl">3</span><span class="op">)</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>               ID                  Description setSize enrichmentScore      NES
-C0024266 C0024266 Lymphocytic Choriomeningitis     120       0.5712593 2.389853
-C4721414 C4721414         Mantle cell lymphoma     368       0.4107437 1.989531
-C0151779 C0151779           Cutaneous Melanoma     415       0.3963772 1.943568
-               pvalue     p.adjust       qvalue rank
-C0024266 1.152217e-10 2.365214e-07 2.024264e-07 2579
-C4721414 1.000000e-10 2.365214e-07 2.024264e-07 1745
-C0151779 1.000000e-10 2.365214e-07 2.024264e-07 1864
+<pre><code>               ID                  Description setSize enrichmentScore
+C0024266 C0024266 Lymphocytic Choriomeningitis     120       0.5712593
+C4721414 C4721414         Mantle cell lymphoma     368       0.4107437
+C0205682 C0205682              Waist-Hip Ratio     401      -0.4425633
+               NES pvalue    p.adjust       qvalue rank
+C0024266  2.405091  1e-10 2.05275e-07 1.754737e-07 2579
+C4721414  1.980385  1e-10 2.05275e-07 1.754737e-07 1745
+C0205682 -1.953671  1e-10 2.05275e-07 1.754737e-07 2011
                            leading_edge
 C0024266 tags=48%, list=21%, signal=38%
 C4721414 tags=26%, list=14%, signal=23%
-C0151779 tags=27%, list=15%, signal=24%
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       core_enrichment
-C0024266                                                                                                                                                                                                                                                                                                                       S100A9/CXCL10/CXCL9/EZH2/GZMB/ICOS/USP18/CXCL8/CTLA4/TREM1/PRF1/ADM/CA9/STAT1/CCL2/SELL/CDKN2A/IL7/IL7R/IFNG/CCR5/IL27RA/SH2D1A/FCER1G/CDK2AP2/CPVL/CD27/PSMB10/PTPN22/SLAMF1/KDM1A/TNF/IL6/FGL2/TLR2/RPAIN/NELFCD/PDCD1/WAS/HIF1A/ATP5F1B/FCGR2B/EGR2/STX11/CXCR3/TYROBP/YME1L1/SOSTDC1/PTPN2/TRAF1/HNF1A/IRF9/PML/NR0B2/IL2/TOX/AGFG1
-C4721414                                                                                                            CDC20/MELK/E2F8/APOBEC3B/PBK/TPX2/RAD51AP1/DUSP2/CDT1/EZH2/AURKB/CHEK1/AURKA/CCNB1/PSAT1/SOX11/PRAME/CDC6/PLK1/MMP9/EIF4EBP1/SPIB/RAD51/CD38/MMP7/MCM6/CTSC/LCK/MNX1/SKP2/STAT1/PRDM1/MS4A4A/IGK/MYC/PCNA/IFI27/PSMG1/CCR7/GMNN/E2F1/CDKN2A/PSMB9/NME1/LTB/IGHD/CD40LG/LAIR1/IGF2BP3/LBR/COL11A2/MSH2/CD79B/APRT/NSD2/CDK4/PTPRC/PLSCR1/CCR5/G6PD/CHEK2/HILPDA/DCK/PIM2/WNT3/CD6/CD28/MTAP/PRDX1/MRC1/TUBB3/VEGFA/CD19/HACD1/SOX4/PMCH/ST14/PARP1/TCL1A/DNMT1/IGLL5/SYK/TNF/MYCN/CD1D/NXT1/CDKN2B/RANGAP1/IL6/LTA/PSMD2/CXCR4/BCR/FCER2/FADD/PTGS2
-C0151779 MMP1/CDCA8/S100A8/TOP2A/PBK/ISG20/NEK2/CCL18/PDK1/EZH2/AURKB/CHAF1B/KIF18B/MMP12/LAG3/DTL/PTTG1/SOX11/CDKN3/PRAME/PLK1/FABP7/MMP9/GBP1/CXCL8/CTLA4/SOX10/PROM1/MKI67/FANCA/MCM6/MCM4/PITX1/DBF4/IL2RA/TYMS/PLA2G2A/MYC/PCNA/NDRG1/CDKAL1/BLM/E2F1/OCA2/CD163/CDKN2A/NME1/TCF21/KMO/VCAM1/RUNX3/IFNG/MCM7/KYNU/STIP1/CCDC88C/GSTP1/CHAF1A/MSH2/CYP27B1/MAGEA1/CDKN2C/PRDM16/MX2/CDK4/GAPDH/MCM3/ICAM1/CCL22/CHEK2/CXCL5/ERCC4/SPP1/TEAD4/MTAP/HCP5/MRC1/TUBB3/CD27/S100B/CSPG4/PLP2/NBN/VEGFA/IFNW1/CDK16/CDH1/CCNF/CBLIF/SOX4/PARP1/SLC16A1/DNMT1/MAP2K1/ATG5/TNF/NXT1/CDKN2B/RBX1/IL6/TLR2/CXCR4/PDCD1/PTGS2/HIF1A/JMJD6/XRCC3/HLA-DQB1/PVR/CASP10/TGFA/EGFR</code></pre>
+C0205682 tags=28%, list=16%, signal=24%
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                core_enrichment
+C0024266                                                                                                                                                                                                                                                                                                                                                                                S100A9/CXCL10/CXCL9/EZH2/GZMB/ICOS/USP18/CXCL8/CTLA4/TREM1/PRF1/ADM/CA9/STAT1/CCL2/SELL/CDKN2A/IL7/IL7R/IFNG/CCR5/IL27RA/SH2D1A/FCER1G/CDK2AP2/CPVL/CD27/PSMB10/PTPN22/SLAMF1/KDM1A/TNF/IL6/FGL2/TLR2/RPAIN/NELFCD/PDCD1/WAS/HIF1A/ATP5F1B/FCGR2B/EGR2/STX11/CXCR3/TYROBP/YME1L1/SOSTDC1/PTPN2/TRAF1/HNF1A/IRF9/PML/NR0B2/IL2/TOX/AGFG1
+C4721414                                                                                                                                                                     CDC20/MELK/E2F8/APOBEC3B/PBK/TPX2/RAD51AP1/DUSP2/CDT1/EZH2/AURKB/CHEK1/AURKA/CCNB1/PSAT1/SOX11/PRAME/CDC6/PLK1/MMP9/EIF4EBP1/SPIB/RAD51/CD38/MMP7/MCM6/CTSC/LCK/MNX1/SKP2/STAT1/PRDM1/MS4A4A/IGK/MYC/PCNA/IFI27/PSMG1/CCR7/GMNN/E2F1/CDKN2A/PSMB9/NME1/LTB/IGHD/CD40LG/LAIR1/IGF2BP3/LBR/COL11A2/MSH2/CD79B/APRT/NSD2/CDK4/PTPRC/PLSCR1/CCR5/G6PD/CHEK2/HILPDA/DCK/PIM2/WNT3/CD6/CD28/MTAP/PRDX1/MRC1/TUBB3/VEGFA/CD19/HACD1/SOX4/PMCH/ST14/PARP1/TCL1A/DNMT1/IGLL5/SYK/TNF/MYCN/CD1D/NXT1/CDKN2B/RANGAP1/IL6/LTA/PSMD2/CXCR4/BCR/FCER2/FADD/PTGS2
+C0205682 RETREG3/JMJD1C/SH2B1/BDNF/ARHGEF26/PDE5A/BPTF/SMAD3/TTC39A/ATP2B1/ARID4A/HOXC4/NID1/LAMA4/LRRC36/NUDT18/ANKRD28/HECTD4/COL11A1/MEIS1/INSR/CUL9/NRIP3/BCL2/CD34/EZH1/DYM/NDST1/COL15A1/VGLL3/CCND1/ZCCHC10/HOXC6/RAB26/QTRT1/MEIS2/ARID5B/AHNAK/FGF1/CAPRIN2/LAMB1/CPEB3/ELOVL4/CDADC1/PDE8B/ZNF268/NRP1/SYTL2/NR5A2/DGLUCY/SEMA3B/NID2/SIK3/PRR5L/FGF2/COL8A1/RAPGEF3/RBM6/CDH13/JCAD/NAV3/TRIM8/PPIEL/PTPRG/NBL1/CALCRL/PPL/LPL/BCKDHB/MAPKBP1/CNTLN/BBS4/P4HTM/FTO/PDZRN4/PDGFC/SGCD/NRXN3/AFF3/IGF1R/ABCC8/MPPED2/COL5A1/COL6A2/LOXL1/CYP21A2/LTBP2/TTC28/PATJ/PCSK5/WNT4/TTC12/NISCH/ASTN2/TCEA2/MN1/SETBP1/TAOK1/MAST4/ITGA7/ITGBL1/COL14A1/C1QTNF3/ZNF423/IQCH/MYH11/ADH1B/ABLIM3/MAPT/STC2/TFAP2B/CYBRD1/SCUBE2</code></pre>
 </div>
 </div>
 </section></section><section id="references" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="references">References</h2>

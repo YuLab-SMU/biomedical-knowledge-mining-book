@@ -379,18 +379,16 @@ DOID:252   0.00000000 0.00000000         0         0  0.0000000</code></pre>
 </div>
 </div>
 <p>The <code>doSim</code> function requires three parameter <code>DOID1</code>, <code>DOID2</code> and <code>measure</code>. <code>DOID1</code> and <code>DOID2</code> should be a vector of DO terms, while <code>measure</code> should be one of <em>Resnik</em>, <em>Jiang</em>, <em>Lin</em>, <em>Rel</em>, and <em>Wang</em>.</p>
-<p>We also implement a plot function <code><a href="https://rdrr.io/pkg/DOSE/man/simplot.html">simplot()</a></code> to visualize the similarity result as demonstrated in Figure @ref(fig:dose-simplot).</p>
-<p>(ref:doseSimplotscap) Similarity matrix visualization.</p>
-<p>(ref:doseSimplotcap) <strong>Similarity matrix visualization</strong>. The <code><a href="https://rdrr.io/pkg/DOSE/man/simplot.html">simplot()</a></code> function visualize similarity matrix as a heatmap.</p>
+<p>We also implement a plot function <code><a href="https://rdrr.io/pkg/DOSE/man/simplot.html">simplot()</a></code> to visualize the similarity result as demonstrated in <a href="#fig-dose-simplot" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/simplot.html">simplot</a></span><span class="op">(</span><span class="va">s</span>,</span>
-<span>        color.low<span class="op">=</span><span class="st">"white"</span>, color.high<span class="op">=</span><span class="st">"red"</span>,</span>
-<span>        labs<span class="op">=</span><span class="cn">TRUE</span>, digits<span class="op">=</span><span class="fl">2</span>, labs.size<span class="op">=</span><span class="fl">5</span>,</span>
-<span>        font.size<span class="op">=</span><span class="fl">14</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="012-DOSE-semantic-similarity_files/figure-html/dose-simplot-1.svg" class="img-fluid figure-img" style="width:98.0%"></p>
-<figcaption>(ref:doseSimplotcap)</figcaption></figure>
+<div id="fig-dose-simplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Similarity matrix visualization. ">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-dose-simplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="012-DOSE-semantic-similarity_files/figure-html/fig-dose-simplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Similarity matrix visualization. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dose-simplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: <strong>Similarity matrix visualization</strong>. The <code><a href="https://rdrr.io/pkg/DOSE/man/simplot.html">simplot()</a></code> function visualize similarity matrix as a heatmap.
+</figcaption></figure>
 </div>
 </div>
 </div>
@@ -400,14 +398,14 @@ DOID:252   0.00000000 0.00000000         0         0  0.0000000</code></pre>
 <p>On the basis of semantic similarity between DO terms, <a href="http://bioconductor.org/packages/DOSE">DOSE</a> can also compute semantic similarity among gene products. <a href="http://bioconductor.org/packages/DOSE">DOSE</a> provides four methods which called <code>max</code>, <code>avg</code>, <code>rcmax</code> and <code>BMA</code> to combine semantic similarity scores of multiple DO terms (as described in <a href="combine-methods">session 1.3</a>). The similarities among genes and gene clusters which annotated by multiple DO terms were also calculated by these combine methods.</p>
 <p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> implemented <code>geneSim</code> to measure semantic similarities among genes.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"84842"</span>, <span class="st">"2524"</span>, <span class="st">"10590"</span>, <span class="st">"3070"</span>, <span class="st">"91746"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"84842"</span>, <span class="st">"2524"</span>, <span class="st">"10590"</span>, <span class="st">"3070"</span>, <span class="st">"91746"</span><span class="op">)</span></span>
 <span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"84289"</span>, <span class="st">"6045"</span>, <span class="st">"56999"</span>, <span class="st">"9869"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">g2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/geneSim.html">geneSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span>
 <span><span class="va">gs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      84289 6045 56999  9869
@@ -423,13 +421,13 @@ DOID:252   0.00000000 0.00000000         0         0  0.0000000</code></pre>
 <span class="header-section-number">2.3</span> Gene cluster semantic similarity measurement</h2>
 <p><a href="http://bioconductor.org/packages/DOSE">DOSE</a> also implemented <code>clusterSim</code> for calculating semantic similarity between two gene clusters and <code>mclusterSim</code> for calculating semantic similarities among multiple gene clusters.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/clusterSim.html">clusterSim</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.338</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"57491"</span>, <span class="st">"6296"</span>, <span class="st">"51438"</span>, <span class="st">"5504"</span>, <span class="st">"27319"</span>, <span class="st">"1643"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"57491"</span>, <span class="st">"6296"</span>, <span class="st">"51438"</span>, <span class="st">"5504"</span>, <span class="st">"27319"</span>, <span class="st">"1643"</span><span class="op">)</span></span>
 <span><span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a<span class="op">=</span><span class="va">g1</span>, b<span class="op">=</span><span class="va">g2</span>, c<span class="op">=</span><span class="va">g3</span><span class="op">)</span></span>
 <span><span class="fu">DOSE</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DOSE/man/mclusterSim.html">mclusterSim</a></span><span class="op">(</span><span class="va">clusters</span>, measure<span class="op">=</span><span class="st">"Wang"</span>, combine<span class="op">=</span><span class="st">"BMA"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">

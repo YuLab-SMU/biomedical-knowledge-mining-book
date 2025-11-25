@@ -349,23 +349,23 @@ div.csl-indent {
 <span><span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/search_kegg_organism.html">search_kegg_organism</a></span><span class="op">(</span><span class="st">'ece'</span>, by<span class="op">=</span><span class="st">'kegg_code'</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     kegg_code                 scientific_name          common_name
-923        ece Escherichia coli O157:H7 EDL933                 EHEC
-5605      ecec            Enterococcus cecorum Enterococcus cecorum</code></pre>
+1259       ece Escherichia coli O157:H7 EDL933                 EHEC
+8132      ecec            Enterococcus cecorum Enterococcus cecorum</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ecoli</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/search_kegg_organism.html">search_kegg_organism</a></span><span class="op">(</span><span class="st">'Escherichia coli'</span>, by<span class="op">=</span><span class="st">'scientific_name'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">ecoli</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 65  3</code></pre>
+<pre><code>[1] 66  3</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ecoli</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    kegg_code                 scientific_name                  common_name
-918       eco    Escherichia coli K-12 MG1655 Escherichia coli K-12 MG1655
-919       ecj     Escherichia coli K-12 W3110  Escherichia coli K-12 W3110
-920       ecd     Escherichia coli K-12 DH10B  Escherichia coli K-12 DH10B
-921       ebw    Escherichia coli K-12 BW2952 Escherichia coli K-12 BW2952
-922      ecok     Escherichia coli K-12 MDS42  Escherichia coli K-12 MDS42
-923       ece Escherichia coli O157:H7 EDL933                         EHEC</code></pre>
+<pre><code>     kegg_code              scientific_name                  common_name
+1253       eco Escherichia coli K-12 MG1655 Escherichia coli K-12 MG1655
+1254       ecj  Escherichia coli K-12 W3110  Escherichia coli K-12 W3110
+1255       ecd  Escherichia coli K-12 DH10B  Escherichia coli K-12 DH10B
+1256       ebw Escherichia coli K-12 BW2952 Escherichia coli K-12 BW2952
+1257      ecok  Escherichia coli K-12 MDS42  Escherichia coli K-12 MDS42
+1258      ecoc  Escherichia coli K-12 C3026  Escherichia coli K-12 C3026</code></pre>
 </div>
 </div>
 </section><section id="clusterprofiler-kegg-pathway-ora" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="clusterprofiler-kegg-pathway-ora">
@@ -401,19 +401,19 @@ hsa04061 Viral protein interaction with cytokine and cytokine receptor
 hsa03320                                        PPAR signaling pathway
 hsa04814                                                Motor proteins
          GeneRatio  BgRatio RichFactor FoldEnrichment    zScore       pvalue
-hsa04110    15/107 158/9497 0.09493671       8.426298 10.048013 2.140039e-10
-hsa04114    10/107 139/9497 0.07194245       6.385396  6.827520 3.424441e-06
-hsa04218    10/107 157/9497 0.06369427       5.653313  6.275785 1.016702e-05
-hsa04061     8/107 100/9497 0.08000000       7.100561  6.546431 1.574727e-05
-hsa03320     7/107  76/9497 0.09210526       8.174988  6.703612 2.183806e-05
-hsa04814    10/107 197/9497 0.05076142       4.505432  5.307165 7.189267e-05
+hsa04110    15/107 158/9500 0.09493671       8.428960 10.049983 2.130809e-10
+hsa04114    10/107 139/9500 0.07194245       6.387413  6.828971 3.414945e-06
+hsa04218    10/107 157/9500 0.06369427       5.655099  6.277174 1.013937e-05
+hsa04061     8/107 100/9500 0.08000000       7.102804  6.547781 1.571178e-05
+hsa03320     7/107  76/9500 0.09210526       8.177570  6.704946 2.179422e-05
+hsa04814    10/107 197/9500 0.05076142       4.506855  5.308455 7.170565e-05
              p.adjust       qvalue
-hsa04110 4.708085e-08 4.572925e-08
-hsa04114 3.766885e-04 3.658745e-04
-hsa04218 7.455816e-04 7.241774e-04
-hsa04061 8.661000e-04 8.412359e-04
-hsa03320 9.608747e-04 9.332898e-04
-hsa04814 2.636065e-03 2.560388e-03
+hsa04110 4.687780e-08 4.553202e-08
+hsa04114 3.756439e-04 3.648599e-04
+hsa04218 7.435539e-04 7.222078e-04
+hsa04061 8.641481e-04 8.393400e-04
+hsa03320 9.589457e-04 9.314162e-04
+hsa04814 2.629207e-03 2.553728e-03
                                                                            geneID
 hsa04110 8318/991/9133/10403/890/983/4085/81620/7272/9212/1111/9319/891/4174/9232
 hsa04114                          991/9133/983/4085/51806/6790/891/9232/3708/5241
@@ -449,12 +449,12 @@ hsa05166 hsa05166 Human T-cell leukemia virus 1 infection     203
 hsa04510 hsa04510                          Focal adhesion     191
 hsa04218 hsa04218                     Cellular senescence     141
          enrichmentScore       NES       pvalue     p.adjust       qvalue rank
-hsa04110       0.6637551  2.858763 1.000000e-10 8.600000e-09 5.578947e-09 1155
-hsa05169       0.4335116  1.946743 1.067902e-07 4.591980e-06 2.978886e-06 2820
-hsa04613       0.4496569  1.905734 3.452734e-06 9.897839e-05 6.420875e-05 2575
-hsa05166       0.3882567  1.741603 1.124587e-05 2.417863e-04 1.568503e-04 1955
-hsa04510      -0.4199193 -1.711886 2.873499e-05 4.942418e-04 3.206220e-04 2183
-hsa04218       0.4115945  1.775396 8.068455e-05 1.089752e-03 7.069383e-04 1155
+hsa04110       0.6637551  2.836593 1.000000e-10 8.600000e-09 5.684211e-09 1155
+hsa05169       0.4335116  1.922965 1.338944e-07 5.757461e-06 3.805421e-06 2820
+hsa04613       0.4496569  1.899232 5.703907e-06 1.635120e-04 1.080740e-04 2575
+hsa05166       0.3882567  1.740874 9.483009e-06 2.038847e-04 1.347585e-04 1955
+hsa04510      -0.4199193 -1.723726 2.880366e-05 4.954229e-04 3.274521e-04 2183
+hsa04218       0.4115945  1.761108 5.896362e-05 8.451453e-04 5.586027e-04 1155
                            leading_edge
 hsa04110  tags=36%, list=9%, signal=33%
 hsa05169 tags=39%, list=23%, signal=31%
@@ -525,28 +525,28 @@ M00938 M00938  Pyrimidine deoxyribonucleotide biosynthesis, UDP =&gt; dTTP      
 M00002 M00002  Glycolysis, core module involving three-carbon compounds      11
 M00035 M00035                                    Methionine degradation      11
 M00009 M00009                    Citrate cycle (TCA cycle, Krebs cycle)      22
-M00065 M00065             GPI-anchor biosynthesis, core oligosaccharide      12
-       enrichmentScore       NES     pvalue  p.adjust    qvalue rank
-M00001       0.5739036  1.752300 0.00514861 0.1544583 0.1463289 2886
-M00938       0.6648004  1.588255 0.03203395 0.3203395 0.3034795  648
-M00002       0.6421781  1.570160 0.02546139 0.3203395 0.3034795 1381
-M00035       0.5824213  1.424052 0.09154930 0.6051587 0.5733083 1555
-M00009       0.4504911  1.349078 0.12325581 0.6051587 0.5733083 3514
-M00065      -0.5474611 -1.340837 0.11578947 0.6051587 0.5733083 2730
+M00101 M00101              Cholesterol biosynthesis, FPP =&gt; cholesterol      12
+       enrichmentScore      NES      pvalue  p.adjust    qvalue rank
+M00001       0.5739036 1.751541 0.009216818 0.2765045 0.2619517 2886
+M00938       0.6648004 1.575131 0.032927072 0.3559954 0.3372588  648
+M00002       0.6421781 1.562671 0.035599545 0.3559954 0.3372588 1381
+M00035       0.5824213 1.417259 0.094252874 0.6698337 0.6345793 1555
+M00009       0.4504911 1.331955 0.111638955 0.6698337 0.6345793 3514
+M00101       0.5350938 1.330421 0.145739910 0.6706064 0.6353113 1180
                          leading_edge
 M00001 tags=54%, list=23%, signal=42%
 M00938  tags=40%, list=5%, signal=38%
 M00002 tags=55%, list=11%, signal=49%
 M00035 tags=45%, list=12%, signal=40%
 M00009 tags=50%, list=28%, signal=36%
-M00065 tags=75%, list=22%, signal=59%
+M00101  tags=42%, list=9%, signal=38%
                                                         core_enrichment
 M00001 5214/3101/2821/7167/2597/5230/2023/5223/5315/3099/5232/2027/5211
 M00938                                              6241/7298/4830/1841
 M00002                                    7167/2597/5230/2023/5223/5315
 M00035                                           875/1789/191/1788/1786
 M00009            3418/50/4190/3419/2271/3421/55753/3417/1431/6389/4191
-M00065                 9487/51227/5281/9091/54872/9488/55650/23556/5283</code></pre>
+M00101                                       1717/6713/3930/10682/50814</code></pre>
 </div>
 </div>
 </section><section id="visualize-enriched-kegg-pathways" class="level2" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="visualize-enriched-kegg-pathways">

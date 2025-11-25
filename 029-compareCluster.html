@@ -501,44 +501,50 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">dotplot</span><span class="op">(</span><span class="va">ck</span><span class="op">)</span></span>
 <span><span class="fu">dotplot</span><span class="op">(</span><span class="va">formula_res</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>(ref:ccnscap) Comparing enrichment results of multiple gene lists.</p>
-<p>(ref:ccncap) <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="029-compareCluster_files/figure-html/ccn-1.png" class="img-fluid figure-img" style="width:98.0%"></p>
-<figcaption>(ref:ccncap)</figcaption></figure>
+<div id="fig-ccn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Comparing enrichment results of multiple gene lists. ">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ccn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-ccn-1.png" class="img-fluid figure-img" style="width:100.0%" data-fig-scap="Comparing enrichment results of multiple gene lists. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ccn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.1: <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.
+</figcaption></figure>
 </div>
 </div>
 </div>
-<p>The fomula interface allows more complicated gene cluster definition. In Figure @ref(fig:ccn)B, the gene clusters were defined by two variables (i.e.&nbsp;<code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code>dotplot()</code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure @ref(fig:ccf)).</p>
-<p>(ref:ccfscap) Comparing enrichment results of multiple gene lists defined by multiple variable.</p>
-<p>(ref:ccfcap) <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong> The results were visualized as a dot plot with an x-axis representing one level of conditions (the <em>group</em> variable) and a facet panel indicating another level of conditions (the <em>othergroup</em> variable).</p>
+<p>The fomula interface allows more complicated gene cluster definition. In <a href="#fig-ccn" class="quarto-xref">Figure&nbsp;<span>12.1</span></a>(B), the gene clusters were defined by two variables (i.e.&nbsp;<code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code>dotplot()</code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (<a href="#fig-ccf" class="quarto-xref">Figure&nbsp;<span>12.2</span></a>).</p>
 <div class="cell" data-crop="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">dotplot</span><span class="op">(</span><span class="va">formula_res</span>, x<span class="op">=</span><span class="st">"group"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">facet_grid</span><span class="op">(</span><span class="op">~</span><span class="va">othergroup</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="029-compareCluster_files/figure-html/ccf-1.png" class="img-fluid figure-img" style="width:98.0%"></p>
-<figcaption>(ref:ccfcap)</figcaption></figure>
+<div id="fig-ccf" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Comparing enrichment results of multiple gene lists defined by multiple variable. ">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-ccf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-ccf-1.png" class="img-fluid figure-img" style="width:90.0%" data-fig-scap="Comparing enrichment results of multiple gene lists defined by multiple variable. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ccf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.2: <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong> The results were visualized as a dot plot with an x-axis representing one level of conditions (the <em>group</em> variable) and a facet panel indicating another level of conditions (the <em>othergroup</em> variable).
+</figcaption></figure>
 </div>
 </div>
 </div>
 <p>By default, only top 5 (most significant) categories of each cluster was plotted. User can changes the parameter <code>showCategory</code> to specify how many categories of each cluster to be plotted, and if <code>showCategory</code> was set to <code>NULL</code>, the whole result will be plotted. The <code>showCategory</code> parameter also allows passing a vector of selected categories to <a href="FAQ.html#showing-specific-pathways">plot pathway of interests</a></p>
 <p>The <code>dotplot()</code> function tries to make the comparison among different clusters more informative and reasonable. After extracting <em>e.g.</em> 10 categories for each clusters, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> tries to collect overlap of these categories among clusters. For example, <code>term A</code> is enriched in all the gene clusters (<em>e.g.</em>, <code>g1</code> and <code>g2</code>) and is in the 10 most significant categories of <code>g1</code> but not <code>g2</code>. <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> will capture this information and include <code>term A</code> in <code>g2</code> cluster to make the comparison in <code>dotplot</code> more reasonable. If users want to ignore these information, they can set <code>includeAll = FALSE</code> in <code>dotplot()</code>, which is not recommended.</p>
 <p>The <code>dotplot()</code> function accepts a parameter <code>size</code> for setting the scale of dot sizes. The default parameter <code>size</code> is setting to <code>geneRatio</code>, which corresponding to the <code>GeneRatio</code> column of the output. If it was setting to <code>count</code>, the comparison will be based on gene counts, while if setting to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code>. Users can also map the dot size to other variables or derived variables (see <a href="dplyr.html">Chapter 16</a>).</p>
-<p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure @ref(fig:ccn).</p>
+<p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is setting to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is setting to <code>geneRatio</code>, as shown in Figure <a href="#fig-ccn" class="quarto-xref">Figure&nbsp;<span>12.1</span></a>.</p>
 <p>The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
 </section><section id="compare-cnetplot" class="level3" data-number="12.3.2"><h3 data-number="12.3.2" class="anchored" data-anchor-id="compare-cnetplot">
 <span class="header-section-number">12.3.2</span> Gene-Concept Network</h3>
 <p>The <a href="enrichplot.html#cnetplot">cnetplot</a> also works with <code>compareCluster()</code> result.</p>
-<p>(ref:mcnetplotscap) <code>cnetplot()</code> for comparing functional profiles of multiple gene clusters.</p>
-<p>(ref:mcnetplotcap) <strong><code>cnetplot()</code> for comparing functional profiles of multiple gene clusters.</strong> Genes and functional categories (<em>i.e.</em>, pathways) are encoded as pies to distinguish different gene clusters.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">cnetplot</span><span class="op">(</span><span class="va">ck</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="029-compareCluster_files/figure-html/mcnetplot-1.svg" class="img-fluid figure-img" style="width:98.0%"></p>
-<figcaption>(ref:mcnetplotcap)</figcaption></figure>
+<div id="fig-mcnetplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="`cnetplot()` for comparing functional profiles of multiple gene clusters. ">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-mcnetplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-mcnetplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="`cnetplot()` for comparing functional profiles of multiple gene clusters. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcnetplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12.3: <strong><code>cnetplot()</code> for comparing functional profiles of multiple gene clusters.</strong> Genes and functional categories (<em>i.e.</em>, pathways) are encoded as pies to distinguish different gene clusters.
+</figcaption></figure>
 </div>
 </div>
 </div>
