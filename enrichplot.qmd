@@ -51,7 +51,7 @@ mutate(edo, qscore = -log(p.adjust, base=10)) |>
 
 
 
-```{r Barplot}
+```{r}
 #| label: fig-Barplot  
 #| echo: false
 #| fig-width: 11
@@ -272,10 +272,6 @@ plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `size_category` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, and proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in @fig-Enrichment2.
 
 
-(ref:Enrichment2scap) 
-
-(ref:Enrichment2cap) 
-
 ```{r}
 #| label: fig-Enrichment2  
 #| fig-width: 16
@@ -321,9 +317,7 @@ upsetplot(edo)
 For over-representation analysis, `upsetplot` will calculate the overlaps among different gene sets as demonstrated in @fig-upsetORA. For GSEA result, it will plot the fold change distributions of different categories (e.g. unique to pathway, overlaps among different pathways).
 
 
-(ref:upsetGSEAscap) 
 
-(ref:upsetGSEAcap) 
 
 ```{r}
 #| label: fig-upsetGSEA  
@@ -428,6 +422,27 @@ gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
 ```
 
 
+The `pvalue_table` can be customized using the following parameters:
+
+- `pvalue_table_rownames` to specify row names of the table (if NULL, no row names will be displayed)
+-  `pvalue_table_colnames` to specify column names of the table
+
+
+```{r}
+#| label: fig-gseaplot-pvalue  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Gseaplot2 with customized pvalue table.
+#| fig-cap: |
+#|   **Gseaplot2 with customized pvalue table.** 
+#| 
+gseaplot2(edo2, geneSetID = 1, pvalue_table = TRUE,
+          pvalue_table_rownames = NULL,
+          pvalue_table_columns = c("ID", "NES", "p.adjust"))
+```
+
+
 User can specify `subplots` to only display a subset of plots:
 
 
@@ -445,6 +460,7 @@ p1 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1)
 p2 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1:2)
 plot_list(p1, p2, ncol=1, tag_levels = 'A')
 ```
+
 
 
 
