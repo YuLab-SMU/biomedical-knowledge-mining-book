@@ -116,16 +116,19 @@ For those functions that internally support `readable` parameter, user can also 
 
 ## Parsing GMT files {#read-gmt}
 
-The GMT (Gene Matrix Transposed) file format is a tab delimited file format that is widely used to describe gene sets. Each row in the GMT format represents one gene set and each gene set is described by a name (or ID), a description and the genes in the gene set as illustrated in Figure \@ref(fig:gmtFormat).
-
-
-(ref:gmtFormatscap) The GMT format..
-
-(ref:gmtFormatcap) **The GMT format.** Figure taken from <https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>. 
+The GMT (Gene Matrix Transposed) file format is a tab delimited file format that is widely used to describe gene sets. Each row in the GMT format represents one gene set and each gene set is described by a name (or ID), a description and the genes in the gene set as illustrated in @fig-gmtFormat.
 
 
 
-```{r gmtFormat, out.width="100%", echo=FALSE, fig.cap="(ref:gmtFormatcap)", fig.scap="(ref:egmtFormatscap)"}
+```{r}
+#| label: fig-gmtFormat  
+#| echo: false
+#| out-width: "100%"
+#| fig-scap: |
+#|   The GMT format.
+#| fig-cap: |
+#|   **The GMT format.** Figure taken from <https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>.
+#| 
 knitr::include_graphics("figures/Gmt_format_snapshot.gif")
 ```
 
@@ -170,15 +173,19 @@ The `enrichGO()` doesn't contain parameter to restrict the test at specific GO l
 GO is organized in parent-child structure, thus a parent term can be overlapped with a large proportion with all its child terms. This can result in redundant findings. To solve this issue, `r Biocpkg("clusterProfiler")` implements [`simplify`](https://github.com/GuangchuangYu/clusterProfiler/issues/28) method to reduce redundant GO terms from the outputs of `enrichGO()` and `gseGO()`. The function internally called `r Biocpkg("GOSemSim")` [@yu2010] to calculate semantic similarity among GO terms and remove those highly similar terms by keeping one representative term. The `simplify()` method apply `select_fun` (which can be a user defined function) to feature `by` to select one representative term from redundant terms (which have similarity higher than `cutoff`).
 
 
-In Figure \@ref(fig:simplify-emapplot)A, we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the `simplify()` method, the result is more clear to view the whole story.
-
-(ref:emapplotSimplifyscap) Visualize enriched terms by EnrichmentMap using the `emapplot()` function.
-
-(ref:emapplotSimplifycap) **Visualize enriched terms by EnrichmentMap using the `emapplot()` function.** (A) original result. (B) simplify result. 
+In @fig-simplify-emapplot(A), we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the `simplify()` method, the result is more clear to view the whole story.
 
 
-
-```{r simplify-emapplot, fig.width=16, fig.height=8, fig.cap="(ref:emapplotSimplifycap)", fig.scap="(ref:emapplotSimplifyscap)"}
+```{r}
+#| label: fig-simplify-emapplot  
+#| fig-width: 16
+#| fig-height: 8
+#| fig-scap: |
+#|   Visualize enriched terms by EnrichmentMap using the `emapplot()` function.
+#| fig-cap: |
+#|   **Visualize enriched terms by EnrichmentMap using the `emapplot()` function.** 
+#|   (A) original result. (B) simplify result. 
+#| 
 library(enrichplot)
 data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 2]

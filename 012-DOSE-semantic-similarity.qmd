@@ -57,17 +57,24 @@ s
 The `doSim` function requires three parameter `DOID1`, `DOID2` and `measure`. `DOID1` and `DOID2` should be a vector of DO terms, while `measure` should be one of _Resnik_, _Jiang_, _Lin_, _Rel_, and _Wang_.
 
 
-We also implement a plot function `simplot()` to visualize the similarity result as demonstrated in Figure \@ref(fig:dose-simplot).
+We also implement a plot function `simplot()` to visualize the similarity result as demonstrated in @fig-dose-simplot.
 
 
 
-(ref:doseSimplotscap) Similarity matrix visualization.
 
-(ref:doseSimplotcap) **Similarity matrix visualization**. The `simplot()` function visualize similarity matrix as a heatmap.
-
-
-```{r dose-simplot, fig.width=5, fig.height=4,  message=FALSE, fig.cap="(ref:doseSimplotcap)", fig.scap="(ref:doseSimplotscap)", out.extra='', warning=FALSE}
-
+```{r}
+#| label: fig-dose-simplot  
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| message: false
+#| out.extra: ''
+#| warning: false
+#| fig-scap: |
+#|   Similarity matrix visualization.
+#| fig-cap: |
+#|   **Similarity matrix visualization**. 
+#|   The `simplot()` function visualize similarity matrix as a heatmap.
 simplot(s,
         color.low="white", color.high="red",
         labs=TRUE, digits=2, labs.size=5,

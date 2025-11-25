@@ -66,12 +66,24 @@ dotplot(ck)
 dotplot(formula_res)
 ```
 
-(ref:ccnscap) Comparing enrichment results of multiple gene lists.
 
-(ref:ccncap) **Comparing enrichment results of multiple gene lists.** (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.  
+```{r}
+#| label: fig-ccn  
+#| echo: false
+#| fig-keep: last
+#| dev: 'png'
+#| fig-width: 20
+#| fig-height: 14
+#| out-width: '100%'
+#| fig-scap: |
+#|   Comparing enrichment results of multiple gene lists.
+#| fig-cap: |
+#|   **Comparing enrichment results of multiple gene lists.**
+#|   (A) Using a named list of gene clusters, the results were 
+#|   displayed as multiple columns with each one represents 
+#|   an enrichment result of a gene cluster. 
+#|   (B) Using formula interface, the columns represent gene clusters defined by the formula.  
 
-
-```{r ccn, dev='png', fig.height=5, fig.width=12, fig.cap="(ref:ccncap)", fig.scap="(ref:ccnscap)", echo=FALSE, fig.keep="last"}
 library(ggplot2)
 library(aplot)
 
@@ -83,21 +95,30 @@ p1 <- dotplot(ck) +
 p2 <- dotplot(formula_res) + 
     scale_y_discrete(labels=function(x) yulab.utils::str_wrap(x, width=30)) + 
     scale_size(range = c(5, 15)) + 
-    theme_dose(14) + 
-    theme(axis.text.x=element_text(angle=30, hjust=1)) 
+    theme_dose(14) +
+    theme(axis.text.x=element_text(angle=30, hjust=1))
 
 plot_list(p1, p2, ncol=2, tag_levels='A')
 ```
 
-The fomula interface allows more complicated gene cluster definition. In Figure \@ref(fig:ccn)B, the gene clusters were defined by two variables (i.e. `group` that divides genes into `upregulated` and `downregulated` and `othergroup` that divides the genes into two categories of `A` and `B`.). The `dotplot()` function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (Figure \@ref(fig:ccf)).
+The fomula interface allows more complicated gene cluster definition. In @fig-ccn(B), the gene clusters were defined by two variables (i.e. `group` that divides genes into `upregulated` and `downregulated` and `othergroup` that divides the genes into two categories of `A` and `B`.). The `dotplot()` function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (@fig-ccf).
 
 
-(ref:ccfscap) Comparing enrichment results of multiple gene lists defined by multiple variable.
 
-(ref:ccfcap) **Comparing enrichment results of multiple gene lists defined by multiple variable.** The results were visualized as a dot plot with an x-axis representing one level of conditions (the *group* variable) and a facet panel indicating another level of conditions (the *othergroup* variable). 
-
-
-```{r ccf, dev='png', fig.height=3, fig.width=6,fig.cap="(ref:ccfcap)", fig.scap="(ref:ccfscap)", fig.keep="last",crop = TRUE}
+```{r}
+#| label: fig-ccf  
+#| fig-keep: last
+#| crop: true
+#| dev: 'png'
+#| fig-width: 12
+#| fig-height: 7
+#| out-width: '90%'
+#| fig-scap: |
+#|   Comparing enrichment results of multiple gene lists defined by multiple variable.
+#| fig-cap: |
+#|   **Comparing enrichment results of multiple gene lists defined by multiple variable.** 
+#|   The results were visualized as a dot plot with an x-axis representing one level of conditions
+#|   (the *group* variable) and a facet panel indicating another level of conditions (the *othergroup* variable).
 dotplot(formula_res, x="group") + facet_grid(~othergroup)
 ```
 
@@ -112,7 +133,7 @@ The `dotplot()` function tries to make the comparison among different clusters m
 
 The `dotplot()` function accepts a parameter `size` for setting the scale of dot sizes. The default parameter `size` is setting to `geneRatio`, which corresponding to the `GeneRatio` column of the output. If it was setting to `count`, the comparison will be based on gene counts, while if setting to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other variables or derived variables (see [Chapter 16](#clusterProfiler-dplyr)).
 
-To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when `by` is setting to `rowPercentage` and number of gene clusters in each cluster label (numbers in parentheses) when `by` is setting to `geneRatio`, as shown in Figure \@ref(fig:ccn). 
+To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when `by` is setting to `rowPercentage` and number of gene clusters in each cluster label (numbers in parentheses) when `by` is setting to `geneRatio`, as shown in Figure @fig-ccn. 
 
 The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter `pvalueCutoff`, and FDR can be estimated by `qvalue`.
 
@@ -120,11 +141,15 @@ The p-values indicate that which categories are more likely to have biological m
 
 The [cnetplot](#cnetplot) also works with `compareCluster()` result.
 
-(ref:mcnetplotscap) `cnetplot()` for comparing functional profiles of multiple gene clusters.
-
-(ref:mcnetplotcap) **`cnetplot()` for comparing functional profiles of multiple gene clusters.** Genes and functional categories (*i.e.*, pathways) are encoded as pies to distinguish different gene clusters.
-
-```{r mcnetplot, fig.width=12, fig.height=8, fig.cap="(ref:mcnetplotcap)", fig.scap="(ref:mcnetplotscap)"}
+```{r}
+#| label: fig-mcnetplot  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   `cnetplot()` for comparing functional profiles of multiple gene clusters.
+#| fig-cap: |
+#|   **`cnetplot()` for comparing functional profiles of multiple gene clusters.** 
+#|   Genes and functional categories (*i.e.*, pathways) are encoded as pies to distinguish different gene clusters.
 cnetplot(ck)
 ```
 

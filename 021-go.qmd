@@ -20,6 +20,7 @@ process (BP), and cellular component (CC).
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 library(clusterProfiler)
+library(org.Hs.eg.db)
 ```
 
 
@@ -38,6 +39,8 @@ In `r Biocpkg("clusterProfiler")`, the `groupGO()` function is designed for gene
 
 ```{r clusterprofiler-groupgo, warning=FALSE}
 library(clusterProfiler)
+library(org.Hs.eg.db)
+
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 

@@ -49,14 +49,18 @@ mutate(x, geneRatio = parse_ratio(GeneRatio)) %>%
 select(x, -geneID) %>% head
 ```
 
-## mutate
-
-(ref:richfactorplotscap) Visualizing rich factor of enriched terms using lolliplot.
-
-(ref:richfactorplotcap) **Visualizing rich factor of enriched terms using lolliplot.** 
+## mutate {#sec-mutate}
 
 
-```{r dot-richfactor, fig.width=7, fig.height=7, fig.cap="(ref:richfactorplotcap)", fig.scap="(ref:richfactorplotscap)"}
+```{r}
+#| label: fig-dot-richfactor  
+#| fig-width: 7
+#| fig-height: 7
+#| fig-scap: |
+#|   Visualizing rich factor of enriched terms using lolliplot.
+#| fig-cap: |
+#|   **Visualizing rich factor of enriched terms using lolliplot.** 
+
 
 # k/M
 y <- mutate(x, richFactor = Count / as.numeric(sub("/\\d+", "", BgRatio)))
@@ -85,19 +89,26 @@ A very similar concept is Fold Enrichment, which is defined as the ratio of two 
 mutate(x, FoldEnrichment = parse_ratio(GeneRatio) / parse_ratio(BgRatio))
 ```
 
+Here, the calculation of rich factor and fold enrichment is only for demonstration purposes. The `enrichplot` package provides the `dotplot` function that can directly visualize these two values without adding them to the enrichment result.
+
 ## slice
 
 We can use `slice` to choose rows by their ordinal position in the enrichment result. Grouped result use the ordinal position with the group.
 
-In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in Figure \@ref(fig:sliceNES).
+In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in @fig-dot-sliceNES.
 
 
-(ref:sliceNESscap) Choose pathways by ordinal positions.
 
-(ref:sliceNEScap) **Choose pathways by ordinal positions.** 
+```{r}
+#| label: fig-dot-sliceNES  
+#| fig-width: 9
+#| fig-height: 5
+#| fig-scap: |
+#|   Choose pathways by ordinal positions.
+#| fig-cap: |
+#|   **Choose pathways by ordinal positions.** 
 
 
-```{r sliceNES, fig.width=9, fig.height=5, fig.cap="(ref:sliceNEScap)", fig.scap="(ref:sliceNESscap)"}
 library(ReactomePA)
 x <- gsePathway(geneList)
 
@@ -119,12 +130,16 @@ ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalue), showCategory=10)
 
 ## summarise
 
-(ref:pBarplotscap) Distribution of adjusted p-values.
-
-(ref:pBarplotcap) **Distribution of adjusted p-values.** 
 
 
-```{r p-bar, fig.width=8, fig.height=6, fig.cap="(ref:pBarplotcap)", fig.scap="(ref:pBarplotscap)"}
+```{r}
+#| label: fig-p-bar  
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Distribution of adjusted p-values.
+#| fig-cap: |
+#|   **Distribution of adjusted p-values.** 
 #| eval: false
 #| 
 library(ggplot2)

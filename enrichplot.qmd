@@ -23,7 +23,7 @@ Note: Several visualization methods were first implemented in `r Biocpkg("DOSE")
 
 
 Bar plot is the most widely used method to visualize enriched terms. It depicts the enrichment scores (*e.g.* p values) and gene count or ratio as bar height
-and color (Figure \@ref(fig:Barplot)A). Users can specify the number of terms (most significant) or selected terms (see also the [FAQ](#showing-specific-pathways)) to display via the `showCategory` parameter. 
+and color @fig-Barplot. Users can specify the number of terms (most significant) or selected terms (see also the [FAQ](#showing-specific-pathways)) to display via the `showCategory` parameter. 
 
 
 
@@ -40,7 +40,7 @@ library(enrichplot)
 barplot(edo, showCategory=20) 
 ```
 
-Other variables that derived using `mutate` can also be used as bar height or color as demonstrated in @sec-mutate and Figure \@ref(fig:Barplot)B.
+Other variables that derived using `mutate` can also be used as bar height or color as demonstrated in @sec-mutate and @fig-Barplot.
 
 ```{r eval=F}
 library(clusterProfiler)
@@ -50,11 +50,17 @@ mutate(edo, qscore = -log(p.adjust, base=10)) |>
 ```
 
 
-(ref:Barplotscap) Bar plot of enriched terms.
 
-(ref:Barplotcap) **Bar plot of enriched terms.** 
+```{r Barplot}
+#| label: fig-Barplot  
+#| echo: false
+#| fig-width: 11
+#| fig-height: 6
+#| fig-scap: |
+#|   Bar plot of enriched terms.
+#| fig-cap: |
+#|   **Bar plot of enriched terms.**
 
-```{r Barplot, fig.height=6, fig.width=11, fig.cap="(ref:Barplotcap)", fig.scap="(ref:Barplotscap)", echo=FALSE}
 p1 <- barplot(edo, showCategory=20) 
 p2 <- mutate(edo, qscore = -log(p.adjust, base=10)) |>
     barplot(x="qscore")
@@ -76,11 +82,16 @@ dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
 dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
 ```
 
-(ref:Dotplotscap) Dot plot of enriched terms.
 
-(ref:Dotplotcap) **Dot plot of enriched terms.** 
-
-```{r Dotplotcap, fig.width=12, fig.height=10, fig.cap="(ref:Dotplotcap)", fig.scap="(ref:Dotplotscap)", echo=FALSE}
+```{r}
+#| label: fig-Dotplotcap  
+#| echo: false
+#| fig-width: 12
+#| fig-height: 10
+#| fig-scap: |
+#|   Dot plot of enriched terms.
+#| fig-cap: |
+#|   **Dot plot of enriched terms.**
 library(ggplot2)
 
 edo2 <- gseDO(geneList)
@@ -102,11 +113,16 @@ In order to consider the potentially biological complexities in which a gene may
 The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
 with only core enriched genes displayed.
 
-(ref:Networkplotscap) Network plot of enriched terms.
 
-(ref:Networkplotcap) **Network plot of enriched terms.** 
-
-```{r Networkplot, fig.width=20, fig.height=10, fig.cap="(ref:Networkplotcap)", fig.scap="(ref:Networkplotscap)"}
+```{r}
+#| label: fig-Networkplot  
+#| fig-width: 20
+#| fig-height: 10
+#| fig-scap: |
+#|   Network plot of enriched terms.
+#| fig-cap: |
+#|   **Network plot of enriched terms.**
+#| 
 ## convert gene ID to Symbol
 edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 p1 <- cnetplot(edox, foldChange=geneList)
@@ -119,14 +135,21 @@ plot_list(p1, p2, p3, ncol=3, tag_levels = 'A', widths = c(.8, .8, 1.2))
 
 
 
-If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in Figure \@ref(fig:cnetNodeLabel). 
+If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in @fig-cnetNodeLabel. 
 
 
-(ref:cnetNodeLabelscap) Labelling nodes by selected subset.
 
-(ref:cnetNodeLabelcap) **Labelling nodes by selected subset.** gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D).
-
-```{r cnetNodeLabel, fig.height=12, fig.width=16, fig.cap="(ref:cnetNodeLabelcap)", fig.scap="(ref:cnetNodeLabelscap)"}
+```{r}
+#| label: fig-cnetNodeLabel  
+#| fig-width: 12
+#| fig-height: 16
+#| fig-scap: |
+#|   Labelling nodes by selected subset.
+#| fig-cap: |
+#|   **Labelling nodes by selected subset.** 
+#|   gene category (A), gene name (B), 
+#|   both gene category and gene name (C, default) 
+#|   and not to label at all (D).
 p1 <- cnetplot(edox, node_label="category") 
 p2 <- cnetplot(edox, node_label="gene") 
 p3 <- cnetplot(edox, node_label="all") 
@@ -136,13 +159,19 @@ p4 <- cnetplot(edox, node_label="none",
 plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
-The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Users can use a named list as input as demonstrated in Figure \@ref(fig:cnetplotgeneral). 
+The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Users can use a named list as input as demonstrated in @fig-cnetplotgeneral. 
 
-(ref:cnetplotgeneralscap) Using `cnetplot` to visualize data relationships.
 
-(ref:cnetplotgeneralcap) **Using `cnetplot` to visualize data relationships.** relationships as a network diagram (A) and with associated data to color nodes (B).
-
-```{r cnetplotgeneral, fig.height=4.8, fig.width=8.3, fig.cap="(ref:cnetplotgeneralcap)", fig.scap="(ref:cnetplotgeneralscap)"}
+```{r}
+#| label: fig-cnetplotgeneral  
+#| fig-width: 8.3
+#| fig-height: 4.8
+#| fig-scap: |
+#|   Using `cnetplot` to visualize data relationships.
+#| fig-cap: |
+#|   **Using `cnetplot` to visualize data relationships.** 
+#|   relationships as a network diagram (A) 
+#|   and with associated data to color nodes (B).
 set.seed(123)
 x <- list(A = letters[1:10], B=letters[5:12], C=letters[sample(1:26, 15)])
 p1 <- cnetplot(x)
@@ -167,11 +196,16 @@ heatmap. The gene-concept network may become too complicated if user want to
 show a large number significant terms. The `heatplot` can simplify the result
 and more easy to identify expression patterns.
 
-(ref:Heatplotscap) Heatmap plot of enriched terms.
+```{r}
+#| label: fig-Heatplot  
+#| fig-width: 12
+#| fig-height: 5
+#| fig-scap: |
+#|   Heatmap plot of enriched terms.
+#| fig-cap: |
+#|   **Heatmap plot of enriched terms.** 
+#|   default (A), `foldChange=geneList` (B)
 
-(ref:Heatplotcap) **Heatmap plot of enriched terms.** default (A), `foldChange=geneList` (B)
-
-```{r Heatplot, fig.width=12, fig.height=5, fig.cap="(ref:Heatplotcap)", fig.scap="(ref:Heatplotscap)"}
 p1 <- heatplot(edox, showCategory=5)
 p2 <- heatplot(edox, foldChange=geneList, showCategory=5)
 plot_list(p1, p2, ncol=1, tag_levels = 'A')
@@ -187,11 +221,15 @@ The default agglomeration method in `treeplot()` is `ward.D` and users can speci
 
 
 
-(ref:treeplotscap) Tree plot of enriched terms.
-
-(ref:treeplotcap) **Tree plot of enriched terms.** default (A), `hclust_method = "average"` (B)
-
-```{r treeplot, fig.width=14, fig.height=6, fig.cap="(ref:treeplotcap)", fig.scap="(ref:treeplotscap)"}
+```{r}
+#| label: fig-treeplot  
+#| fig-width: 14
+#| fig-height: 6
+#| fig-scap: |
+#|   Tree plot of enriched terms.
+#| fig-cap: |
+#|   **Tree plot of enriched terms.** 
+#|   default (A), `hclust_method = "average"` (B)
 edox2 <- pairwise_termsim(edox)
 p1 <- treeplot(edox2)
 p2 <- treeplot(edox2, cluster_method = "average")
@@ -206,13 +244,20 @@ Enrichment map organizes enriched terms into a network with edges connecting
 overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
 
-The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `size_category` parameter can be used to resize nodes, as demonstrated in Figure \@ref(fig:Enrichment) B, and the `layout` parameter can adjust the layout, as demonstrated in Figure \@ref(fig:Enrichment) C and D.
+The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `size_category` parameter can be used to resize nodes and the `layout` parameter can adjust the layout, as demonstrated in @fig-Enrichment.
 
-(ref:Enrichmentscap) Plot for results obtained from hypergeometric test and gene set enrichment analysis.
 
-(ref:Enrichmentcap) **Plot for results obtained from hypergeometric test and gene set enrichment analysis.** default (A), `size_category=1.5` (B), `layout="kk"` (C) and `size_category=1.5,layout="kk"` (D).
 
-```{r Enrichment, fig.height=14, fig.width=16, fig.cap="(ref:Enrichmentcap)", fig.scap="(ref:Enrichmentscap)"}
+```{r}
+#| label: fig-Enrichment  
+#| fig-width: 16
+#| fig-height: 14
+#| fig-scap: |
+#|   Plot for results obtained from hypergeometric test and gene set enrichment analysis.
+#| fig-cap: |
+#|   **Plot for results obtained from hypergeometric test and gene set enrichment analysis.**
+#|   default (A), `size_category=1.5` (B), `layout="kk"` (C) and
+#|   `size_category=1.5,layout="kk"` (D).
 edo <- pairwise_termsim(edo)
 p1 <- emapplot(edo)
 p2 <- emapplot(edo, size_category=1.5)
@@ -224,14 +269,23 @@ plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 
 ## Biological theme comparison 
 
-The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `size_category` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, as demonstrated in Figure \@ref(fig:Enrichment2) B. And proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in Figure \@ref(fig:Enrichment2) C and D.
+The `emapplot` function also supports results obtained from `compareCluster` function of `clusterProfiler` package. In addition to `size_category` and `layout` parameters, the number of circles in the bottom left corner can be adjusted  using the `legend_n` parameteras, and proportion of clusters in the pie chart can be adjusted using the `pie` parameter, when `pie="count"`, the proportion of  clusters in the pie chart is determined by the number of genes, as demonstrated in @fig-Enrichment2.
 
 
-(ref:Enrichment2scap) Plot for results obtained from `compareCluster` function of `clusterProfiler` package.
+(ref:Enrichment2scap) 
 
-(ref:Enrichment2cap) **Plot for results obtained from `compareCluster` function of `clusterProfiler` package.** default (A), `legend_n=2` (B), `pie="count"` (C) and `pie="count", size_category=1.5, layout="kk"` (D).
+(ref:Enrichment2cap) 
 
-```{r Enrichment2, fig.height=18, fig.width=16, fig.cap="(ref:Enrichment2cap)", fig.scap="(ref:Enrichment2scap)"}
+```{r}
+#| label: fig-Enrichment2  
+#| fig-width: 16
+#| fig-height: 18
+#| fig-scap: |
+#|   Plot for results obtained from `compareCluster` function of `clusterProfiler` package.
+#| fig-cap: |
+#|   **Plot for results obtained from `compareCluster` function of `clusterProfiler` package.** 
+#|   default (A), `legend_n=2` (B), `pie="count"` (C) and `pie="count",
+#|   size_category=1.5, layout="kk"` (D).
 library(clusterProfiler)
 data(gcSample)
 xx <- compareCluster(gcSample, fun="enrichKEGG",
@@ -253,23 +307,32 @@ association between genes and gene sets. It emphasizes the gene overlapping
 among different gene sets.
 
 
-
-(ref:upsetORAscap) Upsetplot for over-representation analysis.
-
-(ref:upsetORAcap) **Upsetplot for over-representation analysis.** 
-
-```{r upsetORA, fig.width=12, fig.height=5, fig.cap="(ref:upsetORAcap)", fig.scap="(ref:upsetORAscap)"}
+```{r}
+#| label: fig-upsetORA  
+#| fig-width: 12
+#| fig-height: 5
+#| fig-scap: |
+#|   Upsetplot for over-representation analysis.
+#| fig-cap: |
+#|   **Upsetplot for over-representation analysis.** 
 upsetplot(edo)
 ```
 
-For over-representation analysis, `upsetplot` will calculate the overlaps among different gene sets as demonstrated in Figure \@ref(fig:upsetORA). For GSEA result, it will plot the fold change distributions of different categories (e.g. unique to pathway, overlaps among different pathways).
+For over-representation analysis, `upsetplot` will calculate the overlaps among different gene sets as demonstrated in @fig-upsetORA. For GSEA result, it will plot the fold change distributions of different categories (e.g. unique to pathway, overlaps among different pathways).
 
 
-(ref:upsetGSEAscap) Upsetplot for gene set enrichment analysis.
+(ref:upsetGSEAscap) 
 
-(ref:upsetGSEAcap) **Upsetplot for gene set enrichment analysis.** 
+(ref:upsetGSEAcap) 
 
-```{r upsetGSEA, fig.height=5, fig.width=12, fig.cap="(ref:upsetGSEAcap)", fig.scap="(ref:upsetGSEAscap)"}
+```{r}
+#| label: fig-upsetGSEA  
+#| fig-width: 12
+#| fig-height: 5
+#| fig-scap: |
+#|   Upsetplot for gene set enrichment analysis.
+#| fig-cap: |
+#|   **Upsetplot for gene set enrichment analysis.** 
 kk2 <- gseKEGG(geneList     = geneList,
                organism     = 'hsa',
                minGSSize    = 120,
@@ -284,11 +347,15 @@ upsetplot(kk2)
 The `ridgeplot` will visualize expression distributions of core enriched genes
 for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
 
-(ref:ridgeplotscap) Ridgeplot for gene set enrichment analysis.
 
-(ref:ridgeplotcap) **Ridgeplot for gene set enrichment analysis.** 
-
-```{r ridgeplot, fig.width=12, fig.height=8, message=FALSE, fig.cap="(ref:ridgeplotcap)", fig.scap="(ref:ridgeplotscap)"}
+```{r}
+#| label: fig-ridgeplot  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Ridgeplot for gene set enrichment analysis.
+#| fig-cap: |
+#|   **Ridgeplot for gene set enrichment analysis.** 
 ridgeplot(edo2)
 ```
 
@@ -299,11 +366,16 @@ Running score and preranked list are traditional methods for visualizing GSEA
 result. The `r Biocpkg("enrichplot")` package supports both of them to visualize
 the distribution of the gene set and the enrichment score.
 
-(ref:gseaplotscap) gseaplot for GSEA result(`by = "runningScore"`).
 
-(ref:gseaplotcap) **gseaplot for GSEA result(`by = "runningScore"`).** `by = "runningScore"` (A), `by = "preranked"` (B), default (C)
-
-```{r gseaplot, fig.width=12, fig.height=16, fig.cap="(ref:gseaplotcap)", fig.scap="(ref:gseaplotscap)"}
+```{r}
+#| label: fig-gseaplot  
+#| fig-width: 12
+#| fig-height: 16
+#| fig-scap: |
+#|   gseaplot for GSEA result(`by = "runningScore"`).
+#| fig-cap: |
+#|   **gseaplot for GSEA result(`by = "runningScore"`).** 
+#|   `by = "runningScore"` (A), `by = "preranked"` (B), default (C)
 p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Description[1])
 p2 <- gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])
 p3 <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
@@ -314,32 +386,43 @@ plot_list(p1, p2, p3, ncol=1, tag_levels='A')
 Another method to plot GSEA result is the `gseaplot2` function:
 
 
-(ref:gseaplot2scap) Gseaplot2 for GSEA result.
-
-(ref:gseaplot2cap) **Gseaplot2 for GSEA result.** 
-
-```{r gseaplot2, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot2cap)", fig.scap="(ref:gseaplot2scap)"}
+```{r}
+#| label: fig-gseaplot2  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Gseaplot2 for GSEA result.
+#| fig-cap: |
+#|   **Gseaplot2 for GSEA result.** 
 gseaplot2(edo2, geneSetID = 1, title = edo2$Description[1])
 ```
 
 The `gseaplot2` also supports multile gene sets to be displayed on the same figure:
 
-(ref:gseaplot22scap) Gseaplot2 for GSEA result of multile gene sets.
 
-(ref:gseaplot22cap) **Gseaplot2 for GSEA result of multile gene sets.** 
-
-```{r gseaplot22, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot22cap)", fig.scap="(ref:gseaplot22scap)"}
+```{r}
+#| label: fig-gseaplot22  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Gseaplot2 for GSEA result of multile gene sets.
+#| fig-cap: |
+#|   **Gseaplot2 for GSEA result of multile gene sets.** 
 gseaplot2(edo2, geneSetID = 1:3)
 ```
 
 User can also displaying the pvalue table on the plot via `pvalue_table`
 parameter:
 
-(ref:gseaplot23scap) Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).
 
-(ref:gseaplot23cap) **Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).** 
-
-```{r gseaplot23, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot23cap)", fig.scap="(ref:gseaplot23scap)"}
+```{r}
+#| label: fig-gseaplot23  
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).
+#| fig-cap: |
+#|   **Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).** 
 gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
           color = c("#E495A5", "#86B875", "#7DB0DD"), ES_geom = "dot")
 ```
@@ -347,11 +430,17 @@ gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
 
 User can specify `subplots` to only display a subset of plots:
 
-(ref:gseaplot24scap) Gseaplot2 for GSEA result of multile gene sets(add subplots).
 
-(ref:gseaplot24cap) **Gseaplot2 for GSEA result of multile gene sets(add subplots).** `subplots = 1` (A),`subplots = 1:2` (B)
-
-```{r gseaplot24, fig.width=12, fig.height=8, fig.cap="(ref:gseaplot24cap)", fig.scap="(ref:gseaplot24scap)"}
+```{r}
+#| label: fig-gseaplot24
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Gseaplot2 for GSEA result of multile gene sets(add subplots).
+#| fig-cap: |
+#|   **Gseaplot2 for GSEA result of multile gene sets(add subplots).** 
+#|   `subplots = 1` (A),`subplots = 1:2` (B)
+#| 
 p1 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1)
 p2 <- gseaplot2(edo2, geneSetID = 1:3, subplots = 1:2)
 plot_list(p1, p2, ncol=1, tag_levels = 'A')
@@ -362,21 +451,29 @@ plot_list(p1, p2, ncol=1, tag_levels = 'A')
 The `gsearank` function plot the ranked list of genes belong to the specific
 gene set.
 
-(ref:gsearankscap) Ranked list of genes belong to the specific gene set.
 
-(ref:gsearankcap) **Ranked list of genes belong to the specific gene set.**
-
-```{r gsearank, fig.width=8, fig.height=4, fig.cap="(ref:gsearankcap)", fig.scap="(ref:gsearankscap)"}
+```{r}
+#| label: fig-gsearank
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Ranked list of genes belong to the specific gene set.
+#| fig-cap: |
+#|   **Ranked list of genes belong to the specific gene set.**
 gsearank(edo2, 1, title = edo2[1, "Description"])
 ```
 
 Multiple gene sets can be aligned using `cowplot`:
 
-(ref:gsearank2scap) Gsearank for multiple gene sets.
-
-(ref:gsearank2cap) **Gsearank for multiple gene sets.**
-
-```{r gsearank2, fig.width=8, fig.height=12, fig.cap="(ref:gsearank2cap)", fig.scap="(ref:gsearank2scap)"}
+```{r}
+#| label: fig-gsearank2
+#| fig-width: 8
+#| fig-height: 12
+#| fig-scap: |
+#|   Gsearank for multiple gene sets.
+#| fig-cap: |
+#|   **Gsearank for multiple gene sets.**
+#| 
 library(ggplot2)
 
 pp <- lapply(1:3, function(i) {
@@ -399,11 +496,16 @@ of publications trend based on the query result from PubMed Central. Of course,
 users can use `pmcplot` in other scenarios. All text that can be queried on PMC
 is valid as input of `pmcplot`.
 
-(ref:pmcplotscap) Pmcplot of enrichment analysis.
 
-(ref:pmcplotcap) **Pmcplot of enrichment analysis.**
-
-```{r pmcplot, fig.width=14, fig.height=6, fig.cap="(ref:pmcplotcap)", fig.scap="(ref:pmcplotscap)"}
+```{r}
+#| label: fig-pmcplot
+#| fig-width: 14
+#| fig-height: 6
+#| fig-scap: |
+#|   Pmcplot of enrichment analysis.
+#| fig-cap: |
+#|   **Pmcplot of enrichment analysis.**
+#| 
 terms <- edo$Description[1:5]
 p <- pmcplot(terms, 2010:2020)
 p2 <- pmcplot(terms, 2010:2020, proportion=FALSE)
