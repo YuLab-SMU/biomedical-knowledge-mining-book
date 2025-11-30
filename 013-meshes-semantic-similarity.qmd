@@ -1,4 +1,4 @@
-# MeSH semantic similarity analysis {#meshes-semantic-similarity}
+# MeSH semantic similarity analysis {#sec-meshes-semantic-similarity}
 
 ```{r}
 #| echo: false

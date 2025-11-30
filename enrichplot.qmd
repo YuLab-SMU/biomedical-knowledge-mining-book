@@ -114,10 +114,12 @@ The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* G
 with only core enriched genes displayed.
 
 
+Users can use 'fc_threshold' parameter to `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows user to plot only high fold-change genes (e.g., `fc_threshold = 1`).
+
 ```{r}
 #| label: fig-Networkplot  
-#| fig-width: 20
-#| fig-height: 10
+#| fig-width: 24
+#| fig-height: 9
 #| fig-scap: |
 #|   Network plot of enriched terms.
 #| fig-cap: |
@@ -128,11 +130,10 @@ edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 p1 <- cnetplot(edox, foldChange=geneList)
 ## categorySize can be scaled by 'pvalue' or 'geneNum'
 p2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
-p3 <- cnetplot(edox, foldChange=geneList, circular = TRUE, colorEdge = TRUE) 
-plot_list(p1, p2, p3, ncol=3, tag_levels = 'A', widths = c(.8, .8, 1.2))
+## only plot high fold-change genes
+p3 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList, fc_threshold = 2)
+plot_list(p1, p2, p3, ncol=3, tag_levels = 'A')
 ```
-
-
 
 
 If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in @fig-cnetNodeLabel. 
@@ -159,30 +160,7 @@ p4 <- cnetplot(edox, node_label="none",
 plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
-The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Users can use a named list as input as demonstrated in @fig-cnetplotgeneral. 
-
-
-```{r}
-#| label: fig-cnetplotgeneral  
-#| fig-width: 8.3
-#| fig-height: 4.8
-#| fig-scap: |
-#|   Using `cnetplot` to visualize data relationships.
-#| fig-cap: |
-#|   **Using `cnetplot` to visualize data relationships.** 
-#|   relationships as a network diagram (A) 
-#|   and with associated data to color nodes (B).
-set.seed(123)
-x <- list(A = letters[1:10], B=letters[5:12], C=letters[sample(1:26, 15)])
-p1 <- cnetplot(x)
-
-set.seed(123)
-d <- setNames(rnorm(26), letters)
-p2 <- cnetplot(x, foldChange=d) + 
-    scale_color_gradient2(name='associated data', low='darkgreen', high='firebrick')
-
-plot_list(p1, p2, ncol=2, tag_levels = 'A')    
-```
+The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Please refer to the vignette of `r CRANpkg("ggtangle")`. 
 
 
 Note: The `cnetplot()` function also works with [`compareCluster()` output](##compare-cnetplot).
@@ -223,17 +201,22 @@ The default agglomeration method in `treeplot()` is `ward.D` and users can speci
 
 ```{r}
 #| label: fig-treeplot  
-#| fig-width: 14
-#| fig-height: 6
+#| fig-width: 20
+#| fig-height: 10
 #| fig-scap: |
 #|   Tree plot of enriched terms.
 #| fig-cap: |
 #|   **Tree plot of enriched terms.** 
 #|   default (A), `hclust_method = "average"` (B)
+library(ggtree)
+
 edox2 <- pairwise_termsim(edox)
-p1 <- treeplot(edox2)
-p2 <- treeplot(edox2, cluster_method = "average")
-aplot::plot_list(p1, p2, tag_levels='A')
+p1 <- treeplot(edox2, cladelab_offset=8, tiplab_offset=.3, fontsize_cladelab =5) + 
+    hexpand(.2)
+p2 <- treeplot(edox2, cluster_method = "average", 
+            cladelab_offset=14, tiplab_offset=.3, fontsize_cladelab =5) + 
+    hexpand(.3)
+aplot::plot_list(p1, p2, tag_levels='A', ncol=2)
 ```
 
 
@@ -244,28 +227,54 @@ Enrichment map organizes enriched terms into a network with edges connecting
 overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
 
-The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. The `size_category` parameter can be used to resize nodes and the `layout` parameter can adjust the layout, as demonstrated in @fig-Enrichment.
+The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. 
+The `size_category` parameter can be used to resize nodes and the `layout` parameter can adjust the layout, as demonstrated in @fig-Enrichment.
 
 
 
 ```{r}
 #| label: fig-Enrichment  
-#| fig-width: 16
-#| fig-height: 14
+#| fig-width: 15
+#| fig-height: 12
+#| out-width: 95%
 #| fig-scap: |
-#|   Plot for results obtained from hypergeometric test and gene set enrichment analysis.
+#|   The `emapplot`.
 #| fig-cap: |
-#|   **Plot for results obtained from hypergeometric test and gene set enrichment analysis.**
-#|   default (A), `size_category=1.5` (B), `layout="kk"` (C) and
-#|   `size_category=1.5,layout="kk"` (D).
+#|   **The `emapplot`.**
+#|   default (A), `node_label="none"` (B), `size_category=1.5` (C), and `layout="with_fr"` (D)
 edo <- pairwise_termsim(edo)
-p1 <- emapplot(edo)
-p2 <- emapplot(edo, size_category=1.5)
-p3 <- emapplot(edo, layout="kk")
-p4 <- emapplot(edo, size_category=1.5,layout="kk") 
-plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
+p1 <- emapplot(edo) # node_label = "category" (default)
+p2 <- emapplot(edo, node_label = "none") 
+p3 <- emapplot(edo, node_label = "none", size_category=1.5)
+p4 <- emapplot(edo, node_label = "none", layout="with_fr")
+
+plot_list(p1, p2, p3, p4,
+        ncol=2, tag_levels = 'A', 
+        design="AAAAAA\nBBCCDD", 
+        heights = c(1, .3))
 ```
 
+The `node_label` parameter controls how the labels were dispalyed. The enriched terms will be displayed by default with `node_label="category"` and it can be disable by setting `node_label="none"`.
+
+If `node_label="group"`, the `emapplot` function will clusters the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If `node_label="all"`, then the enriched terms and group names will be displayed simultaneously.
+
+
+```{r}
+#| label: fig-Enrichment-node-label  
+#| fig-width: 16
+#| fig-height: 21
+#| fig-scap: |
+#|   `emapplot` with enriched terms clustering.
+#| fig-cap: |
+#|   **`emapplot` with enriched terms clustering.**
+#|   `node_label="group"` (A) and 
+#|   `node_label="all"` (B).
+p5 <- emapplot(edo, node_label = "group")
+p6 <- emapplot(edo, node_label = "all")
+
+plot_list(p5, p6, 
+        ncol=1, tag_levels = 'A')
+```
 
 ## Biological theme comparison 
 
@@ -345,7 +354,7 @@ for GSEA enriched categories. It helps users to interpret up/down-regulated path
 ```{r}
 #| label: fig-ridgeplot  
 #| fig-width: 12
-#| fig-height: 8
+#| fig-height: 12
 #| fig-scap: |
 #|   Ridgeplot for gene set enrichment analysis.
 #| fig-cap: |
