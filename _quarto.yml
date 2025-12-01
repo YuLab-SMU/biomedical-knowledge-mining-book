@@ -1,6 +1,6 @@
 project:
   type: book
-  output-dir: gh-pages
+  output-dir: docs
 
 book:
   title: "Biomedical Knowledge Mining using GOSemSim and clusterProfiler"

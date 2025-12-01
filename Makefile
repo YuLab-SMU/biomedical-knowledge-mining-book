@@ -12,7 +12,11 @@ nocache:
 pdfbook:
 	quarto render --to pdf
 
-publish:
+sync:
+	# mv -f docs/* gh-pages/;\
+	rsync -av --remove-source-files docs/ gh-pages/ ;\
+
+publish: sync
 	cd gh-pages;\
 	git add .;\
 	git commit -m 'update';\
