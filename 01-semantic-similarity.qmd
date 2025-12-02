@@ -83,7 +83,7 @@ $$\left\{\begin{array}{l} S_{A}(A)=1 \\ S_{A}(\textit{t})=\max\{w_{e} \times S_{
 
 where $w_{e}$ is the semantic contribution factor for edge $e \in E_{A}$ linking term $t$ with its child term $t'$.
 Term $A$ contributes to its own is defined as 1. After obtaining the S-values for all terms in $DAG_{A}$,
-the semantic value of DO term A, $SV(A)$, is calculated as:
+the semantic value of GO term A, $SV(A)$, is calculated as:
 
 $$SV(A)=\displaystyle\sum_{t \in T_{A}} S_{A}(t)$$
 
@@ -135,7 +135,7 @@ $$sim_{BMA}(g_1, g_2) = \frac{\displaystyle\sum_{1=i}^m \max_{1 \le j \le n}sim(
 
 ## Summary
 
-The idea behind semantic similarity measurement is the notion that genes with similar function should have similar annotation vocabulary and have a close relationship in the ontology strucutre. Measuring similarity is critical for expanding knownledge, since similar objects tend to behave similarly, which supports many bioinformatics applications to infer gene/protein functions, miRNA function, genetic interaction, protein-protein interaction, miRNA-mRNA interaction and celluar localization.
+The idea behind semantic similarity measurement is the notion that genes with similar function should have similar annotation vocabulary and be closely related in the ontology strucutre. Measuring similarity is critical for expanding knowledge, since similar objects tend to exhibit similar behaviors, which supports many bioinformatics applications to infer gene/protein functions, miRNA function, genetic interaction, protein-protein interaction, miRNA-mRNA interaction and cellular localization.
 
 
 We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [Chapter 2](#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [Chapter 3](#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [Chapter 4](#meshes-semantic-similarity)).
