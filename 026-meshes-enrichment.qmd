@@ -60,7 +60,7 @@ head(y)
 ```
 
 
-User can use visualization methods implemented in `r Biocpkg("enrichplot")` to visualize these enrichment results. With [these visualization methods](#enrichplot), it's much easier to interpret enriched results.
+Users can use visualization methods implemented in `r Biocpkg("enrichplot")` to visualize these enrichment results. With these visualization methods, see also @sec-enrichplot, it's much easier to interpret enriched results.
 
 
 ## References {-}

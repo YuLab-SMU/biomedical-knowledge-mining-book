@@ -13,9 +13,9 @@ library(clusterProfiler)
 
 
 
-The `r Biocpkg("clusterProfiler")` package [@yu2012] supports both hypergeometric test and gene set enrichment analyses of many ontology/pathway, but it's still not enough for users may want to analyze their data with unsupported organisms, slim version of GO, novel functional annotation (e.g. GO via BlastGO or KEGG via KAAS), unsupported ontologies/pathways or customized annotations.
+The `r Biocpkg("clusterProfiler")` package [@yu2012] supports both hypergeometric test and gene set enrichment analyses of many ontologies/pathways, but it's still not enough as users may want to analyze their data with unsupported organisms, slim versions of GO, novel functional annotations (e.g. GO via BlastGO or KEGG via KAAS), unsupported ontologies/pathways, or customized annotations.
 
-The `r Biocpkg("clusterProfiler")` package provides `enricher()` function for hypergeometric test and `GSEA()` function for gene set enrichment analysis that are designed to accept user defined annotation. They accept two additional parameters `TERM2GENE` and `TERM2NAME`. As indicated in the parameter names, `TERM2GENE` is a data.frame with first column of term ID and second column of corresponding mapped gene and `TERM2NAME` is a `data.frame` with first column of term ID and second column of corresponding term name. `TERM2NAME` is optional.
+The `r Biocpkg("clusterProfiler")` package provides `enricher()` function for hypergeometric test and `GSEA()` function for gene set enrichment analysis that are designed to accept user-defined annotations. They accept two additional parameters `TERM2GENE` and `TERM2NAME`. As indicated in the parameter names, `TERM2GENE` is a data.frame with the first column of term ID and the second column of corresponding mapped genes, and `TERM2NAME` is a `data.frame` with the first column of term ID and the second column of corresponding term names. `TERM2NAME` is optional.
 
 
 ## Input data
@@ -65,7 +65,7 @@ cells <- cell_marker_data %>%
     tidyr::unnest(cols = c(GeneID))
 ```
 
-### Cell Marker over-presentaton analysis {#cell-marker-ora}
+### Cell Marker over-representation analysis {#cell-marker-ora}
 
 
 ```{r eval=FALSE}
@@ -98,7 +98,7 @@ Users can download [GMT files](www.broadinstitute.org/cancer/software/gsea/wiki/
 
 There is an R package, [msigdbr](https://cran.r-project.org/package=msigdbr), that already packed the MSigDB gene sets in tidy data format that can be used directly with `r Biocpkg("clusterProfiler")` [@yu2012].
 
-It supports several specices:
+It supports several species:
 
 ```{r}
 library(msigdbr)
@@ -134,7 +134,7 @@ head(m_t2g)
 ```
 
 
-### MSigDb over-presentaton analysis {#msigdb-ora}
+### MSigDb over-representation analysis {#msigdb-ora}
 
 
 ```{r}
@@ -145,7 +145,7 @@ head(em)
 
 ### MSigDb gene set enrichment analysis {#msigdb-gsea}
 
-In over-presentaton analysis, we use oncogenic gene sets (i.e. C6) to test whether the DE genes are involved in the process that leads to cancer. In this example, we will use the C3 category to test whether genes are up/down-regulated by sharing specific motif using GSEA approach.
+In over-representation analysis, we use oncogenic gene sets (i.e. C6) to test whether the DE genes are involved in the process that leads to cancer. In this example, we will use the C3 category to test whether genes are up/down-regulated by sharing specific motifs using the GSEA approach.
 
 
 ```{r}

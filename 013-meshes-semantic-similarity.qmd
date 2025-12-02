@@ -48,7 +48,7 @@ MeSH terms were associated with Entrez Gene ID by three methods,
 
 ## Supported organisms {#meshes-supported-organisms}
 
-The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring simiarlity. `MeSHDb` can be downloaded from `r Biocpkg("AnnotationHub")` (see also `r Biocpkg("AHMeSHDbs")`) and about 200 species are available and are supported by the `r Biocpkg("meshes")` package. 
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring similarity. `MeSHDb` can be downloaded from `r Biocpkg("AnnotationHub")` (see also `r Biocpkg("AHMeSHDbs")`) and about 200 species are available and are supported by the `r Biocpkg("meshes")` package. 
 
 First, we need to load/fetch species-specific MeSH annotation database:
 
@@ -90,7 +90,7 @@ hsamd <- readRDS("cache/hsamd.rds")
 ```
 
 
-## MeSH semantic similarity measurement {#meshes-semantic-simiarlity}
+## MeSH semantic similarity measurement {#meshes-semantic-similarity}
 
 The `r Biocpkg("meshes")` package [@yu_meshes_2018] implemented four IC-based methods (i.e. Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997],
 Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and one graph-structure based method (i.e. Wang [@wang_new_2007]), to measure MeSH term semantic similarity. For algorithm details, please refer to [Chapter 1](#semantic-similarity-overview).

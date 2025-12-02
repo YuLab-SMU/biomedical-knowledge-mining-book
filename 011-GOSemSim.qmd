@@ -17,7 +17,7 @@ loadNamespace("Rcpp")
 To measure semantic similarity, we need to prepare GO annotations including GO structure (i.e. GO term relationships) and gene to GO mapping. For IC-based methods, information of GO term is species specific. We need to calculate `IC` for all GO terms of a species before we measure semantic similarity.
 
 
-`r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene simiarlity. It internally used the `r Biocpkg("GO.db")` package to obtain GO strucuture and `OrgDb` for gene to GO mapping. 
+`r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene similarity. It internally uses the `r Biocpkg("GO.db")` package to obtain GO structure and `OrgDb` for gene to GO mapping. 
 
 
 ```{r godata}
@@ -49,7 +49,7 @@ If an organism is not supported by `r Biocpkg("AnnotationHub")`, user can use th
 Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSim")` via `godata()` function described previously.
 
 
-## GO semantic similarity measurement {#go-semantic-simiarlity}
+## GO semantic similarity measurement {#go-semantic-similarity}
 
 The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
 
@@ -69,9 +69,9 @@ On the basis of semantic similarity between GO terms, [GOSemSim](https://www.bio
 also compute semantic similarity among sets of GO terms, gene products, and gene clusters.
 
 Suppose we have gene $g_1$ annotated by GO terms sets $GO_{1}=\{go_{11},go_{12} \cdots go_{1m}\}$
-and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, `r Biocpkg("GOSemSim")` implemented four combine methods, including __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__, to aggregate semantic similarity scores of multiple GO terms (see also [session 1.3](#combine-methods)). The similarities
-among gene products and gene clusters which annotated by multiple GO
-terms are also calculated by the these combine methods.
+and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, `r Biocpkg("GOSemSim")` implemented four combining methods, including __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__, to aggregate semantic similarity scores of multiple GO terms (see also @sec-combine-methods). The similarities
+among gene products and gene clusters which are annotated by multiple GO
+terms are also calculated by these combining methods.
 
 
 `r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.

@@ -13,8 +13,10 @@ pdfbook:
 	quarto render --to pdf
 
 sync:
-	# mv -f docs/* gh-pages/;\
-	rsync -av --remove-source-files docs/ gh-pages/ ;\
+	# rsync -av --remove-source-files docs/ gh-pages/ ;\
+	cd gh-pages;\
+	find . -maxdepth 1 ! -name "CNAME" ! -name ".gitignore" ! -name ".git" ! -name . |xargs rm -r ;\
+	mv -f ../docs/* ./
 
 publish: sync
 	cd gh-pages;\

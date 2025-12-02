@@ -23,7 +23,7 @@ We developed `r Biocpkg("DOSE")` [@yu_dose_2015] package to promote the investig
 ### Over-representation analysis for disease ontology {#dose-do-ora}
 
 
-In the following example, we selected fold change above 1.5 as the differential genes and analyzing their disease association.
+In the following example, we selected genes with fold change above 1.5 as the differential genes and analyzed their disease association.
 
 ```{r enrichdo}
 library(DOSE)
@@ -42,16 +42,16 @@ x <- enrichDO(gene          = gene,
 head(x)
 ```
 
-The `enrichDO()` function requires an entrezgene ID vector as input, mostly is the differential gene list of gene expression profile studies. Please refer to [session 16.1](#id-convert) if you need to conver other gene ID types to entrezgene ID. 
+The `enrichDO()` function requires an entrezgene ID vector as input, which is mostly the differential gene list from gene expression profile studies. Please refer to @sec-id-convert if you need to convert other gene ID types to entrezgene ID. 
 
 
 The `ont` parameter can be "HDO" (Human Disease Ontology), "HPO" (Human Phenotype Ontology) or "MPO" (Mouse Phenotype Ontology). `pvalueCutoff` setting the cutoff value of *p* value and adjusted *p* value; `pAdjustMethod` setting the *p* value correction methods, include the Bonferroni correction ("bonferroni"), Holm ("holm"), Hochberg ("hochberg"), Hommel ("hommel"), Benjamini \& Hochberg ("BH") and Benjamini \& Yekutieli ("BY") while `qvalueCutoff` is used to control *q*-values.
 
-The `universe` setting the background gene universe for testing. If user do not explicitly setting this parameter, `enrichDO()` will set the universe to all human genes that have DO annotation.
+The `universe` sets the background gene universe for testing. If users do not explicitly set this parameter, `enrichDO()` will set the universe to all human genes that have DO annotation.
 
-The `minGSSize` (and `maxGSSize`) indicates that only those DO terms that have more than `minGSSize` (and less than `maxGSSize`) genes annotated will be tested.
+The `minGSSize` (and `maxGSSize`) indicates that only those DO terms that have more than `minGSSize` (and less than `maxGSSize`) annotated genes will be tested.
 
-The `readable` is a logical parameter, indicates whether the entrezgene IDs will mapping to gene symbols or not (see also [setReadable](#setReadable)).
+The `readable` is a logical parameter that indicates whether the entrezgene IDs will be mapped to gene symbols or not, see also @sec-setReadable.
 
 
 ### Over-representation analysis for the network of cancer gene {#dose-ncg-ora}
@@ -67,7 +67,7 @@ head(ncg)
 ### Over-representation analysis for the disease gene network {#dose-dgn-ora}
 
 
-[DisGeNET](http://disgenet.org/)[@janet_disgenet] is an integrative and comprehensive resources of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.
+[DisGeNET](http://disgenet.org/)[@janet_disgenet] is an integrative and comprehensive resource of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.
 
 The enrichment analysis of disease-gene associations is supported by the `enrichDGN` function and analysis of snp-gene-disease associations is supported by the `enrichDGNv` function.
 
@@ -85,9 +85,9 @@ head(dgnv)
 
 ## Disease gene set enrichment analysis {#dose-gsea}
 
-### `gseDO` fuction
+### `gseDO` function
 
-In the following example, in order to speedup the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.
+In the following example, in order to speed up the compilation of this document, only gene sets with size above 120 were tested and only 100 permutations were performed.
 
 ```{r gsedo}
 library(DOSE)
@@ -100,7 +100,7 @@ y <- gseDO(geneList,
 head(y, 3)
 ```
 
-### `gseNCG` fuction
+### `gseNCG` function
 
 ```{r gsencg}
 ncg <- gseNCG(geneList,
@@ -111,7 +111,7 @@ ncg <- setReadable(ncg, 'org.Hs.eg.db')
 head(ncg, 3) 
 ```
 
-### `gseDGN` fuction
+### `gseDGN` function
 
 ```{r gsedgn}
 dgn <- gseDGN(geneList,

@@ -10,7 +10,7 @@
 source("_common.R")
 ```
 
-## How to prepare your own geneList {#genelist}
+## How to prepare your own geneList {#sec-genelist}
 
 GSEA analysis requires a ranked gene list, which contains three features:
 
@@ -34,7 +34,7 @@ geneList = d[,2]
 ## feature 2: named vector
 names(geneList) = as.character(d[,1])
 
-## feature 3: decreasing orde
+## feature 3: decreasing order
 geneList = sort(geneList, decreasing = TRUE)
 ```
 
@@ -66,7 +66,7 @@ DAVID Web Service has the following limitations:
 
 For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
 
-As user has limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
+As users have limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
 
 
 -->

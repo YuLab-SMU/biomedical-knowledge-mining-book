@@ -53,7 +53,7 @@ head(y)
 
 ## Pathway Visualization
 
-`r Biocpkg("ReactomePA")` implemented the `viewPathway()` to visualized selected reactome pathway. More general purpose of visualization methods for ORA and GSEA results are provided in the `r Biocpkg("enrichplot")` package and are documented on [Chapter 14](#enrichplot).
+`r Biocpkg("ReactomePA")` implemented the `viewPathway()` to visualize selected reactome pathways. More general purpose visualization methods for ORA and GSEA results are provided in the `r Biocpkg("enrichplot")` package and are documented in @sec-enrichplot.
 
 
 (ref:viewpathwayscap) Visualize reactome pathway.
@@ -70,12 +70,12 @@ viewPathway("E2F mediated regulation of DNA replication",
 
 ## Pathway analysis of NGS data
 
-Pathway analysis using NGS data (eg, RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via `r Biocpkg("ChIPseeker")` package, which can annotates genomic regions to their nearest genes, host genes, and flanking genes respectivly. In addtion, it provides a function, __*seq2gene*__, that simultaneously considering host genes, promoter region and flanking gene from intergenic region that may under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitate functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")`[@yu_chipseeker_2015].
+Pathway analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via `r Biocpkg("ChIPseeker")` package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene()`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")`[@yu_chipseeker_2015].
 
 
 ## Visualize enrichment result
 
-We implement barplot, dotplot enrichment map and category-gene-network for visualization. It is very common to visualize the enrichment result in bar or pie chart. We believe the pie chart is misleading and only provide bar chart.
+We implement barplot, dotplot, enrichment map and category-gene-network for visualization. It is very common to visualize the enrichment result in bar or pie chart. We believe the pie chart is misleading and only provide bar chart.
 ```r fig.height=6, fig.width=12}
 barplot(x, showCategory=8)
 ```
@@ -83,7 +83,7 @@ barplot(x, showCategory=8)
 dotplot(x, showCategory=15)
 ```
 
-Enrichment map can be viusalized by __*enrichMap*__:
+Enrichment map can be visualized by the `enrichMap` function:
 ```r fig.height=10, fig.width=10}
 emapplot(x)
 ```

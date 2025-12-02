@@ -31,7 +31,7 @@ GO analyses (`groupGO()`, `enrichGO()` and `gseGO()`) support organisms that hav
 
 If a user has GO annotation data (in a `data.frame` format with the first column as gene ID and the second column as GO ID), they can use the `enricher()` and `GSEA()` functions to perform an over-representation test and gene set enrichment analysis.
 
-If the genes are annotated by direction annotation, they should also be annotated by their ancestor GO nodes (indirect annotation). If a user only has direct annotation, they can pass their annotation to the `buildGOmap` function, which will infer indirect annotation and generate a `data.frame` that is suitable for both `enricher()` and `GSEA()`.
+If the genes are annotated by direct annotation, they should also be annotated by their ancestor GO nodes (indirect annotation). If a user only has direct annotation, they can pass their annotation to the `buildGOmap` function, which will infer indirect annotation and generate a `data.frame` that is suitable for both `enricher()` and `GSEA()`.
 
 ## GO classification
 
@@ -56,7 +56,7 @@ ggo <- groupGO(gene     = gene,
 head(ggo)
 ```
 
-The `gene` parameter is a vector of gene IDs (can be any ID type that is supported by the corresponding `OrgDb`, see also [session 16.1](#id-convert)). If `readable` is set to `TRUE`, the input gene IDs will be converted to gene symbols.
+The `gene` parameter is a vector of gene IDs (can be any ID type that is supported by the corresponding `OrgDb`, see also @sec-id-convert). If `readable` is set to `TRUE`, the input gene IDs will be converted to gene symbols.
 
 
 ## GO over-representation analysis {#clusterprofiler-go-ora}
@@ -111,13 +111,13 @@ ego3 <- gseGO(geneList     = geneList,
               verbose      = FALSE)
 ```
 
-The format of input data, `geneList`, was documented in the [FAQ](#genelist). Beware that only gene Set size in `[minGSSize, maxGSSize]` will be tested.
+The format of input data, `geneList`, is documented in the @sec-id-convert. Beware that only gene sets with size in `[minGSSize, maxGSSize]` will be tested.
 
 
 
 ## GO analysis for non-model organisms {#clusterprofiler-go-non-model}
 
-Both the `enrichGO()` and `gseGO()` functions require an `OrgDb` object as the  background annotation. For organisms that don't have `OrgDb` provided by `Bioconductor`, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")`, or annotate the genes using [Blast2GO](https://www.blast2go.com/) or the [Trinotate](https://rnabio.org/module-07-trinotate/0007/02/01/Trinotate/) pipeline. Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using wikiPathways and MSigDB. Another solution is to create an `OrgDb` on your own using `r Biocpkg("AnnotationForge")` package.
+Both the `enrichGO()` and `gseGO()` functions require an `OrgDb` object as the background annotation. For organisms that don't have `OrgDb` provided by `Bioconductor`, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")`, or annotate the genes using [Blast2GO](https://www.blast2go.com/) or the [Trinotate](https://rnabio.org/module-07-trinotate/0007/02/01/Trinotate/) pipeline. Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using WikiPathways and MSigDB. Another solution is to create an `OrgDb` on your own using the `r Biocpkg("AnnotationForge")` package.
 
 
 Here is an example of querying GO annotation from Ensembl using `r Biocpkg("biomaRt")`. 

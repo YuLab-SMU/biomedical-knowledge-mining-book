@@ -1,4 +1,4 @@
-# Visualization of functional enrichment result {#enrichplot}
+# Visualization of functional enrichment result {#sec-enrichplot}
 
 
 ```{r}
@@ -13,7 +13,7 @@ library(enrichplot)
 
 
 
-The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpreting enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012; @wu_clusterprofiler_2021],
+The `r Biocpkg("enrichplot")` package implements several visualization methods to help interpret enrichment results. It supports visualizing enrichment results obtained from `r Biocpkg("DOSE")` [@yu_dose_2015], `r Biocpkg("clusterProfiler")` [@yu2012; @wu_clusterprofiler_2021],
 `r Biocpkg("ReactomePA")` [@yu_reactomepa_2016] and `r Biocpkg("meshes")` [@yu_meshes_2018]. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.
 
 Note: Several visualization methods were first implemented in `r Biocpkg("DOSE")` and rewrote from scratch using `r CRANpkg("ggplot2")`. If you want to use the [old methods](https://www.biostars.org/p/375555), you can use the [doseplot](https://github.com/GuangchuangYu/doseplot) package.
@@ -109,12 +109,12 @@ Note: The `dotplot()` function also works with [`compareCluster()` output](##com
 Both the `barplot()` and `dotplot()` only displayed most significant or selected enriched terms,
 while users may want to know which genes are involved in these significant
 terms. 
-In order to consider the potentially biological complexities in which a gene may belong to multiple annotation categories and provide information of numeric changes if available, we developed the `cnetplot()` function to extract the complex association. 
+To consider the potential biological complexities in which a gene may belong to multiple annotation categories and provide information about numeric changes when available, we developed the `cnetplot()` function to extract the complex associations. 
 The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
 with only core enriched genes displayed.
 
 
-Users can use 'fc_threshold' parameter to `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows user to plot only high fold-change genes (e.g., `fc_threshold = 1`).
+Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`).
 
 ```{r}
 #| label: fig-Networkplot  
@@ -169,10 +169,10 @@ Note: The `cnetplot()` function also works with [`compareCluster()` output](##co
 ## Heatmap-like functional classification
 
 
-The `heatplot` is similar to `cnetplot`, while displaying the relationships as a
-heatmap. The gene-concept network may become too complicated if user want to
-show a large number significant terms. The `heatplot` can simplify the result
-and more easy to identify expression patterns.
+The `heatplot` is similar to `cnetplot`, but displays the relationships as a
+heatmap. The gene-concept network may become too complicated if users want to
+show a large number of significant terms. The `heatplot` can simplify the result
+and make it easier to identify expression patterns.
 
 ```{r}
 #| label: fig-Heatplot  
@@ -192,10 +192,9 @@ plot_list(p1, p2, ncol=1, tag_levels = 'A')
 
 ## Tree plot
 
-The `treeplot()` function performs hierarchical clustering of enriched terms. It relies on the pairwise similarities of the enriched terms calculated by the `pairwise_termsim()` function, which by default using Jaccard's similarity index (JC). Users can also use semantic similarity values if it is supported (*e.g.*, [GO](#GOSemSim), [DO](#DOSE-semantic-similarity) and [MeSH](#meshes-semantic-similarity)).
+The `treeplot()` function performs hierarchical clustering of enriched terms. It relies on the pairwise similarities of the enriched terms calculated by the `pairwise_termsim()` function, which by default uses Jaccard's similarity index (JC). Users can also use semantic similarity values when supported (*e.g.*, [GO](#GOSemSim), [DO](#DOSE-semantic-similarity), and [MeSH](#meshes-semantic-similarity)).
 
-
-The default agglomeration method in `treeplot()` is `ward.D` and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*, see also the document of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specify by the `nCluster` parameter (default is 5)) and labels subtrees using high-frequency words. This will reduce the complexity of the enriched result and improve user interpretation ability.
+The default agglomeration method in `treeplot()` is `ward.D`, and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*; see also the documentation of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specified by the `nCluster` parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability.
 
 
 

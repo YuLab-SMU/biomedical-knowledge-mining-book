@@ -37,7 +37,7 @@ head(ck)
 
 ## Formula interface of compareCluster
 
-As an alternaitve to using named list, the `compareCluster()` function also supports passing a formula to describe more complicated experimental designs (*e.g.*, $Gene \sim time + treatment$).
+As an alternative to using named list, the `compareCluster()` function also supports passing a formula to describe more complicated experimental designs (*e.g.*, $Gene \sim time + treatment$).
 
 
 ```{r}
@@ -101,7 +101,7 @@ p2 <- dotplot(formula_res) +
 plot_list(p1, p2, ncol=2, tag_levels='A')
 ```
 
-The fomula interface allows more complicated gene cluster definition. In @fig-ccn(B), the gene clusters were defined by two variables (i.e. `group` that divides genes into `upregulated` and `downregulated` and `othergroup` that divides the genes into two categories of `A` and `B`.). The `dotplot()` function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (@fig-ccf).
+The formula interface allows more complicated gene cluster definition. In @fig-ccn(B), the gene clusters were defined by two variables (i.e. `group` that divides genes into `upregulated` and `downregulated` and `othergroup` that divides the genes into two categories of `A` and `B`.). The `dotplot()` function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (@fig-ccf).
 
 
 
@@ -124,18 +124,18 @@ dotplot(formula_res, x="group") + facet_grid(~othergroup)
 
 
 By default, only top 5 (most significant) categories of each cluster
-was plotted. User can changes the parameter `showCategory` to
+are plotted. Users can change the parameter `showCategory` to
 specify how many categories of each cluster to be plotted, and if
-`showCategory` was set to `NULL`, the whole result will
-be plotted. The `showCategory` parameter also allows passing a vector of selected categories to [plot pathway of interests](#showing-specific-pathways)
+`showCategory` is set to `NULL`, the whole result will
+be plotted. The `showCategory` parameter also allows passing a vector of selected categories to [plot pathways of interest](#showing-specific-pathways)
 
 The `dotplot()` function tries to make the comparison among different clusters more informative and reasonable. After extracting *e.g.* 10 categories for each clusters, `r Biocpkg("clusterProfiler")` tries to collect overlap of these categories among clusters. For example, `term A` is enriched in all the gene clusters (*e.g.*, `g1` and `g2`) and is in the 10 most significant categories of `g1` but not `g2`. `r Biocpkg("clusterProfiler")` will capture this information and include `term A` in `g2` cluster to make the comparison in `dotplot` more reasonable. If users want to ignore these information, they can set `includeAll = FALSE` in `dotplot()`, which is not recommended. 
 
-The `dotplot()` function accepts a parameter `size` for setting the scale of dot sizes. The default parameter `size` is setting to `geneRatio`, which corresponding to the `GeneRatio` column of the output. If it was setting to `count`, the comparison will be based on gene counts, while if setting to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other variables or derived variables (see [Chapter 16](#clusterProfiler-dplyr)).
+The `dotplot()` function accepts a parameter `size` for setting the scale of dot sizes. The default parameter `size` is set to `geneRatio`, which corresponds to the `GeneRatio` column of the output. If it is set to `count`, the comparison will be based on gene counts, while if set to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other variables or derived variables (see [Chapter 16](#clusterProfiler-dplyr)).
 
-To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when `by` is setting to `rowPercentage` and number of gene clusters in each cluster label (numbers in parentheses) when `by` is setting to `geneRatio`, as shown in Figure @fig-ccn. 
+To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when `by` is set to `rowPercentage` and number of gene clusters in each cluster label (numbers in parentheses) when `by` is set to `geneRatio`, as shown in @fig-ccn. 
 
-The p-values indicate that which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue correspond to the order of increasing adjusted p-values. That is, red indicate low p-values (high enrichment), and blue indicate high p-values (low enrichment). Adjusted p-values were filtered out by the threshold giving by the parameter `pvalueCutoff`, and FDR can be estimated by `qvalue`.
+The p-values indicate which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue corresponds to the order of increasing adjusted p-values. That is, red indicates low p-values (high enrichment), and blue indicates high p-values (low enrichment). Adjusted p-values were filtered out by the threshold given by the parameter `pvalueCutoff`, and FDR can be estimated by `qvalue`.
 
 ### Gene-Concept Network {#compare-cnetplot}
 
@@ -159,7 +159,7 @@ cnetplot(ck)
 
 The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only [groupGO](#go-classification), [enrichGO](#clusterprofiler-go-ora), [enrichKEGG](#clusterprofiler-kegg-pathway-ora), [enrichMKEGG](#clusterprofiler-kegg-module-ora), [enrichWP](#clusterprofiler-wikipathway-ora) and [enricher](#universal-api) that were provided in this package, but also other biological and biomedical ontologies, including but not limited to [enrichPathway](#reactomepa-ora), [enrichDO](#dose-do-ora), [enrichNCG](#dose-ncg-ora), [enrichDGN](#dose-dgn-ora) and [enrichMeSH](#meshes-ora). 
 
-In [@yu2012], we analyzed the publicly available expression dataset of breast tumour tissues from 200 patients (GSE11121, Gene Expression Omnibus) [@schmidt2008]. We identified 8 gene clusters from differentially expressed genes, and using the `compareCluster()` function to compare these gene clusters by their enriched biological process. In [@wu_clusterprofiler_2021], we analyzed the GSE8057 dataset which contains expression data from ovarian cancer cells at multiple time points and under two treatment conditions. Eight groups of DEG lists were analyzed simultaneously using `compareCluster()` with WikiPathways. The result indicates that the two drgus have distinct effects at the begining but consistent effects in the later stages (Fig. 4 of [@wu_clusterprofiler_2021]).
+In [@yu2012], we analyzed the publicly available expression dataset of breast tumor tissues from 200 patients (GSE11121, Gene Expression Omnibus) [@schmidt2008]. We identified 8 gene clusters from differentially expressed genes, and used the `compareCluster()` function to compare these gene clusters by their enriched biological process. In [@wu_clusterprofiler_2021], we analyzed the GSE8057 dataset which contains expression data from ovarian cancer cells at multiple time points and under two treatment conditions. Eight groups of DEG lists were analyzed simultaneously using `compareCluster()` with WikiPathways. The result indicates that the two drugs have distinct effects at the beginning but consistent effects in the later stages (Fig. 4 of [@wu_clusterprofiler_2021]).
 
 
 ## References {-}
