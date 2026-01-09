@@ -1,5 +1,6 @@
 library(yulab.utils)
 
+
 svg2png <- function(path, options) {
   if (!grepl('[.]svg$', path)) {
     return(path)
