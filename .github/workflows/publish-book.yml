@@ -57,6 +57,8 @@ jobs:
             libpq-dev
             
       - name: Install R dependencies from YuLab-SMU GitHub
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Install remotes package first
           install.packages('remotes')
