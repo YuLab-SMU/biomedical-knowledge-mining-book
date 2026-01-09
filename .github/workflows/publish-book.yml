@@ -29,7 +29,7 @@ jobs:
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: '1.4.0'
+          version: release
           
       - name: Cache R packages
         uses: actions/cache@v4
