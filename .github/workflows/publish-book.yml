@@ -1,0 +1,107 @@
+name: Publish Quarto Book
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.0'
+          
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: '1.4.0'
+          
+      - name: Cache R packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/renv
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-renv-
+            
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libfontconfig1-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev \
+            libgit2-dev \
+            libpq-dev
+            
+      - name: Install R dependencies from YuLab-SMU GitHub
+        run: |
+          # Install remotes package first
+          install.packages('remotes')
+          
+          # Install all required packages from YuLab-SMU GitHub
+          remotes::install_github('YuLab-SMU/yulab.utils')
+          remotes::install_github('YuLab-SMU/enrichit')
+          remotes::install_github('YuLab-SMU/ggtangle')
+          remotes::install_github('YuLab-SMU/GOSemSim')
+          remotes::install_github('YuLab-SMU/DOSE')
+          remotes::install_github('YuLab-SMU/clusterProfiler')
+          remotes::install_github('YuLab-SMU/enrichplot')
+          remotes::install_github('YuLab-SMU/ReactomePA')
+          remotes::install_github('YuLab-SMU/MicrobiomeProfiler')
+          remotes::install_github('YuLab-SMU/meshes')
+          
+          # Install other common dependencies that might be needed
+          install.packages(c('tidyverse', 'BiocManager'))
+          
+          # Install Bioconductor packages if needed
+          if (!requireNamespace("BiocManager", quietly = TRUE))
+            install.packages("BiocManager")
+          
+          # Install common Bioconductor packages that clusterProfiler depends on
+          BiocManager::install(c("DO.db", "GO.db", "org.Hs.eg.db", "org.Mm.eg.db"))
+        shell: Rscript {0}
+        
+      - name: Render Quarto Book
+        run: |
+          quarto render
+          
+      - name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          force_orphan: true
+          
+      - name: Upload artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: quarto-render-log
+          path: |
+            _book
+            docs
