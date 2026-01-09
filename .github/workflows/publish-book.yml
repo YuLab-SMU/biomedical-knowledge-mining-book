@@ -89,18 +89,28 @@ jobs:
           remotes::install_github('YuLab-SMU/ReactomePA')
           remotes::install_github('YuLab-SMU/MicrobiomeProfiler')
           remotes::install_github('YuLab-SMU/meshes')
-          tryCatch({
-            remotes::install_github('YuLab-SMU/ChIPseeker')
-          }, error=function(e) {
-            BiocManager::install('ChIPseeker')
-          })
+          BiocManager::install('ChIPseeker')
           remotes::install_github('GuangchuangYu/yyplot')
           
           # Install other common dependencies that might be needed
           install.packages(c('tidyverse', 'BiocManager', 'emojifont', 'badger', 'cowplot', 'msigdbr', 'readxl', 'aplot', 'ggfun', 'ggplotify', 'wget'))
           
           # Install common Bioconductor packages that clusterProfiler depends on
-          BiocManager::install(c("DO.db", "GO.db", "org.Hs.eg.db", "org.Mm.eg.db", "ggtree", "AnnotationHub", "MeSHDbi", "biomaRt", "pathview", "rWikiPathways", "GenomeInfoDb", "SummarizedExperiment", "RBGL", "GSEABase"))
+          BiocManager::install(c("DO.db", "GO.db", "org.Hs.eg.db", "org.Mm.eg.db", "ggtree", "AnnotationHub", "MeSHDbi", "biomaRt", "pathview", "rWikiPathways", "GenomeInfoDb", "SummarizedExperiment"))
+          
+          pkgs <- c('ChIPseeker')
+          for (p in pkgs) {
+            if (!requireNamespace(p, quietly = TRUE)) {
+              BiocManager::install(p)
+            }
+          }
+          for (p in pkgs) {
+            if (!requireNamespace(p, quietly = TRUE)) {
+              stop(paste('Package not installed:', p))
+            }
+          }
+          .libPaths()
+          sessionInfo()
         shell: Rscript {0}
         
       - name: Render Quarto Book
