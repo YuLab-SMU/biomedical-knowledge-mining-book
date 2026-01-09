@@ -24,7 +24,7 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.3.0'
+          r-version: 'release'
           
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -43,6 +43,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
+            pkg-config \
+            libcairo2-dev \
             libcurl4-openssl-dev \
             libssl-dev \
             libxml2-dev \
