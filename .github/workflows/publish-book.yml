@@ -32,7 +32,7 @@ jobs:
           version: '1.4.0'
           
       - name: Cache R packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.local/share/renv
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
@@ -99,7 +99,7 @@ jobs:
           
       - name: Upload artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: quarto-render-log
           path: |
