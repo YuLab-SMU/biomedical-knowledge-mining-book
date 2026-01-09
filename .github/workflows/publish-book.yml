@@ -63,6 +63,21 @@ jobs:
           # Install remotes package first
           install.packages('remotes')
           
+          # Ensure Bioconductor repositories and core dependencies for ChIPseeker
+          if (!requireNamespace("BiocManager", quietly = TRUE))
+            install.packages("BiocManager")
+          options(repos = BiocManager::repositories())
+          BiocManager::install(c(
+            "BiocGenerics",
+            "S4Vectors",
+            "IRanges",
+            "GenomicRanges",
+            "GenomicFeatures",
+            "Gviz",
+            "AnnotationDbi",
+            "graph"
+          ))
+          
           # Install all required packages from YuLab-SMU GitHub
           remotes::install_github('YuLab-SMU/yulab.utils')
           remotes::install_github('YuLab-SMU/enrichit')
@@ -79,10 +94,6 @@ jobs:
           
           # Install other common dependencies that might be needed
           install.packages(c('tidyverse', 'BiocManager', 'emojifont', 'badger', 'cowplot', 'msigdbr', 'readxl', 'aplot', 'ggfun', 'ggplotify', 'wget'))
-          
-          # Install Bioconductor packages if needed
-          if (!requireNamespace("BiocManager", quietly = TRUE))
-            install.packages("BiocManager")
           
           # Install common Bioconductor packages that clusterProfiler depends on
           BiocManager::install(c("DO.db", "GO.db", "org.Hs.eg.db", "org.Mm.eg.db", "ggtree", "AnnotationHub", "MeSHDbi", "biomaRt", "pathview", "rWikiPathways"))
