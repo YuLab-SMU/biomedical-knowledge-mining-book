@@ -69,9 +69,11 @@ jobs:
             github::YuLab-SMU/ReactomePA
             github::YuLab-SMU/MicrobiomeProfiler
             github::YuLab-SMU/meshes
+            github::YuLab-SMU/tidytree
+            github::YuLab-SMU/treeio
+            github::YuLab-SMU/ggtree
+            github::YuLab-SMU/ggtreeExtra
             bioc::ChIPseeker
-            bioc::ggtree
-            bioc::treeio
             bioc::DO.db
             bioc::GO.db
             bioc::org.Hs.eg.db
