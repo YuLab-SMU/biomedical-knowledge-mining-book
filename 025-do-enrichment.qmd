@@ -59,7 +59,7 @@ The `readable` is a logical parameter that indicates whether the entrezgene IDs 
 [Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG) [@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
 
 ```{r enrichncg}
-gene2 <- names(geneList)[abs(geneList) < 3]
+gene2 <- names(geneList)[abs(geneList) > 3]
 ncg <- enrichNCG(gene2) 
 head(ncg)
 ```
