@@ -51,27 +51,36 @@ jobs:
             libjpeg-dev \
             libgit2-dev \
             libpq-dev
-            
-      - name: Install R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
+
+      - name: Install pak
+        run: |
+          Rscript -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/stable/")'
+
+      - name: Install YuLab-SMU GitHub packages (sequential)
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+            "github::YuLab-SMU/yulab.utils",
+            "github::YuLab-SMU/enrichit",
+            "github::YuLab-SMU/ggtangle",
+            "github::YuLab-SMU/GOSemSim",
+            "github::YuLab-SMU/DOSE",
+            "github::YuLab-SMU/clusterProfiler",
+            "github::YuLab-SMU/enrichplot",
+            "github::YuLab-SMU/ReactomePA",
+            "github::YuLab-SMU/meshes",
+            "github::YuLab-SMU/tidytree",
+            "github::YuLab-SMU/treeio",
+            "github::YuLab-SMU/ggtree",
+            "github::YuLab-SMU/ggtreeExtra"
+          ))'
+            
+      - name: Install CRAN/Bioc dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: 2
           packages: |
-            github::YuLab-SMU/yulab.utils
-            github::YuLab-SMU/enrichit
-            github::YuLab-SMU/ggtangle
-            github::YuLab-SMU/GOSemSim
-            github::YuLab-SMU/DOSE
-            github::YuLab-SMU/clusterProfiler
-            github::YuLab-SMU/enrichplot
-            github::YuLab-SMU/ReactomePA
-            github::YuLab-SMU/meshes
-            github::YuLab-SMU/tidytree
-            github::YuLab-SMU/treeio
-            github::YuLab-SMU/ggtree
-            github::YuLab-SMU/ggtreeExtra
             bioc::ChIPseeker
             bioc::DO.db
             bioc::GO.db
