@@ -109,6 +109,11 @@ jobs:
             "cran::wget"
           ))'
 
+      - name: Prewarm ontology caches (DO/HDO)
+        continue-on-error: true
+        run: |
+          Rscript -e 'yulab.utils::set_proxy(); suppressWarnings(suppressMessages({library(DOSE); DOSE::doSim("DOID:14095","DOID:9409", measure="Wang")})); yulab.utils::unset_proxy()'
+
       - name: Install MicrobiomeProfiler (YuLab-SMU)
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
