@@ -21,6 +21,7 @@ To measure semantic similarity, we need to prepare GO annotations including GO s
 
 
 ```{r godata}
+library(AnnotationDbi)
 library(GOSemSim)
 hsGO <- godata(annoDb = 'org.Hs.eg.db', ont="MF")
 ```
