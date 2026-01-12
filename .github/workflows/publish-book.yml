@@ -118,6 +118,8 @@ jobs:
           Rscript -e 'options(timeout=600); options(download.file.method="libcurl"); suppressWarnings(suppressMessages({
             library(DOSE);
             try(GOSemSim:::load_onto("HDO"));
+            fp <- path.expand("~/.local/share/GOSemSim/HDO.sqlite");
+            if (!file.exists(fp)) try(yulab.utils::download_yulab_file("GOSemSim/HDO.sqlite"));
             data(geneList, package="DOSE");
             gene <- names(geneList)[1:50];
             try(DOSE::enrichDO(gene, ont="HDO", pvalueCutoff=1, qvalueCutoff=1, minGSSize=1, maxGSSize=5000));
