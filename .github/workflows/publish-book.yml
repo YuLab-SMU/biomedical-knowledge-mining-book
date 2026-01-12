@@ -111,6 +111,10 @@ jobs:
             "github::YuLab-SMU/MicrobiomeProfiler"
           ))'
 
+      - name: Prepare HDO.sqlite cache
+        run: |
+          Rscript -e 'options(timeout=600); options(download.file.method="libcurl"); fp <- path.expand("~/.local/share/GOSemSim/HDO.sqlite"); if (!file.exists(fp)) { dir.create(dirname(fp), recursive=TRUE, showWarnings=FALSE); url <- "https://raw.githubusercontent.com/YuLab-SMU/HDO.db/main/inst/extdata/HDO.sqlite"; try(utils::download.file(url, destfile=fp, mode="wb", quiet=TRUE)) }'
+
 
       - name: Prewarm ontology caches (DO/HDO)
         continue-on-error: true
