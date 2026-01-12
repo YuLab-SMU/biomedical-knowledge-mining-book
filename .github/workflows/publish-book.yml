@@ -56,24 +56,20 @@ jobs:
         run: |
           Rscript -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/stable/")'
 
-      - name: Install YuLab-SMU GitHub packages (sequential)
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install CRAN dependencies
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
-            "github::YuLab-SMU/yulab.utils",
-            "github::YuLab-SMU/enrichit",
-            "github::YuLab-SMU/ggtangle",
-            "github::YuLab-SMU/GOSemSim",
-            "github::YuLab-SMU/DOSE",
-            "github::YuLab-SMU/clusterProfiler",
-            "github::YuLab-SMU/enrichplot",
-            "github::YuLab-SMU/ReactomePA",
-            "github::YuLab-SMU/meshes",
-            "github::YuLab-SMU/tidytree",
-            "github::YuLab-SMU/treeio",
-            "github::YuLab-SMU/ggtree",
-            "github::YuLab-SMU/ggtreeExtra"
+            "cran::tidyverse",
+            "cran::emojifont",
+            "cran::badger",
+            "cran::cowplot",
+            "cran::msigdbr",
+            "cran::readxl",
+            "cran::aplot",
+            "cran::ggfun",
+            "cran::ggplotify",
+            "cran::wget",
+            "cran::httr2"
           ))'
 
       - name: Install Bioconductor dependencies (devel)
@@ -94,25 +90,38 @@ jobs:
             "pathview"
           ), ask = FALSE, update = FALSE)'
 
-      - name: Install CRAN dependencies
+      - name: Install YuLab-SMU GitHub packages (sequential)
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
-            "cran::tidyverse",
-            "cran::emojifont",
-            "cran::badger",
-            "cran::cowplot",
-            "cran::msigdbr",
-            "cran::readxl",
-            "cran::aplot",
-            "cran::ggfun",
-            "cran::ggplotify",
-            "cran::wget"
+            "github::YuLab-SMU/yulab.utils",
+            "github::YuLab-SMU/enrichit",
+            "github::YuLab-SMU/ggtangle",
+            "github::YuLab-SMU/GOSemSim",
+            "github::YuLab-SMU/DOSE",
+            "github::YuLab-SMU/clusterProfiler",
+            "github::YuLab-SMU/enrichplot",
+            "github::YuLab-SMU/ReactomePA",
+            "github::YuLab-SMU/meshes",
+            "github::YuLab-SMU/tidytree",
+            "github::YuLab-SMU/treeio",
+            "github::YuLab-SMU/ggtree",
+            "github::YuLab-SMU/ggtreeExtra",
+            "github::YuLab-SMU/MicrobiomeProfiler"
           ))'
+
 
       - name: Prewarm ontology caches (DO/HDO)
         continue-on-error: true
         run: |
-          Rscript -e 'yulab.utils::set_proxy(); suppressWarnings(suppressMessages({library(DOSE); DOSE::doSim("DOID:14095","DOID:9409", measure="Wang")})); yulab.utils::unset_proxy()'
+          Rscript -e 'suppressWarnings(suppressMessages({
+            library(DOSE);
+            data(geneList, package="DOSE");
+            gene <- names(geneList)[1:50];
+            try(DOSE::enrichDO(gene, ont="HDO", pvalueCutoff=1, qvalueCutoff=1, minGSSize=1, maxGSSize=5000));
+            DOSE::doSim("DOID:14095","DOID:9409", measure="Wang")
+          }))'
 
       - name: Install MicrobiomeProfiler (YuLab-SMU)
         env:
