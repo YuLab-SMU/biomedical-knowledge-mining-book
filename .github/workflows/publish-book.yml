@@ -67,7 +67,6 @@ jobs:
             github::YuLab-SMU/clusterProfiler
             github::YuLab-SMU/enrichplot
             github::YuLab-SMU/ReactomePA
-            github::YuLab-SMU/MicrobiomeProfiler
             github::YuLab-SMU/meshes
             github::YuLab-SMU/tidytree
             github::YuLab-SMU/treeio
@@ -92,6 +91,15 @@ jobs:
             cran::ggfun
             cran::ggplotify
             cran::wget
+
+      - name: Install MicrobiomeProfiler
+        uses: r-lib/actions/setup-r-dependencies@v2
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          cache-version: 2
+          packages: |
+            github::YuLab-SMU/MicrobiomeProfiler
         
       - name: Render Quarto Book
         run: |
