@@ -56,15 +56,6 @@ jobs:
         run: |
           Rscript -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/stable/")'
 
-      - name: Configure repositories (Bioconductor devel)
-        run: |
-          Rscript -e 'pak::repo_add(c(
-            "https://bioconductor.org/packages/devel/bioc",
-            "https://bioconductor.org/packages/devel/data/annotation",
-            "https://bioconductor.org/packages/devel/data/experiment",
-            "https://bioconductor.org/packages/devel/workflows"
-          ))'
-
       - name: Install YuLab-SMU GitHub packages (sequential)
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -87,19 +78,21 @@ jobs:
 
       - name: Install Bioconductor dependencies (devel)
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
-            "bioc::AnnotationHub",
-            "bioc::ExperimentHub",
-            "bioc::AnnotationHubData",
-            "bioc::ChIPseeker",
-            "bioc::DO.db",
-            "bioc::GO.db",
-            "bioc::org.Hs.eg.db",
-            "bioc::org.Mm.eg.db",
-            "bioc::MeSHDbi",
-            "bioc::biomaRt",
-            "bioc::pathview"
-          ))'
+          Rscript -e 'install.packages("BiocManager", repos = "https://cran.r-project.org")'
+          Rscript -e 'BiocManager::install(version = "devel", ask = FALSE)'
+          Rscript -e 'BiocManager::install(pkgs = c(
+            "AnnotationHub",
+            "ExperimentHub",
+            "AnnotationHubData",
+            "ChIPseeker",
+            "DO.db",
+            "GO.db",
+            "org.Hs.eg.db",
+            "org.Mm.eg.db",
+            "MeSHDbi",
+            "biomaRt",
+            "pathview"
+          ), ask = FALSE, update = FALSE)'
 
       - name: Install CRAN dependencies
         run: |
@@ -116,14 +109,11 @@ jobs:
             "cran::wget"
           ))'
 
-      - name: Install MicrobiomeProfiler
-        uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install MicrobiomeProfiler (YuLab-SMU)
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          cache-version: 2
-          packages: |
-            github::YuLab-SMU/MicrobiomeProfiler
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/MicrobiomeProfiler")'
         
       - name: Render Quarto Book
         run: |
