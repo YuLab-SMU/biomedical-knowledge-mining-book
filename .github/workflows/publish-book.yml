@@ -90,7 +90,7 @@ jobs:
             "pathview"
           ), ask = FALSE, update = FALSE)'
 
-      - name: Install YuLab-SMU GitHub packages (sequential)
+      - name: Install core YuLab packages (before clusterProfiler)
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -100,16 +100,33 @@ jobs:
             "github::YuLab-SMU/ggtangle",
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/DOSE",
-            "github::YuLab-SMU/clusterProfiler",
             "github::YuLab-SMU/enrichplot",
-            "github::YuLab-SMU/ReactomePA",
-            "github::YuLab-SMU/meshes",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
             "github::YuLab-SMU/ggtree",
-            "github::YuLab-SMU/ggtreeExtra",
-            "github::YuLab-SMU/MicrobiomeProfiler"
+            "github::YuLab-SMU/ggtreeExtra"
           ))'
+
+      - name: Install clusterProfiler (GitHub)
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/clusterProfiler")'
+
+      - name: Install remaining YuLab-SMU packages
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+            "github::YuLab-SMU/ReactomePA",
+            "github::YuLab-SMU/meshes"
+          ))'
+
+      - name: Install MicrobiomeProfiler (after clusterProfiler)
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/MicrobiomeProfiler")'
 
 
       - name: Prewarm ontology caches (DO/HDO)
