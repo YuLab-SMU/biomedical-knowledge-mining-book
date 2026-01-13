@@ -107,22 +107,12 @@ msigdbr_species()
 
 We can retrieve all human gene sets:
 
-```{r}
-#| include: false
-#| echo: false
-set_proxy()
-```
 
 ```{r}
 m_df <- msigdbr(species = "Homo sapiens")
 head(m_df, 2) |> as.data.frame()
 ```
 
-```{r}
-#| include: false
-#| echo: false
-unset_proxy()
-```
 
 Or specific collection. Here we use C6, oncogenic gene sets as an example:
 
