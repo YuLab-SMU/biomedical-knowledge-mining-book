@@ -63,6 +63,7 @@ jobs:
             "cran::emojifont",
             "cran::badger",
             "cran::cowplot",
+            "cran::ggarchery",
             "cran::msigdbr",
             "cran::readxl",
             "cran::aplot",
