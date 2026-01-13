@@ -26,7 +26,7 @@ source("_common.R")
 
 # `r emoji("book")` Introduction {-}
 
-`r badge_version("ChIPseeker")`
+
 `r badge_version("clusterProfiler")`
 `r badge_version("DOSE")`
 `r badge_version("enrichplot")`
