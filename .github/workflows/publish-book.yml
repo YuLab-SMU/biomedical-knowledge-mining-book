@@ -71,7 +71,8 @@ jobs:
             "cran::ggplotify",
             "cran::wget",
             "cran::httr2",
-            "cran::R.utils"
+            "cran::R.utils",
+            "cran::europepmc"
           ))'
 
       - name: Install Bioconductor dependencies (release)

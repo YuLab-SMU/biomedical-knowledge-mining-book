@@ -155,7 +155,7 @@ p2 <- cnetplot(edox, node_label="gene")
 p3 <- cnetplot(edox, node_label="all") 
 p4 <- cnetplot(edox, node_label="none", 
         color_category='firebrick', 
-        color_gene='steelblue') 
+        color_item='steelblue') 
 plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
