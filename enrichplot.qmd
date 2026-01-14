@@ -128,10 +128,9 @@ Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter 
 ## convert gene ID to Symbol
 edox <- setReadable(edo, 'org.Hs.eg.db', 'ENTREZID')
 p1 <- cnetplot(edox, foldChange=geneList)
-## categorySize can be scaled by 'pvalue' or 'geneNum'
-p2 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList)
+p2 <- cnetplot(edox, categorySizeBy=~ -log10(pvalue), foldChange=geneList)
 ## only plot high fold-change genes
-p3 <- cnetplot(edox, categorySize="pvalue", foldChange=geneList, fc_threshold = 2)
+p3 <- cnetplot(edox, foldChange=geneList, fc_threshold = 2)
 plot_list(p1, p2, p3, ncol=3, tag_levels = 'A')
 ```
 
