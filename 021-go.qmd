@@ -94,7 +94,7 @@ ego2 <- enrichGO(gene         = gene.df$ENSEMBL,
 head(ego2, 3)                
 ```
 
-Gene IDs can be mapped to gene Symbols by using the parameter `readable=TRUE` or [`setReadable()` function](#setReadable).
+Gene IDs can be mapped to gene Symbols by using the parameter `readable=TRUE` or [`setReadable()` function](#sec-setReadable).
 
 
 ## GO Gene Set Enrichment Analysis

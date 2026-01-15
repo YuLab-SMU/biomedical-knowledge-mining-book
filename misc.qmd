@@ -1,1 +1,10 @@
 # Miscellaneous topics {-}
+
+<!--
+Planned additions:
+- ID conversion and readable outputs (bitr, setReadable)
+- GO utilities and redundancy reduction methods
+- Data frame interface and accessor tips
+- Extracting genes by term/pathway (geneInCategory)
+- Practical troubleshooting notes and best practices
+-->
