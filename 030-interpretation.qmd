@@ -1,0 +1,152 @@
+# AI-Assisted Biological Interpretation
+
+Traditional enrichment analysis typically results in a list of significant pathways or GO terms. While statistically sound, these lists often leave researchers asking, "**So what?**" What is the underlying biological mechanism? Who are the key drivers? Is this a pro-survival or pro-death signal?
+
+To bridge the gap between statistical results and biological insights, `clusterProfiler` introduces an AI-powered interpretation module. By leveraging Large Language Models (LLMs) and a multi-agent system, `clusterProfiler` can now act as a virtual bioinformatician, converting dry enrichment lists into coherent, evidence-based biological narratives.
+
+## The `interpret` Function
+
+The core function for this feature is `interpret()`. It accepts enrichment results (e.g., from `enrichKEGG`, `enrichGO`, or `compareCluster`) and uses an LLM to generate a structured report.
+
+To use this feature, you need to configure an API key for a supported LLM provider (e.g., DeepSeek).
+
+```r
+#| eval: false
+library(clusterProfiler)
+
+# Basic usage
+# 'edo' is your enrichment result object
+res <- interpret(edo)
+print(res)
+```
+
+### Tasks and Inputs
+
+`interpret()` is not just for explaining enrichment results. It breaks down LLM capabilities into three distinct tasks:
+
+*   **`task = "interpretation"`**: (Default) Converts enrichment results into a mechanistic narrative suitable for publication (What -> So What).
+*   **`task = "annotation"`**: Performs cell type annotation for single-cell clusters using both marker genes and enrichment terms as evidence.
+*   **`task = "phenotyping"`**: Assigns a "state/phenotype label" to a group (e.g., "Pro-inflammatory" or "Senescent-like").
+
+To strengthen the evidence, `interpret()` supports "evidence synthesis" from multiple sources:
+
+*   **Single Object**: `enrichResult`, `gseaResult`, or `compareClusterResult`.
+*   **Multiple Objects**: A `list()` of results (e.g., `list(kegg_res, go_res)` or `list(cellmarker_res, go_res)`).
+*   **Batch Processing**: If the input is a `compareCluster` result, it automatically splits by cluster and generates a report for each.
+
+The key features of `interpret()` include:
+*   **Prompt Skeleton**: A fixed structure to guide the LLM.
+*   **Structured Output**: Enforced structure for parsing, comparison, and batch processing.
+*   **Reasoning First**: Encourages "deduction before writing" to avoid merely listing pathway names.
+
+## The Multi-Agent System
+
+Instead of relying on a single prompt, `clusterProfiler` employs a **Multi-Agent System (MAS)** to ensure accuracy and depth. This system consists of three specialized agents that work in a pipeline:
+
+1.  **Agent Cleaner**: Acts as a curator. It filters out "housekeeping" pathways (e.g., Ribosome, Spliceosome) that may be statistically significant but irrelevant to the specific biological context (e.g., tumor immunology), reducing noise.
+2.  **Agent Detective**: Acts as a systems biologist. It analyzes the gene list, looks for **Hub Genes** in Protein-Protein Interaction (PPI) networks, and combines this with Fold Change data to identify **Key Drivers** and infer regulatory mechanisms.
+3.  **Agent Storyteller**: Acts as a scientific writer. It synthesizes the findings from the Cleaner and Detective into a logical narrative, distinguishing between observations ("What"), mechanisms ("How"), and implications ("So What").
+
+You can activate this deep mode using the `interpret_agent()` function.
+
+```r
+#| eval: false
+# Provide biological context to help Agent Cleaner
+context <- "scRNA-seq analysis of CD8+ T cells in Tumor Microenvironment, comparing Exhausted vs. Naive states."
+
+res <- interpret_agent(edo, context = context)
+```
+
+## Knowledge-Guided Interpretation
+
+Enrichment analysis often treats genes as a "bag of words," ignoring their interactions and expression changes. The **Knowledge-Guided Interpretation** mode injects external knowledge to empower the AI's reasoning.
+
+### 1. PPI Networks and Hub Genes
+By setting `add_ppi = TRUE`, the system fetches protein-protein interaction data (from STRING). The AI can then identify functional modules (e.g., a TCR signaling complex) rather than just isolated genes.
+
+### 2. Expression Trends
+By providing `gene_fold_change`, the AI can infer the direction of pathway activity. For example, if the "Apoptosis" pathway is enriched but pro-apoptotic genes are downregulated while anti-apoptotic genes are upregulated, the AI will correctly interpret this as "Apoptosis Resistance."
+
+```r
+#| eval: false
+# Prepare a named vector of fold changes
+gene_list <- c("CD8A" = 2.5, "PDCD1" = 1.8, "GZMB" = 3.2)
+
+res <- interpret(edo, 
+                 task = "cell_type",
+                 add_ppi = TRUE,                # Enable PPI network analysis
+                 gene_fold_change = gene_list   # Inject expression data
+)
+```
+
+## Reference-Guided Interpretation
+
+For cell type annotation, LLMs can sometimes hallucinate. To prevent this, `clusterProfiler` supports **Reference-Guided Interpretation**.
+
+### Prior Knowledge Injection
+You can provide "prior knowledge" (e.g., results from SingleR, scGPT, or manual rough annotation) to the AI. The AI acts as a validator and refiner:
+*   **Validation**: Checks if pathway evidence supports the prior label.
+*   **Refinement**: Refines a broad label (e.g., "T cell") into a specific state (e.g., "Proliferating CD8+ T cell") based on pathway activity.
+*   **Correction**: Flags potential misannotations if the evidence contradicts the prior.
+
+```r
+#| eval: false
+# Prior knowledge from SingleR
+my_priors <- c("Cluster1" = "T cells")
+
+res <- interpret(edo, prior = my_priors, task = "cell_type")
+```
+
+### Hierarchical Interpretation
+For complex datasets, `interpret_hierarchical()` mimics the human thought process of annotating major lineages first (e.g., Myeloid) and then subtypes (e.g., M1 Macrophage). It enforces lineage constraints to prevent impossible annotations (e.g., a T cell subtype appearing within a Myeloid cluster).
+
+This approach is also highly applicable to **Single-cell Trajectory Inference**. Developmental processes inherently follow a hierarchical structure (e.g., Stem Cell -> Progenitor -> Terminally Differentiated Cell). By utilizing this hierarchical relationship, `interpret_hierarchical()` can provide context-aware interpretations that respect the biological differentiation path, ensuring that downstream states are interpreted within the context of their upstream progenitors.
+
+```r
+#| eval: false
+# Mapping between minor and major clusters
+cluster_mapping <- c(
+  "SubCluster1_1" = "MajorCluster1", 
+  "SubCluster1_2" = "MajorCluster1",
+  "SubCluster2_1" = "MajorCluster2"
+)
+
+# Hierarchical interpretation
+res_hier <- interpret_hierarchical(
+    x_minor = enrich_minor, 
+    x_major = enrich_major, 
+    mapping = cluster_mapping
+)
+```
+
+## Gene-Based Fallback Mode
+
+In real-world research, enrichment analysis sometimes fails to return significant pathways due to small gene sets or background noise.
+
+`clusterProfiler` introduces a **Gene-Based Fallback Mode**. When no enriched pathways are found, the agent does not simply error out. Instead, it:
+1.  Directly analyzes the function of the input genes.
+2.  Retrieves PPI networks for these genes.
+3.  Infers biological function based on gene connectivity and function, providing a "Medium Confidence" report instead of an empty result.
+
+```r
+#| eval: false
+# When enrichment fails, this still works
+res <- interpret_agent(tough_genes, add_ppi = TRUE)
+```
+
+## Visualization: From Story to Figure
+
+Text reports are great, but graphical representations are often preferred for presentations. The `plot()` method for interpretation results uses `ggtangle` (a grammar of graphics for networks) to visualize the AI-inferred regulatory network.
+
+The resulting plot highlights:
+*   **Key Drivers**: Central nodes identified by the AI.
+*   **Activation (Green)** / **Inhibition (Red)**: Regulatory relationships inferred from data.
+*   **Interactions (Grey)**: Physical associations.
+
+```r
+#| eval: false
+# Visualize the interpretation result
+plot(res)
+```
+
+This feature creates a closed loop: from **Enrichment** (Statistics) to **Interpretation** (Insight) and finally to **Visualization** (Communication).
