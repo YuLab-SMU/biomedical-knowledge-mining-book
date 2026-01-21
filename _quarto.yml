@@ -38,7 +38,8 @@ book:
         - 028-chipseeker.qmd
         - 029-compareCluster.qmd
         - enrichplot.qmd
-        - 030-interpretation.qmd
+        - PPI.qmd
+        - interpretation.qmd
 
     - part: misc.qmd
       chapters:
