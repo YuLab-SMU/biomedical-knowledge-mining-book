@@ -74,7 +74,8 @@ jobs:
             "cran::R.utils",
             "cran::europepmc",
             "cran::ggupset",
-            "cran::ggridges"
+            "cran::ggridges",
+            "cran::shadowtext"
           ))'
 
       - name: Install Bioconductor dependencies (release)
@@ -100,7 +101,6 @@ jobs:
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
-            "github::YuLab-SMU/shadowtext",
             "github::YuLab-SMU/enrichit",
             "github::YuLab-SMU/ggtangle",
             "github::YuLab-SMU/GOSemSim",
