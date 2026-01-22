@@ -79,6 +79,12 @@ head(ego)
 
 Any gene ID type that is supported in `OrgDb` can be directly used in GO analyses. Users need to specify the `keyType` parameter to specify the input gene ID type.
 
+However, the GO annotation in `OrgDb` is indexed by ENTREZID. If the input ID type is not ENTREZID, `clusterProfiler` will first map the input IDs to ENTREZID using the `bitr()` function. This mapping step may lead to a loss of information, as some IDs might not have a corresponding ENTREZID or multiple IDs might map to the same ENTREZID (many-to-one mapping).
+
+To address this issue, `enrichGO` and `gseGO` perform the mapping and use the mapped ENTREZIDs for enrichment analysis. The results are then mapped back to the original input ID type. This ensures that the gene counts and gene ratios in the final result accurately reflect the input IDs, avoiding discrepancies caused by the intermediate mapping step.
+
+For example, if we use ENSEMBL IDs as input:
+
 ```{r}
 gene.df <- bitr(gene, fromType = "ENTREZID",
 	   	toType = c("ENSEMBL", "SYMBOL"),

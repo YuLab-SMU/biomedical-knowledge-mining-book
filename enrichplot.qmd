@@ -114,12 +114,12 @@ The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* G
 with only core enriched genes displayed.
 
 
-Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`).
+Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`). In addition, users can use the `node_label_gene` parameter to label genes that are shared between groups of terms (i.e. `node_label_gene = "shared"`).
 
 ```{r}
 #| label: fig-Networkplot  
-#| fig-width: 24
-#| fig-height: 9
+#| fig-width: 16
+#| fig-height: 18
 #| fig-scap: |
 #|   Network plot of enriched terms.
 #| fig-cap: |
@@ -131,7 +131,8 @@ p1 <- cnetplot(edox, foldChange=geneList)
 p2 <- cnetplot(edox, categorySizeBy=~ -log10(pvalue), foldChange=geneList)
 ## only plot high fold-change genes
 p3 <- cnetplot(edox, foldChange=geneList, fc_threshold = 2)
-plot_list(p1, p2, p3, ncol=3, tag_levels = 'A')
+p4 <- cnetplot(edox, foldChange=geneList, node_label_gene = "shared")
+plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
 
