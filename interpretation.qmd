@@ -81,7 +81,7 @@ y <- interpret(x, task="annotation")
 The output `y` is a list of interpretation results, one for each cluster. We can extract the inferred cell types.
 
 ```
-> sapply(y3, \(x) x$cell_type)
+> sapply(y, \(x) x$cell_type)
                                         0 
                            "Naive T Cell"
                                         1
