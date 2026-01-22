@@ -24,21 +24,23 @@ print(res)
 
 `interpret()` is not just for explaining enrichment results. It breaks down LLM capabilities into three distinct tasks:
 
-*   **`task = "interpretation"`**: (Default) Converts enrichment results into a mechanistic narrative suitable for publication (What -> So What).
-*   **`task = "annotation"`**: Performs cell type annotation for single-cell clusters using both marker genes and enrichment terms as evidence.
-*   **`task = "phenotyping"`**: Assigns a "state/phenotype label" to a group (e.g., "Pro-inflammatory" or "Senescent-like").
++ **`task = "interpretation"`**: (Default) Converts enrichment results into a mechanistic narrative suitable for publication (What -> So What).
++ **`task = "annotation"`**: Performs cell type annotation for single-cell clusters using both marker genes and enrichment terms as evidence.
++ **`task = "phenotyping"`**: Assigns a "state/phenotype label" to a group (e.g., "Pro-inflammatory" or "Senescent-like").
 
 To strengthen the evidence, `interpret()` supports "evidence synthesis" from multiple sources:
 
-*   **Single Object**: `enrichResult`, `gseaResult`, or `compareClusterResult`.
-*   **Multiple Objects**: A `list()` of results (e.g., `list(kegg_res, go_res)` or `list(cellmarker_res, go_res)`).
-*   **Batch Processing**: If the input is a `compareCluster` result, it automatically splits by cluster and generates a report for each.
++ **Single Object**: `enrichResult`, `gseaResult`, or `compareClusterResult`.
++ **Multiple Objects**: A `list()` of results (e.g., `list(kegg_res, go_res)` or `list(cellmarker_res, go_res)`).
++ **Batch Processing**: If the input is a `compareCluster` result, it automatically splits by cluster and generates a report for each.
 
 The key features of `interpret()` include:
-*   **Prompt Skeleton**: A fixed structure to guide the LLM.
-*   **Structured Output**: Enforced structure for parsing, comparison, and batch processing.
-*   **Reasoning First**: Encourages "deduction before writing" to avoid merely listing pathway names.
 
++ **Prompt Skeleton**: A fixed structure to guide the LLM.
++ **Structured Output**: Enforced structure for parsing, comparison, and batch processing.
++ **Reasoning First**: Encourages "deduction before writing" to avoid merely listing pathway names.
+
+### Cell Type Annotation
 
 For example, we can use `Seurat` to identify marker genes for each cluster in a single-cell RNA-seq dataset. Then we can use `compareCluster` to perform enrichment analysis for each cluster. Finally, we can use `interpret` to annotate cell types based on the enrichment results and marker genes.
 
