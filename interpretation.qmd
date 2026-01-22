@@ -118,8 +118,11 @@ This result is highly consistent with the manual annotation from the [Seurat pbm
 
 The full report provides detailed reasoning, confidence levels, and supporting evidence (markers/pathways) for each cluster assignment, offering transparency and explainability that simple label transfer methods lack.
 
+```r
+print(y)
 ```
-> print(y)
+
+::: {.callout-note icon=false}
 # Enrichment Interpretation / Annotation Report
 
 ## Cell Type Annotation
@@ -331,7 +334,7 @@ The full report provides detailed reasoning, confidence levels, and supporting e
 - SDPR
 
 ---
-```
+:::
 
 ## The Multi-Agent System
 
