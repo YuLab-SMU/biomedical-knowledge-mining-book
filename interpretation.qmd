@@ -123,11 +123,11 @@ print(y)
 ```
 
 ::: {.callout-note icon=false}
-# Enrichment Interpretation / Annotation Report
+# Enrichment Interpretation / Annotation Report {.unnumbered .unlisted}
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 0
+### Cluster: 0 {.unnumbered .unlisted}
 
 **Cell Type:** Naive T Cell
 **Confidence:** High
@@ -146,9 +146,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 1
+### Cluster: 1 {.unnumbered .unlisted}
 
 **Cell Type:** Classical Monocyte
 **Confidence:** High
@@ -168,9 +168,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 2
+### Cluster: 2 {.unnumbered .unlisted}
 
 **Cell Type:** CD4+ T cell
 **Confidence:** High
@@ -191,9 +191,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 3
+### Cluster: 3 {.unnumbered .unlisted}
 
 **Cell Type:** Follicular B cell
 **Confidence:** High
@@ -215,9 +215,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 4
+### Cluster: 4 {.unnumbered .unlisted}
 
 **Cell Type:** CD8+ Cytotoxic T Cell
 **Confidence:** High
@@ -241,9 +241,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 5
+### Cluster: 5 {.unnumbered .unlisted}
 
 **Cell Type:** CD16+ monocyte (Non-classical monocyte)
 **Confidence:** High
@@ -263,9 +263,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 6
+### Cluster: 6 {.unnumbered .unlisted}
 
 **Cell Type:** Natural Killer (NK) cell
 **Confidence:** High
@@ -289,9 +289,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 7
+### Cluster: 7 {.unnumbered .unlisted}
 
 **Cell Type:** Plasmacytoid Dendritic Cell (pDC)
 **Confidence:** High
@@ -311,9 +311,9 @@ print(y)
 
 ---
 
-## Cell Type Annotation
+## Cell Type Annotation {.unnumbered .unlisted}
 
-### Cluster: 8
+### Cluster: 8 {.unnumbered .unlisted}
 
 **Cell Type:** Megakaryocyte
 **Confidence:** High
