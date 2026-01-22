@@ -39,6 +39,300 @@ The key features of `interpret()` include:
 *   **Structured Output**: Enforced structure for parsing, comparison, and batch processing.
 *   **Reasoning First**: Encourages "deduction before writing" to avoid merely listing pathway names.
 
+
+For example, we can use `Seurat` to identify marker genes for each cluster in a single-cell RNA-seq dataset. Then we can use `compareCluster` to perform enrichment analysis for each cluster. Finally, we can use `interpret` to annotate cell types based on the enrichment results and marker genes.
+
+```r
+library(Seurat)
+dir = "data/filtered_gene_bc_matrices/hg19"
+pbmc.data <- Read10X(data.dir = dir)
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", 
+                          min.cells=3, min.features=200)
+pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
+pbmc <- subset(pbmc,
+  subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5
+)
+pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize",
+                      scale.factor = 10000)
+pbmc <- ScaleData(pbmc)
+pbmc <- FindVariableFeatures(pbmc, selection.method = "vst",
+                             nfeatures = 2000)
+pbmc <- RunPCA(pbmc, features = VariableFeatures(object = pbmc))
+pbmc <- RunUMAP(pbmc, dims = 1:10)
+pbmc <- FindNeighbors(pbmc, dims = 1:10)
+pbmc <- FindClusters(pbmc, resolution = 0.5)
+pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE)
+
+libray(dplyr)
+topN_marker <- function(markers, n) {
+    markers %>%
+        group_by(cluster) %>%
+        dplyr::filter(avg_log2FC > 1) %>%
+        slice_head(n = n) %>%
+        ungroup()
+}
+top20 <- topN_marker(pbmc.markers, 20)
+# downloaded from: http://www.bio-bigdata.center/CellMarker_download_files/file/Cell_marker_Human.xlsx
+cm <- rio::import("Cell_marker_Human.xlsx") 
+x <- compareCluster(gene~cluster, data=top10, fun=enricher, TERM2GENE=cm[,c("cell_name", "marker")])
+y <- interpret(x, task="annotation")
+```
+
+The output `y` is a list of interpretation results, one for each cluster. We can extract the inferred cell types.
+
+```
+> sapply(y3, \(x) x$cell_type)
+                                        0 
+                           "Naive T Cell"
+                                        1
+                     "Classical Monocyte"
+                                        2
+                            "CD4+ T cell"
+                                        3
+                      "Follicular B cell"
+                                        4
+                  "CD8+ Cytotoxic T Cell" 
+                                        5
+"CD16+ monocyte (Non-classical monocyte)"
+                                        6
+               "Natural Killer (NK) cell"
+                                        7
+      "Plasmacytoid Dendritic Cell (pDC)"
+                                        8 
+                          "Megakaryocyte"
+```
+
+This result is highly consistent with the manual annotation from the [Seurat pbmc3k tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#assigning-cell-type-identity-to-clusters):
+
+| Cluster ID | Markers | Cell Type |
+| :--- | :--- | :--- |
+| 0 | IL7R, CCR7 | Naive CD4+ T |
+| 1 | CD14, LYZ | CD14+ Mono |
+| 2 | IL7R, S100A4 | Memory CD4+ |
+| 3 | MS4A1 | B |
+| 4 | CD8A | CD8+ T |
+| 5 | FCGR3A, MS4A7 | FCGR3A+ Mono |
+| 6 | GNLY, NKG7 | NK |
+| 7 | FCER1A, CST3 | DC |
+| 8 | PPBP | Platelet |
+
+The full report provides detailed reasoning, confidence levels, and supporting evidence (markers/pathways) for each cluster assignment, offering transparency and explainability that simple label transfer methods lack.
+
+```
+> print(y)
+# Enrichment Interpretation / Annotation Report
+
+## Cell Type Annotation
+
+### Cluster: 0
+
+**Cell Type:** Naive T Cell
+**Confidence:** High
+
+**Reasoning:**
+ The cluster is definitively identified as a naive T cell based on the co-expression of canonical pan-T cell markers (CD3D, CD3E) and the master regulator of naive T cell identity, TCF7 (cited in top terms: Naive CD8+ T cell, Naive CD4+ T cell, etc.). The high expression of CCR7, a critical homing receptor for naive and central memory T cells, and LEF1, another Wnt-pathway TF co-operating with TCF7, further solidifies this identity. The enrichment list is dominated by naive and central memory T cell subtypes, with effector/cytotoxic terms ranking lower and lacking their specific markers (e.g., GZMB, PRF1). The presence of both CD4+ and CD8+ associated terms suggests a mixed population or a shared naive state before lineage commitment, but the core identity is naive T cell.
+
+**Supporting Markers/Pathways:**
+- CD3D
+- CD3E
+- TCF7
+- CCR7
+- LEF1
+- NOSIP
+- MAL
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 1
+
+**Cell Type:** Classical Monocyte
+**Confidence:** High
+
+**Reasoning:**
+ The enrichment list contains many related myeloid cell types, but the specific marker gene profile is definitive. The cluster expresses the core classical monocyte signature: high expression of CD14, S100A8, S100A9, FCN1, and LYZ (Top Specific/Marker Genes). While 'Myeloid cell' and 'Macrophage' are top-ranked by p-value, they are broad categories. The specific 'Classical monocyte' term (GeneRatio: 5/20, p.adjust: 1.637326e-07) is strongly supported by its gene list (S100A9/FCN1/CD14/S100A8/LYZ), which perfectly matches the top markers. The cluster lacks definitive markers to distinguish it as a Dendritic Cell (e.g., no FLT3, CD1C, CLEC9A), Macrophage (e.g., low/absent MRC1/CD163), or Neutrophil (e.g., absent MPO, ELANE). The presence of FCN1 and CD14 together is a hallmark of classical monocytes, and the absence of FCGR3A (CD16) argues against non-classical monocytes. 
+
+**Supporting Markers/Pathways:**
+- CD14
+- S100A8
+- S100A9
+- FCN1
+- LYZ
+- CST3
+- TYROBP
+- MS4A6A
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 2
+
+**Cell Type:** CD4+ T cell
+**Confidence:** High
+
+**Reasoning:**
+ The cluster is definitively a T cell, as the top enriched term is 'T cell' (p.adjust: 2.86e-17) and the marker list includes the core T-cell receptor complex genes CD3D, CD3E, CD3G, and CD247 (LAT). Among T-cell subtypes, the evidence strongly favors a CD4+ lineage over CD8+. The second most significant term is 'CD4+ T cell' (p.adjust: 2.40e-14), and its gene list (IL32, CD3E, IL7R, CD27, CD3D, TNFRSF4, MAL, CD2, LTB, CD40LG, CD3G) is almost entirely contained within the top 'T cell' markers. Key CD4+ T-cell markers IL7R and CD27 are among the top specific genes. While 'CD8+ T cell' is also enriched, its signature genes (like AQP3) are present but lower in the marker list, and definitive cytotoxic CD8+ markers (e.g., GZMB, PRF1) are absent. The presence of CD40LG and TNFRSF4 (OX40), which are associated with CD4+ T helper and regulatory functions, further supports this assignment. The cluster lacks exclusive markers for NK cells (e.g., NCAM1, KLR genes) or Tregs (FOXP3), though it shows some regulatory association.
+
+**Supporting Markers/Pathways:**
+- CD3D
+- CD3E
+- CD3G
+- IL7R
+- CD27
+- CD40LG
+- IL32
+- LTB
+- TNFRSF4
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 3
+
+**Cell Type:** Follicular B cell
+**Confidence:** High
+
+**Reasoning:**
+ The top enriched term is 'Follicular B cell' (p.adjust: 2.95e-16), and its gene list contains definitive B cell lineage markers (CD79A, CD79B, MS4A1, BANK1, FCER2, TCL1A) that are also present in the cluster's top specific genes. While other top terms like 'Secretory cell' and 'Classical monocyte' are enriched, they are driven almost exclusively by MHC Class II genes (HLA-DRA, HLA-DRB1, etc.), which are not specific to those cell types but are also expressed by antigen-presenting B cells. The presence of core B cell receptor components (CD79A/B) and mature B cell markers (MS4A1, FCER2, TCL1A) that are absent from monocyte/dendritic cell definitions, combined with the lack of specific monocyte (e.g., CD14, FCGR3A) or secretory cell markers, confirms the identity as a Follicular B cell.
+
+**Supporting Markers/Pathways:**
+- CD79A
+- MS4A1
+- CD79B
+- TCL1A
+- FCER2
+- BANK1
+- CD37
+- HLA-DRA
+- HLA-DRB1
+- CD74
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 4
+
+**Cell Type:** CD8+ Cytotoxic T Cell
+**Confidence:** High
+
+**Reasoning:**
+ The top enriched terms are a mixture of 'Natural killer cell' and various T cell subtypes, indicating shared cytotoxic function. However, the specific marker gene list is definitive. It includes the core T cell receptor complex genes CD3D, CD8A, and CD8B (present in 'CD8+ T cell' and 'Cytotoxic T cell' enrichments), which are lineage-defining for CD8+ T cells and absent from NK cells. While NKG7, PRF1, GZMA, GZMK, and GZMH are shared cytotoxic molecules, the co-expression of CD3D with CD8A/CD8B specifically identifies a cytotoxic T cell lineage. The absence of definitive NK-specific markers (e.g., NCAM1/CD56, KLRD1/CD94, FCGR3A/CD16) from the top marker list, and the presence of the T cell-specific signaling adaptor HCST (DAP10), supports a T cell identity. The 'Cytotoxic CD8+ T cell' enrichment term (GeneRatio: 8/20) provides the most precise functional and lineage match.
+
+**Supporting Markers/Pathways:**
+- CD3D
+- CD8A
+- CD8B
+- GZMK
+- NKG7
+- CCL5
+- PRF1
+- GZMA
+- GZMH
+- CST7
+- LAG3
+- KLRG1
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 5
+
+**Cell Type:** CD16+ monocyte (Non-classical monocyte)
+**Confidence:** High
+
+**Reasoning:**
+ The top enriched term is 'CD1C-CD141- dendritic cell' (p.adjust: 3.68e-23), but this is likely a misannotation due to shared myeloid markers. The gene list for this term (LST1, CKB, HCK, CSF1R, IFITM3, MS4A7, SERPINA1, LILRB1, CDKN1C, PILRA, FCGR3A, HMOX1, RHOC, LRRC25, SIGLEC10, MS4A4A) is a composite of pan-myeloid and monocyte-specific genes, and lacks definitive dendritic cell markers (e.g., CD1C, CLEC9A, BATF3). The cluster's specific marker list is dominated by canonical markers for non-classical monocytes: FCGR3A (CD16) is the defining marker, supported by MS4A7, CSF1R, and HES4 (enriched in 'CD16+ monocyte' and 'Non-classical monocyte' terms). The absence of T/NK/B cell markers and the presence of macrophage/pan-myeloid genes (e.g., CST3, CTSL) confirm a myeloid lineage, while the high expression of FCGR3A, MS4A7, and HES4 specifically distinguishes the non-classical monocyte subset from classical monocytes, macrophages, and dendritic cells. 
+
+**Supporting Markers/Pathways:**
+- FCGR3A (CD16)
+- MS4A7
+- HES4
+- CSF1R
+- LST1
+- IFITM3
+- SIGLEC10
+- PILRA
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 6
+
+**Cell Type:** Natural Killer (NK) cell
+**Confidence:** High
+
+**Reasoning:**
+ The top enriched terms include both 'Natural killer cell' (17/20 genes, p=2.79e-27) and 'Cytotoxic CD4+ T cell' (14/20 genes, p=5.24e-28). While the latter has a slightly better p-value, the discriminatory marker analysis strongly favors NK cells. The cluster's top specific genes include canonical NK markers FGFBP2, SPON2, XCL2, XCL1, SH2D1B, and FCGR3A (CD16a), which are not specific to T cells. Critically, the cluster lacks definitive T-cell lineage markers (e.g., CD3D, CD3E, CD4, CD8A). The shared cytotoxic genes (PRF1, GNLY, GZMB, GZMA, NKG7) are expressed by both NK cells and cytotoxic T cells, but the presence of NK-specific markers and absence of T-cell receptor complex genes confirms NK cell identity.
+
+**Supporting Markers/Pathways:**
+- FGFBP2
+- SPON2
+- XCL2
+- XCL1
+- SH2D1B
+- FCGR3A (CD16a)
+- KLRD1 (CD94)
+- GNLY
+- PRF1
+- GZMB
+- GZMA
+- NKG7
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 7
+
+**Cell Type:** Plasmacytoid Dendritic Cell (pDC)
+**Confidence:** High
+
+**Reasoning:**
+ The enrichment list contains two distinct dendritic cell lineages: conventional/myeloid DCs (cDC2, CD1C+ DCs) and plasmacytoid DCs (pDC). While the top-ranked term is 'CD1C+_A dendritic cell' (a cDC2 subtype), the cluster's specific marker genes are definitive for pDC identity. The pDC-specific markers LILRA4, CLEC4C (BDCA-2), SERPINF1, and P2RY6 are present in the top marker list and are the defining genes for the 'Plasmacytoid dendritic cell(pDC)' and 'Plasmacytoid dendritic cell' enrichment terms. Critically, the cluster lacks the core, non-overlapping markers for cDC2s: while it expresses CD1C and FCER1A (which can be expressed at low levels in some pDCs), it does NOT express the definitive cDC2 markers CLEC10A (in the cDC2 enrichment term but not in the pDC-specific marker set from the top genes) and CD1C at high specificity relative to pDC markers. The rule of exclusion applies: the top term is a cDC2 type, but the specific marker gene list is dominated by pDC markers and lacks exclusive cDC2 commitment.
+
+
+**Supporting Markers/Pathways:**
+- LILRA4 (ILT7)
+- CLEC4C (BDCA-2)
+- SERPINF1
+- P2RY6
+- CLIC2
+- SCT
+- LRRC26
+
+---
+
+## Cell Type Annotation
+
+### Cluster: 8
+
+**Cell Type:** Megakaryocyte
+**Confidence:** High
+
+**Reasoning:**
+ The assignment is based on the definitive convergence of enrichment terms and marker genes. The top enriched term is 'Megakaryocyte' (p.adjust: 3.58e-10) with genes SPARC, GNG11, PF4, GP9, ITGA2B, GP1BA. The related terms 'Platelet' and 'Progenitor cell' are lower-ranked and share subsets of these genes (e.g., PF4, GP9, ITGA2B), which is expected as platelets are anucleate fragments of megakaryocytes. The top specific marker gene list is dominated by canonical megakaryocyte/platelet markers (GP9, ITGA2B, GP1BA, PF4, ITGB3, SPARC, GNG11) and lacks definitive markers for other hematopoietic lineages that could challenge this identity (e.g., no CD3, CD19, CD14, ELANE). The 'Progenitor cell' term is likely reflective of the shared SPARC and PF4 expression in some progenitor states, but the presence of terminal differentiation markers like GP1BA and ITGA2B confirms a mature megakaryocyte identity. 
+
+**Supporting Markers/Pathways:**
+- GP9
+- ITGA2B
+- GP1BA
+- PF4
+- SPARC
+- GNG11
+- ITGB3
+- CLDN5
+- CMTM5
+- SDPR
+
+---
+```
+
 ## The Multi-Agent System
 
 Instead of relying on a single prompt, `clusterProfiler` employs a **Multi-Agent System (MAS)** to ensure accuracy and depth. This system consists of three specialized agents that work in a pipeline:
