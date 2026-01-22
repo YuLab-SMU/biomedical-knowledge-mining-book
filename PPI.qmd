@@ -1,5 +1,15 @@
 # Protein-Protein Interaction Network
 
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+library(clusterProfiler)
+library(org.Hs.eg.db)
+```
+
 `clusterProfiler` provides the `getPPI()` function to retrieve Protein-Protein Interaction (PPI) information from the STRING database. This allows users to explore the functional modules and interactions among genes of interest or genes enriched in specific pathways.
 
 To visualize these networks, we recommend using the `ggtangle` package, which provides a grammar of graphics for networks, allowing for flexible and aesthetically pleasing visualizations. It is worth noting that network visualization functions in `enrichplot`, such as `cnetplot` and `emapplot`, are implemented based on `ggtangle`.
