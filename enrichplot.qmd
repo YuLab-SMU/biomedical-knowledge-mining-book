@@ -131,7 +131,7 @@ p1 <- cnetplot(edox, foldChange=geneList)
 p2 <- cnetplot(edox, categorySizeBy=~ -log10(pvalue), foldChange=geneList)
 ## only plot high fold-change genes
 p3 <- cnetplot(edox, foldChange=geneList, fc_threshold = 2)
-p4 <- cnetplot(edox, foldChange=geneList, node_label_gene = "share")
+p4 <- cnetplot(edox, foldChange=geneList, node_label = "share")
 plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
