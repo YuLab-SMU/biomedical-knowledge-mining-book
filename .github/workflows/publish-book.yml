@@ -95,19 +95,26 @@ jobs:
             "pathview"
           ), ask = FALSE, update = FALSE)'
 
-      - name: Install core YuLab packages (before clusterProfiler)
+      - name: Install foundational YuLab packages
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
-            "github::YuLab-SMU/enrichit",
-            "github::YuLab-SMU/ggtangle",
             "github::YuLab-SMU/GOSemSim",
-            "github::YuLab-SMU/DOSE",
-            "github::YuLab-SMU/enrichplot",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
+            "github::YuLab-SMU/ggtangle"
+          ))'
+
+      - name: Install dependent YuLab packages
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+            "github::YuLab-SMU/enrichit",
+            "github::YuLab-SMU/DOSE",
+            "github::YuLab-SMU/enrichplot",
             "github::YuLab-SMU/ggtree",
             "github::YuLab-SMU/ggtreeExtra"
           ))'
