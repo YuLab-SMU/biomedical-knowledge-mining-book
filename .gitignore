@@ -11,3 +11,4 @@ biomedicalKnowledge_files
 *_files/
 *_cache/
 *.html
+*.rmarkdown
