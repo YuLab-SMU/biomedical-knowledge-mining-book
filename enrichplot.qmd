@@ -176,6 +176,37 @@ plot_list(p1, p2, ncol=2, tag_levels = 'A')
 
 Note: The `dotplot()` function also works with [`compareCluster()` output](#compare-dotplot).
 
+### Formula interface of dotplot
+
+The `x` variable of `dotplot()` supports a formula interface, allowing users to use derived variables. For example, we can calculate `GeneRatio/BgRatio` or `-log(p.adjust)` and use them as the x-axis variable.
+
+```{r}
+#| label: fig-dotplot-formula
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Dotplot with formula interface.**
+#|   (A) `x = ~GeneRatio/BgRatio`.
+#|   (B) `x = ~ -log(p.adjust)`.
+p1 <- dotplot(edo, x = ~GeneRatio/BgRatio)
+p2 <- dotplot(edo, x = ~ -log(p.adjust))
+plot_list(p1, p2, ncol=2, tag_levels='A')
+```
+
+This feature provides great flexibility in visualization. For instance, the **Rich Factor** is a common metric defined as the ratio of the number of differentially expressed genes annotated in a pathway to the total number of genes annotated in that pathway.
+
+$$Rich Factor = \frac{Count}{BgRatio \times N}$$
+
+where $N$ is the total number of genes in the background distribution.
+
+We can easily visualize the **Rich Factor** using the formula interface.
+
+```{r eval=FALSE}
+N <- 8007 # total number of genes in the background
+dotplot(edo, x = ~Count/(BgRatio * N))
+```
+
+
 
 ## Gene-Concept Network {#cnetplot}
 
