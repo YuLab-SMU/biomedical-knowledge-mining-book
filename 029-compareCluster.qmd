@@ -129,7 +129,22 @@ specify how many categories of each cluster to be plotted, and if
 `showCategory` is set to `NULL`, the whole result will
 be plotted. The `showCategory` parameter also allows passing a vector of selected categories to [plot pathways of interest](#showing-specific-pathways)
 
-The `dotplot()` function tries to make the comparison among different clusters more informative and reasonable. After extracting *e.g.* 10 categories for each clusters, `r Biocpkg("clusterProfiler")` tries to collect overlap of these categories among clusters. For example, `term A` is enriched in all the gene clusters (*e.g.*, `g1` and `g2`) and is in the 10 most significant categories of `g1` but not `g2`. `r Biocpkg("clusterProfiler")` will capture this information and include `term A` in `g2` cluster to make the comparison in `dotplot` more reasonable. If users want to ignore these information, they can set `includeAll = FALSE` in `dotplot()`, which is not recommended. 
+The `dotplot()` function tries to make the comparison among different clusters more informative and reasonable. After extracting *e.g.* 10 categories for each clusters, `r Biocpkg("clusterProfiler")` tries to collect overlap of these categories among clusters. For example, `term A` is enriched in all the gene clusters (*e.g.*, `g1` and `g2`) and is in the 10 most significant categories of `g1` but not `g2`. `r Biocpkg("clusterProfiler")` will capture this information and include `term A` in `g2` cluster to make the comparison in `dotplot` more reasonable. 
+
+This feature ensures that if a term is significant and selected for one cluster, its statistics in other clusters are also displayed, allowing for a valid comparison. Consequently, the number of categories shown for some clusters might exceed the `showCategory` limit (e.g., 15 categories shown for *g2* while `showCategory` is 10). Disabling this by setting `includeAll = FALSE` in `dotplot()` may result in a plot that suggests zero overlap between clusters, which can be misleading (see @fig-includeAll A vs B) and is not recommended. 
+
+```{r}
+#| label: fig-includeAll
+#| fig-width: 14
+#| fig-height: 10
+#| fig-cap: |
+#|   **Comparison of dotplot with and without includeAll parameter.** 
+#|   (A) `includeAll=FALSE` produces a plot that strictly follows `showCategory` but may hide overlapping terms. 
+#|   (B) The default behavior (`includeAll=TRUE`) recovers the missing overlap information, making the comparison more reasonable.
+p1 <- dotplot(ck, showCategory=5, includeAll=FALSE) + ggtitle("includeAll=FALSE")
+p2 <- dotplot(ck, showCategory=5) + ggtitle("default")
+plot_list(p1, p2, ncol=2, tag_levels='A')
+``` 
 
 The `dotplot()` function accepts a parameter `size` for setting the scale of dot sizes. The default parameter `size` is set to `geneRatio`, which corresponds to the `GeneRatio` column of the output. If it is set to `count`, the comparison will be based on gene counts, while if set to `rowPercentage`, the dot sizes will be normalized by `count/(sum of each row)`. Users can also map the dot size to other variables or derived variables (see [Chapter 16](#clusterProfiler-dplyr)).
 
