@@ -206,6 +206,22 @@ N <- 8007 # total number of genes in the background
 dotplot(edo, x = ~Count/(BgRatio * N))
 ```
 
+### Adjusting dot sizes
+
+To increase the size of the dots in the dot plot, we can use the `scale_size` function from the `ggplot2` package. This allows us to specify the range of the dot sizes.
+
+```{r}
+#| label: fig-dotplot-size
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Dotplot with adjusted dot sizes.**
+#|   (A) Default dotplot.
+#|   (B) Dotplot with `scale_size(range=c(2, 20))`.
+p1 <- dotplot(edo, showCategory=10) + ggtitle("Default")
+p2 <- dotplot(edo, showCategory=10) + scale_size(range=c(2, 20)) + ggtitle("Adjusted size")
+plot_list(p1, p2, ncol=2, tag_levels='A')
+```
 
 
 ## Gene-Concept Network {#cnetplot}
@@ -486,6 +502,22 @@ p1 <- gseaplot(edo2, geneSetID = 1, by = "runningScore", title = edo2$Descriptio
 p2 <- gseaplot(edo2, geneSetID = 1, by = "preranked", title = edo2$Description[1])
 p3 <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
 plot_list(p1, p2, p3, ncol=1, tag_levels='A')
+```
+
+
+The `gseaplot` function also allows users to customize the colors of the running score line and the rank line.
+
+```{r}
+#| label: fig-gseaplot-custom-color
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **gseaplot with custom colors.**
+#|   (A) Default color scheme.
+#|   (B) Customized colors using `color`, `color.line`, and `color.vline`.
+p_default <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
+p_custom <- gseaplot(edo2, geneSetID = 1, color="#DAB546", color.line='firebrick', color.vline="steelblue", title = edo2$Description[1])
+plot_list(p_default, p_custom, ncol=2, tag_levels='A')
 ```
 
 
