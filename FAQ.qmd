@@ -40,36 +40,6 @@ geneList = sort(geneList, decreasing = TRUE)
 
 
 
-<!--
-
-
-# DAVID functional analysis
-
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) provides enrichment and GSEA analysis with GO, KEGG, DO and Reactome pathway supported internally, some user may prefer GO and KEGG analysis with DAVID[@huang_david_2007] and still attracted by the visualization methods provided by [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@paranjpe_genome_wid_2013]. To bridge the gap between DAVID and clusterProfiler, we implemented `enrichDAVID`. This function query enrichment analysis result from DAVID webserver via [RDAVIDWebService](https://www.bioconductor.org/packages/RDAVIDWebService)[@fresno_rdavidwebservice_2013] and stored the result as an `enrichResult` instance, so that we can use all the visualization functions in [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler) to visualize DAVID results. `enrichDAVID` is fully compatible with `compareCluster` function and comparing enrichment results from different gene clusters is now available with DAVID.
-
-```{r eval=FALSE}
-library(clusterProfiler)
-data(geneList, package="DOSE")
-gene = names(geneList)[abs(geneList) > 2]
-david <- enrichDAVID(gene = gene,
-                     idType = "ENTREZ_GENE_ID",
-                     listType = "Gene",
-                     annotation = "KEGG_PATHWAY",
-                     david.user = "clusterProfiler@hku.hk")
-```
-
-DAVID Web Service has the following limitations:
-
-+ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
-+ No more than 200 jobs in a day from one user or computer.
-+ DAVID Team reserves right to suspend any improper uses of the web service without notice.
-
-For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
-
-As users have limited usage, please [register](http://david.abcc.ncifcrf.gov/webservice/register.htm) and use your own user account to run `enrichDAVID`.
-
-
--->
 
 
 ## No gene can be mapped
@@ -141,4 +111,21 @@ cowplot::plot_grid(p1, p2, ncol=2, labels=c("A", "B"))
 
 
 The `label_format` option works with `barplot()`, `dotplot()`, `heatplot()`, `treeplot` and `ridgeplot()`.
+
+## Why many genes are not annotated in KEGG?
+
+Users often find that a significant portion of their gene list is dropped in the KEGG enrichment analysis. For example, a user reported that only 281 genes were retained from a list of over 700 genes.
+
+This is not a software issue but rather a reflection of the database coverage. KEGG pathways mainly focus on metabolic and signaling pathways, and many genes are not annotated in any KEGG pathway.
+
+We can verify the annotation coverage using `bitr_kegg()`:
+
+```{r eval=FALSE}
+# gene is a vector of gene IDs (e.g., Entrez IDs)
+kk <- bitr_kegg(geneID = gene, fromType='ncbi-geneid', toType='Path', organism='hsa')
+```
+
+The warning message will indicate the percentage of genes that failed to map.
+
+To manually verify a specific gene, you can visit the KEGG website using a URL constructed with the organism code and gene ID, for example: `http://www.genome.jp/dbget-bin/www_bget?hsa:100506775`. If the gene page does not list any pathway, it means the gene has no KEGG pathway annotation.
 

@@ -29,6 +29,203 @@ head(ecoli)
 ```
 
 
+## Finding correct parameters: A case study with Rice
+
+The `enrichKEGG()` function requires three key parameters: `gene` (gene IDs), `organism` (species code), and `keyType` (type of gene ID). Many users struggle with determining the correct values for `organism` and `keyType`, especially for non-model organisms. Here, we use rice (*Oryza sativa*) as an example to demonstrate how to find these parameters.
+
+### Determine the `organism` code
+
+The `organism` parameter accepts a KEGG organism code (e.g., 'hsa' for human, 'mmu' for mouse). To find the code for your species, you can search the [KEGG Organism Catalog](http://www.genome.jp/kegg/catalog/org_list.html) or use the `search_kegg_organism()` function as mentioned above.
+
+For rice, searching for "rice" or "Oryza sativa" in the catalog reveals two main subspecies:
+* *Oryza sativa japonica* (Japanese rice) -> code: `osa`
+* *Oryza sativa indica* (Indian rice) -> code: `dosa`
+
+Choose the one that matches your data. For example, if we choose `dosa`.
+
+### Determine the `keyType`
+
+Once the `organism` is determined, we need to know what gene ID types (`keyType`) are supported for that organism. A practical trick is to use `enrichKEGG()` as a query tool. By inputting a dummy gene ID and a likely `keyType`, the function will return an error message listing the expected ID format if the input is invalid.
+
+```{r eval=FALSE}
+# Try 'kegg' as keyType with a dummy gene
+enrichKEGG(gene = "abc", organism = "dosa", keyType = "kegg")
+# Output:
+# --> No gene can be mapped....
+# --> Expected input gene ID: Os06t0664200-01,Os02t0534400-01,Os06t0185100-00...
+# --> return NULL...
+
+# Try 'ncbi-geneid'
+enrichKEGG(gene = "abc", organism = "dosa", keyType = "ncbi-geneid")
+# Output:
+# Error in KEGG_convert("kegg", keyType, species) :
+#   ncbi-geneid is not supported for dosa ...
+
+# Try 'uniprot'
+enrichKEGG(gene = "abc", organism = "dosa", keyType = "uniprot")
+# Output:
+# Error in KEGG_convert("kegg", keyType, species) :
+#   uniprot is not supported for dosa ...
+```
+
+From the output, we learn that for `dosa`, the supported `keyType` is `kegg`, and the expected gene ID format looks like `Os06t0664200-01` (RAP-ID). For `osa`, the gene IDs are typically NCBI Gene IDs (e.g., `3131385`).
+
+### ID Conversion
+
+If your gene list uses a different ID type (e.g., `LOC4334374` or `LOC_Os01g01010.1`), you need to convert them to the supported KEGG ID.
+
+For `LOC4334374`, you can use `AnnotationHub` to retrieve the rice `OrgDb` and convert symbols to Entrez IDs (which correspond to `osa` KEGG IDs).
+
+```{r eval=FALSE}
+library(AnnotationHub)
+ah <- AnnotationHub()
+# Query for Oryza sativa
+query(ah, 'oryza')
+oryza <- ah[['AH55775']] # Example AH ID, check for latest
+# Check keys
+head(keys(oryza, keytype = "SYMBOL"))
+# Convert SYMBOL to ENTREZID
+# ...
+```
+
+For RAP-ID conversion (e.g., `LOC_Os01g01010.1` to `Os01t0100100-01`), you might need to download mapping files from the [Rice Annotation Project Database (RAP-DB)](https://rapdb.dna.affrc.go.jp/) or [Oryzabase](https://shigen.nig.ac.jp/rice/oryzabase/) and perform the conversion manually or using scripts.
+
+### Perform Enrichment Analysis
+
+With the correct `organism`, `keyType`, and converted gene IDs, you can now run the analysis:
+
+```{r eval=FALSE}
+# For osa (using Entrez IDs)
+kk <- enrichKEGG(gene         = gene_list_entrez,
+                 organism     = "osa",
+                 keyType      = "kegg", # or 'ncbi-geneid' if supported
+                 pvalueCutoff = 0.05)
+
+# For dosa (using RAP-IDs)
+kk <- enrichKEGG(gene         = gene_list_rap,
+                 organism     = "dosa",
+                 keyType      = "kegg",
+                 pvalueCutoff = 0.05)
+```
+
+This approach of identifying `organism` code and verifying `keyType` via error messages applies to any species available in the KEGG database.
+
+## KEGG Data Localization
+
+The `r Biocpkg("clusterProfiler")` package retrieves KEGG data online via the KEGG API, which ensures that users analyze their data with the latest knowledge. However, this dependency on internet access can be a limitation if the network is unstable or unavailable (e.g., in some cloud environments). Furthermore, for the sake of reproducibility, it is often desirable to freeze the KEGG data version used in an analysis.
+
+To address these issues, we provide two methods to perform KEGG analysis locally.
+
+### Using `gson`
+
+The `r Biocpkg("gson")` package provides the `gson_KEGG()` function to download the latest KEGG pathway and module data for a specific organism and store it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
+
+```{r eval=FALSE}
+library(gson)
+# download KEGG data for human
+kk_gson <- gson_KEGG(species = "hsa")
+
+# save to a file
+write.gson(kk_gson, file = "kegg_hsa.gson")
+
+# read from file
+kk_gson <- read.gson("kegg_hsa.gson")
+```
+
+The `GSON` object or the file can be used in `enricher()` and `GSEA()` functions (via `gson` parameter or by parsing it).
+
+### Using `createKEGGdb`
+
+Another approach is to create a local `KEGG.db` package containing the KEGG data. While the official `KEGG.db` has not been updated since 2011, we can generate a new one using the `createKEGGdb` package.
+
+First, install `createKEGGdb` from GitHub:
+
+```{r eval=FALSE}
+remotes::install_github("YuLab-SMU/createKEGGdb")
+```
+
+Then, use `create_kegg_db()` to download data and package it. You can specify one or more species, or even "all" to download data for all supported species.
+
+```{r eval=FALSE}
+library(createKEGGdb)
+# create KEGG.db for human and Arabidopsis
+create_kegg_db(c("hsa", "ath"))
+```
+
+This command will generate a `KEGG.db_1.0.tar.gz` file in the current directory. Install it as a standard R package:
+
+```{r eval=FALSE}
+install.packages("KEGG.db_1.0.tar.gz", repos=NULL, type="source")
+```
+
+Once installed, you can perform enrichment analysis using the local data by setting `use_internal_data = TRUE` in `enrichKEGG()`:
+
+```{r eval=FALSE}
+library(KEGG.db)
+kk <- enrichKEGG(gene         = gene,
+                 organism     = 'hsa',
+                 pvalueCutoff = 0.05,
+                 use_internal_data = TRUE)
+```
+
+This ensures that the analysis runs offline and is fully reproducible using the installed `KEGG.db` version.
+
+## KEGG ID Conversion {#kegg-id-conversion}
+
+The `r Biocpkg("clusterProfiler")` package provides the `bitr_kegg()` function to support ID conversion via the KEGG API. This is particularly useful for species that do not have an `OrgDb` object but are supported by KEGG.
+
+### Basic Usage
+
+Here is an example of converting KEGG IDs to NCBI Protein IDs and then to UniProt IDs for human genes.
+
+```{r}
+library(clusterProfiler)
+data(gcSample)
+hg <- gcSample[[1]]
+head(hg)
+
+# Convert KEGG ID to NCBI Protein ID
+eg2np <- bitr_kegg(hg, fromType='kegg', toType='ncbi-proteinid', organism='hsa')
+head(eg2np)
+
+# Convert NCBI Protein ID to UniProt ID
+np2up <- bitr_kegg(eg2np[,2], fromType='ncbi-proteinid', toType='uniprot', organism='hsa')
+head(np2up)
+```
+
+The ID type (both `fromType` and `toType`) should be one of 'kegg', 'ncbi-geneid', 'ncbi-proteinid', or 'uniprot'. The 'kegg' ID is the primary ID used in the KEGG database. A rule of thumb is that 'kegg' ID corresponds to `entrezgene` ID for eukaryote species and `Locus` ID for prokaryotes.
+
+For many prokaryote species, `entrezgene` IDs are not available. For example, `ece:Z5100` (E. coli O157:H7 EDL933) has `NCBI-ProteinID` and `UniProt` links, but not `NCBI-GeneID`. Attempting to convert `Z5100` to `ncbi-geneid` will result in an error stating that `ncbi-geneid` is not supported. However, conversion to `ncbi-proteinid` or `uniprot` is possible.
+
+```{r}
+# Example for prokaryote ID conversion
+bitr_kegg("Z5100", fromType="kegg", toType='ncbi-proteinid', organism='ece')
+bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
+```
+
+### Converting KO numbers to Pathways
+
+A common confusion exists between `K` numbers (KEGG Orthology) and `ko` numbers (KEGG Pathway maps). `K` numbers represent orthologous groups, while `ko` numbers represent pathway maps. Users often want to map `K` numbers to pathways.
+
+```{r}
+bitr_kegg("K00844", "kegg", "Path", "ko")
+```
+
+To retrieve the names of the pathways (e.g., "Glutathione metabolism" instead of "ko00480"), we can define a simple helper function `ko2name` to query the KEGG API.
+
+```{r}
+ko2name <- function(ko) {
+  url <- paste0("http://rest.kegg.jp/list/", ko)
+  x <- readLines(url)
+  y <- strsplit(x, "\t")
+  data.frame(ko= sapply(y, "[", 1), name= sapply(y, "[", 2), stringsAsFactors=FALSE)
+}
+
+x <- bitr_kegg("K00799", "kegg", "Path", "ko")
+y <- ko2name(x$Path)
+merge(x, y, by.x='Path', by.y='ko')
+```
+
 ## KEGG pathway over-representation analysis {#clusterprofiler-kegg-pathway-ora}
 
 
@@ -42,8 +239,18 @@ kk <- enrichKEGG(gene         = gene,
 head(kk)
 ```
 
-Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @sec-bitr_kegg). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function, see also @sec-setReadable, if there is an `OrgDb` available for the species.
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @sec-kegg-id-conversion). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function (see also @sec-setReadable) if there is an `OrgDb` available for the species.
 
+## Translating Gene IDs to Names {#sec-setReadable}
+
+For GO analysis, the `readable` parameter controls whether to translate the IDs to human-readable gene names. This parameter is not available for KEGG analysis. However, the `setReadable()` function can translate input gene IDs to gene names if the corresponding `OrgDb` object is available.
+
+```{r}
+library(org.Hs.eg.db)
+# 'kk' is the enrichKEGG result from the previous section
+kk <- setReadable(kk, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+head(kk)
+```
 
 ## KEGG pathway gene set enrichment analysis {#clusterprofiler-kegg-pathway-gsea}
 

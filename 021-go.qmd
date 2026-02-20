@@ -29,9 +29,28 @@ library(org.Hs.eg.db)
 GO analyses (`groupGO()`, `enrichGO()` and `gseGO()`) support organisms that have an `OrgDb` object available (see also [session 2.2](#gosemsim-supported-organisms)).
 
 
-If a user has GO annotation data (in a `data.frame` format with the first column as gene ID and the second column as GO ID), they can use the `enricher()` and `GSEA()` functions to perform an over-representation test and gene set enrichment analysis.
+If a user has GO annotation data (in a `data.frame` format with the first column as gene ID and the second column as GO ID), they can use the `enricher()` and `GSEA()` functions to perform an over-representation test and gene set enrichment analysis. Users can also read GO annotation from GMT files using the `read.gmt()` function, which parses the file into a `data.frame` suitable for these functions.
 
 If the genes are annotated by direct annotation, they should also be annotated by their ancestor GO nodes (indirect annotation). If a user only has direct annotation, they can pass their annotation to the `buildGOmap` function, which will infer indirect annotation and generate a `data.frame` that is suitable for both `enricher()` and `GSEA()`.
+
+## Direct vs indirect GO annotation
+
+One common issue users encounter is the discrepancy between direct gene-to-GO mapping and the results from enrichment analysis. For instance, a user might find that a specific GO term is enriched, but when they check the input gene list against the direct annotations, the term doesn't appear to be associated with many genes.
+
+This happens because GO structure is a Directed Acyclic Graph (DAG). If a gene is annotated to a specific term (e.g., "glucose metabolic process"), it is implicitly annotated to all its ancestor terms (e.g., "metabolic process"). `enrichGO` and `gseGO` account for this **indirect annotation** by propagating annotations up the graph.
+
+If you are providing your own annotation file (e.g., using `enricher` or `GSEA`), you must ensure that it includes these indirect annotations. If your annotation file only contains direct annotations, you can use the `buildGOmap()` function to generate the full annotation set (direct + indirect) before performing enrichment analysis.
+
+```{r eval=FALSE}
+# Assuming 'gomap' is a data.frame with direct annotations (GeneID, GOID)
+# Build indirect annotations
+gomap_with_ancestors <- buildGOmap(gomap)
+
+# Use the result for enrichment
+enricher(gene, TERM2GENE = gomap_with_ancestors, ...)
+```
+
+This step is crucial for accurate GO enrichment analysis when not using `OrgDb` objects.
 
 ## GO classification
 
@@ -135,18 +154,102 @@ ensembl <- useEnsemblGenomes(biomart = "plants_mart", dataset = "nattenuata_eg_g
 gene2go <- getBM(attributes =c("ensembl_gene_id", "go_id"), mart=ensembl)
 ```
 
-## Visualize enriched GO terms as a directed acyclic graph
+Alternatively, you can use `AnnotationHub` to query and retrieve `OrgDb` objects for a wide range of organisms, including non-model species.
 
-The `goplot()` function can accept the output of `enrichGO` and visualize the enriched GO induced graph.
+**Example: GO enrichment analysis for Maize (Zea mays)**
 
-(ref:goplotscap) Goplot of enrichment analysis.
+```{r eval=FALSE}
+library(AnnotationHub)
+hub <- AnnotationHub()
 
-(ref:goplotcap) **Goplot of enrichment analysis.**
+# Query for Zea mays OrgDb
+query(hub, "zea")
+# Retrieve the OrgDb (e.g., AH55736, assume it's the correct record)
+maize <- hub[['AH55736']]
 
-```{r goplot, fig.height=12, fig.width=8, fig.cap="(ref:goplotcap)", fig.scap="(ref:goplotscap)"}
-goplot(ego)
+# Check keys
+length(keys(maize))
+columns(maize)
+
+# Perform enrichment analysis
+# Assuming 'sample_genes' is a vector of Entrez IDs
+res <- enrichGO(sample_genes, OrgDb=maize, pvalueCutoff=0.05, qvalueCutoff=0.05)
 ```
 
+This approach allows you to use the standard `enrichGO` workflow with organisms not included in the default Bioconductor `OrgDb` packages.
+
+## Visualization of GO enrichment results
+
+The `clusterProfiler` package provides several visualization methods to help interpret enrichment results, including `barplot`, `dotplot`, `cnetplot`, `emapplot`, `goplot` and `plotGOgraph`.
+
+Please refer to the @sec-enrichplot chapter for details.
+
+
+## Filtering and simplifying GO terms
+
+GO enrichment analysis often results in many redundant terms due to the hierarchical structure of GO. Parent terms and child terms often share a large proportion of genes, leading to multiple significant results that represent similar biological processes.
+
+### Removing specific terms or levels
+
+The `dropGO()` function can be used to remove specific GO terms or GO levels from the results. The `enrichGO()` function tests the whole GO corpus and enriched result may contains very general terms. If users want to restrict the result to a specific GO level (e.g., level 3 or 4), they can use the `gofilter()` function. Both functions work with results obtained from `enrichGO()`, `gseGO()` and `compareCluster()`.
+
+### Simplifying enriched GO terms
+
+To reduce redundancy, `clusterProfiler` provides a `simplify` method. It uses semantic similarity (via `GOSemSim`) to calculate the similarity between enriched terms and removes highly similar terms, keeping the most significant one.
+
+The `simplify` method applies `select_fun` (which can be a user-defined function) to the feature specified by `by` (e.g., p.adjust) to select one representative term from redundant terms (which have similarity higher than `cutoff`). This results in a cleaner and more interpretable visualization.
+
+In @fig-simplify-emapplot(A), we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the `simplify()` method, the result is more clear to view the whole story.
+
+```{r}
+#| label: fig-simplify-emapplot
+#| fig-width: 16
+#| fig-height: 8
+#| fig-scap: |
+#|   Visualize enriched terms by EnrichmentMap using the `emapplot()` function.
+#| fig-cap: |
+#|   **Visualize enriched terms by EnrichmentMap using the `emapplot()` function.**
+#|   (A) original result. (B) simplify result.
+#|
+library(enrichplot)
+data(geneList, package="DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+bp <- enrichGO(de, ont="BP", OrgDb = 'org.Hs.eg.db')
+bp <- pairwise_termsim(bp)
+bp2 <- simplify(bp, cutoff=0.7, by="p.adjust", select_fun=min)
+p1 <- emapplot(bp)
+p2 <- emapplot(bp2)
+plot_list(p1, p2, ncol=2, tag_levels = 'A')
+```
+
+Alternatively, users can use slim version of GO and use the `enricher()` or `gseGO()` functions to analyze.
+
+**Note on `enricher` results**: The `simplify()` method is designed for `enrichGO()` results where the ontology (BP, CC, or MF) is known. If you use `enricher()` to perform GO analysis (e.g., with custom annotation), the result object does not strictly define the ontology. To use `simplify()`, you must explicitly set the ontology slot in the result object:
+
+```{r eval=FALSE}
+# Assuming 'res' is the result from enricher() using GO annotation
+# Set the ontology (must be one of "BP", "MF", "CC")
+res@ontology <- "BP" 
+res_simplified <- simplify(res)
+```
+
+
+## Troubleshooting
+
+### No results found
+
+It is common to receive a message saying "No gene set have size > 10 ... return NULL" or finding no significant terms.
+
+1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. If your background annotations for a specific term have fewer than 10 genes or more than 500, they are excluded. You can adjust these parameters.
+2.  **Universe**: If you provide a custom `universe` (background gene list), ensure it is large enough. A small universe can make it statistically difficult to find enrichment.
+3.  **P-value Adjustment**: `clusterProfiler` uses multiple testing correction (e.g., BH) by default. Some web tools might use raw p-values or different thresholds, leading to more (but potentially false positive) results. `clusterProfiler` tends to be more conservative and reliable.
+
+### Annotation quality
+
+Sometimes, the `OrgDb` provided by Bioconductor might be outdated compared to the latest online databases (e.g., TAIR for Arabidopsis).
+
+*   **Check Dates**: Always check the metadata of the `OrgDb` object to see the source and date of the annotation.
+*   **Custom Annotation**: If the `OrgDb` is too old, consider downloading the latest annotation (e.g., GAF or GOSLIM files) from the organism's primary database and using `enricher()`/`GSEA()` with `buildGOmap()` as described in the [Direct vs indirect GO annotation] section.
 
 ## Summary {#clusterprofiler-go-summary}
 

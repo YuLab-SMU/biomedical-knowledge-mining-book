@@ -30,7 +30,7 @@ book:
       chapters:
         - 021-go.qmd
         - 022-kegg.qmd
-        - 023-wikipathways.qmd
+        - 023-other-dbs.qmd
         - 024-reactome.qmd
         - 025-do-enrichment.qmd
         - 026-meshes-enrichment.qmd

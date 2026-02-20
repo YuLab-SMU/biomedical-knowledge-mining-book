@@ -1,4 +1,4 @@
-# WikiPathways analysis
+# Analysis with Other Knowledge Bases
 
 ```{r}
 #| echo: false
@@ -8,6 +8,8 @@
 source("_common.R")
 library(clusterProfiler)
 ```
+
+## WikiPathways analysis
 
 [WikiPathways](https://www.wikipathways.org) is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of GMT files for supported organisms at [data.wikipathways.org](http://data.wikipathways.org/current/gmt/). The `r Biocpkg("clusterProfiler")` package [@yu2012] supports enrichment analysis (either ORA or GSEA) for WikiPathways using the `enrichWP()` and `gseWP()` functions. These functions will automatically download and parse the latest WikiPathways GMT file for the selected organism.
 
@@ -66,7 +68,7 @@ head(ewp2)
 -->
 
 
-## WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
+### WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
 
 ```{r enrichwp}
 data(geneList, package="DOSE")
@@ -75,7 +77,7 @@ gene <- names(geneList)[abs(geneList) > 2]
 enrichWP(gene, organism = "Homo sapiens") 
 ```
 
-## WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
+### WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
 
 
 ```{r gsewp}
@@ -86,6 +88,68 @@ gseWP(geneList, organism = "Homo sapiens")
 If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](#bitr) function to convert gene ID. If you want to convert the gene IDs in output result to gene symbols, you can use the `setReadable()` function, see also @sec-setReadable.
 
 
+## DAVID functional analysis
 
+[DAVID](https://david.ncifcrf.gov/) is a popular bioinformatics resource for functional annotation and enrichment analysis. Although we recommend using `enrichGO` and `enrichKEGG` which use up-to-date data maintained by Bioconductor, `r Biocpkg("clusterProfiler")` provides `enrichDAVID` to support DAVID analysis for users who prefer it.
+
+Users need to register an account on DAVID website and use the email address to access the web service.
+
+```{r}
+#| eval: false
+require(clusterProfiler)
+data(geneList, package="DOSE")
+gene = names(geneList)[abs(geneList) > 2]
+david = enrichDAVID(gene = gene, 
+                    idType="ENTREZ_GENE_ID", 
+                    listType="Gene", 
+                    annotation="KEGG_PATHWAY",
+                    david.user = "clusterProfiler@hku.hk")
+```
+
+The result can be visualized using the same functions as other enrichment results.
+
+```{r}
+#| eval: false
+barplot(david)
+cnetplot(david, foldChange=geneList)
+```
+
+### DAVID Web Service Limitations
+
+DAVID Web Service has the following limitations:
+
++ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
++ No more than 200 jobs in a day from one user or computer.
++ DAVID Team reserves right to suspend any improper uses of the web service without notice.
+
+For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
+
+### Custom Background
+
+The `enrichDAVID` function also supports a custom background (universe) using the `universe` parameter.
+
+```{r}
+#| eval: false
+enrichDAVID(gene = gene,
+            universe = names(geneList),
+            idType = "ENTREZ_GENE_ID",
+            listType = "Gene",
+            annotation = "KEGG_PATHWAY")
+```
+
+### Comparing DAVID Functional Profiles
+
+Comparison of functional profiles among different gene clusters is also supported via `compareCluster`.
+
+```{r}
+#| eval: false
+data(gcSample)
+x=compareCluster(gcSample, fun="enrichDAVID", annotation="KEGG_PATHWAY")
+plot(x)
+```
+
+### Note on Data Updates
+
+It is important to note that DAVID's data may not be as frequently updated as Bioconductor packages. As shown in previous comparisons, using `clusterProfiler` with Bioconductor annotation data often yields more comprehensive results (more annotated genes and enriched pathways) compared to DAVID.
 
 ## References {-}

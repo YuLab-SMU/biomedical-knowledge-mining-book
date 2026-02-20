@@ -516,7 +516,8 @@ The `gseaplot` function also allows users to customize the colors of the running
 #|   (A) Default color scheme.
 #|   (B) Customized colors using `color`, `color.line`, and `color.vline`.
 p_default <- gseaplot(edo2, geneSetID = 1, title = edo2$Description[1])
-p_custom <- gseaplot(edo2, geneSetID = 1, color="#DAB546", color.line='firebrick', color.vline="steelblue", title = edo2$Description[1])
+p_custom <- gseaplot(edo2, geneSetID = 1, color="#DAB546", color.line='firebrick', 
+                    color.vline="steelblue", title = edo2$Description[1])
 plot_list(p_default, p_custom, ncol=2, tag_levels='A')
 ```
 
@@ -689,5 +690,32 @@ ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust
     theme(axis.text=element_text(size=11))
 
 -->
+
+## GO Graph
+
+The `goplot()` function can accept the output of `enrichGO` and visualize the enriched GO induced graph.
+
+```{r}
+library(clusterProfiler)
+library(org.Hs.eg.db)
+data(geneList, package = "DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+ego <- enrichGO(de, OrgDb = org.Hs.eg.db, ont = "BP", readable = TRUE)
+```
+
+(ref:goplotscap) Goplot of enrichment analysis.
+
+(ref:goplotcap) **Goplot of enrichment analysis.**
+
+```{r goplot, fig.height=12, fig.width=8, fig.cap="(ref:goplotcap)", fig.scap="(ref:goplotscap)"}
+goplot(ego)
+```
+
+The `plotGOgraph()` function is another option to visualize the GO topology.
+
+```{r eval=FALSE}
+plotGOgraph(ego)
+```
+
 
 ## References {-}
