@@ -231,7 +231,7 @@ while users may want to know which genes are involved in these significant
 terms. 
 To consider the potential biological complexities in which a gene may belong to multiple annotation categories and provide information about numeric changes when available, we developed the `cnetplot()` function to extract the complex associations. 
 The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* GO terms or KEGG pathways) as a network. GSEA result is also supported
-with only core enriched genes displayed.
+with only core enriched genes displayed. For GSEA results, `cnetplot` specifically visualizes the core enriched genes identified through leading edge analysis, which represent the subset of genes most responsible for driving the enrichment signal.
 
 
 Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`). In addition, users can use the `node_label_gene` parameter to label genes that are shared between groups of terms (i.e. `node_label_gene = "share"`).

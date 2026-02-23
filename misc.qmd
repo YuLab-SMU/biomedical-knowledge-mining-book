@@ -1,8 +1,113 @@
 # Miscellaneous topics {-}
 
+## Leading Edge Analysis
+
+Leading edge analysis is a powerful feature in GSEA that identifies the core set of genes driving the enrichment signal. It reports three key metrics:
+
+- **Tags**: Percentage of genes contributing to the enrichment score
+- **List**: Position in the ranked list where the enrichment score is attained
+- **Signal**: Strength of the enrichment signal
+
+DOSE, clusterProfiler, and ReactomePA all support leading edge analysis and can report the core enriched genes that contribute to the enrichment.
+
+### Core Enriched Genes Extraction
+
+After performing GSEA, the results object contains a `core_enrichment` column that lists the core genes responsible for each enriched term:
+
+```{r}
+library(DOSE)
+data(geneList)
+x <- gseDO(geneList)
+head(x)
+```
+
+The output includes the core enriched genes in Entrez ID format for each significant term.
+
+### Enhancing Readability with setReadable
+
+To make the results more interpretable, use `setReadable()` to convert Entrez IDs to gene symbols:
+
+```{r}
+y <- setReadable(x, 'org.Hs.eg.db')
+head(y, 2)
+```
+
+This transformation makes the core enrichment results much more readable and biologically meaningful.
+
+For visualization of leading edge analysis results using `cnetplot`, please refer to the [enrichplot chapter](enrichplot.html).
+
+## Non-Model Plant Annotation with clusterProfiler
+
+For non-model plants and other organisms lacking standard annotation packages, clusterProfiler can be used with custom annotation data obtained from tools like eggNOG.
+
+### Workflow Overview
+
+1. **Annotation with eggNOG**: Use the eggNOG web server to annotate protein sequences
+2. **Parse eggNOG Results**: Extract GO and KEGG annotations using custom scripts
+3. **Enrichment Analysis**: Use clusterProfiler's `enricher()` function with custom annotation data
+
+### Key Steps
+
+#### 1. eggNOG Annotation
+Upload protein sequences to the [eggNOG mapper](http://eggnog-mapper.embl.de/) with appropriate parameters for your organism.
+
+#### 2. Parsing eggNOG Results
+Use [Python scripts](https://github.com/Hua-CM/HuaSmallTools/tree/master/parse) to process eggNOG output files:
+
+```python
+# Parse GO ontology file
+python parse_go_obofile.py -i go-basic.obo -o go.tb
+
+# Parse eggNOG annotations with reference species filtering
+python parse_eggNOG.py -i panax_ginseng.annotations \
+                       -g go.tb \
+                       -O ath,osa \
+                       -o output_directory
+```
+
+This generates two key files:
+- `GOannotation.tsv`: GO term annotations
+- `KOannotation.tsv`: KEGG pathway annotations
+
+#### 3. Enrichment Analysis with clusterProfiler
+
+```{r}
+library(clusterProfiler)
+
+# Read annotation files
+KOannotation <- read.delim("KOannotation.tsv", stringsAsFactors=FALSE)
+GOannotation <- read.delim("GOannotation.tsv", stringsAsFactors=FALSE)
+GOinfo <- read.delim("go.tb", stringsAsFactors=FALSE)
+
+# Your gene list
+gene_list <- c("gene1", "gene2", "gene3")  # Replace with your actual gene list
+
+# GO enrichment (Molecular Function as example)
+GOannotation_split <- split(GOannotation, GOannotation$level)
+enricher(gene_list,
+          TERM2GENE = GOannotation_split[['molecular_function']][c(2,1)],
+          TERM2NAME = GOinfo[1:2])
+
+# KEGG enrichment
+enricher(gene_list,
+          TERM2GENE = KOannotation[c(3,1)],
+          TERM2NAME = KOannotation[c(3,4)])
+```
+
+### Advantages
+- Works for any organism with protein sequences
+- Uses reliable eggNOG annotation pipeline
+- Flexible reference species filtering for KEGG
+
+### Considerations
+- Requires intermediate Python scripting
+- Performance may vary with dataset size
+- Manual integration of annotation and analysis steps
+
+This approach enables comprehensive functional enrichment analysis for non-model organisms using clusterProfiler's powerful enrichment capabilities combined with custom annotation data.
+
 <!--
 Planned additions:
-- ID conversion and readable outputs (bitr, setReadable)
 - GO utilities and redundancy reduction methods
 - Data frame interface and accessor tips
 - Extracting genes by term/pathway (geneInCategory)

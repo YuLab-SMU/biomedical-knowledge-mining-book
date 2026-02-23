@@ -166,3 +166,10 @@ p2 <- pbar(y)
 aplot::plot_list(p1, p2, ncol=1, tag_levels = 'A')
 ```
 
+## Alternative filtering approaches
+
+While this chapter focuses on using `dplyr` verbs for manipulating enrichment results, users can also employ base R operations for filtering. For detailed information on using `[`, `[[`, and `$` operators with the `asis` parameter to preserve enrichment result objects, please refer to the [Data frame interface](#sec-data-frame-interface) section in the [Useful utilities](#useful-utilities) chapter.
+
+The `dplyr` approach provides a more readable and chainable syntax for complex filtering operations, while base R operators offer familiarity for users accustomed to traditional data frame manipulation.
+
+

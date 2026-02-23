@@ -263,7 +263,17 @@ kk2 <- gseKEGG(geneList     = geneList,
 head(kk2)
 ```
 
+## KEGG Pathway Classification
 
+KEGG pathways are organized into a hierarchical structure with top-level categories such as "Metabolism", "Genetic Information Processing", "Environmental Information Processing", "Cellular Processes", "Organismal Systems", "Human Diseases", and "Drug Development". This classification helps users interpret enrichment results by providing higher-level biological context. For instance, users might be interested specifically in signaling pathways ("Environmental Information Processing") or metabolic pathways ("Metabolism") while excluding disease-related pathways.
+
+The `r Biocpkg("clusterProfiler")` package integrates this classification information directly into the enrichment results. The output `data.frame` contains `category` and `subcategory` columns, which can be used to filter or group the results.
+
+### Data Update Strategy
+
+While `r Biocpkg("clusterProfiler")` queries the KEGG API for species-specific gene sets to ensure the latest data is used, the pathway classification structure is relatively stable and universal across species. To optimize performance and avoid unnecessary dependencies (e.g., web scraping packages), `r Biocpkg("clusterProfiler")` caches this classification data within the package.
+
+To prevent this cached data from becoming outdated, the package utilizes **GitHub Actions** for automated maintenance. A workflow is triggered weekly to crawl the latest pathway classification from the KEGG website. If any discrepancies are found between the online data and the cached data, the workflow automatically creates a Pull Request to update the package. This automation ensures that the classification data in `r Biocpkg("clusterProfiler")` remains synchronized with KEGG updates efficiently and reliably.
 
 ## KEGG module over-representation analysis {#clusterprofiler-kegg-module-ora}
 

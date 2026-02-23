@@ -132,7 +132,73 @@ There are many gene sets available online. After parsing by the `read.gmt()` fun
 
 ## Data frame interface for accessing enriched results
 
+Enrichment result objects in `clusterProfiler` support standard data frame operations including `[`, `[[`, and `$` operators, allowing users to subset and access results using familiar data frame syntax.
 
-The `[` and `[[` (`asis` parameter).
+### Subsetting with `[` operator
+
+The `[` operator can be used to subset enrichment results based on row indices or logical conditions:
+
+```{r}
+# Subset first 5 rows
+x_first5 <- x[1:5, ]
+
+# Subset based on p-value threshold
+x_sig <- x[x$pvalue < 0.05, ]
+
+# Subset specific terms by ID
+x_specific <- x[x$ID %in% c("DOID:0060071", "DOID:5295"), ]
+```
+
+By default, the `[` operator returns a `data.frame`. To preserve the enrichment result object structure for further analysis and visualization, use the `asis = TRUE` parameter:
+
+```{r}
+# Preserve as enrichResult object
+x_filtered <- x[x$pvalue < 0.05, asis = TRUE]
+class(x_filtered)
+```
+
+### Accessing columns with `[[` and `$` operators
+
+The `[[` and `$` operators provide convenient access to specific columns:
+
+```{r}
+# Access Description column using $
+descriptions <- x$Description
+head(descriptions)
+
+# Access p-value column using [[
+pvalues <- x[["pvalue"]]
+head(pvalues)
+
+# Access geneID column
+gene_ids <- x$geneID
+head(gene_ids)
+```
+
+### Practical filtering examples
+
+Users can filter enrichment results based on various criteria:
+
+```{r}
+# Filter by adjusted p-value
+x_padj <- x[x$p.adjust < 0.05, asis = TRUE]
+
+# Filter by gene count (minimum 5 genes per term)
+x_min5 <- x[x$Count >= 5, asis = TRUE]
+
+# Filter specific biological processes
+x_bp <- x[grepl("process", x$Description, ignore.case = TRUE), asis = TRUE]
+
+# Filter terms containing specific genes
+x_containing_gene <- x[grepl("6280", x$geneID), asis = TRUE]
+```
+
+This data frame interface provides flexible filtering capabilities while maintaining compatibility with `enrichplot` visualization functions when using `asis = TRUE`.
+
+## Alternative filtering approaches with dplyr
+
+While base R operators provide familiar syntax for filtering enrichment results, users may prefer the more readable and chainable approach offered by `dplyr` verbs. For comprehensive examples of using `filter`, `arrange`, `select`, `mutate`, and other dplyr functions with enrichment result objects, please refer to the [dplyr verbs for manipulating enrichment result](#clusterProfiler-dplyr) chapter.
+
+The `dplyr` approach is particularly useful for complex filtering operations and pipeline-style data manipulation.
 
 ## References {-}

@@ -123,40 +123,68 @@ mclusterSim(clusters, semData=hsGO, measure="Wang", combine="BMA")
 ```
 
 
+## Cross-species gene similarity calculation {#cross-species-gosemsim}
 
+While `GOSemSim` primarily focuses on semantic similarity within a single species, researchers often need to calculate GO semantic similarity for orthologous gene pairs between different species. This is particularly relevant for comparative genomics studies between well-annotated species like human and mouse.
 
-<!--
+### Current limitations and workarounds
 
+By default, `godata()` function only accepts a single `OrgDb` object, meaning it supports semantic similarity calculation within one species. However, there are several approaches to address cross-species similarity calculation:
 
-## Applications
+1. **Graph-based methods**: Use Wang's method (graph-based) with `mgoSim()` function by manually providing GO term sets for genes from different species
+2. **Manual GO term mapping**: Extract GO annotations for orthologous genes and use `mgoSim()` directly
+3. **Future development**: A potential `merge()` function for combining `GOSemSimDATA` objects from multiple species
 
-[GOSemSim](https://www.bioconductor.org/packages/GOSemSim) was cited by more than [200 papers](https://scholar.google.com.hk/scholar?oi=bibs&hl=en&cites=9484177541993722322,17633835198940746971,18126401808149291947) and had been applied to many research domains, including:
+```{r eval=FALSE}
+# Example workflow for cross-species similarity using mgoSim
+# Extract GO terms for human gene using clusterProfiler
+library(clusterProfiler)
+human_go_terms <- bitr("human_gene_id", fromType = "ENTREZID", 
+                       toType = "GO", OrgDb = org.Hs.eg.db)$GO
 
-+ [Disease or Drug analysis](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#diease-or-drug-analysis)
-+ [Gene/Protein functional analysis](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#geneprotein-functional-analysis)
-+ [Protein-Protein interaction](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#protein-protein-interaction)
-+ [miRNA-mRNA interaction](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#mirna-mrna-interaction)
-+ [sRNA regulation](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#srna-regulation)
-+ [Evolution](https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/#evolution)
+# Extract GO terms for mouse ortholog  
+mouse_go_terms <- bitr("mouse_gene_id", fromType = "ENTREZID",
+                       toType = "GO", OrgDb = org.Mm.eg.db)$GO
 
-Find out more on <https://guangchuangyu.github.io/software/GOSemSim/featuredArticles/>.
+# Calculate similarity using Wang's method (graph-based)
+similarity <- mgoSim(human_go_terms, mouse_go_terms, 
+                    semData=hsGO, measure="Wang", combine="BMA")
+```
 
+For species not supported by Bioconductor `OrgDb` packages, users can:
+- Use `AnnotationHub` to query and retrieve organism-specific annotations
+- Build custom `OrgDb` objects using `AnnotationForge::makeOrgPackage()` or `makeOrgPackageFromNCBI()`
+- Perform manual GO annotation followed by semantic similarity calculation
 
-# GO enrichment analysis
+## Applications in functional genomics {#gosemsim-applications}
 
-GO enrichment analysis can be supported by our package [clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@yu2012], which supports hypergeometric test and Gene Set Enrichment Analysis (GSEA). Enrichment results across different gene clusters can be compared using __*compareCluster*__ function.
+`GOSemSim` has been widely applied in various research domains, with over 200 citations. One particularly valuable application is in prioritizing genes for experimental validation from large sets of differentially expressed genes.
 
-# Disease Ontology Semantic and Enrichment analysis
+### Functional similarity for target prioritization
 
-Disease Ontology (DO) annotates human genes in the context of disease. DO is an important annotation in translating molecular findings from high-throughput data to clinical relevance.
-[DOSE](https://www.bioconductor.org/packages/DOSE)[@yu_dose_2015] supports semantic similarity computation among DO terms and genes.
-Enrichment analysis including hypergeometric model and GSEA are also implemented to support discovering disease associations of high-throughput biological data.
+When faced with numerous differentially expressed genes, researchers can use GO semantic similarity to identify functionally related "hub" genes that may serve as better candidates for experimental validation. The approach involves:
 
-# MeSH enrichment and semantic analyses
+1. Calculating pairwise semantic similarity among all differentially expressed genes
+2. Constructing a similarity network where edges represent functional relationships
+3. Identifying genes with high betweenness centrality as potential key regulators
 
-MeSH (Medical Subject Headings) is the NLM controlled vocabulary used to manually index articles for MEDLINE/PubMed. [meshes](https://www.bioconductor.org/packages/meshes) supports enrichment (hypergeometric test and GSEA) and semantic similarity analyses for more than 70 species.
+### Case study: FMNL1 interactome analysis
 
+In a collaboration with Technische Universität München, we used GO semantic similarity to analyze proteins identified through Co-IP and LC-MS/MS experiments targeting FMNL1 in hematopoietic cells. The workflow was:
 
--->
+1. **Similarity metric definition**: Functional similarity was defined as the geometric mean of molecular function and cellular component GO semantic similarities
+2. **Network construction**: Created a similarity network of all co-purified proteins
+3. **Hub identification**: Identified AHNAK1, SIPA1, and FLII as central nodes in the network
+4. **Experimental validation**: Validated the novel interaction between FMNL1 and AHNAK1, leading to discovery of FMNL1's role in calcium-dependent membrane plasticity
+
+This approach successfully identified previously unreported protein interactions that were subsequently validated experimentally, demonstrating the power of GO semantic similarity in guiding biological discovery.
+
+### Implementation considerations
+
+When using semantic similarity for target prioritization:
+- Combine multiple GO aspects (MF, BP, CC) for comprehensive functional assessment
+- Consider both direct interactions and functional relationships
+- Use appropriate similarity measures based on biological context
+- Validate computational predictions with experimental evidence
 
 ## References {-}
