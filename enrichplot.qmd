@@ -223,6 +223,29 @@ p2 <- dotplot(edo, showCategory=10) + scale_size(range=c(2, 20)) + ggtitle("Adju
 plot_list(p1, p2, ncol=2, tag_levels='A')
 ```
 
+## Dotplot2: Comparing two clusters
+
+The `dotplot2()` function is a specialized version of dotplot designed for comparing two selected clusters from `compareCluster` results. This function provides focused visualization when users want to directly contrast specific biological conditions or experimental groups.
+
+```{r}
+#| label: fig-dotplot2
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Dotplot2 for comparing two clusters.**
+#|   Direct comparison of cluster A and cluster B.
+
+# Example using compareCluster result
+library(clusterProfiler)
+data(gcSample)
+xx <- compareCluster(gcSample, fun="enrichKEGG",
+                     organism="hsa", pvalueCutoff=0.05)
+
+# Compare cluster A and cluster B
+dotplot2(xx, cluster1 = "A", cluster2 = "B")
+```
+
+The `dotplot2()` function accepts the same parameters as `dotplot()` but requires `cluster1` and `cluster2` arguments to specify which clusters to compare. This focused visualization helps in identifying differential enrichment patterns between specific experimental conditions.
 
 ## Gene-Concept Network {#cnetplot}
 
@@ -256,7 +279,14 @@ plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 ```
 
 
-If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in @fig-cnetNodeLabel. 
+If you would like label subset of the nodes, you can use the `node_label` parameter, which supports 4 possible selections (i.e. "category", "gene", "all" and "none"), as demonstrated in @fig-cnetNodeLabel.
+
+The `node_label` parameter also supports enhanced functionality:
+
+1. **Vector selection**: Specify specific genes to label using a character vector, e.g., `node_label = c("gene1", "gene2")`
+2. **'exclusive' labeling**: Label only genes that belong exclusively to one category using `node_label = "exclusive"`
+3. **'share' labeling**: Label genes that are shared between multiple categories using `node_label = "share"` (as shown in the example above)
+4. **Conditional filtering**: Use comparison operators to filter genes based on fold change, e.g., `node_label = "> 1"` or `node_label = "< -1"` to label genes with absolute fold change greater than 1 
 
 
 
@@ -309,6 +339,7 @@ p2 <- heatplot(edox, foldChange=geneList, showCategory=5)
 plot_list(p1, p2, ncol=1, tag_levels = 'A')
 ```
 
+The `showTop` parameter can be used to limit the number of genes displayed in the heatmap. This is particularly useful when dealing with large gene sets where only the top genes based on fold change or significance need to be visualized. For example, `showTop = 20` will display only the top 20 genes in the heatmap.
 
 ## Tree plot
 
@@ -316,6 +347,7 @@ The `treeplot()` function performs hierarchical clustering of enriched terms. It
 
 The default agglomeration method in `treeplot()` is `ward.D`, and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*; see also the documentation of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specified by the `nCluster` parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability.
 
+For fine-grained control over text appearance, the `leave_fontsize` and `clade_fontsize` parameters allow users to adjust the font size of leaf labels and clade labels respectively. For example, `leave_fontsize = 8, clade_fontsize = 10` will set leaf labels to 8pt and clade labels to 10pt.
 
 
 ```{r}
@@ -373,9 +405,11 @@ plot_list(p1, p2, p3, p4,
         heights = c(1, .3))
 ```
 
-The `node_label` parameter controls how the labels were dispalyed. The enriched terms will be displayed by default with `node_label="category"` and it can be disable by setting `node_label="none"`.
+The `node_label` parameter controls how the labels were displayed. The enriched terms will be displayed by default with `node_label="category"` and it can be disabled by setting `node_label="none"`.
 
-If `node_label="group"`, the `emapplot` function will clusters the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If `node_label="all"`, then the enriched terms and group names will be displayed simultaneously.
+The `node_label_size` parameter allows users to adjust the font size of node labels in the enrichment map. This is particularly useful when dealing with many overlapping terms or when labels need to be more readable. For example, `node_label_size = 3` will increase the label size compared to the default.
+
+If `node_label="group"`, the `emapplot` function will cluster the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If `node_label="all"`, then the enriched terms and group names will be displayed simultaneously.
 
 
 ```{r}
@@ -521,6 +555,60 @@ p_custom <- gseaplot(edo2, geneSetID = 1, color="#DAB546", color.line='firebrick
 plot_list(p_default, p_custom, ncol=2, tag_levels='A')
 ```
 
+### Unified color setting with `set_enrichplot_color()`
+
+For consistent color settings across different plot types in `enrichplot`, the `set_enrichplot_color()` function provides a unified approach to customize color mappings. This avoids repetitive color code specifications in different plotting functions.
+
+#### Function introduction
+
+The `set_enrichplot_color()` function can be added to any `enrichplot` visualization using the `+` operator (ggplot2 style). It offers flexible control over color transformations and palettes.
+
+#### Parameters
+
+- `type`: Type of color aesthetic to modify (default: `"fill"`, can also be `"color"` for line colors)
+- `transform`: Transformation to apply to the values used for color mapping
+  - `"log10"`: Apply log10 transformation (default for recent versions)
+  - `"identity"`: Use original values without transformation
+- `colors`: Custom color palette as a vector of colors (e.g., `c("red", "blue")`)
+
+#### Usage examples
+
+```{r}
+#| label: fig-set-enrichplot-color
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Color customization using `set_enrichplot_color()`.** 
+#|   (A) Default log10 transformation.
+#|   (B) Custom red-blue palette with log10 transformation.
+#|   (C) Identity transformation (no transformation).
+
+# Example data
+library(DOSE)
+data(geneList)
+de <- names(geneList)[abs(geneList) > 2]
+edo <- enrichDGN(de)
+
+# A: Default log10 transformation
+p1 <- dotplot(edo, showCategory=15) + 
+  set_enrichplot_color(type='fill', transform='log10') +
+  ggtitle("Default log10 transform")
+
+# B: Custom colors with log10 transformation  
+p2 <- dotplot(edo, showCategory=15) + 
+  set_enrichplot_color(type='fill', transform='log10', colors=c("red", "blue")) +
+  ggtitle("Red-blue palette")
+
+# C: Identity transformation (no transformation)
+p3 <- dotplot(edo, showCategory=15) + 
+  set_enrichplot_color(type='fill', transform='identity') +
+  ggtitle("Identity transform")
+
+library(aplot)
+plot_list(p1, p2, p3, ncol=3, tag_levels='A')
+```
+
+**Note**: Starting from enrichplot v1.29.2, log10 transformation of p-values is applied by default in functions like `dotplot()`. The `set_enrichplot_color()` function allows users to override this default behavior or customize color palettes consistently across all visualization types.
 
 Another method to plot GSEA result is the `gseaplot2` function:
 
@@ -570,7 +658,7 @@ gseaplot2(edo2, geneSetID = 1:3, pvalue_table = TRUE,
 The `pvalue_table` can be customized using the following parameters:
 
 - `pvalue_table_rownames` to specify row names of the table (if NULL, no row names will be displayed)
--  `pvalue_table_colnames` to specify column names of the table
+- `pvalue_table_columns` to specify column names of the table
 
 
 ```{r}
@@ -690,6 +778,44 @@ ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust
     theme(axis.text=element_text(size=11))
 
 -->
+
+## Volcano plot for ORA results
+
+The `volplot()` function provides volcano plot visualization for over-representation analysis (ORA) results, allowing users to visualize the relationship between fold change (or other effect size metrics) and statistical significance.
+
+```{r}
+#| label: fig-volplot
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Volcano plot for ORA results.**
+#|   Visualizing -log10(p-value) vs log2 fold change.
+
+# Example using enrichment result with fold change information
+# Note: volplot requires results with fold change values
+volplot(edo, x = "log2FoldChange", y = "-log10(pvalue)")
+```
+
+The `volplot()` function accepts standard ggplot2 aesthetics and can be customized with additional parameters for point size, color, and labeling thresholds.
+
+## Horizontal GSEA plot
+
+The `hplot()` function creates horizontal versions of GSEA plots, which can be useful for comparing multiple gene sets side-by-side or for presentations where horizontal layout is preferred.
+
+```{r}
+#| label: fig-hplot
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Horizontal GSEA plot.**
+#|   GSEA results displayed in horizontal orientation.
+
+# Example using GSEA result
+edo2 <- gseDO(geneList)
+hplot(edo2, geneSetID = 1:3)
+```
+
+The `hplot()` function supports the same parameters as `gseaplot2()` but arranges the output horizontally. This is particularly useful for comparing multiple pathways or when vertical space is limited.
 
 ## GO Graph
 
