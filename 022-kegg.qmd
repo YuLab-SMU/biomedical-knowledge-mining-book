@@ -132,7 +132,7 @@ write.gson(kk_gson, file = "kegg_hsa.gson")
 kk_gson <- read.gson("kegg_hsa.gson")
 ```
 
-The `GSON` object or the file can be used in `enricher()` and `GSEA()` functions (via `gson` parameter or by parsing it).
+The `GSON` object or the file can be used in `enricher()` and `GSEA()` functions (via `gson` parameter or by parsing it). For more detailed information on using the GSON format, including how to perform generalized enrichment analysis with multiple knowledge bases using `gsonList`, please refer to @sec-gson-enrichment.
 
 ### Using `createKEGGdb`
 
@@ -310,7 +310,12 @@ browseKEGG(kk, 'hsa04110')
 
 (ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that are enriched in the selected pathway will be highlighted.
 
-```{r browseKEGG, out.width="100%", echo=FALSE, fig.cap="(ref:browseKEGGcap)", fig.scap="(ref:browseKEGGscap)"}
+```{r}
+#| label: fig-browseKEGG
+#| out-width: 100%
+#| echo: false
+#| fig-cap: "(ref:browseKEGGcap)"
+#| fig-scap: "(ref:browseKEGGscap)"
 knitr::include_graphics("figures/browseKEGG.png")
 ```
 
@@ -332,7 +337,12 @@ hsa04110 <- pathview(gene.data  = geneList,
 
 (ref:pathviewcap) **Visualize selected KEGG pathway by `pathview()`.** Gene expression values can be mapped to gradient color scale.
 
-```{r pathview, out.width="100%", echo=FALSE, fig.cap="(ref:pathviewcap)", fig.scap="(ref:pathviewscap)"}
+```{r}
+#| label: fig-pathview
+#| out-width: 100%
+#| echo: false
+#| fig-cap: "(ref:pathviewcap)"
+#| fig-scap: "(ref:pathviewscap)"
 knitr::include_graphics("figures/hsa04110_pathview.png")
 ```
 

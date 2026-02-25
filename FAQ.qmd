@@ -57,7 +57,12 @@ By default, all the visualization methods provided by `r Biocpkg("enrichplot")` 
 
 (ref:selectedPathscap) **Showing specific pathways.** Top ten most significant pathways (A), selected ten pathways (B).
 
-```{r selectedPaths, fig.height=6, fig.width=15, fig.cap="(ref:selectedPathscap)", fig.scap="(ref:selectedPathsscap)"}
+```{r}
+#| label: fig-selectedPaths
+#| fig-height: 6
+#| fig-width: 15
+#| fig-cap: "(ref:selectedPathscap)"
+#| fig-scap: "(ref:selectedPathsscap)"
 library(clusterProfiler)
 library(enrichplot)
 data(geneList, package='DOSE')

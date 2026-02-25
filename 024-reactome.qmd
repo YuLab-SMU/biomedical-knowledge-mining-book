@@ -60,7 +60,12 @@ head(y)
 
 (ref:viewpathwaycap) **Visualize reactome pathway.**
 
-```{r viewpathway, fig.height=6, fig.width=8, fig.cap="(ref:viewpathwaycap)", fig.scap="(ref:viewpathwayscap)"}
+```{r}
+#| label: fig-viewpathway
+#| fig-height: 6
+#| fig-width: 8
+#| fig-cap: "(ref:viewpathwaycap)"
+#| fig-scap: "(ref:viewpathwayscap)"
 viewPathway("E2F mediated regulation of DNA replication", 
             readable = TRUE, 
             foldChange = geneList)

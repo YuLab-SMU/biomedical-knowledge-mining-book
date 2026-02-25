@@ -1011,7 +1011,12 @@ ego <- enrichGO(de, OrgDb = org.Hs.eg.db, ont = "BP", readable = TRUE)
 
 (ref:goplotcap) **Goplot of enrichment analysis.**
 
-```{r goplot, fig.height=12, fig.width=8, fig.cap="(ref:goplotcap)", fig.scap="(ref:goplotscap)"}
+```{r}
+#| label: fig-goplot
+#| fig-height: 12
+#| fig-width: 8
+#| fig-cap: "(ref:goplotcap)"
+#| fig-scap: "(ref:goplotscap)"
 goplot(ego)
 ```
 
