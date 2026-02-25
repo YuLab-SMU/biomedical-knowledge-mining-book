@@ -68,6 +68,7 @@ jobs:
             "cran::readxl",
             "cran::aplot",
             "cran::ggfun",
+            "cran::ggtext",
             "cran::ggplotify",
             "cran::wget",
             "cran::httr2",
