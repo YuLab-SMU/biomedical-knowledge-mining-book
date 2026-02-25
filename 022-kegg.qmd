@@ -214,13 +214,6 @@ bitr_kegg("K00844", "kegg", "Path", "ko")
 To retrieve the names of the pathways (e.g., "Glutathione metabolism" instead of "ko00480"), we can define a simple helper function `ko2name` to query the KEGG API.
 
 ```{r}
-ko2name <- function(ko) {
-  url <- paste0("http://rest.kegg.jp/list/", ko)
-  x <- readLines(url)
-  y <- strsplit(x, "\t")
-  data.frame(ko= sapply(y, "[", 1), name= sapply(y, "[", 2), stringsAsFactors=FALSE)
-}
-
 x <- bitr_kegg("K00799", "kegg", "Path", "ko")
 y <- ko2name(x$Path)
 merge(x, y, by.x='Path', by.y='ko')

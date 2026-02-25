@@ -150,6 +150,7 @@ plot(x)
 
 ### Note on Data Updates
 
-It is important to note that DAVID's data may not be as frequently updated as Bioconductor packages. As shown in previous comparisons, using `clusterProfiler` with Bioconductor annotation data often yields more comprehensive results (more annotated genes and enriched pathways) compared to DAVID.
+
+As highlighted in a Nature Methods study (@wadi_impact_2016), DAVID has a very low update frequency, often going more than 5 years between updates, leading to a continuous decline in knowledge completeness. This means analysis results may only reflect outdated biological knowledge, which could introduce biases in current research. As shown in previous comparisons, using `clusterProfiler` with Bioconductor annotation data often yields more comprehensive results (more annotated genes and enriched pathways) compared to DAVID.
 
 ## References {-}

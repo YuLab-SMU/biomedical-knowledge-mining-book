@@ -176,6 +176,64 @@ plot_list(p1, p2, ncol=2, tag_levels = 'A')
 
 Note: The `dotplot()` function also works with [`compareCluster()` output](#compare-dotplot).
 
+### Highlighting specific pathways
+
+The `label_format` parameter in `dotplot()` accepts a function to format y-axis labels, which can be used to highlight specific pathways. This is useful for emphasizing pathways of interest in publication figures.
+
+First, perform enrichment analysis:
+
+```{r}
+library(DOSE)
+data(geneList)
+de <- names(geneList)[1:100]
+x <- enrichDO(de)
+```
+
+Define a function to highlight pathways containing "cancer":
+
+```{r}
+f <- function(ids) {
+    i <- grepl('cancer', ids)
+    ids[i] <- paste0("<i style='color:#009E73'>", ids[i], "</i>")
+    return(ids)
+}
+```
+
+To render the HTML formatting, use the `ggtext` package with `element_markdown()`:
+
+```{r}
+library(ggplot2)
+library(ggtext)
+library(enrichplot)
+dotplot(x, label_format=f) + theme(axis.text.y = element_markdown())
+```
+
+You can also highlight specific pathways by index:
+
+```{r}
+f2 <- function(ids) {
+    ids[1] <- paste0("<i style='color:#009E73'>", ids[1], "</i>")
+    ids[2] <- paste0("<i style='color:#0072B2'>**", ids[2], "**</i>")
+    return(ids)
+}
+
+dotplot(x, label_format=f2) + theme(axis.text.y = element_markdown())
+```
+
+Or apply different colors to all pathways:
+
+```{r}
+f3 <- function(ids) {
+    # cols <- rcartocolor::carto_pal(length(ids), "Vivid")
+    # cols <- colorspace::rainbow_hcl(length(ids))
+    cols <- rainbow(length(ids))
+    ids <- paste0("<i style='color:", cols, "'>**", ids, "**</i>")
+    return(ids)
+}
+
+dotplot(x, label_format=f3) + theme(axis.text.y = element_markdown())
+```
+
 ### Formula interface of dotplot
 
 The `x` variable of `dotplot()` supports a formula interface, allowing users to use derived variables. For example, we can calculate `GeneRatio/BgRatio` or `-log(p.adjust)` and use them as the x-axis variable.
@@ -377,6 +435,47 @@ aplot::plot_list(p1, p2, tag_levels='A', ncol=2)
 Enrichment map organizes enriched terms into a network with edges connecting
 overlapping gene sets. In this way, mutually overlapping gene sets are tend to
 cluster together, making it easy to identify functional module.
+
+### Handling GO term redundancy
+
+GO annotations often contain redundant terms that can dominate enrichment results, potentially obscuring other biological stories. The `simplify()` function from the `clusterProfiler` package uses semantic similarity (via the GOSemSim package) to remove redundant GO terms, providing a clearer view of distinct functional modules.
+
+```{r}
+# Load required packages
+library(clusterProfiler)
+library(enrichplot)
+library(DOSE)
+
+# Prepare example data
+data(geneList, package="DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+
+# Perform GO enrichment analysis
+ego <- enrichGO(de, OrgDb = "org.Hs.eg.db", ont="BP", readable=TRUE)
+
+# Remove redundant GO terms using simplify()
+ego_simplified <- simplify(ego, cutoff=0.7, by="p.adjust", select_fun=min)
+
+# Visualize both original and simplified results
+ego <- pairwise_termsim(ego)
+ego_simplified <- pairwise_termsim(ego_simplified)
+
+p1 <- emapplot(ego, cex_label_category=.8, cex_line=.5) + 
+    scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
+          guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
+    ggtitle("Original GO terms")
+
+p2 <- emapplot(ego_simplified, cex_label_category=.8, cex_line=.5) + 
+    scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
+                guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
+    ggtitle("After removing redundant terms")
+
+# Combine plots
+library(patchwork)
+p1 + p2 + plot_layout(ncol = 2)
+```
+
+The `simplify()` function removes redundant GO terms based on semantic similarity (default cutoff = 0.7). This reveals distinct functional modules that might be obscured by redundant terms in the original enrichment results. The `pairwise_termsim()` function calculates pairwise similarities between terms, which is required for `emapplot()` visualization.
 
 The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. 
 The `size_category` parameter can be used to resize nodes and the `layout` parameter can adjust the layout, as demonstrated in @fig-Enrichment.
@@ -695,6 +794,58 @@ plot_list(p1, p2, ncol=1, tag_levels = 'A')
 ```
 
 
+### Labeling genes in GSEA plot
+
+Users can use `geom_gsea_gene()` to label specific genes in the GSEA plot.
+
+```{r}
+#| label: fig-geom-gsea-gene
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Labeling genes in GSEA plot.**
+library(ggplot2)
+library(ggrepel)
+
+# Get gene set ID
+id <- edo2$ID[1]
+
+# Randomly select genes to label
+set.seed(123)
+genes <- sample(edo2[[id]], 5)
+
+# Label genes on gseaplot2
+p <- gseaplot2(edo2, geneSetID = 1, title = edo2$Description[1])
+
+# Add geom_gsea_gene layer to the first subplot (running score)
+p[[1]] <- p[[1]] + geom_gsea_gene(genes, geom=geom_label)
+p
+```
+
+If users prefer to label with gene symbols, they can convert the gene IDs to symbols (e.g., using `setReadable`) before plotting.
+
+```{r}
+#| label: fig-geom-gsea-gene-symbol
+#| fig-width: 12
+#| fig-height: 8
+#| fig-cap: |
+#|   **Labeling gene symbols in GSEA plot.**
+#| eval: false
+
+library(clusterProfiler)
+# Assuming org.Hs.eg.db is available
+if (require("org.Hs.eg.db")) {
+    edo2_symbol <- setReadable(edo2, 'org.Hs.eg.db', 'ENTREZID')
+    id <- edo2_symbol$ID[1]
+    genes_symbol <- sample(edo2_symbol[[id]], 5)
+    
+    p_symbol <- gseaplot2(edo2_symbol, geneSetID = 1, title = edo2_symbol$Description[1])
+    p_symbol[[1]] <- p_symbol[[1]] + geom_gsea_gene(genes_symbol, geom=geom_text_repel)
+    p_symbol
+}
+```
+
+
 
 
 The `gsearank` function plot the ranked list of genes belong to the specific
@@ -735,6 +886,33 @@ pp <- lapply(1:3, function(i) {
 plot_list(gglist=pp, ncol=1)
 ```
 
+### Extracting data from gsearank plot
+
+The `gsearank` function can also output the data used for plotting by setting `output = "table"`. This allows users to inspect the running score and other metrics for genes in the gene set.
+
+```{r}
+#| label: tbl-gsearank
+#| tbl-cap: |
+#|   **Data extracted from gsearank plot.**
+gsearank(edo2, 1, output = "table") |> head()
+```
+
+Users can also merge this table with gene information (e.g. Symbol) using `bitr` or other methods.
+
+```{r}
+#| label: tbl-gsearank-symbol
+#| tbl-cap: |
+#|   **Data extracted from gsearank plot with gene symbols.**
+#| eval: false
+
+rank_table <- gsearank(edo2, 1, output = "table")
+# Assuming 'gene' column contains Entrez IDs
+if (require("org.Hs.eg.db") && require("clusterProfiler")) {
+    gene_info <- bitr(rank_table$gene, fromType="ENTREZID", toType="SYMBOL", OrgDb="org.Hs.eg.db")
+    rank_table_symbol <- merge(rank_table, gene_info, by.x="gene", by.y="ENTREZID")
+    head(rank_table_symbol)
+}
+```
 
 
 ## pubmed trend of enriched terms
