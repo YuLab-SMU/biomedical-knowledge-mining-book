@@ -153,4 +153,52 @@ plot(x)
 
 As highlighted in a Nature Methods study (@wadi_impact_2016), DAVID has a very low update frequency, often going more than 5 years between updates, leading to a continuous decline in knowledge completeness. This means analysis results may only reflect outdated biological knowledge, which could introduce biases in current research. As shown in previous comparisons, using `clusterProfiler` with Bioconductor annotation data often yields more comprehensive results (more annotated genes and enriched pathways) compared to DAVID.
 
+## Generalized Enrichment Analysis with GSON format {#sec-gson-enrichment}
+
+The `gson` (Gene Set Object Notation) format provides a standardized way to store gene set information along with metadata, making it easier to share and use custom gene sets for enrichment analysis. The `r Biocpkg("gson")` package defines the `GSON` class to store this information.
+
+### Helper functions for GSON
+
+The `r Biocpkg("clusterProfiler")` and related packages provide a series of helper functions to download and convert data from various sources into `GSON` objects. These functions typically start with the `gson_` prefix. Users can use tab completion in R (e.g., typing `gson_` and pressing Tab) to explore available functions. Some common examples include:
+
+* `gson_KEGG()`: Download KEGG pathway/module data.
+* `gson_WP()`: Download WikiPathways data.
+* `gson_GO()`: Download Gene Ontology data.
+
+Additionally, users can use the `gson::gson()` function to manually create `GSON` objects from their own data tables.
+
+### Analyzing multiple knowledge bases with `gsonList`
+
+One of the powerful features of the GSON format is the ability to perform enrichment analysis on multiple knowledge bases simultaneously. The `gsonList()` function allows users to combine multiple `GSON` objects into a list, which can then be passed to the `enricher()` function.
+
+```{r}
+#| eval: false
+library(gson)
+library(clusterProfiler)
+
+# Example: Prepare GSON objects (assuming you have downloaded or created them)
+# kegg_gson <- gson_KEGG(species = "hsa")
+# wp_gson <- gson_WP(species = "Homo sapiens")
+# go_gson <- gson_GO(OrgDb = org.Hs.eg.db, keyType = "ENTREZID", ont = "BP")
+
+# Combine them into a list
+# gsons <- gsonList(kegg = kegg_gson, wp = wp_gson, go = go_gson)
+
+# Perform enrichment analysis
+# res <- enricher(gene = geneList, gson = gsons)
+```
+
+The result of `enricher()` with a `gsonList` input is effectively a list of enrichment results, where each component corresponds to one of the input knowledge bases. You can access individual results by name or index.
+
+### Visualization with `autofacet`
+
+To visualize the results from multiple knowledge bases together, `r Biocpkg("enrichplot")` provides the `autofacet()` function. This function can be added to a `dotplot` to automatically facet the results by knowledge base.
+
+```{r}
+#| eval: false
+# dotplot(res) + autofacet()
+```
+
+This approach allows for a comprehensive view of enrichment results across different databases, facilitating comparison and interpretation. For example, you might observe that GO terms cover a broader range of biological processes due to higher annotation coverage, while KEGG pathways might provide more specific mechanistic insights.
+
 ## References {-}
