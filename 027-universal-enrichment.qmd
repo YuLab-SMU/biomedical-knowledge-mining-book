@@ -28,6 +28,7 @@ For gene set enrichment analysis, we need a ranked list of genes. `r Biocpkg("DO
 We can load the sample data into R via:
 
 ```{r}
+#| label: load-genelist
 data(geneList, package="DOSE")
 head(geneList)
 ```
@@ -35,6 +36,7 @@ head(geneList)
 Suppose we define fold change greater than 2 as DEGs:
 
 ```{r}
+#| label: define-de-genes
 gene <- names(geneList)[abs(geneList) > 2]
 head(gene)
 ```
@@ -48,6 +50,7 @@ head(gene)
 
 
 ```{r eval=FALSE}
+#| label: cellmarker-data-prep
 # not execcute, as the url is no longer valid
 
 ## cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
@@ -69,6 +72,7 @@ cells <- cell_marker_data %>%
 
 
 ```{r eval=FALSE}
+#| label: cellmarker-ora
 x <- enricher(gene, TERM2GENE = cells)
 head(x)
 ```
@@ -76,6 +80,7 @@ head(x)
 ### Cell Marker gene set enrichment analysis {#cell-marker-gsea}
 
 ```{r eval=FALSE}
+#| label: cellmarker-gsea
 y <- GSEA(geneList, TERM2GENE = cells)
 head(y)
 ```
@@ -101,6 +106,7 @@ There is an R package, [msigdbr](https://cran.r-project.org/package=msigdbr), th
 It supports several species:
 
 ```{r}
+#| label: msigdbr-species
 library(msigdbr)
 msigdbr_species()
 ```
@@ -109,6 +115,7 @@ We can retrieve all human gene sets:
 
 
 ```{r}
+#| label: msigdbr-human
 m_df <- msigdbr(species = "Homo sapiens")
 head(m_df, 2) |> as.data.frame()
 ```
@@ -117,6 +124,7 @@ head(m_df, 2) |> as.data.frame()
 Or specific collection. Here we use C6, oncogenic gene sets as an example:
 
 ```{r}
+#| label: msigdbr-c6
 m_t2g <- m_df |>
   dplyr::filter(gs_collection == "C6") |>
   dplyr::select(gs_name, ncbi_gene)
@@ -128,6 +136,7 @@ head(m_t2g)
 
 
 ```{r}
+#| label: msigdb-ora-example
 em <- enricher(gene, TERM2GENE=m_t2g)
 head(em)
 ```
@@ -139,6 +148,7 @@ In over-representation analysis, we use oncogenic gene sets (i.e. C6) to test wh
 
 
 ```{r}
+#| label: msigdb-gsea-example
 C3_t2g <- m_df |>
   dplyr::filter(gs_collection == "C3") |>
   dplyr::select(gs_name, ncbi_gene)

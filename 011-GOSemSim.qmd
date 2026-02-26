@@ -1,6 +1,7 @@
 # GO semantic similarity analysis {#GOSemSim}
 
 ```{r}
+#| label: load-packages
 #| echo: false
 #| message: false
 #| cache: false
@@ -38,6 +39,7 @@ Bioconductor have already provided `OrgDb` for [about 20 species](http://biocond
 We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
 
 ```{r eval=FALSE}
+#| label: query-orgdb
 library(AnnotationHub)
 hub <- AnnotationHub()
 q <- query(hub, "Cricetulus")
@@ -104,6 +106,7 @@ Users can also use [`clusterProfiler::bitr`](#bitr) to translate biological IDs.
 
 
 ```{r echo=FALSE}
+#| label: clusterSim-aliases
 clusterSim <- GOSemSim::clusterSim
 mclusterSim <- GOSemSim::mclusterSim
 ```
@@ -136,6 +139,7 @@ By default, `godata()` function only accepts a single `OrgDb` object, meaning it
 3. **Future development**: A potential `merge()` function for combining `GOSemSimDATA` objects from multiple species
 
 ```{r eval=FALSE}
+#| label: cross-species-sim
 # Example workflow for cross-species similarity using mgoSim
 # Extract GO terms for human gene using clusterProfiler
 library(clusterProfiler)

@@ -8,7 +8,9 @@
 source("_common.R")
 ```
 
-```{r meshes-geneSim, include=FALSE}
+```{r}
+#| label: meshes-geneSim-alias
+#| include: false
 geneSim <- meshes::geneSim
 ```
 
@@ -85,6 +87,7 @@ hsamd <- meshdata(db, category='A', computeIC=T, database="gendoo")
 ```
 
 ```{r echo=FALSE}
+#| label: load-hsamd-cache
 ## saveRDS(hsamd, file="cache/hsamd.rds")
 hsamd <- readRDS("cache/hsamd.rds")
 ```

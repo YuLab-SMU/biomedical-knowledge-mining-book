@@ -71,6 +71,7 @@ head(ewp2)
 ### WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
 
 ```{r enrichwp}
+#| label: enrichwp-example
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
@@ -81,6 +82,7 @@ enrichWP(gene, organism = "Homo sapiens")
 
 
 ```{r gsewp}
+#| label: gsewp-example
 gseWP(geneList, organism = "Homo sapiens")
 ```
 
@@ -95,6 +97,7 @@ If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](#bi
 Users need to register an account on DAVID website and use the email address to access the web service.
 
 ```{r}
+#| label: enrichdavid-example
 #| eval: false
 require(clusterProfiler)
 data(geneList, package="DOSE")
@@ -109,6 +112,7 @@ david = enrichDAVID(gene = gene,
 The result can be visualized using the same functions as other enrichment results.
 
 ```{r}
+#| label: visualize-david
 #| eval: false
 barplot(david)
 cnetplot(david, foldChange=geneList)
@@ -129,6 +133,7 @@ For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?fil
 The `enrichDAVID` function also supports a custom background (universe) using the `universe` parameter.
 
 ```{r}
+#| label: enrichdavid-universe
 #| eval: false
 enrichDAVID(gene = gene,
             universe = names(geneList),
@@ -142,6 +147,7 @@ enrichDAVID(gene = gene,
 Comparison of functional profiles among different gene clusters is also supported via `compareCluster`.
 
 ```{r}
+#| label: compare-david
 #| eval: false
 data(gcSample)
 x=compareCluster(gcSample, fun="enrichDAVID", annotation="KEGG_PATHWAY")
@@ -172,6 +178,7 @@ Additionally, users can use the `gson::gson()` function to manually create `GSON
 One of the powerful features of the GSON format is the ability to perform enrichment analysis on multiple knowledge bases simultaneously. The `gsonList()` function allows users to combine multiple `GSON` objects into a list, which can then be passed to the `enricher()` function.
 
 ```{r}
+#| label: gsonlist-example
 #| eval: false
 library(gson)
 library(clusterProfiler)
@@ -195,6 +202,7 @@ The result of `enricher()` with a `gsonList` input is effectively a list of enri
 To visualize the results from multiple knowledge bases together, `r Biocpkg("enrichplot")` provides the `autofacet()` function. This function can be added to a `dotplot` to automatically facet the results by knowledge base.
 
 ```{r}
+#| label: autofacet-example
 #| eval: false
 # dotplot(res) + autofacet()
 ```

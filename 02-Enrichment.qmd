@@ -4,6 +4,7 @@
 
 
 ```{r}
+#| label: load-packages
 #| echo: false
 #| message: false
 #| cache: false
@@ -73,6 +74,7 @@ In this equation, `N` is the total number of genes in the background distributio
 
 
 ```{r}
+#| label: enrichment-data
 d <- data.frame(non_DE_gene=c(2613, 15310), DE_gene=c(28, 29))
 row.names(d) <- c("In_category", "not_in_category")
 d
@@ -82,6 +84,7 @@ d
 Whether the gene set of interest is significantly over-represented in the differentially expressed genes can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
 
 ```{r}
+#| label: fisher-test
 fisher.test(d, alternative = "greater")
 ```
 

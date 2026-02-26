@@ -1,6 +1,7 @@
 # KEGG enrichment analysis {#clusterprofiler-kegg}
 
 ```{r}
+#| label: load-packages
 #| echo: false
 #| message: false
 #| cache: false
@@ -21,6 +22,7 @@ The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG
 The `r Biocpkg("clusterProfiler")` package provides the `search_kegg_organism()` function to help search for supported organisms.
 
 ```{r}
+#| label: search-kegg-organism
 library(clusterProfiler)
 search_kegg_organism('ece', by='kegg_code')
 ecoli <- search_kegg_organism('Escherichia coli', by='scientific_name')
@@ -48,6 +50,7 @@ Choose the one that matches your data. For example, if we choose `dosa`.
 Once the `organism` is determined, we need to know what gene ID types (`keyType`) are supported for that organism. A practical trick is to use `enrichKEGG()` as a query tool. By inputting a dummy gene ID and a likely `keyType`, the function will return an error message listing the expected ID format if the input is invalid.
 
 ```{r eval=FALSE}
+#| label: find-keyType
 # Try 'kegg' as keyType with a dummy gene
 enrichKEGG(gene = "abc", organism = "dosa", keyType = "kegg")
 # Output:
@@ -77,6 +80,7 @@ If your gene list uses a different ID type (e.g., `LOC4334374` or `LOC_Os01g0101
 For `LOC4334374`, you can use `AnnotationHub` to retrieve the rice `OrgDb` and convert symbols to Entrez IDs (which correspond to `osa` KEGG IDs).
 
 ```{r eval=FALSE}
+#| label: id-conversion-ah
 library(AnnotationHub)
 ah <- AnnotationHub()
 # Query for Oryza sativa
@@ -95,6 +99,7 @@ For RAP-ID conversion (e.g., `LOC_Os01g01010.1` to `Os01t0100100-01`), you might
 With the correct `organism`, `keyType`, and converted gene IDs, you can now run the analysis:
 
 ```{r eval=FALSE}
+#| label: enrichKEGG-rice
 # For osa (using Entrez IDs)
 kk <- enrichKEGG(gene         = gene_list_entrez,
                  organism     = "osa",
@@ -121,6 +126,7 @@ To address these issues, we provide two methods to perform KEGG analysis locally
 The `r Biocpkg("gson")` package provides the `gson_KEGG()` function to download the latest KEGG pathway and module data for a specific organism and store it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
 
 ```{r eval=FALSE}
+#| label: gson-kegg
 library(gson)
 # download KEGG data for human
 kk_gson <- gson_KEGG(species = "hsa")
@@ -141,12 +147,14 @@ Another approach is to create a local `KEGG.db` package containing the KEGG data
 First, install `createKEGGdb` from GitHub:
 
 ```{r eval=FALSE}
+#| label: install-createKEGGdb
 remotes::install_github("YuLab-SMU/createKEGGdb")
 ```
 
 Then, use `create_kegg_db()` to download data and package it. You can specify one or more species, or even "all" to download data for all supported species.
 
 ```{r eval=FALSE}
+#| label: create-kegg-db
 library(createKEGGdb)
 # create KEGG.db for human and Arabidopsis
 create_kegg_db(c("hsa", "ath"))
@@ -155,12 +163,14 @@ create_kegg_db(c("hsa", "ath"))
 This command will generate a `KEGG.db_1.0.tar.gz` file in the current directory. Install it as a standard R package:
 
 ```{r eval=FALSE}
+#| label: install-local-keggdb
 install.packages("KEGG.db_1.0.tar.gz", repos=NULL, type="source")
 ```
 
 Once installed, you can perform enrichment analysis using the local data by setting `use_internal_data = TRUE` in `enrichKEGG()`:
 
 ```{r eval=FALSE}
+#| label: enrichKEGG-internal
 library(KEGG.db)
 kk <- enrichKEGG(gene         = gene,
                  organism     = 'hsa',
@@ -179,6 +189,7 @@ The `r Biocpkg("clusterProfiler")` package provides the `bitr_kegg()` function t
 Here is an example of converting KEGG IDs to NCBI Protein IDs and then to UniProt IDs for human genes.
 
 ```{r}
+#| label: bitr-kegg
 library(clusterProfiler)
 data(gcSample)
 hg <- gcSample[[1]]
@@ -198,6 +209,7 @@ The ID type (both `fromType` and `toType`) should be one of 'kegg', 'ncbi-geneid
 For many prokaryote species, `entrezgene` IDs are not available. For example, `ece:Z5100` (E. coli O157:H7 EDL933) has `NCBI-ProteinID` and `UniProt` links, but not `NCBI-GeneID`. Attempting to convert `Z5100` to `ncbi-geneid` will result in an error stating that `ncbi-geneid` is not supported. However, conversion to `ncbi-proteinid` or `uniprot` is possible.
 
 ```{r}
+#| label: bitr-kegg-prokaryote
 # Example for prokaryote ID conversion
 bitr_kegg("Z5100", fromType="kegg", toType='ncbi-proteinid', organism='ece')
 bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
@@ -208,12 +220,14 @@ bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
 A common confusion exists between `K` numbers (KEGG Orthology) and `ko` numbers (KEGG Pathway maps). `K` numbers represent orthologous groups, while `ko` numbers represent pathway maps. Users often want to map `K` numbers to pathways.
 
 ```{r}
+#| label: bitr-kegg-path-ko
 bitr_kegg("K00844", "kegg", "Path", "ko")
 ```
 
 To retrieve the names of the pathways (e.g., "Glutathione metabolism" instead of "ko00480"), we can define a simple helper function `ko2name` to query the KEGG API.
 
 ```{r}
+#| label: ko2name-example
 x <- bitr_kegg("K00799", "kegg", "Path", "ko")
 y <- ko2name(x$Path)
 merge(x, y, by.x='Path', by.y='ko')
@@ -274,6 +288,7 @@ To prevent this cached data from becoming outdated, the package utilizes **GitHu
 [KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined functional units. In some situations, KEGG Modules have a more straightforward interpretation.
 
 ```{r}
+#| label: kegg-module-example
 mkk <- enrichMKEGG(gene = gene,
                    organism = 'hsa',
                    pvalueCutoff = 1,
@@ -300,7 +315,9 @@ The `r Biocpkg("enrichplot")` package implements [several methods](#sec-enrichpl
 To view the KEGG pathway, users can use the `browseKEGG()` function, which will open a web browser and highlight enriched genes.
 
 
-```{r eval=FALSE}
+```{r}
+#| label: fig-browseKEGG
+#| eval: false
 browseKEGG(kk, 'hsa04110')
 ```
 
@@ -326,6 +343,7 @@ Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@
 The following example illustrates how to visualize the "hsa04110" pathway, which was enriched in our previous analysis.
 
 ```{r eval=FALSE}
+#| label: pathview-example
 library("pathview")
 hsa04110 <- pathview(gene.data  = geneList,
                      pathway.id = "hsa04110",

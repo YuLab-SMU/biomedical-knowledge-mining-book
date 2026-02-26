@@ -1,6 +1,7 @@
 # GO enrichment analysis {#clusterprofiler-go}
 
 ```{r}
+#| label: load-packages
 #| echo: false
 #| message: false
 #| cache: false
@@ -17,6 +18,7 @@ process (BP), and cellular component (CC).
 
 
 ```{r include=FALSE}
+#| label: setup-options
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 library(clusterProfiler)
@@ -42,6 +44,7 @@ This happens because GO structure is a Directed Acyclic Graph (DAG). If a gene i
 If you are providing your own annotation file (e.g., using `enricher` or `GSEA`), you must ensure that it includes these indirect annotations. If your annotation file only contains direct annotations, you can use the `buildGOmap()` function to generate the full annotation set (direct + indirect) before performing enrichment analysis.
 
 ```{r eval=FALSE}
+#| label: buildGOmap-example
 # Assuming 'gomap' is a data.frame with direct annotations (GeneID, GOID)
 # Build indirect annotations
 gomap_with_ancestors <- buildGOmap(gomap)
@@ -57,6 +60,7 @@ This step is crucial for accurate GO enrichment analysis when not using `OrgDb` 
 In `r Biocpkg("clusterProfiler")`, the `groupGO()` function is designed for gene classification based on GO distribution at a specific level. Here we use the dataset `geneList` provided by `r Biocpkg("DOSE")`. 
 
 ```{r clusterprofiler-groupgo, warning=FALSE}
+#| label: groupGO-example
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
@@ -85,6 +89,7 @@ The `r Biocpkg("clusterProfiler")` package implements `enrichGO()` for gene onto
 
 
 ```{r}
+#| label: enrichGO-example
 ego <- enrichGO(gene          = gene,
                 universe      = names(geneList),
                 OrgDb         = org.Hs.eg.db,
@@ -105,6 +110,7 @@ To address this issue, `enrichGO` and `gseGO` perform the mapping and use the ma
 For example, if we use ENSEMBL IDs as input:
 
 ```{r}
+#| label: enrichGO-ensembl
 gene.df <- bitr(gene, fromType = "ENTREZID",
 	   	toType = c("ENSEMBL", "SYMBOL"),
 		OrgDb = org.Hs.eg.db)
@@ -127,6 +133,7 @@ Gene IDs can be mapped to gene Symbols by using the parameter `readable=TRUE` or
 The `r Biocpkg("clusterProfiler")` package provides the `gseGO()` function for [gene set enrichment analysis](#gsea-algorithm) using gene ontology.
 
 ```{r eval=FALSE}
+#| label: gseGO-example
 ego3 <- gseGO(geneList     = geneList,
               OrgDb        = org.Hs.eg.db,
               ont          = "CC",
@@ -149,6 +156,7 @@ Here is an example of querying GO annotation from Ensembl using `r Biocpkg("biom
 
 
 ```{r eval=FALSE}
+#| label: biomaRt-example
 library(biomaRt)
 ensembl <- useEnsemblGenomes(biomart = "plants_mart", dataset = "nattenuata_eg_gene")
 gene2go <- getBM(attributes =c("ensembl_gene_id", "go_id"), mart=ensembl)
@@ -159,6 +167,7 @@ Alternatively, you can use `AnnotationHub` to query and retrieve `OrgDb` objects
 **Example: GO enrichment analysis for Maize (Zea mays)**
 
 ```{r eval=FALSE}
+#| label: annotationhub-maize
 library(AnnotationHub)
 hub <- AnnotationHub()
 
@@ -227,6 +236,7 @@ Alternatively, users can use slim version of GO and use the `enricher()` or `gse
 **Note on `enricher` results**: The `simplify()` method is designed for `enrichGO()` results where the ontology (BP, CC, or MF) is known. If you use `enricher()` to perform GO analysis (e.g., with custom annotation), the result object does not strictly define the ontology. To use `simplify()`, you must explicitly set the ontology slot in the result object:
 
 ```{r eval=FALSE}
+#| label: simplify-enricher-example
 # Assuming 'res' is the result from enricher() using GO annotation
 # Set the ontology (must be one of "BP", "MF", "CC")
 res@ontology <- "BP" 

@@ -21,6 +21,7 @@ The `r Biocpkg("clusterProfiler")` package was developed for biological theme co
 The `compareCluster()` function applies selected function (via the `fun` parameter) to perform enrichment analysis for each gene list. 
 
 ```{r}
+#| label: compare-multiple-gene-lists
 data(gcSample)
 str(gcSample) 
 ```
@@ -28,6 +29,7 @@ str(gcSample)
 Users can use a named list of gene IDs as the input that passed to the `geneCluster` parameter. 
 
 ```{r}
+#| label: compare-multiple-gene-lists-enrichGO
 ck <- compareCluster(geneCluster = gcSample, fun = enrichGO, 
                     OrgDb = org.Hs.eg.db, ont="BP")
 ck <- setReadable(ck, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
@@ -41,6 +43,7 @@ As an alternative to using named list, the `compareCluster()` function also supp
 
 
 ```{r}
+#| label: compare-formula
 data(geneList, package='DOSE')
 mydf <- data.frame(Entrez=names(geneList), FC=geneList)
 mydf <- mydf[abs(mydf$FC) > 1,]
@@ -62,6 +65,7 @@ head(formula_res)
 We can visualize the result using the `dotplot()` method. 
 
 ```{r eval=FALSE}
+#| label: compare-dotplot
 dotplot(ck)
 dotplot(formula_res)
 ```

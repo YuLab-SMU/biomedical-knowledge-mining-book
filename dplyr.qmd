@@ -4,6 +4,7 @@
 
 
 ```{r}
+#| label: load-packages
 #| echo: false
 #| message: false
 #| cache: false
@@ -25,6 +26,7 @@ slice <- clusterProfiler:::slice.enrichResult
 
 
 ```{r}
+#| label: enrichDO-example
 library(DOSE)
 data(geneList)
 de = names(geneList)[1:100]
@@ -34,11 +36,13 @@ x = enrichDO(de)
 ## filter
 
 ```{r}
+#| label: filter-example
 filter(x, p.adjust < .05, qvalue < 0.2)
 ```
 
 ## arrange
 ```{r}
+#| label: arrange-example
 mutate(x, geneRatio = parse_ratio(GeneRatio)) %>%
   arrange(desc(geneRatio))
 ```
@@ -46,6 +50,7 @@ mutate(x, geneRatio = parse_ratio(GeneRatio)) %>%
 ## select
 
 ```{r}
+#| label: select-example
 select(x, -geneID) %>% head
 ```
 

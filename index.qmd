@@ -1,6 +1,7 @@
 # Welcome {.unnumbered}
 
 ```{r initial}
+#| label: setup-badges
 #| cache: false
 #| include: false
 
@@ -15,6 +16,7 @@ badge_version <- function(pkg, color="green") {
 ```
 
 ```{r}
+#| label: load-common
 #| echo: false
 #| message: false
 #| cache: false
@@ -39,6 +41,7 @@ source("_common.R")
 hello
 
 ```{r summaryDiagram}
+#| label: summary-diagram
 #| echo: false
 #| eval: false
 knitr::include_graphics("figures/clusterProfiler-diagram.png")

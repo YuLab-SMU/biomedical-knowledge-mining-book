@@ -11,6 +11,8 @@ The core function for this feature is `interpret()`. It accepts enrichment resul
 To use this feature, you need to configure an API key for a supported LLM provider (e.g., DeepSeek).
 
 ```r
+#|```{r}
+#| label: interpret-basic
 #| eval: false
 library(clusterProfiler)
 
@@ -44,7 +46,8 @@ The key features of `interpret()` include:
 
 For example, we can use `Seurat` to identify marker genes for each cluster in a single-cell RNA-seq dataset. Then we can use `compareCluster` to perform enrichment analysis for each cluster. Finally, we can use `interpret` to annotate cell types based on the enrichment results and marker genes.
 
-```r
+```{r}
+#| label: interpret-annotation
 library(Seurat)
 dir = "data/filtered_gene_bc_matrices/hg19"
 pbmc.data <- Read10X(data.dir = dir)
@@ -120,7 +123,8 @@ This result is highly consistent with the manual annotation from the [Seurat pbm
 
 The full report provides detailed reasoning, confidence levels, and supporting evidence (markers/pathways) for each cluster assignment, offering transparency and explainability that simple label transfer methods lack.
 
-```r
+```{r}
+#| label: print-annotation-result
 print(y)
 ```
 
@@ -348,7 +352,8 @@ Instead of relying on a single prompt, `clusterProfiler` employs a **Multi-Agent
 
 You can activate this deep mode using the `interpret_agent()` function.
 
-```r
+```{r}
+#| label: interpret-agent
 #| eval: false
 # Provide biological context to help Agent Cleaner
 context <- "scRNA-seq analysis of CD8+ T cells in Tumor Microenvironment, comparing Exhausted vs. Naive states."
@@ -367,6 +372,7 @@ By setting `add_ppi = TRUE`, the system fetches protein-protein interaction data
 By providing `gene_fold_change`, the AI can infer the direction of pathway activity. For example, if the "Apoptosis" pathway is enriched but pro-apoptotic genes are downregulated while anti-apoptotic genes are upregulated, the AI will correctly interpret this as "Apoptosis Resistance."
 
 ```r
+#| label: interpret-knowledge-guided
 #| eval: false
 # Prepare a named vector of fold changes
 gene_list <- c("CD8A" = 2.5, "PDCD1" = 1.8, "GZMB" = 3.2)
@@ -388,7 +394,8 @@ You can provide "prior knowledge" (e.g., results from SingleR, scGPT, or manual 
 *   **Refinement**: Refines a broad label (e.g., "T cell") into a specific state (e.g., "Proliferating CD8+ T cell") based on pathway activity.
 *   **Correction**: Flags potential misannotations if the evidence contradicts the prior.
 
-```r
+```{r}
+#| label: interpret-prior-knowledge
 #| eval: false
 # Prior knowledge from SingleR
 my_priors <- c("Cluster1" = "T cells")

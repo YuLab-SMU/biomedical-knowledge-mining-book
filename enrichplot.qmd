@@ -29,6 +29,7 @@ and color @fig-Barplot. Users can specify the number of terms (most significant)
 
 
 ```{r}
+#| label: fig-enrichDGN
 library(DOSE)
 data(geneList)
 de <- names(geneList)[abs(geneList) > 2]
@@ -37,6 +38,7 @@ edo <- enrichDGN(de)
 ```
 
 ```{r eval=F}
+#| label: fig-barplot-eval-false
 library(enrichplot)
 barplot(edo, showCategory=20) 
 ```
@@ -44,6 +46,7 @@ barplot(edo, showCategory=20)
 Other variables that derived using `mutate` can also be used as bar height or color as demonstrated in @sec-mutate and @fig-Barplot.
 
 ```{r eval=F}
+#| label: fig-mutate-barplot-eval-false
 library(clusterProfiler)
 
 mutate(edo, qscore = -log(p.adjust, base=10)) |> 
@@ -75,6 +78,7 @@ plot_list(p1, p2, ncol=2, tag_levels='A')
 When visualizing GO enrichment across all ontologies (`ont = "ALL"`), it is often more informative to show the top terms within each ontology (BP/CC/MF) rather than selecting the top terms globally. `barplot()` forwards additional arguments via `...`, and one useful option is `split`. Setting `split = "ONTOLOGY"` will perform the “top N per ontology” selection and makes it straightforward to color (and later facet) the results by the ontology.
 
 ```{r}
+#| label: fig-enrichGO-ontology
 #| echo: false
 #| message: false
 #| warning: false
@@ -149,7 +153,8 @@ If the fortified data contain an `ONTOLOGY` column (as in the output generated b
 
 Dot plot is similar to bar plot with the capability to encode another score as dot size.
 
-```r
+```{r}
+#| label: fig-dotplot-setup
 library(ggplot2)
 edo2 <- gseDO(geneList)
 dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
@@ -184,6 +189,7 @@ The `label_format` parameter in `dotplot()` accepts a function to format y-axis 
 First, perform enrichment analysis:
 
 ```{r}
+#| label: fig-enrichDO
 library(DOSE)
 data(geneList)
 de <- names(geneList)[1:100]
@@ -193,6 +199,7 @@ x <- enrichDO(de)
 Define a function to highlight pathways containing "cancer":
 
 ```{r}
+#| label: fig-label-format-func
 f <- function(ids) {
     i <- grepl('cancer', ids)
     ids[i] <- paste0("<i style='color:#009E73'>", ids[i], "</i>")
@@ -203,6 +210,7 @@ f <- function(ids) {
 To render the HTML formatting, use the `ggtext` package with `element_markdown()`:
 
 ```{r}
+#| label: fig-dotplot-highlight
 library(ggplot2)
 library(ggtext)
 library(enrichplot)
@@ -212,6 +220,7 @@ dotplot(x, label_format=f) + theme(axis.text.y = element_markdown())
 You can also highlight specific pathways by index:
 
 ```{r}
+#| label: fig-label-format-func2
 f2 <- function(ids) {
     ids[1] <- paste0("<i style='color:#009E73'>", ids[1], "</i>")
     ids[2] <- paste0("<i style='color:#0072B2'>**", ids[2], "**</i>")
@@ -224,6 +233,7 @@ dotplot(x, label_format=f2) + theme(axis.text.y = element_markdown())
 Or apply different colors to all pathways:
 
 ```{r}
+#| label: fig-label-format-func3
 f3 <- function(ids) {
     # cols <- rcartocolor::carto_pal(length(ids), "Vivid")
     # cols <- colorspace::rainbow_hcl(length(ids))
@@ -261,6 +271,7 @@ where $N$ is the total number of genes in the background distribution.
 We can easily visualize the **Rich Factor** using the formula interface.
 
 ```{r eval=FALSE}
+#| label: fig-rich-factor
 N <- 8007 # total number of genes in the background
 dotplot(edo, x = ~Count/(BgRatio * N))
 ```
@@ -310,6 +321,20 @@ dotplot2(xx, vars = c("A", "B"))
 The `dotplot2()` function accepts the same parameters as `dotplot()` but requires `cluster1` and `cluster2` arguments to specify which clusters to compare. This focused visualization helps in identifying differential enrichment patterns between specific experimental conditions.
 
 ## Gene-Concept Network {#cnetplot}
+
+```{r}
+#| label: fig-cnet-setup
+#| echo: false
+#| message: false
+#| warning: false
+library(clusterProfiler)
+library(DOSE)
+library(enrichplot)
+library(org.Hs.eg.db)
+data(geneList, package="DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+edo <- enrichDGN(de)
+```
 
 Both the `barplot()` and `dotplot()` only displayed most significant or selected enriched terms,
 while users may want to know which genes are involved in these significant
@@ -445,6 +470,7 @@ cluster together, making it easy to identify functional module.
 GO annotations often contain redundant terms that can dominate enrichment results, potentially obscuring other biological stories. The `simplify()` function from the `clusterProfiler` package uses semantic similarity (via the GOSemSim package) to remove redundant GO terms, providing a clearer view of distinct functional modules.
 
 ```{r}
+#| label: fig-simplify-go
 # Load required packages
 library(clusterProfiler)
 library(enrichplot)
@@ -971,11 +997,11 @@ The `volplot()` function provides volcano plot visualization for over-representa
 #| fig-height: 8
 #| fig-cap: |
 #|   **Volcano plot for ORA results.**
-#|   Visualizing -log10(p-value) vs log2 fold change.
+#|   Visualizing -log10(p-value) vs z-score.
 
 # Example using enrichment result with fold change information
 # Note: volplot requires results with fold change values
-volplot(edo, x = "log2FoldChange", y = "-log10(pvalue)")
+volplot(edo)
 ```
 
 The `volplot()` function accepts standard ggplot2 aesthetics and can be customized with additional parameters for point size, color, and labeling thresholds.

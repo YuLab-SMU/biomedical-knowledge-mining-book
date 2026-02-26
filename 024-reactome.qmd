@@ -29,6 +29,7 @@ themes. `r Biocpkg("ReactomePA")` implemented `enrichPathway()` that uses [hyper
 
 
 ```{r enrichpathway}
+#| label: enrichpathway-example
 library(ReactomePA)
 data(geneList, package="DOSE"
 )
@@ -43,6 +44,7 @@ head(x)
 
 
 ```{r gsepathway}
+#| label: gsepathway-example
 y <- gsePathway(geneList, 
                 pvalueCutoff = 0.2,
                 pAdjustMethod = "BH", 
