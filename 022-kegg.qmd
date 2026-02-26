@@ -312,33 +312,31 @@ head(mkk2)
 The `r Biocpkg("enrichplot")` package implements [several methods](#sec-enrichplot) to visualize enriched terms. Most of them are general methods that can be used on GO, KEGG, MSigDb, and other gene set annotations. Here, we introduce the `clusterProfiler::browseKEGG()` and `pathview::pathview()` functions to help users explore enriched KEGG pathways with genes of interest.
 
 
-To view the KEGG pathway, users can use the `browseKEGG()` function, which will open a web browser and highlight enriched genes.
+To view the KEGG pathway, users can use the `browseKEGG()` function, which will open a web browser and highlight enriched genes. See @fig-browseKEGG for a screenshot example.
 
 
 ```{r}
-#| label: fig-browseKEGG
+#| label: browseKEGG-example
 #| eval: false
 browseKEGG(kk, 'hsa04110')
 ```
 
 
 
-(ref:browseKEGGscap) Explore selected KEGG pathway.
-
-(ref:browseKEGGcap) **Explore selected KEGG pathway.** Differentially expressed genes that are enriched in the selected pathway will be highlighted.
+ 
 
 ```{r}
 #| label: fig-browseKEGG
 #| out-width: 100%
 #| echo: false
-#| fig-cap: "(ref:browseKEGGcap)"
-#| fig-scap: "(ref:browseKEGGscap)"
+#| fig-cap: "**Explore selected KEGG pathway.** Differentially expressed genes that are enriched in the selected pathway will be highlighted."
+#| fig-scap: "Explore selected KEGG pathway."
 knitr::include_graphics("figures/browseKEGG.png")
 ```
 
 
 
-Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identified by the `r Biocpkg("clusterProfiler")` package [@yu2012].
+Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@luo_pathview] to visualize enriched KEGG pathways identified by the `r Biocpkg("clusterProfiler")` package [@yu2012]. See @fig-pathview for a rendered pathway image.
 
 The following example illustrates how to visualize the "hsa04110" pathway, which was enriched in our previous analysis.
 
@@ -351,16 +349,14 @@ hsa04110 <- pathview(gene.data  = geneList,
                      limit      = list(gene=max(abs(geneList)), cpd=1))
 ```
 
-(ref:pathviewscap) Visualize selected KEGG pathway by `pathview()`.
-
-(ref:pathviewcap) **Visualize selected KEGG pathway by `pathview()`.** Gene expression values can be mapped to gradient color scale.
+ 
 
 ```{r}
 #| label: fig-pathview
 #| out-width: 100%
 #| echo: false
-#| fig-cap: "(ref:pathviewcap)"
-#| fig-scap: "(ref:pathviewscap)"
+#| fig-cap: "**Visualize selected KEGG pathway by `pathview()`.** Gene expression values can be mapped to gradient color scale."
+#| fig-scap: "Visualize selected KEGG pathway by `pathview()`."
 knitr::include_graphics("figures/hsa04110_pathview.png")
 ```
 

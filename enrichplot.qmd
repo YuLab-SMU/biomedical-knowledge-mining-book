@@ -1027,7 +1027,7 @@ The `hplot()` function supports the same parameters as `gseaplot2()` but arrange
 
 ## GO Graph
 
-The `goplot()` function can accept the output of `enrichGO` and visualize the enriched GO induced graph.
+The `goplot()` function can accept the output of `enrichGO` and visualize the enriched GO induced graph. See @fig-goplot for an example.
 
 ```{r}
 library(clusterProfiler)
@@ -1037,16 +1037,14 @@ de <- names(geneList)[abs(geneList) > 2]
 ego <- enrichGO(de, OrgDb = org.Hs.eg.db, ont = "BP", readable = TRUE)
 ```
 
-(ref:goplotscap) Goplot of enrichment analysis.
-
-(ref:goplotcap) **Goplot of enrichment analysis.**
+ 
 
 ```{r}
 #| label: fig-goplot
 #| fig-height: 12
 #| fig-width: 8
-#| fig-cap: "(ref:goplotcap)"
-#| fig-scap: "(ref:goplotscap)"
+#| fig-cap: "**Goplot of enrichment analysis.**"
+#| fig-scap: "Goplot of enrichment analysis."
 goplot(ego)
 ```
 

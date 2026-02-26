@@ -53,16 +53,14 @@ geneList = sort(geneList, decreasing = TRUE)
 By default, all the visualization methods provided by `r Biocpkg("enrichplot")` display most significant pathways. If users are interested to show some specific pathways (e.g. excluding some unimportant pathways among the top categories), users can pass a vector of selected pathways to the `showCategory` parameter in `dotplot()`, `barplot()`, `treeplot()`, `cnetplot()` and `emapplot()` etc.
 
 
-(ref:selectedPathsscap) Showing specific pathways.
-
-(ref:selectedPathscap) **Showing specific pathways.** Top ten most significant pathways (A), selected ten pathways (B).
+See @fig-selectedPaths for a side-by-side comparison of default top categories versus user-selected pathways.
 
 ```{r}
 #| label: fig-selectedPaths
 #| fig-height: 6
 #| fig-width: 15
-#| fig-cap: "(ref:selectedPathscap)"
-#| fig-scap: "(ref:selectedPathsscap)"
+#| fig-cap: "**Showing specific pathways.** Top ten most significant pathways (A), selected ten pathways (B)."
+#| fig-scap: "Showing specific pathways."
 library(clusterProfiler)
 library(enrichplot)
 data(geneList, package='DOSE')
@@ -90,7 +88,6 @@ Note: Another solution is using the `filter` verb to extract a subset of the res
 ## How to extract genes of a specific term/pathway 
 
 ```{r}
-#| label: extract-genes-of-specific-term
 id <- x$ID[1:3]
 id
 x[[id[1]]]
@@ -102,16 +99,14 @@ geneInCategory(x)[id]
 
 Most of the functions in `r Biocpkg("enrichplot")` can automatically split long labels across multiple lines. Users can passed a line width to the `label_format` parameter (default is 30). It also supports user defined function to format label strings. 
 
-(ref:formatLabelscap) Wrap long axis labels.
-
-(ref:formatLabelcap) **Wrap long axis labels.** Passing a numeric value to specify string width (A), a user specifiable labeller function (B).
+See @fig-formatLabel for examples of wrapping long axis labels using numeric width and a custom labeller.
 
 ```{r}
-#| label: formatLabel
+#| label: fig-formatLabel
 #| fig-height: 6
 #| fig-width: 10
-#| fig-cap: "(ref:formatLabelcap)"
-#| fig-scap: "(ref:formatLabelscap)"
+#| fig-cap: "**Wrap long axis labels.** Passing a numeric value to specify string width (A), a user specifiable labeller function (B)."
+#| fig-scap: "Wrap long axis labels."
 library(ReactomePA)
 y <- enrichPathway(de)
 
@@ -132,7 +127,6 @@ This is not a software issue but rather a reflection of the database coverage. K
 We can verify the annotation coverage using `bitr_kegg()`:
 
 ```{r eval=FALSE}
-#| label: verify-kegg-coverage
 # gene is a vector of gene IDs (e.g., Entrez IDs)
 kk <- bitr_kegg(geneID = gene, fromType='ncbi-geneid', toType='Path', organism='hsa')
 ```
