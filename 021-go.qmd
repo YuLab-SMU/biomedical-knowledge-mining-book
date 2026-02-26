@@ -59,10 +59,11 @@ This step is crucial for accurate GO enrichment analysis when not using `OrgDb` 
 
 In `r Biocpkg("clusterProfiler")`, the `groupGO()` function is designed for gene classification based on GO distribution at a specific level. Here we use the dataset `geneList` provided by `r Biocpkg("DOSE")`. 
 
-```{r clusterprofiler-groupgo, warning=FALSE}
+```{r warning=FALSE}
 #| label: groupGO-example
 library(clusterProfiler)
 library(org.Hs.eg.db)
+```
 
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
