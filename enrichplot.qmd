@@ -464,12 +464,12 @@ ego_simplified <- simplify(ego, cutoff=0.7, by="p.adjust", select_fun=min)
 ego <- pairwise_termsim(ego)
 ego_simplified <- pairwise_termsim(ego_simplified)
 
-p1 <- emapplot(ego, cex_label_category=.8, cex_line=.5) + 
+p1 <- emapplot(ego, node_label_size=.8, size_edge=.5) + 
     scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
           guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
     ggtitle("Original GO terms")
 
-p2 <- emapplot(ego_simplified, cex_label_category=.8, cex_line=.5) + 
+p2 <- emapplot(ego_simplified, node_label_size=.8, size_edge=.5) + 
     scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
                 guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
     ggtitle("After removing redundant terms")
