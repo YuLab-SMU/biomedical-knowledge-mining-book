@@ -1030,6 +1030,7 @@ The `hplot()` function supports the same parameters as `gseaplot2()` but arrange
 The `goplot()` function can accept the output of `enrichGO` and visualize the enriched GO induced graph. See @fig-goplot for an example.
 
 ```{r}
+#| label: enrichGO-enrichplot-example
 library(clusterProfiler)
 library(org.Hs.eg.db)
 data(geneList, package = "DOSE")
@@ -1051,6 +1052,7 @@ goplot(ego)
 The `plotGOgraph()` function is another option to visualize the GO topology.
 
 ```{r eval=FALSE}
+#| label: plotGOgraph-example
 plotGOgraph(ego)
 ```
 
