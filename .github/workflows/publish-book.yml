@@ -76,7 +76,8 @@ jobs:
             "cran::europepmc",
             "cran::ggupset",
             "cran::ggridges",
-            "cran::shadowtext"
+            "cran::shadowtext",
+            "cran::ggHoriPlot"
           ))'
 
       - name: Install Bioconductor dependencies (release)
