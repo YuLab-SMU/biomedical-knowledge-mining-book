@@ -265,7 +265,7 @@ N <- 8007 # total number of genes in the background
 dotplot(edo, x = ~Count/(BgRatio * N))
 ```
 
-Alternatively, you can precompute derived variables with `mutate()` (e.g., add `neglog10p = -log10(p.adjust)` or `richFactor = Count / (BgRatio * N)`) and then pass the new column name to `x`. This approach is useful when you want to reuse the computed variables across multiple plots. See the dedicated section on using dplyr verbs with enrichment results in [dplyr.qmd](file:///e:/YuNotebooks/04_Mybooks/biomedical-knowledge-mining-book/dplyr.qmd#L52).
+Alternatively, you can precompute derived variables with `mutate()` (e.g., add `neglog10p = -log10(p.adjust)` or `richFactor = Count / (BgRatio * N)`) and then pass the new column name to `x`. This approach is useful when you want to reuse the computed variables across multiple plots. See the dedicated section on using dplyr verbs with enrichment results in @sec-mutate.
 
 ### Adjusting dot sizes
 
