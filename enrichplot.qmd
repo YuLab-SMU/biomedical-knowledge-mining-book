@@ -9,6 +9,7 @@
 source("_common.R")
 library(clusterProfiler)
 library(enrichplot)
+library(dplyr)
 ```
 
 
@@ -264,6 +265,8 @@ N <- 8007 # total number of genes in the background
 dotplot(edo, x = ~Count/(BgRatio * N))
 ```
 
+Alternatively, you can precompute derived variables with `mutate()` (e.g., add `neglog10p = -log10(p.adjust)` or `richFactor = Count / (BgRatio * N)`) and then pass the new column name to `x`. This approach is useful when you want to reuse the computed variables across multiple plots. See the dedicated section on using dplyr verbs with enrichment results in [dplyr.qmd](file:///e:/YuNotebooks/04_Mybooks/biomedical-knowledge-mining-book/dplyr.qmd#L52).
+
 ### Adjusting dot sizes
 
 To increase the size of the dots in the dot plot, we can use the `scale_size` function from the `ggplot2` package. This allows us to specify the range of the dot sizes.
@@ -289,6 +292,7 @@ The `dotplot2()` function is a specialized version of dotplot designed for compa
 #| label: fig-dotplot2
 #| fig-width: 12
 #| fig-height: 8
+#| eval: false
 #| fig-cap: |
 #|   **Dotplot2 for comparing two clusters.**
 #|   Direct comparison of cluster A and cluster B.
@@ -300,7 +304,7 @@ xx <- compareCluster(gcSample, fun="enrichKEGG",
                      organism="hsa", pvalueCutoff=0.05)
 
 # Compare cluster A and cluster B
-dotplot2(xx, cluster1 = "A", cluster2 = "B")
+dotplot2(xx, vars = c("A", "B"))
 ```
 
 The `dotplot2()` function accepts the same parameters as `dotplot()` but requires `cluster1` and `cluster2` arguments to specify which clusters to compare. This focused visualization helps in identifying differential enrichment patterns between specific experimental conditions.
