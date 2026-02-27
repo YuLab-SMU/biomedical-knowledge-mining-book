@@ -73,6 +73,8 @@ This generates two key files:
 #### 3. Enrichment Analysis with clusterProfiler
 
 ```{r}
+#| eval: false
+
 library(clusterProfiler)
 
 # Read annotation files
