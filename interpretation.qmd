@@ -125,6 +125,7 @@ This result is highly consistent with the manual annotation from the [Seurat pbm
 The full report provides detailed reasoning, confidence levels, and supporting evidence (markers/pathways) for each cluster assignment, offering transparency and explainability that simple label transfer methods lack.
 
 ```{r}
+#| eval: false
 #| label: print-annotation-result
 print(y)
 ```
