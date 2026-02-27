@@ -146,7 +146,7 @@ x_first5 <- x[1:5, ]
 x_sig <- x[x$pvalue < 0.05, ]
 
 # Subset specific terms by ID
-x_specific <- x[x$ID %in% c("DOID:0060071", "DOID:5295"), ]
+x_specific <- x[x$ID %in% c("hsa04110", "hsa04218"), ]
 ```
 
 By default, the `[` operator returns a `data.frame`. To preserve the enrichment result object structure for further analysis and visualization, use the `asis = TRUE` parameter:
@@ -159,20 +159,35 @@ class(x_filtered)
 
 ### Accessing columns with `[[` and `$` operators
 
-The `[[` and `$` operators provide convenient access to specific columns:
+The `$` operator provides convenient access to specific columns:
 
 ```{r}
 # Access Description column using $
 descriptions <- x$Description
 head(descriptions)
 
-# Access p-value column using [[
-pvalues <- x[["pvalue"]]
+# Access p-value column using
+pvalues <- x$pvalue
 head(pvalues)
 
 # Access geneID column
 gene_ids <- x$geneID
 head(gene_ids)
+```
+
+### Accessing genes of a specific term using `[[` operator
+
+When applied with a term/pathway ID, the `[[` operator returns the vector of genes that belong to that specific category in the enrichment result.
+
+```{r}
+# Genes annotated in a single term (e.g., hsa04218)
+genes_in_term <- x[["hsa04218"]]
+head(genes_in_term)
+
+# Retrieve genes for multiple terms
+ids <- c("hsa04218", "hsa04814")
+genes_by_term <- geneInCategory(x)[ids]
+str(genes_by_term)
 ```
 
 ### Practical filtering examples

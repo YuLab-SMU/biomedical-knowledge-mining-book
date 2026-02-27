@@ -58,6 +58,84 @@ formula_res <- compareCluster(Entrez~group+othergroup, data=mydf,
 head(formula_res)
 ```
 
+## Functional analysis of single-cell marker genes
+
+The `compareCluster()` function is highly versatile and can be directly integrated into single-cell analysis workflows. For example, after identifying marker genes for each cluster using `Seurat`, the results can be directly used for functional enrichment analysis.
+
+### Using Seurat results
+
+Typically, `FindAllMarkers()` from `Seurat` returns a data frame where rows are genes and columns include cluster information and statistical metrics.
+
+```{r eval=FALSE}
+#| label: sc-seurat-example
+library(Seurat)
+library(SeuratData)
+library(dplyr)
+library(clusterProfiler)
+
+# Load example data
+data("pbmc3k")
+sce <- pbmc3k.final
+
+# Identify marker genes
+sce.markers <- FindAllMarkers(object = sce, only.pos = TRUE, 
+                              min.pct = 0.25, 
+                              thresh.use = 0.25)
+
+# Filter markers
+markers <- sce.markers |> 
+    group_by(cluster) |> 
+    filter(p_val_adj < 0.001) |> 
+    ungroup()
+
+# ID conversion (if needed)
+gid <- bitr(unique(markers$gene), 'SYMBOL', 'ENTREZID', OrgDb = 'org.Hs.eg.db')
+markers <- full_join(markers, gid, by = c('gene' = 'SYMBOL'))
+
+# Perform comparison using formula interface
+x <- compareCluster(ENTREZID ~ cluster, data = markers, fun = 'enrichKEGG')
+
+# Visualization
+dotplot(x, label_format = 40) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Using COSG results
+
+Methods like `COSG` return marker genes as a list or data frame where columns represent clusters. Since a data frame is essentially a list of equal-length vectors, it can be passed directly to `compareCluster()`.
+
+```{r eval=FALSE}
+#| label: sc-cosg-example
+library(COSG)
+
+# Identify markers using COSG
+marker_cosg <- cosg(
+    sce,
+    groups = 'all',
+    assay = 'RNA',
+    slot = 'data',
+    mu = 1,
+    n_genes_user = 100
+)
+
+# The first element is a data frame of gene symbols
+# Columns correspond to clusters
+head(marker_cosg[[1]])
+
+# Directly use the data frame for enrichment
+y <- compareCluster(marker_cosg[[1]], 
+                    fun = 'enrichGO', 
+                    OrgDb = 'org.Hs.eg.db', 
+                    keyType = 'SYMBOL', 
+                    ont = "MF")
+
+# Visualization
+dotplot(y, label_format = 60) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This demonstrates that `compareCluster()` can seamlessly handle various data structures commonly produced by single-cell analysis tools, simplifying the downstream functional interpretation.
+
 ## Visualization of functional profile comparison {#vis-compare-profile}
 
 ### Dot plot {#compare-dotplot}

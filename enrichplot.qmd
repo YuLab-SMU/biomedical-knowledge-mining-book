@@ -400,6 +400,44 @@ plot_list(p1, p2, p3, p4, ncol=2, tag_levels = 'A')
 The `cnetplot` function can be used as a general method to visualize data relationships in a network diagram. Please refer to the vignette of `r CRANpkg("ggtangle")`. 
 
 
+### Customizing gene colors in cnetplot
+
+Users can color specific genes by providing a named vector of fold changes containing only those genes.
+
+```{r}
+#| label: fig-cnetplot-custom-color
+foldChange <- c(rep(1, 6), rep(-1, 4))
+names(foldChange) <- c("MARCO", "GZMB", "CXCL11", "CXCL10",
+                       "LAG3", "CCL8", "PDK1", "GABRP", "MELK", "CENPE")
+p <- cnetplot(edox, foldChange=foldChange)
+p
+```
+
+If you want to remove the color legend:
+
+```{r}
+#| label: fig-cnetplot-no-legend
+p <- p + guides(color='none')
+p
+```
+
+To create a custom legend, you can use a dummy data frame and `geom_point`:
+
+```{r}
+#| label: fig-cnetplot-custom-legend
+d <- data.frame(type=c('upregulated', 'downregulated'), x=0, y=0)
+g <- p + geom_point(aes(alpha=type, x=x, y=y), data=d, shape=16, size=0)
+
+g + guides(alpha=guide_legend(
+    override.aes=list(color=c("blue", "red"),
+                      alpha=1,
+                      size=3),
+    title = "VIP genes",
+    reverse = TRUE
+))
+```
+
+
 Note: The `cnetplot()` function also works with [`compareCluster()` output](#compare-cnetplot).
 
 
