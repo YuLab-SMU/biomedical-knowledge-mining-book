@@ -237,7 +237,6 @@ merge(x, y, by.x='Path', by.y='ko')
 
 
 ```{r}
-#| label: enrichKEGG-example
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
@@ -254,7 +253,6 @@ Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see a
 For GO analysis, the `readable` parameter controls whether to translate the IDs to human-readable gene names. This parameter is not available for KEGG analysis. However, the `setReadable()` function can translate input gene IDs to gene names if the corresponding `OrgDb` object is available.
 
 ```{r}
-#| label: setReadable-kegg
 library(org.Hs.eg.db)
 # 'kk' is the enrichKEGG result from the previous section
 kk <- setReadable(kk, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
@@ -264,7 +262,6 @@ head(kk)
 ## KEGG pathway gene set enrichment analysis {#clusterprofiler-kegg-pathway-gsea}
 
 ```{r}
-#| label: gseKEGG-example
 kk2 <- gseKEGG(geneList     = geneList,
                organism     = 'hsa',
                minGSSize    = 120,
@@ -303,7 +300,6 @@ head(mkk)
 
 
 ```{r}
-#| label: gseMKEGG-example
 mkk2 <- gseMKEGG(geneList = geneList,
                  organism = 'hsa',
                  pvalueCutoff = 1)

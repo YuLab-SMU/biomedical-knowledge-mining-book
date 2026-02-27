@@ -28,6 +28,7 @@ The output includes the core enriched genes in Entrez ID format for each signifi
 To make the results more interpretable, use `setReadable()` to convert Entrez IDs to gene symbols:
 
 ```{r}
+library(clusterProfiler)
 y <- setReadable(x, 'org.Hs.eg.db')
 head(y, 2)
 ```
