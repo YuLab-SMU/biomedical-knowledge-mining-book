@@ -157,8 +157,8 @@ Dot plot is similar to bar plot with the capability to encode another score as d
 #| label: fig-dotplot-setup
 library(ggplot2)
 edo2 <- gseDO(geneList)
-dotplot(edo, showCategory=30) + ggtitle("dotplot for ORA")
-dotplot(edo2, showCategory=30) + ggtitle("dotplot for GSEA")
+dotplot(edo, showCategory=30, label_format=NULL) + ggtitle("dotplot for ORA")
+dotplot(edo2, showCategory=30, label_format=NULL) + ggtitle("dotplot for GSEA")
 ```
 
 
@@ -494,6 +494,27 @@ p2 <- treeplot(edox2, cluster_method = "average",
     hexpand(.3)
 aplot::plot_list(p1, p2, tag_levels='A', ncol=2)
 ```
+
+## Semantic Space Plot {#ssplot}
+
+While `treeplot()` visualizes semantic similarity using a hierarchical structure, the `ssplot()` (Semantic Space Plot) projects enriched terms into a low-dimensional space (e.g., using Multidimensional Scaling, MDS). This provides a complementary spatial view where terms with high semantic similarity are clustered together.
+
+Like `treeplot()`, `ssplot()` requires `pairwise_termsim()` to be run first. It automatically groups terms into clusters (default `nCluster` is determined automatically) and labels them with representative words.
+
+```{r}
+#| label: fig-ssplot
+#| fig-width: 15
+#| fig-height: 10
+#| fig-scap: |
+#|   Semantic space plot of enriched terms.
+#| fig-cap: |
+#|   **Semantic space plot of enriched terms.**
+#|   ssplot with nCluster=5.
+
+ssplot(edox2, nCluster=5) + ggtitle("ssplot (nCluster=5)")
+```
+
+`ssplot()` is particularly useful for visualizing the overall semantic landscape of enrichment results and identifying distinct functional modules in a continuous space.
 
 
 ## Enrichment Map
