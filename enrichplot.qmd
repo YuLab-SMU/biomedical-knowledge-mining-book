@@ -295,6 +295,31 @@ p2 <- dotplot(edo, showCategory=10) + scale_size(range=c(2, 20)) + ggtitle("Adju
 plot_list(p1, p2, ncol=2, tag_levels='A')
 ```
 
+## Manhattan plot
+
+The `manhattanplot()` function provides a landscape-style overview of enrichment results. It arranges enriched terms along the x-axis by ontology (or by category in `compareCluster()` results), uses `-log10()` transformed significance values on the y-axis, and maps term size to a variable such as `Count`. The most significant terms can be labeled automatically with `showCategory`, making it useful for summarizing a large number of enriched terms in a single plot.
+
+When GO enrichment is performed with `ont = "ALL"`, `manhattanplot()` can display the top terms across BP, CC, and MF simultaneously by combining it with `split = "ONTOLOGY"`.
+
+```{r}
+#| label: fig-manhattanplot
+#| fig-width: 12
+#| fig-height: 7
+#| fig-cap: |
+#|   **Manhattan plot of GO enrichment results.**
+#|   Terms are grouped by ontology and plotted by `-log10(p.adjust)`.
+manhattanplot(
+  ego_all,
+  color = "p.adjust",
+  showCategory = 12,
+  size = "Count",
+  split = "ONTOLOGY",
+  title = "GO enrichment landscape"
+)
+```
+
+The `manhattanplot()` function also supports `gseaResult`, `enrichResultList`, `gseaResultList`, and `compareClusterResult` objects, which makes it convenient for comparing the distribution of significant terms across multiple ontologies or experimental groups.
+
 ## Dotplot2: Comparing two clusters
 
 The `dotplot2()` function is a specialized version of dotplot designed for comparing two selected clusters from `compareCluster` results. This function provides focused visualization when users want to directly contrast specific biological conditions or experimental groups.
