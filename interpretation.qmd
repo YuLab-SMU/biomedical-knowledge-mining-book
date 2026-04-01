@@ -8,10 +8,24 @@ To bridge the gap between statistical results and biological insights, `clusterP
 
 The core function for this feature is `interpret()`. It accepts enrichment results (e.g., from `enrichKEGG`, `enrichGO`, or `compareCluster`) and uses an LLM to generate a structured report.
 
-To use this feature, you need to configure an API key for a supported LLM provider (e.g., DeepSeek).
+To use this feature, you need to configure an API key for a provider supported by `aisdk`. Model selection is now delegated to `aisdk`: if `model` is not specified, `interpret()` uses the current default model managed by `aisdk::get_model()` / `aisdk::set_model()`, while an explicit `model = ...` argument overrides that default for a single call. In practice, this usually means loading credentials from your `.env` file or setting the relevant environment variables before calling `set_model()`. For provider configuration details, see the `aisdk` documentation.
 
-```r
-#|```{r}
+```{r}
+#| eval: false
+library(aisdk)
+library(dotenv)
+
+# Load API credentials from .env (or configure them in your environment)
+dotenv::load_dot_env()
+
+# Optional: set a session-wide default model after credentials are available
+set_model("stepfun:step-3.5-flash")
+
+# Check the current default model
+get_model()
+```
+
+```{r}
 #| label: interpret-basic
 #| eval: false
 library(clusterProfiler)
