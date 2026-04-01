@@ -111,13 +111,15 @@ library(msigdbr)
 msigdbr_species()
 ```
 
-We can retrieve all human gene sets:
+We can retrieve human gene sets with `msigdbr()`. Since the complete human MSigDB table is large, it is usually better to request only the collection you need in analysis workflows.
 
 
 ```{r}
 #| label: msigdbr-human
-m_df <- msigdbr(species = "Homo sapiens")
-head(m_df, 2) |> as.data.frame()
+#| cache: false
+msigdbr(species = "Homo sapiens", collection = "C6") |>
+  head(2) |>
+  as.data.frame()
 ```
 
 
@@ -125,8 +127,8 @@ Or specific collection. Here we use C6, oncogenic gene sets as an example:
 
 ```{r}
 #| label: msigdbr-c6
-m_t2g <- m_df |>
-  dplyr::filter(gs_collection == "C6") |>
+#| cache: false
+m_t2g <- msigdbr(species = "Homo sapiens", collection = "C6") |>
   dplyr::select(gs_name, ncbi_gene)
 head(m_t2g)
 ```
@@ -149,8 +151,8 @@ In over-representation analysis, we use oncogenic gene sets (i.e. C6) to test wh
 
 ```{r}
 #| label: msigdb-gsea-example
-C3_t2g <- m_df |>
-  dplyr::filter(gs_collection == "C3") |>
+#| cache: false
+C3_t2g <- msigdbr(species = "Homo sapiens", collection = "C3") |>
   dplyr::select(gs_name, ncbi_gene)
 head(C3_t2g)
 

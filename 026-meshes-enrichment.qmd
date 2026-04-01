@@ -25,8 +25,10 @@ In this example, we use data source from `gendoo` and `C` (Diseases) category.
 
 
 
-```{r enrichmesh, cache=TRUE, eval=FALSE}
+```{r}
 #| label: enrichMeSH-example
+#| cache: true
+#| eval: false
 library(meshes)
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
@@ -49,13 +51,16 @@ head(x)
 
 In the following example, we use data source from `gene2pubmed` and test category `G` (Phenomena and Processes).
 
-```{r gsemesh, cache=TRUE, eval=FALSE}
+```{r}
 #| label: gseMeSH-example
+#| cache: true
+#| eval: false
 y <- gseMeSH(geneList, MeSHDb = db, database = 'gene2pubmed', category = "G")
 ```
 
-```{r echo=FALSE}
+```{r}
 #| label: load-gseMeSH-cache
+#| echo: false
 ## saveRDS(y, file="cache/gseMeSH.rds")
 y <- readRDS("cache/gseMeSH.rds")
 ```
