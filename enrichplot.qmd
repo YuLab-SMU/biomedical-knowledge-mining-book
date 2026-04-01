@@ -716,6 +716,8 @@ upsetplot(kk2)
 The `ridgeplot` will visualize expression distributions of core enriched genes
 for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.
 
+The `stat` parameter controls the geometry used to summarize the distributions. By default, `ridgeplot()` uses `stat = "density_ridges"`, and users can also set `stat = "binline"` to display binned profiles instead.
+
 
 ```{r}
 #| label: fig-ridgeplot  
@@ -726,6 +728,10 @@ for GSEA enriched categories. It helps users to interpret up/down-regulated path
 #| fig-cap: |
 #|   **Ridgeplot for gene set enrichment analysis.** 
 ridgeplot(edo2)
+```
+
+```{r eval=FALSE}
+ridgeplot(edo2, stat = "binline")
 ```
 
 
