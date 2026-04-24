@@ -465,7 +465,6 @@ g + guides(alpha=guide_legend(
 
 Note: The `cnetplot()` function also works with [`compareCluster()` output](#compare-cnetplot).
 
-
 ## Heatmap-like functional classification
 
 

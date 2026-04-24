@@ -205,15 +205,34 @@ dotplot(formula_res, x="group") + facet_grid(~othergroup)
 ```
 
 
-By default, only top 5 (most significant) categories of each cluster
-are plotted. Users can change the parameter `showCategory` to
-specify how many categories of each cluster to be plotted, and if
-`showCategory` is set to `NULL`, the whole result will
-be plotted. The `showCategory` parameter also allows passing a vector of selected categories to [plot pathways of interest](#showing-specific-pathways)
+By default, only the top 5 (most significant) categories of each cluster are
+shown. Users can change `showCategory` to specify how many categories should be
+displayed for each cluster, and if `showCategory` is set to `NULL`, the whole
+result will be plotted. The `showCategory` parameter also accepts a character
+vector of selected categories to [plot pathways of
+interest](#showing-specific-pathways).
 
-The `dotplot()` function tries to make the comparison among different clusters more informative and reasonable. After extracting *e.g.* 10 categories for each clusters, `r Biocpkg("clusterProfiler")` tries to collect overlap of these categories among clusters. For example, `term A` is enriched in all the gene clusters (*e.g.*, `g1` and `g2`) and is in the 10 most significant categories of `g1` but not `g2`. `r Biocpkg("clusterProfiler")` will capture this information and include `term A` in `g2` cluster to make the comparison in `dotplot` more reasonable. 
+`dotplot()` tries to make the comparison among different clusters more
+informative and reasonable. After extracting, for example, 10 categories for
+each cluster, `r Biocpkg("clusterProfiler")` collects overlap of these
+categories among clusters. For example, `term A` may be enriched in all gene
+clusters (*e.g.*, `g1` and `g2`) and ranked among the 10 most significant
+categories of `g1` but not of `g2`. In this case,
+`r Biocpkg("clusterProfiler")` will still include `term A` in the `g2` cluster
+to make the comparison more reasonable.
 
-This feature ensures that if a term is significant and selected for one cluster, its statistics in other clusters are also displayed, allowing for a valid comparison. Consequently, the number of categories shown for some clusters might exceed the `showCategory` limit (e.g., 15 categories shown for *g2* while `showCategory` is 10). Disabling this by setting `includeAll = FALSE` in `dotplot()` may result in a plot that suggests zero overlap between clusters, which can be misleading (see @fig-includeAll A vs B) and is not recommended. 
+This feature ensures that if a term is significant and selected for one cluster,
+its statistics in other clusters are also displayed, allowing for a valid
+comparison. Consequently, the number of categories shown for some clusters might
+exceed the `showCategory` limit (e.g., 15 categories shown for *g2* while
+`showCategory` is 10). Disabling this by setting `includeAll = FALSE` in
+`dotplot()` may result in a plot that suggests zero overlap between clusters,
+which can be misleading (see @fig-includeAll A vs B) and is not recommended.
+
+The same selection logic is used by `cnetplot()` for `compareCluster()`
+results. In both functions, a numeric `showCategory` selects the top terms
+within each cluster by default, while `includeAll` controls whether matched
+terms from other clusters should be retained for comparison.
 
 ```{r}
 #| label: fig-includeAll
@@ -236,23 +255,68 @@ The p-values indicate which categories are more likely to have biological meanin
 
 ### Gene-Concept Network {#compare-cnetplot}
 
-The [cnetplot](#cnetplot) also works with `compareCluster()` result.
+The [cnetplot](#cnetplot) also works with `compareCluster()` result. For
+`compareClusterResult` objects, enriched terms are drawn as pies so that the
+composition of each term across gene clusters can be displayed directly in the
+network. Like `dotplot()`, a numeric `showCategory` selects the top enriched
+terms within each cluster by default, and `includeAll = TRUE` keeps comparable
+terms from other clusters in the plot.
 
 ```{r}
 #| label: fig-mcnetplot  
-#| fig-width: 12
-#| fig-height: 8
+#| fig-width: 16
+#| fig-height: 16
 #| fig-scap: |
 #|   `cnetplot()` for comparing functional profiles of multiple gene clusters.
 #| fig-cap: |
 #|   **`cnetplot()` for comparing functional profiles of multiple gene clusters.** 
-#|   Genes and functional categories (*i.e.*, pathways) are encoded as pies to distinguish different gene clusters.
-cnetplot(ck)
+#|   Default per-cluster selection (A), `includeAll = FALSE` (B),
+#|   `categorySizeBy = ~ -log10(p.adjust)` (C), and custom pie colors (D).
+cluster_cols <- setNames(
+    c("#0072B2", "#D55E00")[seq_along(unique(as.data.frame(ck)$Cluster))],
+    unique(as.data.frame(ck)$Cluster)
+)
+
+p1 <- cnetplot(ck, showCategory = 3)
+p2 <- cnetplot(ck, showCategory = 3, includeAll = FALSE)
+p3 <- cnetplot(ck, showCategory = 3, categorySizeBy = ~ -log10(p.adjust))
+p4 <- cnetplot(ck, showCategory = 3, categorySizeBy = 2) +
+    scale_fill_manual(values = cluster_cols)
+
+plot_list(p1, p2, p3, p4, ncol = 2, tag_levels = "A")
 ```
 
+Compared with ordinary enrichment results, there are several useful parameters
+to keep in mind for `compareCluster()` output:
 
+- `showCategory = 3` means that the top 3 enriched terms are selected within each cluster by default.
+- `showCategory` can also be a character vector if you want to display a manually selected set of terms.
+- `includeAll = TRUE` keeps comparable terms that also appear in other clusters; set `includeAll = FALSE` if you only want the directly selected terms.
+- `categorySizeBy` controls the size of category pies and supports expressions such as `~itemNum`, `~p.adjust`, or `~ -log10(p.adjust)`.
+- Pie colors are mapped to `Cluster`, so custom cluster colors can be supplied with `ggplot2::scale_fill_manual()`.
 
+As in `dotplot()`, the `split` parameter can be used when term selection should
+be carried out within another grouping variable rather than only by cluster. For
+example, when GO enrichment is performed with `ont = "ALL"`, users can select
+the top terms within each ontology:
+
+```{r}
+#| label: fig-mcnetplot-split
+#| fig-width: 12
+#| fig-height: 8
+#| eval: false
+ck_all <- compareCluster(
+    geneCluster = gcSample,
+    fun = enrichGO,
+    OrgDb = org.Hs.eg.db,
+    ont = "ALL"
+)
+ck_all <- setReadable(ck_all, OrgDb = org.Hs.eg.db, keyType = "ENTREZID")
+
+cnetplot(ck_all, showCategory = 3, split = "ONTOLOGY")
+```
 ## Summary
+
 
 The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only [groupGO](#go-classification), [enrichGO](#clusterprofiler-go-ora), [enrichKEGG](#clusterprofiler-kegg-pathway-ora), [enrichMKEGG](#clusterprofiler-kegg-module-ora), [enrichWP](#clusterprofiler-wikipathway-ora) and [enricher](#universal-api) that were provided in this package, but also other biological and biomedical ontologies, including but not limited to [enrichPathway](#reactomepa-ora), [enrichDO](#dose-do-ora), [enrichNCG](#dose-ncg-ora), [enrichDGN](#dose-dgn-ora) and [enrichMeSH](#meshes-ora). 
 
