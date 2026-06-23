@@ -99,11 +99,11 @@ One RWR diffusion + one GSEA test. You get not only network-aware scores but als
 library(clusterProfiler)
 
 # 1. Fetch the full background PPI network for Human (taxID 9606)
-# This uses local caching to avoid repeated downloads
-net <- get_ppi_network(9606, output = "igraph")
+# Default output is "data.frame" (edge list), which nsea() natively supports
+net <- get_ppi_network(9606)
 
 # 2. Run NSEA
-# (Assuming 'stats' is a named numeric vector and 'pathways' is a list of gene sets)
+# (Assuming 'stats' is a named numeric vector of non-negative evidence scores)
 nsea_result <- nsea(
     geneList = stats,
     network = net,
@@ -132,8 +132,13 @@ By passing a `weight` vector (e.g., network centrality), the model calculates an
 For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.
 
 ```{r}
+library(igraph)
+
+# Fetch network as an igraph object to calculate topological weights
+net_ig <- get_ppi_network(9606, output = "igraph")
+
 # Calculate PageRank centrality as weights
-pr_weights <- igraph::page_rank(net)$vector
+pr_weights <- page_rank(net_ig)$vector
 
 # Run Weighted ORA
 res_wora <- ora(gene = de_genes, 
@@ -160,5 +165,115 @@ summary_res <- bayes_summary(bayes_res)
 ```
 
 With `enrichit` acting as the high-performance backend, tools like `clusterProfiler` can focus on biological interpretation and visualization, providing a seamless and powerful knowledge mining experience.
+
+## Multi-omics Early Integration
+
+With the rapid development of sequencing technologies, it is very common to perform functional analysis on multi-omics data (e.g., Transcriptomics + Proteomics). A naive approach is to perform enrichment analysis on each omics separately and then intersect the enriched pathways. However, this late-integration strategy completely ignores the fact that different omics might provide weak but consistent signals for the same pathway, which would be filtered out by strict thresholds in single-omics analysis.
+
+To solve this, `enrichit` introduces an **Early Integration** pipeline. The core philosophy is simple: **Integrate first, enrich later. Decouple the integration layer from the enrichment layer.**
+
+### 1. Statistical Aggregation (`aggregate_omics`)
+
+Instead of finding the intersection of pathways, we aggregate the evidence at the feature level. `aggregate_omics()` takes multi-source statistics (e.g., p-values or signed scores) and merges them into a unified evidence score. For p-values, it supports classic methods like `fisher` or `stouffer`, and internally converts them to a monotonically increasing score suitable for ranking.
+
+```{r}
+library(enrichit)
+
+# Create mock p-values for RNA and Protein data across 1000 genes
+set.seed(123)
+gene_names <- paste0("Gene", 1:1000)
+
+rna_pvals <- runif(1000, 0, 1)
+names(rna_pvals) <- gene_names
+
+prot_pvals <- runif(1000, 0, 1)
+names(prot_pvals) <- gene_names
+
+# Inject consistent but weak signals into the first 20 genes (pathway of interest)
+rna_pvals[1:20] <- runif(20, 0.01, 0.08)
+prot_pvals[1:20] <- runif(20, 0.01, 0.08)
+
+# Aggregate p-values from RNA and Protein data using Fisher's method
+agg_res <- aggregate_omics(
+    x = list(RNA = rna_pvals, PROT = prot_pvals),
+    method = "fisher",
+    input = "pvalue",
+    feature_type = "gene"
+)
+
+# Look at the top aggregated scores
+head(sort(agg_res$score, decreasing = TRUE))
+```
+
+### 2. ID Harmonization (`harmonize_ids`)
+
+Proteomics data often use UniProt IDs or protein groups, while your pathway annotations are usually gene-based. Directly feeding protein-level data to gene set enrichment will cause a huge ID mismatch.
+
+`harmonize_ids()` acts as a dedicated ID mapping layer. It maps the protein-level aggregated results to the gene-level, and handles many-to-one mappings gracefully using folding strategies like `min_p` or `max_abs`.
+
+```{r}
+# Suppose our proteomics data used UniProt IDs (e.g., Q9Y6N7)
+# and we need to map them back to standard Gene Symbols
+id_mapping_df <- data.frame(
+    source_id = c("P12345", "P12346", "Q9Y6N7"),
+    target_id = c("Gene1", "Gene1", "Gene2") # P12345 and P12346 both map to Gene1
+)
+
+# For demonstration, we create a mock protein-level aggregated result
+prot_agg_res <- aggregate_omics(
+    x = list(PROT = prot_pvals[1:3]),
+    method = "fisher",
+    input = "pvalue",
+    feature_type = "protein"
+)
+names(prot_agg_res$score) <- c("P12345", "P12346", "Q9Y6N7")
+prot_agg_res$feature_id <- c("P12345", "P12346", "Q9Y6N7")
+
+# Map and collapse protein-level features to gene-level
+harmonized_res <- harmonize_ids(
+    x = prot_agg_res, # Assuming this is an aggregated result from proteomics
+    mapping = id_mapping_df,
+    from = "protein",
+    to = "gene",
+    collapse = "min_p" # If multiple proteins map to one gene, take the most significant one
+)
+```
+
+### 3. Distribution to Enrichment Backends
+
+Once the multi-omics data is aggregated and harmonized, you obtain a unified object containing a ranking `score`.
+
+For **GSEA** or **NSEA**, you can directly extract the sorted score vector and feed it to the engine:
+
+```{r}
+geneList <- sort(agg_res$score, decreasing = TRUE)
+
+gsea_res <- gsea(
+    geneList = geneList,
+    gene_sets = pathways
+)
+```
+
+For **ORA**, which requires discrete gene lists, `enrichit` provides an adapter function `select_features_for_ora()`. It takes the aggregated object and a cutoff, and returns the selected `gene` list and background `universe`, perfectly bridging the gap between continuous multi-omics scores and traditional hypergeometric tests.
+
+```{r}
+# Define a mock pathway containing the 20 genes we injected signal into
+pathways <- list(TargetPathway = gene_names[1:20])
+
+ora_inputs <- select_features_for_ora(
+    x = agg_res, 
+    cutoff = 0.05, 
+    by = "pvalue"
+)
+
+# Only genes with significant aggregated evidence will be selected
+ora_res <- ora(
+    gene = ora_inputs$gene,
+    universe = ora_inputs$universe,
+    gene_sets = pathways
+)
+```
+
+By decoupling ID mapping, statistical integration, and pathway enrichment, `enrichit` provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.
 
 ## References {-}
