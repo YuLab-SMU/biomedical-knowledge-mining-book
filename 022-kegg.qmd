@@ -140,6 +140,27 @@ kk_gson <- read.gson("kegg_hsa.gson")
 
 The `GSON` object or the file can be used in `enricher()` and `GSEA()` functions (via `gson` parameter or by parsing it). For more detailed information on using the GSON format, including how to perform generalized enrichment analysis with multiple knowledge bases using `gsonList`, please refer to @sec-gson-enrichment.
 
+### When the KEGG API is unreachable
+
+In some server or cloud environments, direct access to the KEGG REST API may fail (for example, returning `403 Forbidden`). In such cases, `enrichKEGG()` and `gseKEGG()` may fail before the enrichment analysis starts, simply because the annotation data cannot be retrieved online.
+
+A practical workaround is to build the KEGG annotation on another machine that has normal access to KEGG, save it locally, and then reuse it on the target server. This is also a convenient way to freeze the KEGG version used in an analysis, which helps reproducibility.
+
+```{r eval=FALSE}
+#| label: gson-kegg-offline-workaround
+## on a machine that can access KEGG
+kk_gson <- gson_KEGG("hsa")
+saveRDS(kk_gson, file = "kegg_hsa_gson.rds")
+
+## on the server
+kk_gson <- readRDS("kegg_hsa_gson.rds")
+
+kk <- enrichKEGG(gene = gene, organism = kk_gson)
+kk2 <- gseKEGG(geneList = geneList, organism = kk_gson)
+```
+
+This approach is useful when the analysis server has unstable network access, when the KEGG API is temporarily unavailable, or when users want to freeze the exact KEGG version used in an analysis for later reproduction.
+
 ### Using `createKEGGdb`
 
 Another approach is to create a local `KEGG.db` package containing the KEGG data. While the official `KEGG.db` has not been updated since 2011, we can generate a new one using the `createKEGGdb` package.
