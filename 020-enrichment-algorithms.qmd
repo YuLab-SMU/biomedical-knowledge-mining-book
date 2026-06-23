@@ -1,0 +1,164 @@
+# Algorithms of Enrichment Analysis {#enrichment-algorithms}
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+```
+
+Functional enrichment analysis is a staple in bioinformatics for interpreting lists of genes identified from omics experiments. Behind the scenes of our ecosystem (`clusterProfiler`, `DOSE`, etc.), the heavy lifting is powered by the `enrichit` package. 
+
+We built `enrichit` with a clear philosophy: **minimal dependencies, maximum performance, and elegant extensibility**. It provides extremely fast, C++-based implementations of classical methods (via `Rcpp`), while introducing modern, advanced algorithms to address long-standing blind spots in the field.
+
+In this chapter, we will walk through the algorithmic backbone of enrichment analysis, moving from the standard ORA and GSEA to our newly introduced Network-based and Weighted enrichment frameworks.
+
+## Over-Representation Analysis (ORA) {#ora-algorithm}
+
+Over Representation Analysis (ORA) [@boyle2004] is a widely used approach to determine whether known biological functions or processes are over-represented (= enriched) in an experimentally-derived gene list, *e.g.* a list of differentially expressed genes (DEGs).
+
+`enrichit` implements ORA using the **hypergeometric distribution** (one-sided Fisher's exact test). The p-value is calculated as the probability of observing at least $k$ genes from the specific gene set in the selected list of $n$ genes, given a background population (universe) of $N$ genes containing $M$ genes from that set.
+
+$$
+p = 1 - \sum_{i=0}^{k-1} \frac{\binom{M}{i} \binom{N-M}{n-i}}{\binom{N}{n}}
+$$
+
+**Example:** Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. From these, 2641 are annotated to gene set of interest. Among the differentially expressed genes, 28 belong to the gene set^[example adopted from <https://guangchuangyu.github.io/2012/04/enrichment-analysis/>]. 
+
+```{r}
+#| label: enrichment-data
+d <- data.frame(non_DE_gene=c(2613, 15310), DE_gene=c(28, 29))
+row.names(d) <- c("In_category", "not_in_category")
+d
+```                        
+
+Whether the gene set of interest is significantly over-represented in the differentially expressed genes can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
+
+```{r}
+#| label: fisher-test
+fisher.test(d, alternative = "greater")
+```
+
+While mathematically sound, this classic model makes a naive assumption: it assumes that every gene has an *equal probability* of being detected. We will see how to fix this systematic bias later in the [Weighted Enrichment Analysis](#weighted-enrichment) section.
+
+## Gene Set Enrichment Analysis (GSEA) {#gsea-algorithm}
+
+Unlike ORA, which requires an arbitrary threshold to define "significant" genes and ignores the rest, GSEA uses the entire ranked list of genes. It calculates an **Enrichment Score (ES)** that reflects the degree to which a gene set is over-represented at the top or bottom of a ranked list.
+
+There are three key elements of the GSEA method:
+
+* Calculation of an Enrichment Score.
+  + The enrichment score (_ES_) represents the degree to which a set _S_ is over-represented at the top or bottom of the ranked list _L_. The score is calculated by walking down the list _L_, increasing a running-sum statistic when we encounter a gene in _S_ and decreasing when it is not encountered. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The _ES_ is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov(KS)-like statistic [@subramanian_gene_2005].
+* Estimation of Significance Level of _ES_.
+  + The _p_-value of the _ES_ is calculated using a permutation test. Specifically, we permute the gene labels of the gene list _L_ and recompute the _ES_ of the gene set for the permutated data, which generates a null distribution for the _ES_. The _p_-value of the observed _ES_ is then calculated relative to this null distribution.
+* Adjustment for Multiple Hypothesis Testing.
+  + When the entire gene sets are evaluated, the estimated significance level is adjusted to account for multiple hypothesis testing and also _q_-values are calculated for FDR control.
+
+We implemented the GSEA algorithm proposed by Subramanian [@subramanian_gene_2005]. `enrichit` offers a fast C++ implementation of GSEA. The default method (`method = "multilevel"`) uses an adaptive multi-level splitting Monte Carlo approach (derived from `fgsea` [@korotkevich_fast_2019]) to estimate low p-values efficiently with high accuracy. 
+
+```{r}
+library(enrichit)
+
+# Generate synthetic ranked gene list
+set.seed(42)
+geneList <- sort(rnorm(1000), decreasing = TRUE)
+names(geneList) <- paste0("Gene", 1:1000)
+
+gene_sets <- list(
+  PathwayTop = names(geneList)[1:50],
+  PathwayBottom = names(geneList)[951:1000]
+)
+
+# Run GSEA using the multilevel method
+gsea_result <- gsea(
+  geneList = geneList,
+  gene_sets = gene_sets,
+  method = "multilevel"
+)
+```
+
+### Leading edge analysis and core enriched genes
+
+Leading edge analysis reports `Tags` to indicate the percentage of genes contributing to the enrichment score, `List` to indicate where in the list the enrichment score is attained and `Signal` for enrichment signal strength.
+
+It would also be very interesting to get the core enriched genes that contribute to the enrichment. Our packages (`clusterProfiler`, `DOSE`, `meshes` and `ReactomePA`) support leading edge analysis and report core enriched genes in GSEA analysis.
+
+## Network-based Set Enrichment Analysis (NSEA)
+
+Traditional enrichment methods treat pathways as independent "bags of genes," completely ignoring the biological interactions between them. If you only look at the overlap, you are wasting a massive amount of network topological information.
+
+Some previous methods (like *EnrichNet*) attempted to solve this by calculating network distances. However, they suffered from a fatal flaw: they only provided a relative score without rigorous p-values, and calculating empirical p-values via network permutation was excruciatingly slow. Life is too short to wait for permutations.
+
+To break this bottleneck, we introduced **Network-based Set Enrichment Analysis (NSEA)**, a true Network-based GSEA. 
+
+Our core philosophy is to leverage existing strengths seamlessly:
+
+1. **Propagation**: We take your input gene scores and diffuse them across a biological network using a Random Walk with Restart (RWR). To squeeze out every drop of performance, the RWR is powered by `RcppEigen` sparse matrix multiplication in C++. Even networks with hundreds of thousands of edges converge in a flash.
+2. **Enrichment**: After diffusion, every node in the network receives a new "propagation score" containing global topological context. We take this fully ranked list and feed it directly into our extreme-speed multilevel GSEA engine.
+
+One RWR diffusion + one GSEA test. You get not only network-aware scores but also rigorous p-values and FDRs, with blazing speed.
+
+```{r}
+library(clusterProfiler)
+
+# 1. Fetch the full background PPI network for Human (taxID 9606)
+# This uses local caching to avoid repeated downloads
+net <- get_ppi_network(9606, output = "igraph")
+
+# 2. Run NSEA
+# (Assuming 'stats' is a named numeric vector and 'pathways' is a list of gene sets)
+nsea_result <- nsea(
+    geneList = stats,
+    network = net,
+    gene_sets = pathways
+)
+```
+
+## Weighted Enrichment Analysis {#weighted-enrichment}
+
+Have you ever noticed a weird phenomenon? No matter what odd phenotype you study, the enriched pathways always seem to feature the same "usual suspects"—like the ribosome, spliceosome, or broad immune responses.
+
+This is driven by a systematic bias. In real biological networks, genes are not created equal. Hub genes participate in numerous functions and are easily perturbed. If you don't account for this, traditional ORA will be easily fooled by these highly active Hub genes, yielding false-positive significance for broad pathways.
+
+To correct this, `enrichit` introduces **Weighted Enrichment Analysis**, supporting both ORA and GSEA.
+
+### Weighted ORA: De-biasing with Wallenius Distribution
+
+How do we correct the bias in ORA? We bring in the **Wallenius' noncentral hypergeometric distribution**. 
+
+By passing a `weight` vector (e.g., network centrality), the model calculates an **Odds ratio** for each pathway. If a pathway is full of high-weight core genes, the model applies a penalty to the p-value. The false significance driven by Hub genes is brought back to reality, allowing truly specific pathways to stand out.
+
+*Note: In the early days of RNA-seq, `goseq` used gene length as a weight to correct ORA. However, in the era of 3' poly-A sequencing and 10x single-cell, length bias is mostly obsolete. Our implementation is universal—your weights are dictated by your scientific question, not hardcoded to gene length.*
+
+### Weighted GSEA: Fusing Weights with Statistics
+
+For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.
+
+```{r}
+# Calculate PageRank centrality as weights
+pr_weights <- igraph::page_rank(net)$vector
+
+# Run Weighted ORA
+res_wora <- ora(gene = de_genes, 
+                gene_sets = pathways, 
+                universe = all_genes, 
+                weight = pr_weights)
+
+# Run Weighted GSEA
+res_wgsea <- gsea(geneList = stats, 
+                  gene_sets = pathways, 
+                  weight = pr_weights)
+```
+
+The beauty of weighted enrichment lies in its **infinite possibilities**. Your `weight` doesn't have to be network centrality. It can be a **tissue specificity score**, an evolutionary **conservation score**, or a **multi-omics confidence score**. If you have prior knowledge that "these genes are more important", simply pass them to the `weight` parameter and let `enrichit` handle the rest.
+
+## Bayesian Term Selection
+
+Finally, for ORA results, `enrichit` provides a Bayesian framework (`bayes_enrich()`) to estimate the posterior probability of explanatory terms. This helps to select the most likely active pathways while automatically penalizing redundancy among highly overlapping GO terms.
+
+```{r}
+# After obtaining an ORA result object
+bayes_res <- bayes_enrich(ora_result)
+summary_res <- bayes_summary(bayes_res)
+```
+
+With `enrichit` acting as the high-performance backend, tools like `clusterProfiler` can focus on biological interpretation and visualization, providing a seamless and powerful knowledge mining experience.
+
+## References {-}

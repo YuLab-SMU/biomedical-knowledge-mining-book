@@ -28,6 +28,7 @@ book:
 
     - part: 02-Enrichment.qmd
       chapters:
+        - 020-enrichment-algorithms.qmd
         - 021-go.qmd
         - 022-kegg.qmd
         - 023-other-dbs.qmd
