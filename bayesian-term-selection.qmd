@@ -1,0 +1,184 @@
+# Bayesian term selection for enrichment results {#sec-bayes-enrich}
+
+```{r}
+#| label: load-packages
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
+
+Traditional over-representation analysis (ORA) often returns a long list of significant terms. Because each term is tested independently, groups of overlapping GO terms or pathways may all be reported as significant even when they describe the same underlying biological program.
+
+`bayes_enrich()` adds a Bayesian term-selection layer on top of ORA results. Instead of asking only which terms are individually enriched, it asks which terms are most likely to represent the active biological programs that jointly explain the observed gene list. This procedure does not replace the ORA _p_-value and does not convert `p.adjust` into a posterior probability. It reuses the information already stored in an `enrichResult` object and builds a model based on term-gene coverage.
+
+## Input requirements
+
+`bayes_enrich()` accepts an `enrichResult` object and extracts the information it needs directly from that object. In particular, it reuses the observed genes, the background universe, the term-to-gene mapping, and the enrichment table. Users therefore do not need to provide `gene` or `universe` again.
+
+Internally, this means the Bayesian layer starts from the same enrichment result that users already trust, but asks a different question: among the candidate enriched terms, which ones provide the best joint explanation for the observed genes?
+
+## Candidate term space
+
+The `candidate` argument defines the term space used by Bayesian inference. It is not a posterior filter. Instead, it determines which terms are allowed to compete for active-term selection.
+
+- `candidate = "top"` sorts `x@result` by `by` and takes the first `n_terms` rows. By default, `by = "p.adjust"`, so the Bayesian model starts from the most significant ORA terms.
+- `candidate = "significant"` uses `as.data.frame(x)`, which respects the cutoffs stored in the enrichment object and therefore works on the significant terms that users usually inspect.
+- `candidate = "all"` uses the full `x@result` slot.
+- Users can also provide a character vector of term IDs to define a custom candidate set.
+
+```{r}
+#| label: bayes-enrich-candidate
+#| eval: false
+ego2 <- bayes_enrich(ego, candidate = "top", n_terms = 200)
+ego3 <- bayes_enrich(ego, candidate = "significant")
+ego4 <- bayes_enrich(ego, candidate = "all")
+ego5 <- bayes_enrich(ego, candidate = c("GO:0006955", "GO:0002376"))
+```
+
+Using a restricted candidate space is often helpful in practice because it keeps the model focused, runs faster, and reduces interference from weakly related terms.
+
+## The model
+
+Let $G$ be the background gene universe and $T$ the candidate term set. For each gene $g \in G$, let $y_g$ denote whether the gene appears in the observed gene list. For each candidate term $t \in T$, let $z_t$ denote whether the term is active, and let $A_t$ be the set of genes covered by that term.
+
+Each candidate term has a latent binary state:
+
+$$
+z_t =
+\begin{cases}
+1, & \text{term } t \text{ is active} \\
+0, & \text{term } t \text{ is inactive}
+\end{cases}
+$$
+
+The prior is
+
+$$
+P(z_t = 1) = \text{prior}, \qquad P(z_t = 0) = 1 - \text{prior}.
+$$
+
+A gene is considered covered if it belongs to at least one active term:
+
+$$
+\mathrm{covered}_g = \mathbb{I}\left(\exists t \in T \text{ such that } z_t = 1 \text{ and } g \in A_t \right).
+$$
+
+If a gene is covered, the model assumes that it is observed with probability $1 - \text{false\_negative}$. If it is not covered, it may still appear in the observed gene list with probability `false_positive`:
+
+$$
+P(y_g = 1 \mid \mathrm{covered}_g = 1) = 1 - \text{false\_negative}
+$$
+
+$$
+P(y_g = 1 \mid \mathrm{covered}_g = 0) = \text{false\_positive}.
+$$
+
+This leads to the posterior quantity of interest:
+
+$$
+P(z_t = 1 \mid \text{observed genes, candidate terms, term-gene mapping}),
+$$
+
+which represents the posterior support that term $t$ is an active explanatory term under the current candidate space and model parameters.
+
+## MCMC inference
+
+`bayes_enrich()` uses a lightweight Metropolis-Hastings sampler. In each iteration, one candidate term is selected at random, its active state is flipped, and only the genes covered by that term are updated. The acceptance probability is
+
+$$
+\min\left(1, \exp\left[\log p(\text{proposal}) - \log p(\text{current})\right]\right).
+$$
+
+After burn-in, the sampler records active states every `thin` iterations. The posterior probability of a term is then estimated as the proportion of saved samples in which that term is active. Because the implementation updates only the genes affected by the flipped term, the computational cost of one iteration is driven mainly by the size of that term rather than the size of the whole universe.
+
+## Why this helps
+
+ORA tests each term independently. In ontologies such as GO, many significant terms overlap heavily. For example, terms such as "immune response", "immune system process", "lymphocyte activation", and "T cell activation" may all be enriched because they share many of the same genes.
+
+`bayes_enrich()` performs joint explanation instead of independent scoring. If one specific term already explains most of the observed genes, another highly overlapping term may no longer be necessary. Because every active term pays a prior cost, redundant terms compete with one another during MCMC sampling. Terms with high posterior support therefore tend to be the ones that explain a large portion of the observed genes while remaining worth keeping after sparsity is taken into account.
+
+## A worked example
+
+The following example uses a smaller number of iterations than the default settings so that the book can render quickly. For interactive analysis, users can increase `n_iter` and `burnin` for more stable posterior estimates.
+
+```{r}
+#| label: bayes-enrich-example
+#| message: false
+#| warning: false
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(enrichit)
+
+data(geneList, package = "DOSE")
+de <- names(geneList)[abs(geneList) > 2]
+
+ego <- enrichGO(
+    gene = de,
+    universe = names(geneList),
+    OrgDb = org.Hs.eg.db,
+    ont = "BP",
+    pvalueCutoff = 0.05,
+    qvalueCutoff = 0.2
+)
+
+ego2 <- bayes_enrich(
+    ego,
+    candidate = "top",
+    n_terms = 100,
+    n_iter = 1000,
+    burnin = 200,
+    thin = 2,
+    seed = 1
+)
+
+bayes_summary(ego2, n = 10)
+```
+
+We can also focus on terms that pass a posterior cutoff:
+
+```{r}
+#| label: bayes-enrich-active
+bayes_summary(ego2, active = TRUE)
+```
+
+## Output columns
+
+`bayes_enrich()` returns the original enrichment object and adds several columns to the result table:
+
+- `posterior`, the posterior probability that a term is active.
+- `posterior_odds`, calculated as `posterior / (1 - posterior)`.
+- `bayes_rank`, the rank induced by ordering terms by posterior support.
+- `bayes_active`, whether `posterior >= posterior_cutoff`.
+- `bayes_covered_gene`, the observed genes covered by the term.
+- `bayes_covered_count`, the number of covered observed genes.
+
+These columns make it easy to keep working with the same enrichment object while gaining a second ranking criterion that emphasizes explanation rather than marginal significance.
+
+## Relationship to `simplify()`
+
+`simplify()` and `bayes_enrich()` address different kinds of redundancy.
+
+- `simplify()` uses semantic similarity among GO terms and keeps one representative term from a redundant semantic cluster.
+- `bayes_enrich()` uses term-gene coverage and asks which terms are jointly needed to explain the observed genes.
+
+These approaches can be used together. For example, one can first compute posterior support and then use it as the selection criterion in `simplify()`:
+
+```{r}
+#| label: bayes-enrich-simplify
+#| eval: false
+ego <- enrichGO(gene = de, universe = names(geneList), OrgDb = org.Hs.eg.db, ont = "BP")
+ego <- bayes_enrich(ego)
+ego <- simplify(ego, by = "posterior", select_fun = max)
+```
+
+## Scope and interpretation
+
+The current implementation is designed primarily for ORA and other analyses that operate on a binary observed gene list. Ranked-list methods such as GSEA require an additional step to define which genes count as "observed", for example by using leading-edge genes or another thresholding rule. For this reason, `bayes_enrich()` should be viewed as a posterior term-selection layer for ORA-style enrichment rather than a direct replacement for GSEA statistics.
+
+::: {.callout-note}
+`posterior` should be interpreted as posterior support for a term being an active explanatory program under the chosen candidate space and model parameters. It is not a Bayesian-adjusted _p_-value, not direct experimental proof of pathway activation, and not an absolute probability over the entire ontology.
+:::
+
+In practice, the main value of `bayes_enrich()` is that it compresses a long list of overlapping enriched terms into a smaller set of high-posterior programs, which is often much easier to interpret and report.

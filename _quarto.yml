@@ -39,6 +39,7 @@ book:
         - 029-compareCluster.qmd
         - enrichplot.qmd
         - PPI.qmd
+        - bayesian-term-selection.qmd
         - interpretation.qmd
 
     - part: misc.qmd

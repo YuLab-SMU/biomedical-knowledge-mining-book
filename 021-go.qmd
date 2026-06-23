@@ -208,6 +208,8 @@ To reduce redundancy, `clusterProfiler` provides a `simplify` method. It uses se
 
 The `simplify` method applies `select_fun` (which can be a user-defined function) to the feature specified by `by` (e.g., p.adjust) to select one representative term from redundant terms (which have similarity higher than `cutoff`). This results in a cleaner and more interpretable visualization.
 
+A complementary strategy is Bayesian term selection, which uses term-gene coverage to rank terms by posterior explanatory support instead of semantic similarity alone (see @sec-bayes-enrich).
+
 In @fig-simplify-emapplot(A), we can found that there are many redundant terms form a highly condense network. After removing redundant terms using the `simplify()` method, the result is more clear to view the whole story.
 
 ```{r}
