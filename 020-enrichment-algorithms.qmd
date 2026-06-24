@@ -2,6 +2,7 @@
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+source("_common.R")
 ```
 
 Functional enrichment analysis is a staple in bioinformatics for interpreting lists of genes identified from omics experiments. Behind the scenes of our ecosystem (`clusterProfiler`, `DOSE`, etc.), the heavy lifting is powered by the `enrichit` package. 
@@ -9,6 +10,8 @@ Functional enrichment analysis is a staple in bioinformatics for interpreting li
 We built `enrichit` with a clear philosophy: **minimal dependencies, maximum performance, and elegant extensibility**. It provides extremely fast, C++-based implementations of classical methods (via `Rcpp`), while introducing modern, advanced algorithms to address long-standing blind spots in the field.
 
 In this chapter, we will walk through the algorithmic backbone of enrichment analysis, moving from the standard ORA and GSEA to our newly introduced Network-based, multi-omics, and Weighted enrichment frameworks.
+
+At the package architecture level, `enrichit` serves as the algorithm engine, while `clusterProfiler` provides the knowledge-base-aware high-level entry points. In practice, this means that topology-aware workflows are now available through wrappers such as `nseGO()`, `mnseGO()`, `nseKEGG()`, and `mnseKEGG()`, while multi-omics helpers such as `aggregate_omics()` and `aggregate_enrichment()` are also re-exported by `clusterProfiler` for downstream biological interpretation.
 
 ## Over-Representation Analysis (ORA) {#ora-algorithm}
 
@@ -96,6 +99,7 @@ Our core philosophy is to leverage existing strengths seamlessly:
 One RWR diffusion + one GSEA test. You get not only network-aware scores but also rigorous p-values and FDRs, with blazing speed.
 
 ```{r}
+#| eval: false
 library(clusterProfiler)
 
 # 1. Fetch the full background PPI network for Human (taxID 9606)
@@ -118,6 +122,7 @@ Historically, RWR mathematically only accepts non-negative energy. This means yo
 To solve this, `enrichit` introduces a dual-track propagation architecture (`mode = "signed"`). When you pass signed statistics (like `-log10(p) * sign(logFC)`), the algorithm automatically splits the input into up-regulated and down-regulated vectors. It runs two independent RWRs on the same network, and then subtracts the two diffused energy vectors to reconstruct a fully signed, network-aware score vector. This seamlessly bridges bidirectional network diffusion with dual-tail GSEA.
 
 ```{r}
+#| eval: false
 # Using signed statistics (e.g., -log10(p) * sign(logFC))
 res_signed <- nsea(
     geneList = signed_stats, 
@@ -182,6 +187,45 @@ mnsea_res <- mnsea(
 )
 ```
 
+The same topology-aware engine can now be accessed from `clusterProfiler` using knowledge-base-aware wrappers. For example, the following high-level workflow reuses a single shared example object and performs GO- and KEGG-aware network enrichment without manually constructing the annotation backend.
+
+```{r}
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+demo <- clusterprofiler_enrichit_demo()
+
+go_nse <- nseGO(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+
+kegg_nse <- nseKEGG(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  organism = demo$kegg_gson,
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+```
+
 ### Explanation-ready Outputs for Multi-layer Results
 
 Once you start doing topology-aware enrichment, the next question is obvious: *which layer actually drove the hit?* Instead of baking plotting logic into the engine, `enrichit` prepares explanation-ready tables that downstream packages such as `enrichplot` can consume directly.
@@ -230,6 +274,7 @@ By passing a `weight` vector (e.g., network centrality), the model calculates an
 For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.
 
 ```{r}
+#| eval: false
 library(igraph)
 
 # Fetch network as an igraph object to calculate topological weights
@@ -257,6 +302,7 @@ The beauty of weighted enrichment lies in its **infinite possibilities**. Your `
 Finally, for ORA results, `enrichit` provides a Bayesian framework (`bayes_enrich()`) to estimate the posterior probability of explanatory terms. This helps to select the most likely active pathways while automatically penalizing redundancy among highly overlapping GO terms.
 
 ```{r}
+#| eval: false
 # After obtaining an ORA result object
 bayes_res <- bayes_enrich(ora_result)
 summary_res <- bayes_summary(bayes_res)
@@ -422,6 +468,8 @@ early_ora_res <- ora(
 
 By decoupling ID mapping, statistical integration, and pathway enrichment, `enrichit` provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.
 
+These workflow helpers are also available from `clusterProfiler`, which means the aggregated result can be sent directly to high-level functions such as `enrichGO()`, `gseGO()`, or `nseGO()` without changing the underlying multi-omics logic.
+
 ### 5. Late Fusion at the Pathway Level
 
 Early fusion is elegant when your features align cleanly. But sometimes that assumption collapses immediately: transcriptomics might have a background of 20,000 genes, proteomics might only detect 4,000 proteins, and region-based omics may not even live in gene space before annotation. In these cases, forcing everything into one feature matrix is a great way to manufacture missing values and mapping noise.
@@ -465,6 +513,7 @@ After running a multi-omics integration, you may want to know whether a signific
 First, you can classify the pattern of each pathway by comparing the merged results with single-omics results:
 
 ```{r}
+#| eval: false
 # Run ORA for individual omics
 rna_ora_res <- ora(
     gene = omics_gene_ids[rna_pvals < 0.05],
@@ -492,6 +541,7 @@ The `Omics_Pattern` column will label the pathway as `Shared`, `RNA-Specific`, `
 Then, you can extract the gene-level contribution for a specific pathway to see the original statistics of the core enrichment genes:
 
 ```{r}
+#| eval: false
 # Get original multi-omics statistics for genes in the pathway
 contribution_df <- get_omics_contribution(
     res = classified_ora_res, 

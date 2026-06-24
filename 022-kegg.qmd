@@ -23,6 +23,7 @@ The `r Biocpkg("clusterProfiler")` package provides the `search_kegg_organism()`
 
 ```{r}
 #| label: search-kegg-organism
+#| eval: false
 library(clusterProfiler)
 search_kegg_organism('ece', by='kegg_code')
 ecoli <- search_kegg_organism('Escherichia coli', by='scientific_name')
@@ -205,12 +206,15 @@ This ensures that the analysis runs offline and is fully reproducible using the 
 
 The `r Biocpkg("clusterProfiler")` package provides the `bitr_kegg()` function to support ID conversion via the KEGG API. This is particularly useful for species that do not have an `OrgDb` object but are supported by KEGG.
 
+The examples in this section require live KEGG REST access. To keep the book build reproducible when the KEGG API is slow or unreachable, we show them without executing them during rendering.
+
 ### Basic Usage
 
 Here is an example of converting KEGG IDs to NCBI Protein IDs and then to UniProt IDs for human genes.
 
 ```{r}
 #| label: bitr-kegg
+#| eval: false
 library(clusterProfiler)
 data(gcSample)
 hg <- gcSample[[1]]
@@ -225,12 +229,13 @@ np2up <- bitr_kegg(eg2np[,2], fromType='ncbi-proteinid', toType='uniprot', organ
 head(np2up)
 ```
 
-The ID type (both `fromType` and `toType`) should be one of 'kegg', 'ncbi-geneid', 'ncbi-proteinid', or 'uniprot'. The 'kegg' ID is the primary ID used in the KEGG database. A rule of thumb is that 'kegg' ID corresponds to `entrezgene` ID for eukaryote species and `Locus` ID for prokaryotes.
+The ID type (both `fromType` and `toType`) should be one of 'kegg', 'ko', 'ncbi-geneid', 'ncbi-proteinid', or 'uniprot'. The 'kegg' ID is the primary gene ID used in the KEGG database, while 'ko' refers to KEGG Orthology identifiers. A rule of thumb is that 'kegg' gene ID corresponds to `entrezgene` ID for eukaryote species and `Locus` ID for prokaryotes.
 
 For many prokaryote species, `entrezgene` IDs are not available. For example, `ece:Z5100` (E. coli O157:H7 EDL933) has `NCBI-ProteinID` and `UniProt` links, but not `NCBI-GeneID`. Attempting to convert `Z5100` to `ncbi-geneid` will result in an error stating that `ncbi-geneid` is not supported. However, conversion to `ncbi-proteinid` or `uniprot` is possible.
 
 ```{r}
 #| label: bitr-kegg-prokaryote
+#| eval: false
 # Example for prokaryote ID conversion
 bitr_kegg("Z5100", fromType="kegg", toType='ncbi-proteinid', organism='ece')
 bitr_kegg("Z5100", fromType="kegg", toType='uniprot', organism='ece')
@@ -242,6 +247,7 @@ A common confusion exists between `K` numbers (KEGG Orthology) and `ko` numbers 
 
 ```{r}
 #| label: bitr-kegg-path-ko
+#| eval: false
 bitr_kegg("K00844", "kegg", "Path", "ko")
 ```
 
@@ -249,6 +255,7 @@ To retrieve the names of the pathways (e.g., "Glutathione metabolism" instead of
 
 ```{r}
 #| label: ko2name-example
+#| eval: false
 x <- bitr_kegg("K00799", "kegg", "Path", "ko")
 y <- ko2name(x$Path)
 merge(x, y, by.x='Path', by.y='ko')
@@ -258,6 +265,7 @@ merge(x, y, by.x='Path', by.y='ko')
 
 
 ```{r}
+#| eval: false
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
@@ -274,6 +282,7 @@ Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see a
 For GO analysis, the `readable` parameter controls whether to translate the IDs to human-readable gene names. This parameter is not available for KEGG analysis. However, the `setReadable()` function can translate input gene IDs to gene names if the corresponding `OrgDb` object is available.
 
 ```{r}
+#| eval: false
 library(org.Hs.eg.db)
 # 'kk' is the enrichKEGG result from the previous section
 kk <- setReadable(kk, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
@@ -283,6 +292,7 @@ head(kk)
 ## KEGG pathway gene set enrichment analysis {#clusterprofiler-kegg-pathway-gsea}
 
 ```{r}
+#| eval: false
 kk2 <- gseKEGG(geneList     = geneList,
                organism     = 'hsa',
                minGSSize    = 120,
@@ -290,6 +300,58 @@ kk2 <- gseKEGG(geneList     = geneList,
                verbose      = FALSE)
 head(kk2)
 ```
+
+## Topology-aware KEGG enrichment
+
+The same high-level design is now available for topology-aware KEGG analysis. `nseKEGG()` performs single-network enrichment and `mnseKEGG()` extends the workflow to multiple network layers, while keeping the familiar `clusterProfiler` interface.
+
+For a lightweight and reproducible example, we reuse the same shared demo object as in the GO chapter and pass a local KEGG-style `GSON` object through the `organism` argument.
+
+```{r}
+#| label: topology-demo-kegg
+demo <- clusterprofiler_enrichit_demo()
+```
+
+```{r}
+#| label: nseKEGG-example
+kk_nse <- nseKEGG(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  organism = demo$kegg_gson,
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+head(as.data.frame(kk_nse)[, c("ID", "Description", "NES", "p.adjust")], 3)
+```
+
+```{r}
+#| label: mnseKEGG-example
+kk_mnse <- mnseKEGG(
+  seed_list = demo$seed_list,
+  networks = list(RNA = demo$network, PROT = demo$network_2),
+  couplings = demo$couplings,
+  organism = demo$kegg_gson,
+  collapse = "weighted_mean",
+  layer_weights = c(RNA = 1, PROT = 1.2),
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+head(as.data.frame(kk_mnse)[, c("ID", "Description", "NES", "p.adjust")], 3)
+```
+
+In a real analysis, users can pass a KEGG organism code such as `"hsa"` directly. Here we use a local `GSON` object to keep the example self-contained and reproducible.
 
 ## KEGG Pathway Classification
 
@@ -310,6 +372,7 @@ To prevent this cached data from becoming outdated, the package utilizes **GitHu
 
 ```{r}
 #| label: kegg-module-example
+#| eval: false
 mkk <- enrichMKEGG(gene = gene,
                    organism = 'hsa',
                    pvalueCutoff = 1,
@@ -321,6 +384,7 @@ head(mkk)
 
 
 ```{r}
+#| eval: false
 mkk2 <- gseMKEGG(geneList = geneList,
                  organism = 'hsa',
                  pvalueCutoff = 1)

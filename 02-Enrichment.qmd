@@ -54,4 +54,6 @@ GO and KEGG are the most frequently used for functional analysis. They are typic
 
 Other gene sets include but are not limited to Disease Ontology ([DO](http://disease-ontology.org/)), Disease Gene Network ([DisGeNET](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/)), [wikiPathways](https://www.wikipathways.org), Molecular Signatures Database ([MSigDb](http://software.broadinstitute.org/gsea/msigdb)). 
 
+In the current `clusterProfiler` ecosystem, classical ORA and GSEA are now complemented by enrichit-backed topology-aware and multi-omics workflows. The algorithm engine lives in `enrichit`, while `clusterProfiler` provides high-level interfaces such as `nseGO()`, `mnseGO()`, `nseKEGG()`, and `mnseKEGG()` for biological interpretation.
+
 

@@ -145,9 +145,66 @@ ego3 <- gseGO(geneList     = geneList,
 
 The format of input data, `geneList`, is documented in the @sec-id-convert. Beware that only gene sets with size in `[minGSSize, maxGSSize]` will be tested.
 
+## Topology-aware GO enrichment
+
+In classical GO enrichment, genes are treated as independent members of a gene set. When a biological network is available, `clusterProfiler` can now call the `enrichit` engine through the high-level wrappers `nseGO()` and `mnseGO()`. The former performs single-network enrichment, while the latter extends the same idea to a multi-layer setting.
+
+To keep the example reproducible and consistent with the KEGG chapter, we reuse one shared demonstration object.
+
+```{r}
+#| label: topology-demo-go
+demo <- clusterprofiler_enrichit_demo()
+```
+
+```{r}
+#| label: nseGO-example
+ego_nse <- nseGO(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+head(as.data.frame(ego_nse)[, c("ID", "Description", "NES", "p.adjust")], 3)
+```
+
+The `mnseGO()` function keeps the same GO-aware interface, but accepts a list of layer-specific networks together with explicit inter-layer couplings.
+
+```{r}
+#| label: mnseGO-example
+ego_mnse <- mnseGO(
+  seed_list = demo$seed_list,
+  networks = list(RNA = demo$network, PROT = demo$network_2),
+  couplings = demo$couplings,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  collapse = "weighted_mean",
+  layer_weights = c(RNA = 1, PROT = 1.2),
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+head(as.data.frame(ego_mnse)[, c("ID", "Description", "NES", "p.adjust")], 3)
+```
+
+These wrappers preserve the familiar GO semantics (`OrgDb`, `ont`, and `keyType`) while delegating the network propagation and enrichment engine to `enrichit`.
 
 
-## GO analysis for non-model organisms {#clusterprofiler-go-non-model}
+
 
 Both the `enrichGO()` and `gseGO()` functions require an `OrgDb` object as the background annotation. For organisms that don't have `OrgDb` provided by `Bioconductor`, users can query one (if available) online via `r Biocpkg("AnnotationHub")`. If there is no `OrgDb` available, users can obtain GO annotation from other sources, e.g. from `r Biocpkg("biomaRt")`, or annotate the genes using [Blast2GO](https://www.blast2go.com/) or the [Trinotate](https://rnabio.org/module-07-trinotate/0007/02/01/Trinotate/) pipeline. Then the `enricher()` or `GSEA()` functions can be used to perform GO analysis for these organisms, similar to the examples using WikiPathways and MSigDB. Another solution is to create an `OrgDb` on your own using the `r Biocpkg("AnnotationForge")` package.
 
