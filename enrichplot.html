@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>14&nbsp; Visualization of functional enrichment result – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./PPI.html" rel="next">
+<link href="./029-compareCluster.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3f70bac5631458d474a321d4182f9338.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./enrichplot.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-enrichment-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-other-dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PPI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#bar-plot" id="toc-bar-plot" class="nav-link active" data-scroll-target="#bar-plot"><span class="header-section-number">14.1</span> Bar Plot</a>
+  <ul class="collapse">
+  <li><a href="#split-top-categories-by-ontology" id="toc-split-top-categories-by-ontology" class="nav-link" data-scroll-target="#split-top-categories-by-ontology"><span class="header-section-number">14.1.1</span> Split top categories by ontology</a></li>
+  </ul></li>
+  <li><a href="#dot-plot" id="toc-dot-plot" class="nav-link" data-scroll-target="#dot-plot"><span class="header-section-number">14.2</span> Dot plot</a>
+  <ul class="collapse">
+  <li><a href="#highlighting-specific-pathways" id="toc-highlighting-specific-pathways" class="nav-link" data-scroll-target="#highlighting-specific-pathways"><span class="header-section-number">14.2.1</span> Highlighting specific pathways</a></li>
+  <li><a href="#formula-interface-of-dotplot" id="toc-formula-interface-of-dotplot" class="nav-link" data-scroll-target="#formula-interface-of-dotplot"><span class="header-section-number">14.2.2</span> Formula interface of dotplot</a></li>
+  <li><a href="#adjusting-dot-sizes" id="toc-adjusting-dot-sizes" class="nav-link" data-scroll-target="#adjusting-dot-sizes"><span class="header-section-number">14.2.3</span> Adjusting dot sizes</a></li>
+  </ul></li>
+  <li><a href="#manhattan-plot" id="toc-manhattan-plot" class="nav-link" data-scroll-target="#manhattan-plot"><span class="header-section-number">14.3</span> Manhattan plot</a></li>
+  <li><a href="#dotplot2-comparing-two-clusters" id="toc-dotplot2-comparing-two-clusters" class="nav-link" data-scroll-target="#dotplot2-comparing-two-clusters"><span class="header-section-number">14.4</span> Dotplot2: Comparing two clusters</a></li>
+  <li><a href="#cnetplot" id="toc-cnetplot" class="nav-link" data-scroll-target="#cnetplot"><span class="header-section-number">14.5</span> Gene-Concept Network</a>
+  <ul class="collapse">
+  <li><a href="#customizing-gene-colors-in-cnetplot" id="toc-customizing-gene-colors-in-cnetplot" class="nav-link" data-scroll-target="#customizing-gene-colors-in-cnetplot"><span class="header-section-number">14.5.1</span> Customizing gene colors in cnetplot</a></li>
+  </ul></li>
+  <li><a href="#heatmap-like-functional-classification" id="toc-heatmap-like-functional-classification" class="nav-link" data-scroll-target="#heatmap-like-functional-classification"><span class="header-section-number">14.6</span> Heatmap-like functional classification</a></li>
+  <li><a href="#tree-plot" id="toc-tree-plot" class="nav-link" data-scroll-target="#tree-plot"><span class="header-section-number">14.7</span> Tree plot</a></li>
+  <li><a href="#ssplot" id="toc-ssplot" class="nav-link" data-scroll-target="#ssplot"><span class="header-section-number">14.8</span> Semantic Space Plot</a></li>
+  <li><a href="#enrichment-map" id="toc-enrichment-map" class="nav-link" data-scroll-target="#enrichment-map"><span class="header-section-number">14.9</span> Enrichment Map</a>
+  <ul class="collapse">
+  <li><a href="#handling-go-term-redundancy" id="toc-handling-go-term-redundancy" class="nav-link" data-scroll-target="#handling-go-term-redundancy"><span class="header-section-number">14.9.1</span> Handling GO term redundancy</a></li>
+  </ul></li>
+  <li><a href="#biological-theme-comparison" id="toc-biological-theme-comparison" class="nav-link" data-scroll-target="#biological-theme-comparison"><span class="header-section-number">14.10</span> Biological theme comparison</a></li>
+  <li><a href="#upset-plot" id="toc-upset-plot" class="nav-link" data-scroll-target="#upset-plot"><span class="header-section-number">14.11</span> UpSet Plot</a></li>
+  <li><a href="#ridgeline-plot-for-expression-distribution-of-gsea-result" id="toc-ridgeline-plot-for-expression-distribution-of-gsea-result" class="nav-link" data-scroll-target="#ridgeline-plot-for-expression-distribution-of-gsea-result"><span class="header-section-number">14.12</span> ridgeline plot for expression distribution of GSEA result</a></li>
+  <li><a href="#running-score-and-preranked-list-of-gsea-result" id="toc-running-score-and-preranked-list-of-gsea-result" class="nav-link" data-scroll-target="#running-score-and-preranked-list-of-gsea-result"><span class="header-section-number">14.13</span> running score and preranked list of GSEA result</a>
+  <ul class="collapse">
+  <li><a href="#unified-color-setting-with-set_enrichplot_color" id="toc-unified-color-setting-with-set_enrichplot_color" class="nav-link" data-scroll-target="#unified-color-setting-with-set_enrichplot_color"><span class="header-section-number">14.13.1</span> Unified color setting with <code>set_enrichplot_color()</code></a></li>
+  <li><a href="#labeling-genes-in-gsea-plot" id="toc-labeling-genes-in-gsea-plot" class="nav-link" data-scroll-target="#labeling-genes-in-gsea-plot"><span class="header-section-number">14.13.2</span> Labeling genes in GSEA plot</a></li>
+  <li><a href="#extracting-data-from-gsearank-plot" id="toc-extracting-data-from-gsearank-plot" class="nav-link" data-scroll-target="#extracting-data-from-gsearank-plot"><span class="header-section-number">14.13.3</span> Extracting data from gsearank plot</a></li>
+  </ul></li>
+  <li><a href="#pubmed-trend-of-enriched-terms" id="toc-pubmed-trend-of-enriched-terms" class="nav-link" data-scroll-target="#pubmed-trend-of-enriched-terms"><span class="header-section-number">14.14</span> pubmed trend of enriched terms</a></li>
+  <li><a href="#volcano-plot-for-ora-results" id="toc-volcano-plot-for-ora-results" class="nav-link" data-scroll-target="#volcano-plot-for-ora-results"><span class="header-section-number">14.15</span> Volcano plot for ORA results</a></li>
+  <li><a href="#horizontal-gsea-plot" id="toc-horizontal-gsea-plot" class="nav-link" data-scroll-target="#horizontal-gsea-plot"><span class="header-section-number">14.16</span> Horizontal GSEA plot</a></li>
+  <li><a href="#go-graph" id="toc-go-graph" class="nav-link" data-scroll-target="#go-graph"><span class="header-section-number">14.17</span> GO Graph</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/enrichplot.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./enrichplot.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-enrichplot" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package implements several visualization methods to help interpret enrichment results. It supports visualizing enrichment results obtained from <a href="http://bioconductor.org/packages/DOSE">DOSE</a> <span class="citation" data-cites="yu_dose_2015">(<a href="#ref-yu_dose_2015" role="doc-biblioref">Yu et al. 2015</a>)</span>, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> <span class="citation" data-cites="yu2012 wu_clusterprofiler_2021">(<a href="#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>; <a href="#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>, <a href="http://bioconductor.org/packages/ReactomePA">ReactomePA</a> <span class="citation" data-cites="yu_reactomepa_2016">(<a href="#ref-yu_reactomepa_2016" role="doc-biblioref">Yu and He 2016</a>)</span> and <a href="http://bioconductor.org/packages/meshes">meshes</a> <span class="citation" data-cites="yu_meshes_2018">(<a href="#ref-yu_meshes_2018" role="doc-biblioref">Yu 2018</a>)</span>. Both over representation analysis (ORA) and gene set enrichment analysis (GSEA) are supported.</p>
+<p>Note: Several visualization methods were first implemented in <a href="http://bioconductor.org/packages/DOSE">DOSE</a> and rewrote from scratch using <a href="https://CRAN.R-project.org/package=ggplot2">ggplot2</a>. If you want to use the <a href="https://www.biostars.org/p/375555">old methods</a>, you can use the <a href="https://github.com/GuangchuangYu/doseplot">doseplot</a> package.</p>
+<section id="bar-plot" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="bar-plot"><span class="header-section-number">14.1</span> Bar Plot</h2>
+<p>Bar plot is the most widely used method to visualize enriched terms. It depicts the enrichment scores (<em>e.g.</em> p values) and gene count or ratio as bar height and color <a href="#fig-Barplot" class="quarto-xref">Figure&nbsp;<span>14.1</span></a>. Users can specify the number of terms (most significant) or selected terms (see also the <a href="FAQ.html#showing-specific-pathways">FAQ</a>) to display via the <code>showCategory</code> parameter.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DOSE)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>edo <span class="ot">&lt;-</span> <span class="fu">enrichDGN</span>(de)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(edo, <span class="at">showCategory=</span><span class="dv">20</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Other variables that derived using <code>mutate</code> can also be used as bar height or color as demonstrated in <a href="dplyr.html#sec-mutate" class="quarto-xref"><span>Section 18.4</span></a> and <a href="#fig-Barplot" class="quarto-xref">Figure&nbsp;<span>14.1</span></a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(edo, <span class="at">qscore =</span> <span class="sc">-</span><span class="fu">log</span>(p.adjust, <span class="at">base=</span><span class="dv">10</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">barplot</span>(<span class="at">x=</span><span class="st">"qscore"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-Barplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Bar plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Barplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Barplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Bar plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Barplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.1: <strong>Bar plot of enriched terms.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="split-top-categories-by-ontology" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="split-top-categories-by-ontology"><span class="header-section-number">14.1.1</span> Split top categories by ontology</h3>
+<p>When visualizing GO enrichment across all ontologies (<code>ont = "ALL"</code>), it is often more informative to show the top terms within each ontology (BP/CC/MF) rather than selecting the top terms globally. <code>barplot()</code> forwards additional arguments via <code>...</code>, and one useful option is <code>split</code>. Setting <code>split = "ONTOLOGY"</code> will perform the “top N per ontology” selection and makes it straightforward to color (and later facet) the results by the ontology.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>p_nofacet <span class="ot">&lt;-</span> <span class="fu">barplot</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ego_all,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">"Count"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">15</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> <span class="st">"ONTOLOGY"</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">fill =</span> ONTOLOGY) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>p_nofacet <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Count), <span class="at">nudge_x =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-barplot-ontology-nofacet" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Bar plot of GO terms using `split = &quot;ONTOLOGY&quot;` without faceting. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-barplot-ontology-nofacet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-barplot-ontology-nofacet-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Bar plot of GO terms using `split = &quot;ONTOLOGY&quot;` without faceting. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-barplot-ontology-nofacet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.2: <strong>Bar plot of GO terms using <code>split = "ONTOLOGY"</code> (no faceting).</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note that <code>barplot()</code> wraps long term descriptions onto multiple lines by default (controlled by <code>label_format</code>, default is 30). If you prefer to keep the y-axis labels on a single line, you can override the default scale by adding <code>+ scale_y_discrete()</code> as shown above.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>p_facet <span class="ot">&lt;-</span> <span class="fu">barplot</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  ego_all,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="st">"Count"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">15</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> <span class="st">"ONTOLOGY"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">fill =</span> ONTOLOGY) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  enrichplot<span class="sc">::</span><span class="fu">autofacet</span>(<span class="at">by =</span> <span class="st">"row"</span>, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>p_facet <span class="sc">+</span> <span class="fu">scale_y_discrete</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-barplot-ontology-facet" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Bar plot of GO terms with `autofacet()` splitting by ontology. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-barplot-ontology-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-barplot-ontology-facet-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Bar plot of GO terms with `autofacet()` splitting by ontology. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-barplot-ontology-facet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.3: <strong>Bar plot of GO terms with <code>autofacet()</code> splitting by ontology.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If the fortified data contain an <code>ONTOLOGY</code> column (as in the output generated by <code>split = "ONTOLOGY"</code>), you can facet the plot directly with <code>+ enrichplot::autofacet()</code>, and it will automatically split panels by ontology.</p>
+</section>
+</section>
+<section id="dot-plot" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="dot-plot"><span class="header-section-number">14.2</span> Dot plot</h2>
+<p>Dot plot is similar to bar plot with the capability to encode another score as dot size.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>edo2 <span class="ot">&lt;-</span> <span class="fu">gseDO</span>(geneList)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">30</span>, <span class="at">label_format=</span><span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"dotplot for ORA"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(edo2, <span class="at">showCategory=</span><span class="dv">30</span>, <span class="at">label_format=</span><span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"dotplot for GSEA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-dotplot-setup-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dotplot-setup-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-dotplot-setup-1.svg" id="fig-dotplot-setup-1" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dotplot-setup-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.4
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div id="fig-dotplot-setup-2" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dotplot-setup-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-dotplot-setup-2.svg" id="fig-dotplot-setup-2" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dotplot-setup-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.5
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-Dotplotcap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Dot plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Dotplotcap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Dotplotcap-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Dot plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Dotplotcap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.6: <strong>Dot plot of enriched terms.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: The <code>dotplot()</code> function also works with <a href="029-compareCluster.html#compare-dotplot"><code>compareCluster()</code> output</a>.</p>
+<section id="highlighting-specific-pathways" class="level3" data-number="14.2.1">
+<h3 data-number="14.2.1" class="anchored" data-anchor-id="highlighting-specific-pathways"><span class="header-section-number">14.2.1</span> Highlighting specific pathways</h3>
+<p>The <code>label_format</code> parameter in <code>dotplot()</code> accepts a function to format y-axis labels, which can be used to highlight specific pathways. This is useful for emphasizing pathways of interest in publication figures.</p>
+<p>First, perform enrichment analysis:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DOSE)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">enrichDO</span>(de)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Define a function to highlight pathways containing “cancer”:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(ids) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="fu">grepl</span>(<span class="st">'cancer'</span>, ids)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    ids[i] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"&lt;i style='color:#009E73'&gt;"</span>, ids[i], <span class="st">"&lt;/i&gt;"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(ids)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To render the HTML formatting, use the <code>ggtext</code> package with <code>element_markdown()</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtext)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(x, <span class="at">label_format=</span>f) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-dotplot-highlight" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dotplot-highlight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-dotplot-highlight-1.svg" id="fig-dotplot-highlight" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dotplot-highlight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.7
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You can also highlight specific pathways by index:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(ids) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    ids[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"&lt;i style='color:#009E73'&gt;"</span>, ids[<span class="dv">1</span>], <span class="st">"&lt;/i&gt;"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    ids[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"&lt;i style='color:#0072B2'&gt;**"</span>, ids[<span class="dv">2</span>], <span class="st">"**&lt;/i&gt;"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(ids)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(x, <span class="at">label_format=</span>f2) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-label-format-func2" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-label-format-func2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-label-format-func2-1.svg" id="fig-label-format-func2" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-label-format-func2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.8
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Or apply different colors to all pathways:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(ids) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cols &lt;- rcartocolor::carto_pal(length(ids), "Vivid")</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># cols &lt;- colorspace::rainbow_hcl(length(ids))</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    cols <span class="ot">&lt;-</span> <span class="fu">rainbow</span>(<span class="fu">length</span>(ids))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    ids <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"&lt;i style='color:"</span>, cols, <span class="st">"'&gt;**"</span>, ids, <span class="st">"**&lt;/i&gt;"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(ids)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(x, <span class="at">label_format=</span>f3) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_markdown</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-label-format-func3" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-label-format-func3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-label-format-func3-1.svg" id="fig-label-format-func3" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-label-format-func3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.9
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="formula-interface-of-dotplot" class="level3" data-number="14.2.2">
+<h3 data-number="14.2.2" class="anchored" data-anchor-id="formula-interface-of-dotplot"><span class="header-section-number">14.2.2</span> Formula interface of dotplot</h3>
+<p>The <code>x</code> variable of <code>dotplot()</code> supports a formula interface, allowing users to use derived variables. For example, we can calculate <code>GeneRatio/BgRatio</code> or <code>-log(p.adjust)</code> and use them as the x-axis variable.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">x =</span> <span class="sc">~</span>GeneRatio<span class="sc">/</span>BgRatio)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">x =</span> <span class="sc">~</span> <span class="sc">-</span><span class="fu">log</span>(p.adjust))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-dotplot-formula" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dotplot-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-dotplot-formula-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dotplot-formula-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.10: <strong>Dotplot with formula interface.</strong> (A) <code>x = ~GeneRatio/BgRatio</code>. (B) <code>x = ~ -log(p.adjust)</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This feature provides great flexibility in visualization. For instance, the <strong>Rich Factor</strong> is a common metric defined as the ratio of the number of differentially expressed genes annotated in a pathway to the total number of genes annotated in that pathway.</p>
+<p><span class="math display">\[Rich Factor = \frac{Count}{BgRatio \times N}\]</span></p>
+<p>where <span class="math inline">\(N\)</span> is the total number of genes in the background distribution.</p>
+<p>We can easily visualize the <strong>Rich Factor</strong> using the formula interface.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">8007</span> <span class="co"># total number of genes in the background</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(edo, <span class="at">x =</span> <span class="sc">~</span>Count<span class="sc">/</span>(BgRatio <span class="sc">*</span> N))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Alternatively, you can precompute derived variables with <code>mutate()</code> (e.g., add <code>neglog10p = -log10(p.adjust)</code> or <code>richFactor = Count / (BgRatio * N)</code>) and then pass the new column name to <code>x</code>. This approach is useful when you want to reuse the computed variables across multiple plots. See the dedicated section on using dplyr verbs with enrichment results in <a href="dplyr.html#sec-mutate" class="quarto-xref"><span>Section 18.4</span></a>.</p>
+</section>
+<section id="adjusting-dot-sizes" class="level3" data-number="14.2.3">
+<h3 data-number="14.2.3" class="anchored" data-anchor-id="adjusting-dot-sizes"><span class="header-section-number">14.2.3</span> Adjusting dot sizes</h3>
+<p>To increase the size of the dots in the dot plot, we can use the <code>scale_size</code> function from the <code>ggplot2</code> package. This allows us to specify the range of the dot sizes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">10</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Default"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">10</span>) <span class="sc">+</span> <span class="fu">scale_size</span>(<span class="at">range=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">20</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Adjusted size"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-dotplot-size" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dotplot-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-dotplot-size-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dotplot-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.11: <strong>Dotplot with adjusted dot sizes.</strong> (A) Default dotplot. (B) Dotplot with <code>scale_size(range=c(2, 20))</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="manhattan-plot" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="manhattan-plot"><span class="header-section-number">14.3</span> Manhattan plot</h2>
+<p>The <code>manhattanplot()</code> function provides a landscape-style overview of enrichment results. It arranges enriched terms along the x-axis by ontology (or by category in <code>compareCluster()</code> results), uses <code>-log10()</code> transformed significance values on the y-axis, and maps term size to a variable such as <code>Count</code>. The most significant terms can be labeled automatically with <code>showCategory</code>, making it useful for summarizing a large number of enriched terms in a single plot.</p>
+<p>When GO enrichment is performed with <code>ont = "ALL"</code>, <code>manhattanplot()</code> can display the top terms across BP, CC, and MF simultaneously by combining it with <code>split = "ONTOLOGY"</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">manhattanplot</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  ego_all,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> <span class="st">"p.adjust"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">12</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="st">"Count"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> <span class="st">"ONTOLOGY"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"GO enrichment landscape"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-manhattanplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-manhattanplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-manhattanplot-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-manhattanplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.12: <strong>Manhattan plot of GO enrichment results.</strong> Terms are grouped by ontology and plotted by <code>-log10(p.adjust)</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>manhattanplot()</code> function also supports <code>gseaResult</code>, <code>enrichResultList</code>, <code>gseaResultList</code>, and <code>compareClusterResult</code> objects, which makes it convenient for comparing the distribution of significant terms across multiple ontologies or experimental groups.</p>
+</section>
+<section id="dotplot2-comparing-two-clusters" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="dotplot2-comparing-two-clusters"><span class="header-section-number">14.4</span> Dotplot2: Comparing two clusters</h2>
+<p>The <code>dotplot2()</code> function is a specialized version of dotplot designed for comparing two selected clusters from <code>compareCluster</code> results. This function provides focused visualization when users want to directly contrast specific biological conditions or experimental groups.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example using compareCluster result</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gcSample)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(gcSample, <span class="at">fun=</span><span class="st">"enrichKEGG"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">organism=</span><span class="st">"hsa"</span>, <span class="at">pvalueCutoff=</span><span class="fl">0.05</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare cluster A and cluster B</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot2</span>(xx, <span class="at">vars =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>dotplot2()</code> function accepts the same parameters as <code>dotplot()</code> but requires <code>cluster1</code> and <code>cluster2</code> arguments to specify which clusters to compare. This focused visualization helps in identifying differential enrichment patterns between specific experimental conditions.</p>
+</section>
+<section id="cnetplot" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="cnetplot"><span class="header-section-number">14.5</span> Gene-Concept Network</h2>
+<p>Both the <code>barplot()</code> and <code>dotplot()</code> only displayed most significant or selected enriched terms, while users may want to know which genes are involved in these significant terms. To consider the potential biological complexities in which a gene may belong to multiple annotation categories and provide information about numeric changes when available, we developed the <code>cnetplot()</code> function to extract the complex associations. The <code>cnetplot()</code> depicts the linkages of genes and biological concepts (<em>e.g.</em> GO terms or KEGG pathways) as a network. GSEA result is also supported with only core enriched genes displayed. For GSEA results, <code>cnetplot</code> specifically visualizes the core enriched genes identified through leading edge analysis, which represent the subset of genes most responsible for driving the enrichment signal.</p>
+<p>Users can use the ‘fc_threshold’ parameter in the <code>cnetplot</code> function to filter genes to only include those with <code>|foldChange| &gt; fc_threshold</code>. This allows users to plot only high fold-change genes (e.g., <code>fc_threshold = 1</code>). In addition, users can use the <code>node_label_gene</code> parameter to label genes that are shared between groups of terms (i.e.&nbsp;<code>node_label_gene = "share"</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## convert gene ID to Symbol</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>edox <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(edo, <span class="st">'org.Hs.eg.db'</span>, <span class="st">'ENTREZID'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">foldChange=</span>geneList)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">categorySizeBy=</span><span class="sc">~</span> <span class="sc">-</span><span class="fu">log10</span>(pvalue), <span class="at">foldChange=</span>geneList)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="do">## only plot high fold-change genes</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">foldChange=</span>geneList, <span class="at">fc_threshold =</span> <span class="dv">2</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">foldChange=</span>geneList, <span class="at">node_label =</span> <span class="st">"share"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, p4, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-Networkplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Network plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Networkplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Networkplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Network plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Networkplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.13: <strong>Network plot of enriched terms.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If you would like label subset of the nodes, you can use the <code>node_label</code> parameter, which supports 4 possible selections (i.e.&nbsp;“category”, “gene”, “all” and “none”), as demonstrated in <a href="#fig-cnetNodeLabel" class="quarto-xref">Figure&nbsp;<span>14.14</span></a>.</p>
+<p>The <code>node_label</code> parameter also supports enhanced functionality:</p>
+<ol type="1">
+<li><strong>Vector selection</strong>: Specify specific genes to label using a character vector, e.g., <code>node_label = c("gene1", "gene2")</code></li>
+<li><strong>‘exclusive’ labeling</strong>: Label only genes that belong exclusively to one category using <code>node_label = "exclusive"</code></li>
+<li><strong>‘share’ labeling</strong>: Label genes that are shared between multiple categories using <code>node_label = "share"</code> (as shown in the example above)</li>
+<li><strong>Conditional filtering</strong>: Use comparison operators to filter genes based on fold change, e.g., <code>node_label = "&gt; 1"</code> or <code>node_label = "&lt; -1"</code> to label genes with absolute fold change greater than 1</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">node_label=</span><span class="st">"category"</span>) </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">node_label=</span><span class="st">"gene"</span>) </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">node_label=</span><span class="st">"all"</span>) </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">node_label=</span><span class="st">"none"</span>, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">color_category=</span><span class="st">'firebrick'</span>, </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">color_item=</span><span class="st">'steelblue'</span>) </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, p4, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-cnetNodeLabel" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Labelling nodes by selected subset. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnetNodeLabel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-cnetNodeLabel-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Labelling nodes by selected subset. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cnetNodeLabel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.14: <strong>Labelling nodes by selected subset.</strong> gene category (A), gene name (B), both gene category and gene name (C, default) and not to label at all (D).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>cnetplot</code> function can be used as a general method to visualize data relationships in a network diagram. Please refer to the vignette of <a href="https://CRAN.R-project.org/package=ggtangle">ggtangle</a>.</p>
+<section id="customizing-gene-colors-in-cnetplot" class="level3" data-number="14.5.1">
+<h3 data-number="14.5.1" class="anchored" data-anchor-id="customizing-gene-colors-in-cnetplot"><span class="header-section-number">14.5.1</span> Customizing gene colors in cnetplot</h3>
+<p>Users can color specific genes by providing a named vector of fold changes containing only those genes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>foldChange <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">4</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(foldChange) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"MARCO"</span>, <span class="st">"GZMB"</span>, <span class="st">"CXCL11"</span>, <span class="st">"CXCL10"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"LAG3"</span>, <span class="st">"CCL8"</span>, <span class="st">"PDK1"</span>, <span class="st">"GABRP"</span>, <span class="st">"MELK"</span>, <span class="st">"CENPE"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(edox, <span class="at">foldChange=</span>foldChange)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-cnetplot-custom-color" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnetplot-custom-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-cnetplot-custom-color-1.svg" id="fig-cnetplot-custom-color" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-cnetplot-custom-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.15
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If you want to remove the color legend:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">guides</span>(<span class="at">color=</span><span class="st">'none'</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-cnetplot-no-legend" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnetplot-no-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-cnetplot-no-legend-1.svg" id="fig-cnetplot-no-legend" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-cnetplot-no-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.16
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>To create a custom legend, you can use a dummy data frame and <code>geom_point</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">type=</span><span class="fu">c</span>(<span class="st">'upregulated'</span>, <span class="st">'downregulated'</span>), <span class="at">x=</span><span class="dv">0</span>, <span class="at">y=</span><span class="dv">0</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">alpha=</span>type, <span class="at">x=</span>x, <span class="at">y=</span>y), <span class="at">data=</span>d, <span class="at">shape=</span><span class="dv">16</span>, <span class="at">size=</span><span class="dv">0</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>g <span class="sc">+</span> <span class="fu">guides</span>(<span class="at">alpha=</span><span class="fu">guide_legend</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">override.aes=</span><span class="fu">list</span>(<span class="at">color=</span><span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"red"</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">alpha=</span><span class="dv">1</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">size=</span><span class="dv">3</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"VIP genes"</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">reverse =</span> <span class="cn">TRUE</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-cnetplot-custom-legend" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnetplot-custom-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-cnetplot-custom-legend-1.svg" id="fig-cnetplot-custom-legend" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-cnetplot-custom-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.17
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: The <code>cnetplot()</code> function also works with <a href="029-compareCluster.html#compare-cnetplot"><code>compareCluster()</code> output</a>.</p>
+</section>
+</section>
+<section id="heatmap-like-functional-classification" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="heatmap-like-functional-classification"><span class="header-section-number">14.6</span> Heatmap-like functional classification</h2>
+<p>The <code>heatplot</code> is similar to <code>cnetplot</code>, but displays the relationships as a heatmap. The gene-concept network may become too complicated if users want to show a large number of significant terms. The <code>heatplot</code> can simplify the result and make it easier to identify expression patterns.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">heatplot</span>(edox, <span class="at">showCategory=</span><span class="dv">5</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">heatplot</span>(edox, <span class="at">foldChange=</span>geneList, <span class="at">showCategory=</span><span class="dv">5</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-Heatplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Heatmap plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Heatplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Heatplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Heatmap plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Heatplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.18: <strong>Heatmap plot of enriched terms.</strong> default (A), <code>foldChange=geneList</code> (B)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>showTop</code> parameter can be used to limit the number of genes displayed in the heatmap. This is particularly useful when dealing with large gene sets where only the top genes based on fold change or significance need to be visualized. For example, <code>showTop = 20</code> will display only the top 20 genes in the heatmap.</p>
+</section>
+<section id="tree-plot" class="level2" data-number="14.7">
+<h2 data-number="14.7" class="anchored" data-anchor-id="tree-plot"><span class="header-section-number">14.7</span> Tree plot</h2>
+<p>The <code>treeplot()</code> function performs hierarchical clustering of enriched terms. It relies on the pairwise similarities of the enriched terms calculated by the <code>pairwise_termsim()</code> function, which by default uses Jaccard’s similarity index (JC). Users can also use semantic similarity values when supported (<em>e.g.</em>, <a href="011-GOSemSim.html">GO</a>, <a href="012-DOSE-semantic-similarity.html">DO</a>, and <a href="013-meshes-semantic-similarity.html#meshes-semantic-similarity">MeSH</a>).</p>
+<p>The default agglomeration method in <code>treeplot()</code> is <code>ward.D</code>, and users can specify other methods via the <code>cluster_method</code> parameter (<em>e.g.</em>, ‘average’, ‘complete’, ‘median’, ‘centroid’, <em>etc.</em>; see also the documentation of the <code>hclust()</code> function). The <code>treeplot()</code> function will cut the tree into several subtrees (specified by the <code>nCluster</code> parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability.</p>
+<p>For fine-grained control over text appearance, the <code>leave_fontsize</code> and <code>clade_fontsize</code> parameters allow users to adjust the font size of leaf labels and clade labels respectively. For example, <code>leave_fontsize = 8, clade_fontsize = 10</code> will set leaf labels to 8pt and clade labels to 10pt.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggtree)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>edox2 <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(edox)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">treeplot</span>(edox2, <span class="at">cladelab_offset=</span><span class="dv">8</span>, <span class="at">tiplab_offset=</span>.<span class="dv">3</span>, <span class="at">fontsize_cladelab =</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hexpand</span>(.<span class="dv">2</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">treeplot</span>(edox2, <span class="at">cluster_method =</span> <span class="st">"average"</span>, </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">cladelab_offset=</span><span class="dv">14</span>, <span class="at">tiplab_offset=</span>.<span class="dv">3</span>, <span class="at">fontsize_cladelab =</span><span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">hexpand</span>(.<span class="dv">3</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>aplot<span class="sc">::</span><span class="fu">plot_list</span>(p1, p2, <span class="at">tag_levels=</span><span class="st">'A'</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-treeplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Tree plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-treeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-treeplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Tree plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-treeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.19: <strong>Tree plot of enriched terms.</strong> default (A), <code>hclust_method = "average"</code> (B)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ssplot" class="level2" data-number="14.8">
+<h2 data-number="14.8" class="anchored" data-anchor-id="ssplot"><span class="header-section-number">14.8</span> Semantic Space Plot</h2>
+<p>While <code>treeplot()</code> visualizes semantic similarity using a hierarchical structure, the <code>ssplot()</code> (Semantic Space Plot) projects enriched terms into a low-dimensional space (e.g., using Multidimensional Scaling, MDS). This provides a complementary spatial view where terms with high semantic similarity are clustered together.</p>
+<p>Like <code>treeplot()</code>, <code>ssplot()</code> requires <code>pairwise_termsim()</code> to be run first. It automatically groups terms into clusters (default <code>nCluster</code> is determined automatically) and labels them with representative words.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssplot</span>(edox2, <span class="at">nCluster=</span><span class="dv">5</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"ssplot (nCluster=5)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-ssplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Semantic space plot of enriched terms. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ssplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-ssplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Semantic space plot of enriched terms. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ssplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.20: <strong>Semantic space plot of enriched terms.</strong> ssplot with nCluster=5.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><code>ssplot()</code> is particularly useful for visualizing the overall semantic landscape of enrichment results and identifying distinct functional modules in a continuous space.</p>
+</section>
+<section id="enrichment-map" class="level2" data-number="14.9">
+<h2 data-number="14.9" class="anchored" data-anchor-id="enrichment-map"><span class="header-section-number">14.9</span> Enrichment Map</h2>
+<p>Enrichment map organizes enriched terms into a network with edges connecting overlapping gene sets. In this way, mutually overlapping gene sets are tend to cluster together, making it easy to identify functional module.</p>
+<section id="handling-go-term-redundancy" class="level3" data-number="14.9.1">
+<h3 data-number="14.9.1" class="anchored" data-anchor-id="handling-go-term-redundancy"><span class="header-section-number">14.9.1</span> Handling GO term redundancy</h3>
+<p>GO annotations often contain redundant terms that can dominate enrichment results, potentially obscuring other biological stories. The <code>simplify()</code> function from the <code>clusterProfiler</code> package uses semantic similarity (via the GOSemSim package) to remove redundant GO terms, providing a clearer view of distinct functional modules.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DOSE)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare example data</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package=</span><span class="st">"DOSE"</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform GO enrichment analysis</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(de, <span class="at">OrgDb =</span> <span class="st">"org.Hs.eg.db"</span>, <span class="at">ont=</span><span class="st">"BP"</span>, <span class="at">readable=</span><span class="cn">TRUE</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove redundant GO terms using simplify()</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>ego_simplified <span class="ot">&lt;-</span> <span class="fu">simplify</span>(ego, <span class="at">cutoff=</span><span class="fl">0.7</span>, <span class="at">by=</span><span class="st">"p.adjust"</span>, <span class="at">select_fun=</span>min)</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize both original and simplified results</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(ego)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>ego_simplified <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(ego_simplified)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(ego, <span class="at">node_label_size=</span>.<span class="dv">8</span>, <span class="at">size_edge=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_continuous</span>(<span class="at">low =</span> <span class="st">"#e06663"</span>, <span class="at">high =</span> <span class="st">"#327eba"</span>, <span class="at">name =</span> <span class="st">"p.adjust"</span>,</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">guide =</span> <span class="fu">guide_colorbar</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>, <span class="at">order=</span><span class="dv">1</span>), <span class="at">trans=</span><span class="st">'log10'</span>) <span class="sc">+</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Original GO terms"</span>)</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(ego_simplified, <span class="at">node_label_size=</span>.<span class="dv">8</span>, <span class="at">size_edge=</span>.<span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_continuous</span>(<span class="at">low =</span> <span class="st">"#e06663"</span>, <span class="at">high =</span> <span class="st">"#327eba"</span>, <span class="at">name =</span> <span class="st">"p.adjust"</span>,</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>                <span class="at">guide =</span> <span class="fu">guide_colorbar</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>, <span class="at">order=</span><span class="dv">1</span>), <span class="at">trans=</span><span class="st">'log10'</span>) <span class="sc">+</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"After removing redundant terms"</span>)</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine plots</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-simplify-go" class="quarto-float quarto-figure quarto-figure-center anchored" width="98%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-simplify-go-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-simplify-go-1.svg" id="fig-simplify-go" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-simplify-go-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.21
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>simplify()</code> function removes redundant GO terms based on semantic similarity (default cutoff = 0.7). This reveals distinct functional modules that might be obscured by redundant terms in the original enrichment results. The <code>pairwise_termsim()</code> function calculates pairwise similarities between terms, which is required for <code>emapplot()</code> visualization.</p>
+<p>The <code>emapplot</code> function supports results obtained from hypergeometric test and gene set enrichment analysis. The <code>size_category</code> parameter can be used to resize nodes and the <code>layout</code> parameter can adjust the layout, as demonstrated in <a href="#fig-Enrichment" class="quarto-xref">Figure&nbsp;<span>14.22</span></a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>edo <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(edo)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo) <span class="co"># node_label = "category" (default)</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo, <span class="at">node_label =</span> <span class="st">"none"</span>) </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo, <span class="at">node_label =</span> <span class="st">"none"</span>, <span class="at">size_category=</span><span class="fl">1.5</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo, <span class="at">node_label =</span> <span class="st">"none"</span>, <span class="at">layout=</span><span class="st">"with_fr"</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, p4,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>, </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">design=</span><span class="st">"AAAAAA</span><span class="sc">\n</span><span class="st">BBCCDD"</span>, </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">1</span>, .<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-Enrichment" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="The `emapplot`. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Enrichment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Enrichment-1.svg" class="img-fluid figure-img" style="width:95.0%" data-fig-scap="The `emapplot`. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Enrichment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.22: <strong>The <code>emapplot</code>.</strong> default (A), <code>node_label="none"</code> (B), <code>size_category=1.5</code> (C), and <code>layout="with_fr"</code> (D)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>node_label</code> parameter controls how the labels were displayed. The enriched terms will be displayed by default with <code>node_label="category"</code> and it can be disabled by setting <code>node_label="none"</code>.</p>
+<p>The <code>node_label_size</code> parameter allows users to adjust the font size of node labels in the enrichment map. This is particularly useful when dealing with many overlapping terms or when labels need to be more readable. For example, <code>node_label_size = 3</code> will increase the label size compared to the default.</p>
+<p>If <code>node_label="group"</code>, the <code>emapplot</code> function will cluster the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If <code>node_label="all"</code>, then the enriched terms and group names will be displayed simultaneously.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo, <span class="at">node_label =</span> <span class="st">"group"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(edo, <span class="at">node_label =</span> <span class="st">"all"</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p5, p6, </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-Enrichment-node-label" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="`emapplot` with enriched terms clustering. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Enrichment-node-label-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Enrichment-node-label-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="`emapplot` with enriched terms clustering. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Enrichment-node-label-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.23: <strong><code>emapplot</code> with enriched terms clustering.</strong> <code>node_label="group"</code> (A) and <code>node_label="all"</code> (B).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="biological-theme-comparison" class="level2" data-number="14.10">
+<h2 data-number="14.10" class="anchored" data-anchor-id="biological-theme-comparison"><span class="header-section-number">14.10</span> Biological theme comparison</h2>
+<p>The <code>emapplot</code> function also supports results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package. In addition to <code>size_category</code> and <code>layout</code> parameters, the number of circles in the bottom left corner can be adjusted using the <code>legend_n</code> parameteras, and proportion of clusters in the pie chart can be adjusted using the <code>pie</code> parameter, when <code>pie="count"</code>, the proportion of clusters in the pie chart is determined by the number of genes, as demonstrated in <a href="#fig-Enrichment2" class="quarto-xref">Figure&nbsp;<span>14.24</span></a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gcSample)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(gcSample, <span class="at">fun=</span><span class="st">"enrichKEGG"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">organism=</span><span class="st">"hsa"</span>, <span class="at">pvalueCutoff=</span><span class="fl">0.05</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">pairwise_termsim</span>(xx)                     </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(xx)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(xx) </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(xx, <span class="at">pie=</span><span class="st">"count"</span>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">emapplot</span>(xx, <span class="at">pie=</span><span class="st">"count"</span>, <span class="at">size_category=</span><span class="fl">1.5</span>, <span class="at">layout=</span><span class="st">"kk"</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, p4, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-Enrichment2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Plot for results obtained from `compareCluster` function of `clusterProfiler` package. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Enrichment2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-Enrichment2-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Plot for results obtained from `compareCluster` function of `clusterProfiler` package. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Enrichment2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.24: <strong>Plot for results obtained from <code>compareCluster</code> function of <code>clusterProfiler</code> package.</strong> default (A), <code>legend_n=2</code> (B), <code>pie="count"</code> (C) and <code>pie="count", size_category=1.5, layout="kk"</code> (D).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="upset-plot" class="level2" data-number="14.11">
+<h2 data-number="14.11" class="anchored" data-anchor-id="upset-plot"><span class="header-section-number">14.11</span> UpSet Plot</h2>
+<p>The <code>upsetplot</code> is an alternative to <code>cnetplot</code> for visualizing the complex association between genes and gene sets. It emphasizes the gene overlapping among different gene sets.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">upsetplot</span>(edo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-upsetORA" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Upsetplot for over-representation analysis. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-upsetORA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-upsetORA-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Upsetplot for over-representation analysis. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-upsetORA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.25: <strong>Upsetplot for over-representation analysis.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For over-representation analysis, <code>upsetplot</code> will calculate the overlaps among different gene sets as demonstrated in <a href="#fig-upsetORA" class="quarto-xref">Figure&nbsp;<span>14.25</span></a>. For GSEA result, it will plot the fold change distributions of different categories (e.g.&nbsp;unique to pathway, overlaps among different pathways).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>kk2 <span class="ot">&lt;-</span> <span class="fu">gseKEGG</span>(<span class="at">geneList     =</span> geneList,</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">organism     =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">minGSSize    =</span> <span class="dv">120</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose      =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">upsetplot</span>(kk2) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-upsetGSEA" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Upsetplot for gene set enrichment analysis. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-upsetGSEA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-upsetGSEA-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Upsetplot for gene set enrichment analysis. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-upsetGSEA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.26: <strong>Upsetplot for gene set enrichment analysis.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ridgeline-plot-for-expression-distribution-of-gsea-result" class="level2" data-number="14.12">
+<h2 data-number="14.12" class="anchored" data-anchor-id="ridgeline-plot-for-expression-distribution-of-gsea-result"><span class="header-section-number">14.12</span> ridgeline plot for expression distribution of GSEA result</h2>
+<p>The <code>ridgeplot</code> will visualize expression distributions of core enriched genes for GSEA enriched categories. It helps users to interpret up/down-regulated pathways.</p>
+<p>The <code>stat</code> parameter controls the geometry used to summarize the distributions. By default, <code>ridgeplot()</code> uses <code>stat = "density_ridges"</code>, and users can also set <code>stat = "binline"</code> to display binned profiles instead.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ridgeplot</span>(edo2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-ridgeplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Ridgeplot for gene set enrichment analysis. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ridgeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-ridgeplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Ridgeplot for gene set enrichment analysis. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ridgeplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.27: <strong>Ridgeplot for gene set enrichment analysis.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ridgeplot</span>(edo2, <span class="at">stat =</span> <span class="st">"binline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="running-score-and-preranked-list-of-gsea-result" class="level2" data-number="14.13">
+<h2 data-number="14.13" class="anchored" data-anchor-id="running-score-and-preranked-list-of-gsea-result"><span class="header-section-number">14.13</span> running score and preranked list of GSEA result</h2>
+<p>Running score and preranked list are traditional methods for visualizing GSEA result. The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package supports both of them to visualize the distribution of the gene set and the enrichment score.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">gseaplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"runningScore"</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">gseaplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">by =</span> <span class="st">"preranked"</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">gseaplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="gseaplot for GSEA result(`by = &quot;runningScore&quot;`). ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="gseaplot for GSEA result(`by = &quot;runningScore&quot;`). ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.28: <strong>gseaplot for GSEA result(<code>by = "runningScore"</code>).</strong> <code>by = "runningScore"</code> (A), <code>by = "preranked"</code> (B), default (C)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>gseaplot</code> function also allows users to customize the colors of the running score line and the rank line.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>p_default <span class="ot">&lt;-</span> <span class="fu">gseaplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>p_custom <span class="ot">&lt;-</span> <span class="fu">gseaplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">color=</span><span class="st">"#DAB546"</span>, <span class="at">color.line=</span><span class="st">'firebrick'</span>, </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">color.vline=</span><span class="st">"steelblue"</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p_default, p_custom, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot-custom-color" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot-custom-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot-custom-color-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot-custom-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.29: <strong>gseaplot with custom colors.</strong> (A) Default color scheme. (B) Customized colors using <code>color</code>, <code>color.line</code>, and <code>color.vline</code>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="unified-color-setting-with-set_enrichplot_color" class="level3" data-number="14.13.1">
+<h3 data-number="14.13.1" class="anchored" data-anchor-id="unified-color-setting-with-set_enrichplot_color"><span class="header-section-number">14.13.1</span> Unified color setting with <code>set_enrichplot_color()</code></h3>
+<p>For consistent color settings across different plot types in <code>enrichplot</code>, the <code>set_enrichplot_color()</code> function provides a unified approach to customize color mappings. This avoids repetitive color code specifications in different plotting functions.</p>
+<section id="function-introduction" class="level4" data-number="14.13.1.1">
+<h4 data-number="14.13.1.1" class="anchored" data-anchor-id="function-introduction"><span class="header-section-number">14.13.1.1</span> Function introduction</h4>
+<p>The <code>set_enrichplot_color()</code> function can be added to any <code>enrichplot</code> visualization using the <code>+</code> operator (ggplot2 style). It offers flexible control over color transformations and palettes.</p>
+</section>
+<section id="parameters" class="level4" data-number="14.13.1.2">
+<h4 data-number="14.13.1.2" class="anchored" data-anchor-id="parameters"><span class="header-section-number">14.13.1.2</span> Parameters</h4>
+<ul>
+<li><code>type</code>: Type of color aesthetic to modify (default: <code>"fill"</code>, can also be <code>"color"</code> for line colors)</li>
+<li><code>transform</code>: Transformation to apply to the values used for color mapping
+<ul>
+<li><code>"log10"</code>: Apply log10 transformation (default for recent versions)</li>
+<li><code>"identity"</code>: Use original values without transformation</li>
+</ul></li>
+<li><code>colors</code>: Custom color palette as a vector of colors (e.g., <code>c("red", "blue")</code>)</li>
+</ul>
+</section>
+<section id="usage-examples" class="level4" data-number="14.13.1.3">
+<h4 data-number="14.13.1.3" class="anchored" data-anchor-id="usage-examples"><span class="header-section-number">14.13.1.3</span> Usage examples</h4>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example data</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DOSE)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>edo <span class="ot">&lt;-</span> <span class="fu">enrichDGN</span>(de)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># A: Default log10 transformation</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_enrichplot_color</span>(<span class="at">type=</span><span class="st">'fill'</span>, <span class="at">transform=</span><span class="st">'log10'</span>) <span class="sc">+</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Default log10 transform"</span>)</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="co"># B: Custom colors with log10 transformation  </span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_enrichplot_color</span>(<span class="at">type=</span><span class="st">'fill'</span>, <span class="at">transform=</span><span class="st">'log10'</span>, <span class="at">colors=</span><span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>)) <span class="sc">+</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Red-blue palette"</span>)</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="co"># C: Identity transformation (no transformation)</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(edo, <span class="at">showCategory=</span><span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_enrichplot_color</span>(<span class="at">type=</span><span class="st">'fill'</span>, <span class="at">transform=</span><span class="st">'identity'</span>) <span class="sc">+</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Identity transform"</span>)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aplot)</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, <span class="at">ncol=</span><span class="dv">3</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-set-enrichplot-color" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-set-enrichplot-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-set-enrichplot-color-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-set-enrichplot-color-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.30: <strong>Color customization using <code>set_enrichplot_color()</code>.</strong> (A) Default log10 transformation. (B) Custom red-blue palette with log10 transformation. (C) Identity transformation (no transformation).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Note</strong>: Starting from enrichplot v1.29.2, log10 transformation of p-values is applied by default in functions like <code>dotplot()</code>. The <code>set_enrichplot_color()</code> function allows users to override this default behavior or customize color palettes consistently across all visualization types.</p>
+<p>Another method to plot GSEA result is the <code>gseaplot2</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gseaplot2 for GSEA result. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot2-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gseaplot2 for GSEA result. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.31: <strong>Gseaplot2 for GSEA result.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>gseaplot2</code> also supports multile gene sets to be displayed on the same figure:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot22" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot22-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot22-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot22-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.32: <strong>Gseaplot2 for GSEA result of multile gene sets.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>User can also displaying the pvalue table on the plot via <code>pvalue_table</code> parameter:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">pvalue_table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">color =</span> <span class="fu">c</span>(<span class="st">"#E495A5"</span>, <span class="st">"#86B875"</span>, <span class="st">"#7DB0DD"</span>), <span class="at">ES_geom =</span> <span class="st">"dot"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot23" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets(add pvalue_table). ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot23-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets(add pvalue_table). ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.33: <strong>Gseaplot2 for GSEA result of multile gene sets(add pvalue_table).</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>pvalue_table</code> can be customized using the following parameters:</p>
+<ul>
+<li><code>pvalue_table_rownames</code> to specify row names of the table (if NULL, no row names will be displayed)</li>
+<li><code>pvalue_table_columns</code> to specify column names of the table</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">pvalue_table =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">pvalue_table_rownames =</span> <span class="cn">NULL</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">pvalue_table_columns =</span> <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"NES"</span>, <span class="st">"p.adjust"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot-pvalue" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gseaplot2 with customized pvalue table. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot-pvalue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot-pvalue-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gseaplot2 with customized pvalue table. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot-pvalue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.34: <strong>Gseaplot2 with customized pvalue table.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>User can specify <code>subplots</code> to only display a subset of plots:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">subplots =</span> <span class="dv">1</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">subplots =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, <span class="at">ncol=</span><span class="dv">1</span>, <span class="at">tag_levels =</span> <span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gseaplot24" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets(add subplots). ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gseaplot24-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gseaplot24-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gseaplot2 for GSEA result of multile gene sets(add subplots). ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gseaplot24-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.35: <strong>Gseaplot2 for GSEA result of multile gene sets(add subplots).</strong> <code>subplots = 1</code> (A),<code>subplots = 1:2</code> (B)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="labeling-genes-in-gsea-plot" class="level3" data-number="14.13.2">
+<h3 data-number="14.13.2" class="anchored" data-anchor-id="labeling-genes-in-gsea-plot"><span class="header-section-number">14.13.2</span> Labeling genes in GSEA plot</h3>
+<p>Users can use <code>geom_gsea_gene()</code> to label specific genes in the GSEA plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get gene set ID</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> edo2<span class="sc">$</span>ID[<span class="dv">1</span>]</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Randomly select genes to label</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">sample</span>(edo2[[id]], <span class="dv">5</span>)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Label genes on gseaplot2</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">gseaplot2</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> edo2<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Add geom_gsea_gene layer to the first subplot (running score)</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>p[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> p[[<span class="dv">1</span>]] <span class="sc">+</span> <span class="fu">geom_gsea_gene</span>(genes, <span class="at">geom=</span>geom_label)</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-geom-gsea-gene" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-geom-gsea-gene-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-geom-gsea-gene-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geom-gsea-gene-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.36: <strong>Labeling genes in GSEA plot.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If users prefer to label with gene symbols, they can convert the gene IDs to symbols (e.g., using <code>setReadable</code>) before plotting.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming org.Hs.eg.db is available</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(<span class="st">"org.Hs.eg.db"</span>)) {</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    edo2_symbol <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(edo2, <span class="st">'org.Hs.eg.db'</span>, <span class="st">'ENTREZID'</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    id <span class="ot">&lt;-</span> edo2_symbol<span class="sc">$</span>ID[<span class="dv">1</span>]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    genes_symbol <span class="ot">&lt;-</span> <span class="fu">sample</span>(edo2_symbol[[id]], <span class="dv">5</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    p_symbol <span class="ot">&lt;-</span> <span class="fu">gseaplot2</span>(edo2_symbol, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> edo2_symbol<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    p_symbol[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> p_symbol[[<span class="dv">1</span>]] <span class="sc">+</span> <span class="fu">geom_gsea_gene</span>(genes_symbol, <span class="at">geom=</span>geom_text_repel)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    p_symbol</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>gsearank</code> function plot the ranked list of genes belong to the specific gene set.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsearank</span>(edo2, <span class="dv">1</span>, <span class="at">title =</span> edo2[<span class="dv">1</span>, <span class="st">"Description"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gsearank" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Ranked list of genes belong to the specific gene set. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gsearank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gsearank-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Ranked list of genes belong to the specific gene set. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gsearank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.37: <strong>Ranked list of genes belong to the specific gene set.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Multiple gene sets can be aligned using <code>cowplot</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>pp <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    anno <span class="ot">&lt;-</span> edo2[i, <span class="fu">c</span>(<span class="st">"NES"</span>, <span class="st">"pvalue"</span>, <span class="st">"p.adjust"</span>)]</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    lab <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">names</span>(anno), <span class="st">"="</span>,  <span class="fu">round</span>(anno, <span class="dv">3</span>), <span class="at">collapse=</span><span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsearank</span>(edo2, i, edo2[i, <span class="dv">2</span>]) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span><span class="fu">ylab</span>(<span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="dv">10000</span>, edo2[i, <span class="st">"enrichmentScore"</span>] <span class="sc">*</span> .<span class="dv">75</span>, <span class="at">label =</span> lab, <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">vjust=</span><span class="dv">0</span>)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(<span class="at">gglist=</span>pp, <span class="at">ncol=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-gsearank2" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Gsearank for multiple gene sets. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gsearank2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-gsearank2-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Gsearank for multiple gene sets. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gsearank2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.38: <strong>Gsearank for multiple gene sets.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="extracting-data-from-gsearank-plot" class="level3" data-number="14.13.3">
+<h3 data-number="14.13.3" class="anchored" data-anchor-id="extracting-data-from-gsearank-plot"><span class="header-section-number">14.13.3</span> Extracting data from gsearank plot</h3>
+<p>The <code>gsearank</code> function can also output the data used for plotting by setting <code>output = "table"</code>. This allows users to inspect the running score and other metrics for genes in the gene set.</p>
+<div id="tbl-gsearank" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gsearank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;14.1: <strong>Data extracted from gsearank plot.</strong>
+</figcaption>
+<div aria-describedby="tbl-gsearank-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsearank</span>(edo2, <span class="dv">1</span>, <span class="at">output =</span> <span class="st">"table"</span>) <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   gene rank in geneList running ES core enrichment
+1  9837               60 0.06243348             YES
+2  1503              194 0.09767718             YES
+3  7037              235 0.13600863             YES
+4  3932              276 0.17107219             YES
+5  3559              298 0.20599919             YES
+6 51311              316 0.24005196             YES</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>Users can also merge this table with gene information (e.g.&nbsp;Symbol) using <code>bitr</code> or other methods.</p>
+<div id="tbl-gsearank-symbol" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gsearank-symbol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;14.2: <strong>Data extracted from gsearank plot with gene symbols.</strong>
+</figcaption>
+<div aria-describedby="tbl-gsearank-symbol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rank_table <span class="ot">&lt;-</span> <span class="fu">gsearank</span>(edo2, <span class="dv">1</span>, <span class="at">output =</span> <span class="st">"table"</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming 'gene' column contains Entrez IDs</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">require</span>(<span class="st">"org.Hs.eg.db"</span>) <span class="sc">&amp;&amp;</span> <span class="fu">require</span>(<span class="st">"clusterProfiler"</span>)) {</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    gene_info <span class="ot">&lt;-</span> <span class="fu">bitr</span>(rank_table<span class="sc">$</span>gene, <span class="at">fromType=</span><span class="st">"ENTREZID"</span>, <span class="at">toType=</span><span class="st">"SYMBOL"</span>, <span class="at">OrgDb=</span><span class="st">"org.Hs.eg.db"</span>)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    rank_table_symbol <span class="ot">&lt;-</span> <span class="fu">merge</span>(rank_table, gene_info, <span class="at">by.x=</span><span class="st">"gene"</span>, <span class="at">by.y=</span><span class="st">"ENTREZID"</span>)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(rank_table_symbol)</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</figure>
+</div>
+</section>
+</section>
+<section id="pubmed-trend-of-enriched-terms" class="level2" data-number="14.14">
+<h2 data-number="14.14" class="anchored" data-anchor-id="pubmed-trend-of-enriched-terms"><span class="header-section-number">14.14</span> pubmed trend of enriched terms</h2>
+<p>One of the problem of enrichment analysis is to find pathways for further investigation. Here, we provide <code>pmcplot</code> function to plot the number/proportion of publications trend based on the query result from PubMed Central. Of course, users can use <code>pmcplot</code> in other scenarios. All text that can be queried on PMC is valid as input of <code>pmcplot</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>terms <span class="ot">&lt;-</span> edo<span class="sc">$</span>Description[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pmcplot</span>(terms, <span class="dv">2010</span><span class="sc">:</span><span class="dv">2020</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">pmcplot</span>(terms, <span class="dv">2010</span><span class="sc">:</span><span class="dv">2020</span>, <span class="at">proportion=</span><span class="cn">FALSE</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p, p2, <span class="at">ncol=</span><span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-pmcplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Pmcplot of enrichment analysis. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pmcplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-pmcplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Pmcplot of enrichment analysis. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pmcplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.39: <strong>Pmcplot of enrichment analysis.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<!--
+
+using ggplot2 api
+
+`[` accessor
+
+
+ggplot(egobp[1:20], aes(x=reorder(Description, -pvalue), y=Count, fill=-p.adjust)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    scale_fill_continuous(low="blue", high="red") +
+    labs(x = "", y = "", fill = "p.adjust") +
+    theme(axis.text=element_text(size=11))
+
+-->
+</section>
+<section id="volcano-plot-for-ora-results" class="level2" data-number="14.15">
+<h2 data-number="14.15" class="anchored" data-anchor-id="volcano-plot-for-ora-results"><span class="header-section-number">14.15</span> Volcano plot for ORA results</h2>
+<p>The <code>volplot()</code> function provides volcano plot visualization for over-representation analysis (ORA) results, allowing users to visualize the relationship between fold change (or other effect size metrics) and statistical significance.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example using enrichment result with fold change information</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: volplot requires results with fold change values</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">volplot</span>(edo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-volplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-volplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-volplot-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-volplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.40: <strong>Volcano plot for ORA results.</strong> Visualizing -log10(p-value) vs z-score.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>volplot()</code> function accepts standard ggplot2 aesthetics and can be customized with additional parameters for point size, color, and labeling thresholds.</p>
+</section>
+<section id="horizontal-gsea-plot" class="level2" data-number="14.16">
+<h2 data-number="14.16" class="anchored" data-anchor-id="horizontal-gsea-plot"><span class="header-section-number">14.16</span> Horizontal GSEA plot</h2>
+<p>The <code>hplot()</code> function creates horizontal versions of GSEA plots, which can be useful for comparing multiple gene sets side-by-side or for presentations where horizontal layout is preferred.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example using GSEA result</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>edo2 <span class="ot">&lt;-</span> <span class="fu">gseDO</span>(geneList)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hplot</span>(edo2, <span class="at">geneSetID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-hplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-hplot-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.41: <strong>Horizontal GSEA plot.</strong> GSEA results displayed in horizontal orientation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>hplot()</code> function supports the same parameters as <code>gseaplot2()</code> but arranges the output horizontally. This is particularly useful for comparing multiple pathways or when vertical space is limited.</p>
+</section>
+<section id="go-graph" class="level2" data-number="14.17">
+<h2 data-number="14.17" class="anchored" data-anchor-id="go-graph"><span class="header-section-number">14.17</span> GO Graph</h2>
+<p>The <code>goplot()</code> function can accept the output of <code>enrichGO</code> and visualize the enriched GO induced graph. See <a href="#fig-goplot" class="quarto-xref">Figure&nbsp;<span>14.42</span></a> for an example.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package =</span> <span class="st">"DOSE"</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(de, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">ont =</span> <span class="st">"BP"</span>, <span class="at">readable =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">goplot</span>(ego)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-goplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Goplot of enrichment analysis.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-goplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="enrichplot_files/figure-html/fig-goplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="Goplot of enrichment analysis.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-goplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14.42: <strong>Goplot of enrichment analysis.</strong>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>plotGOgraph()</code> function is another option to visualize the GO topology.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotGOgraph</span>(ego)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-wu_clusterprofiler_2021" class="csl-entry" role="listitem">
+Wu, Tianzhi, Erqiang Hu, Shuangbin Xu, et al. 2021. <span>“<span class="nocase">clusterProfiler</span> 4.0: A Universal Enrichment Tool for Interpreting Omics Data.”</span> <em>The Innovation</em> 2 (3): 100141. <a href="https://doi.org/10.1016/j.xinn.2021.100141">https://doi.org/10.1016/j.xinn.2021.100141</a>.
+</div>
+<div id="ref-yu_meshes_2018" class="csl-entry" role="listitem">
+Yu, Guangchuang. 2018. <span>“Using Meshes for <span>MeSH</span> Term Enrichment and Semantic Analyses.”</span> <em>Bioinformatics</em> 34 (21): 3766–67. <a href="https://doi.org/10.1093/bioinformatics/bty410">https://doi.org/10.1093/bioinformatics/bty410</a>.
+</div>
+<div id="ref-yu_reactomepa_2016" class="csl-entry" role="listitem">
+Yu, Guangchuang, and Qing-Yu He. 2016. <span>“<span>ReactomePA</span>: An r/Bioconductor Package for Reactome Pathway Analysis and Visualization.”</span> <em>Molecular <span>BioSystems</span></em> 12 (2): 477–79. <a href="https://doi.org/10.1039/C5MB00663E">https://doi.org/10.1039/C5MB00663E</a>.
+</div>
+<div id="ref-yu2012" class="csl-entry" role="listitem">
+Yu, Guangchuang, Le-Gen Wang, Yanyan Han, and Qing-Yu He. 2012. <span>“clusterProfiler: An r Package for Comparing Biological Themes Among Gene Clusters.”</span> <em>OMICS: A Journal of Integrative Biology</em> 16 (5): 284–87. <a href="https://doi.org/10.1089/omi.2011.0118">https://doi.org/10.1089/omi.2011.0118</a>.
+</div>
+<div id="ref-yu_dose_2015" class="csl-entry" role="listitem">
+Yu, Guangchuang, Li-Gen Wang, Guang-Rong Yan, and Qing-Yu He. 2015. <span>“<span>DOSE</span>: An r/Bioconductor Package for Disease Ontology Semantic and Enrichment Analysis.”</span> <em>Bioinformatics</em> 31 (4): 608–9. <a href="https://doi.org/10.1093/bioinformatics/btu684">https://doi.org/10.1093/bioinformatics/btu684</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./029-compareCluster.html" class="pagination-link" aria-label="Biological theme comparison">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./PPI.html" class="pagination-link" aria-label="Protein-Protein Interaction Network">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/enrichplot.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

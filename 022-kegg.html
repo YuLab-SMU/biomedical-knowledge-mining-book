@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>6&nbsp; KEGG enrichment analysis – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./023-other-dbs.html" rel="next">
+<link href="./021-go.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3f70bac5631458d474a321d4182f9338.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./022-kegg.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-enrichment-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-other-dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PPI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#clusterProfiler-kegg-supported-organisms" id="toc-clusterProfiler-kegg-supported-organisms" class="nav-link active" data-scroll-target="#clusterProfiler-kegg-supported-organisms"><span class="header-section-number">6.1</span> Supported organisms</a></li>
+  <li><a href="#finding-correct-parameters-a-case-study-with-rice" id="toc-finding-correct-parameters-a-case-study-with-rice" class="nav-link" data-scroll-target="#finding-correct-parameters-a-case-study-with-rice"><span class="header-section-number">6.2</span> Finding correct parameters: A case study with Rice</a>
+  <ul class="collapse">
+  <li><a href="#determine-the-organism-code" id="toc-determine-the-organism-code" class="nav-link" data-scroll-target="#determine-the-organism-code"><span class="header-section-number">6.2.1</span> Determine the <code>organism</code> code</a></li>
+  <li><a href="#determine-the-keytype" id="toc-determine-the-keytype" class="nav-link" data-scroll-target="#determine-the-keytype"><span class="header-section-number">6.2.2</span> Determine the <code>keyType</code></a></li>
+  <li><a href="#id-conversion" id="toc-id-conversion" class="nav-link" data-scroll-target="#id-conversion"><span class="header-section-number">6.2.3</span> ID Conversion</a></li>
+  <li><a href="#perform-enrichment-analysis" id="toc-perform-enrichment-analysis" class="nav-link" data-scroll-target="#perform-enrichment-analysis"><span class="header-section-number">6.2.4</span> Perform Enrichment Analysis</a></li>
+  </ul></li>
+  <li><a href="#kegg-data-localization" id="toc-kegg-data-localization" class="nav-link" data-scroll-target="#kegg-data-localization"><span class="header-section-number">6.3</span> KEGG Data Localization</a>
+  <ul class="collapse">
+  <li><a href="#using-gson" id="toc-using-gson" class="nav-link" data-scroll-target="#using-gson"><span class="header-section-number">6.3.1</span> Using <code>gson</code></a></li>
+  <li><a href="#when-the-kegg-api-is-unreachable" id="toc-when-the-kegg-api-is-unreachable" class="nav-link" data-scroll-target="#when-the-kegg-api-is-unreachable"><span class="header-section-number">6.3.2</span> When the KEGG API is unreachable</a></li>
+  <li><a href="#using-createkeggdb" id="toc-using-createkeggdb" class="nav-link" data-scroll-target="#using-createkeggdb"><span class="header-section-number">6.3.3</span> Using <code>createKEGGdb</code></a></li>
+  </ul></li>
+  <li><a href="#kegg-id-conversion" id="toc-kegg-id-conversion" class="nav-link" data-scroll-target="#kegg-id-conversion"><span class="header-section-number">6.4</span> KEGG ID Conversion</a>
+  <ul class="collapse">
+  <li><a href="#basic-usage" id="toc-basic-usage" class="nav-link" data-scroll-target="#basic-usage"><span class="header-section-number">6.4.1</span> Basic Usage</a></li>
+  <li><a href="#converting-ko-numbers-to-pathways" id="toc-converting-ko-numbers-to-pathways" class="nav-link" data-scroll-target="#converting-ko-numbers-to-pathways"><span class="header-section-number">6.4.2</span> Converting KO numbers to Pathways</a></li>
+  </ul></li>
+  <li><a href="#clusterprofiler-kegg-pathway-ora" id="toc-clusterprofiler-kegg-pathway-ora" class="nav-link" data-scroll-target="#clusterprofiler-kegg-pathway-ora"><span class="header-section-number">6.5</span> KEGG pathway over-representation analysis</a></li>
+  <li><a href="#sec-setReadable" id="toc-sec-setReadable" class="nav-link" data-scroll-target="#sec-setReadable"><span class="header-section-number">6.6</span> Translating Gene IDs to Names</a></li>
+  <li><a href="#clusterprofiler-kegg-pathway-gsea" id="toc-clusterprofiler-kegg-pathway-gsea" class="nav-link" data-scroll-target="#clusterprofiler-kegg-pathway-gsea"><span class="header-section-number">6.7</span> KEGG pathway gene set enrichment analysis</a></li>
+  <li><a href="#topology-aware-kegg-enrichment" id="toc-topology-aware-kegg-enrichment" class="nav-link" data-scroll-target="#topology-aware-kegg-enrichment"><span class="header-section-number">6.8</span> Topology-aware KEGG enrichment</a></li>
+  <li><a href="#kegg-pathway-classification" id="toc-kegg-pathway-classification" class="nav-link" data-scroll-target="#kegg-pathway-classification"><span class="header-section-number">6.9</span> KEGG Pathway Classification</a>
+  <ul class="collapse">
+  <li><a href="#data-update-strategy" id="toc-data-update-strategy" class="nav-link" data-scroll-target="#data-update-strategy"><span class="header-section-number">6.9.1</span> Data Update Strategy</a></li>
+  </ul></li>
+  <li><a href="#clusterprofiler-kegg-module-ora" id="toc-clusterprofiler-kegg-module-ora" class="nav-link" data-scroll-target="#clusterprofiler-kegg-module-ora"><span class="header-section-number">6.10</span> KEGG module over-representation analysis</a></li>
+  <li><a href="#clusterprofiler-kegg-module-gsea" id="toc-clusterprofiler-kegg-module-gsea" class="nav-link" data-scroll-target="#clusterprofiler-kegg-module-gsea"><span class="header-section-number">6.11</span> KEGG module gene set enrichment analysis</a></li>
+  <li><a href="#visualize-enriched-kegg-pathways" id="toc-visualize-enriched-kegg-pathways" class="nav-link" data-scroll-target="#visualize-enriched-kegg-pathways"><span class="header-section-number">6.12</span> Visualize enriched KEGG pathways</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/022-kegg.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./022-kegg.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="clusterprofiler-kegg" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The KEGG FTP service has not been freely available for academic use since 2012, and there are many software packages using outdated KEGG annotation data. The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package supports downloading the latest online version of KEGG data using the <a href="https://www.kegg.jp">KEGG website</a>, which is freely available for academic users. Both KEGG pathways and modules are supported in <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a>.</p>
+<section id="clusterProfiler-kegg-supported-organisms" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="clusterProfiler-kegg-supported-organisms"><span class="header-section-number">6.1</span> Supported organisms</h2>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package supports all organisms that have KEGG annotation data available in the KEGG database. Users should pass an abbreviation of academic name to the <code>organism</code> parameter. The full list of KEGG supported organisms can be accessed via <a href="http://www.genome.jp/kegg/catalog/org_list.html" class="uri">http://www.genome.jp/kegg/catalog/org_list.html</a>. <a href="https://www.genome.jp/kegg/ko.html">KEGG Orthology</a> (KO) Database is also supported by specifying <code>organism = "ko"</code>.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides the <code>search_kegg_organism()</code> function to help search for supported organisms.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">search_kegg_organism</span>(<span class="st">'ece'</span>, <span class="at">by=</span><span class="st">'kegg_code'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ecoli <span class="ot">&lt;-</span> <span class="fu">search_kegg_organism</span>(<span class="st">'Escherichia coli'</span>, <span class="at">by=</span><span class="st">'scientific_name'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(ecoli)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ecoli)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="finding-correct-parameters-a-case-study-with-rice" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="finding-correct-parameters-a-case-study-with-rice"><span class="header-section-number">6.2</span> Finding correct parameters: A case study with Rice</h2>
+<p>The <code>enrichKEGG()</code> function requires three key parameters: <code>gene</code> (gene IDs), <code>organism</code> (species code), and <code>keyType</code> (type of gene ID). Many users struggle with determining the correct values for <code>organism</code> and <code>keyType</code>, especially for non-model organisms. Here, we use rice (<em>Oryza sativa</em>) as an example to demonstrate how to find these parameters.</p>
+<section id="determine-the-organism-code" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="determine-the-organism-code"><span class="header-section-number">6.2.1</span> Determine the <code>organism</code> code</h3>
+<p>The <code>organism</code> parameter accepts a KEGG organism code (e.g., ‘hsa’ for human, ‘mmu’ for mouse). To find the code for your species, you can search the <a href="http://www.genome.jp/kegg/catalog/org_list.html">KEGG Organism Catalog</a> or use the <code>search_kegg_organism()</code> function as mentioned above.</p>
+<p>For rice, searching for “rice” or “Oryza sativa” in the catalog reveals two main subspecies: * <em>Oryza sativa japonica</em> (Japanese rice) -&gt; code: <code>osa</code> * <em>Oryza sativa indica</em> (Indian rice) -&gt; code: <code>dosa</code></p>
+<p>Choose the one that matches your data. For example, if we choose <code>dosa</code>.</p>
+</section>
+<section id="determine-the-keytype" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="determine-the-keytype"><span class="header-section-number">6.2.2</span> Determine the <code>keyType</code></h3>
+<p>Once the <code>organism</code> is determined, we need to know what gene ID types (<code>keyType</code>) are supported for that organism. A practical trick is to use <code>enrichKEGG()</code> as a query tool. By inputting a dummy gene ID and a likely <code>keyType</code>, the function will return an error message listing the expected ID format if the input is invalid.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Try 'kegg' as keyType with a dummy gene</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">enrichKEGG</span>(<span class="at">gene =</span> <span class="st">"abc"</span>, <span class="at">organism =</span> <span class="st">"dosa"</span>, <span class="at">keyType =</span> <span class="st">"kegg"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Output:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --&gt; No gene can be mapped....</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># --&gt; Expected input gene ID: Os06t0664200-01,Os02t0534400-01,Os06t0185100-00...</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --&gt; return NULL...</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Try 'ncbi-geneid'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">enrichKEGG</span>(<span class="at">gene =</span> <span class="st">"abc"</span>, <span class="at">organism =</span> <span class="st">"dosa"</span>, <span class="at">keyType =</span> <span class="st">"ncbi-geneid"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Output:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Error in KEGG_convert("kegg", keyType, species) :</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   ncbi-geneid is not supported for dosa ...</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Try 'uniprot'</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">enrichKEGG</span>(<span class="at">gene =</span> <span class="st">"abc"</span>, <span class="at">organism =</span> <span class="st">"dosa"</span>, <span class="at">keyType =</span> <span class="st">"uniprot"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Output:</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Error in KEGG_convert("kegg", keyType, species) :</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   uniprot is not supported for dosa ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>From the output, we learn that for <code>dosa</code>, the supported <code>keyType</code> is <code>kegg</code>, and the expected gene ID format looks like <code>Os06t0664200-01</code> (RAP-ID). For <code>osa</code>, the gene IDs are typically NCBI Gene IDs (e.g., <code>3131385</code>).</p>
+</section>
+<section id="id-conversion" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="id-conversion"><span class="header-section-number">6.2.3</span> ID Conversion</h3>
+<p>If your gene list uses a different ID type (e.g., <code>LOC4334374</code> or <code>LOC_Os01g01010.1</code>), you need to convert them to the supported KEGG ID.</p>
+<p>For <code>LOC4334374</code>, you can use <code>AnnotationHub</code> to retrieve the rice <code>OrgDb</code> and convert symbols to Entrez IDs (which correspond to <code>osa</code> KEGG IDs).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AnnotationHub)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ah <span class="ot">&lt;-</span> <span class="fu">AnnotationHub</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Query for Oryza sativa</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">query</span>(ah, <span class="st">'oryza'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>oryza <span class="ot">&lt;-</span> ah[[<span class="st">'AH55775'</span>]] <span class="co"># Example AH ID, check for latest</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check keys</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">keys</span>(oryza, <span class="at">keytype =</span> <span class="st">"SYMBOL"</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert SYMBOL to ENTREZID</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For RAP-ID conversion (e.g., <code>LOC_Os01g01010.1</code> to <code>Os01t0100100-01</code>), you might need to download mapping files from the <a href="https://rapdb.dna.affrc.go.jp/">Rice Annotation Project Database (RAP-DB)</a> or <a href="https://shigen.nig.ac.jp/rice/oryzabase/">Oryzabase</a> and perform the conversion manually or using scripts.</p>
+</section>
+<section id="perform-enrichment-analysis" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="perform-enrichment-analysis"><span class="header-section-number">6.2.4</span> Perform Enrichment Analysis</h3>
+<p>With the correct <code>organism</code>, <code>keyType</code>, and converted gene IDs, you can now run the analysis:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># For osa (using Entrez IDs)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene         =</span> gene_list_entrez,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">organism     =</span> <span class="st">"osa"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">keyType      =</span> <span class="st">"kegg"</span>, <span class="co"># or 'ncbi-geneid' if supported</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># For dosa (using RAP-IDs)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene         =</span> gene_list_rap,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">organism     =</span> <span class="st">"dosa"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">keyType      =</span> <span class="st">"kegg"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This approach of identifying <code>organism</code> code and verifying <code>keyType</code> via error messages applies to any species available in the KEGG database.</p>
+</section>
+</section>
+<section id="kegg-data-localization" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="kegg-data-localization"><span class="header-section-number">6.3</span> KEGG Data Localization</h2>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package retrieves KEGG data online via the KEGG API, which ensures that users analyze their data with the latest knowledge. However, this dependency on internet access can be a limitation if the network is unstable or unavailable (e.g., in some cloud environments). Furthermore, for the sake of reproducibility, it is often desirable to freeze the KEGG data version used in an analysis.</p>
+<p>To address these issues, we provide two methods to perform KEGG analysis locally.</p>
+<section id="using-gson" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="using-gson"><span class="header-section-number">6.3.1</span> Using <code>gson</code></h3>
+<p>The <a href="http://bioconductor.org/packages/gson">gson</a> package provides the <code>gson_KEGG()</code> function to download the latest KEGG pathway and module data for a specific organism and store it in a <code>GSON</code> object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gson)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># download KEGG data for human</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">gson_KEGG</span>(<span class="at">species =</span> <span class="st">"hsa"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># save to a file</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write.gson</span>(kk_gson, <span class="at">file =</span> <span class="st">"kegg_hsa.gson"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># read from file</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">read.gson</span>(<span class="st">"kegg_hsa.gson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>GSON</code> object or the file can be used in <code>enricher()</code> and <code>GSEA()</code> functions (via <code>gson</code> parameter or by parsing it). For more detailed information on using the GSON format, including how to perform generalized enrichment analysis with multiple knowledge bases using <code>gsonList</code>, please refer to <a href="023-other-dbs.html#sec-gson-enrichment" class="quarto-xref"><span>Section 7.3</span></a>.</p>
+</section>
+<section id="when-the-kegg-api-is-unreachable" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="when-the-kegg-api-is-unreachable"><span class="header-section-number">6.3.2</span> When the KEGG API is unreachable</h3>
+<p>In some server or cloud environments, direct access to the KEGG REST API may fail (for example, returning <code>403 Forbidden</code>). In such cases, <code>enrichKEGG()</code> and <code>gseKEGG()</code> may fail before the enrichment analysis starts, simply because the annotation data cannot be retrieved online.</p>
+<p>A practical workaround is to build the KEGG annotation on another machine that has normal access to KEGG, save it locally, and then reuse it on the target server. This is also a convenient way to freeze the KEGG version used in an analysis, which helps reproducibility.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## on a machine that can access KEGG</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">gson_KEGG</span>(<span class="st">"hsa"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(kk_gson, <span class="at">file =</span> <span class="st">"kegg_hsa_gson.rds"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## on the server</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"kegg_hsa_gson.rds"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene =</span> gene, <span class="at">organism =</span> kk_gson)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>kk2 <span class="ot">&lt;-</span> <span class="fu">gseKEGG</span>(<span class="at">geneList =</span> geneList, <span class="at">organism =</span> kk_gson)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This approach is useful when the analysis server has unstable network access, when the KEGG API is temporarily unavailable, or when users want to freeze the exact KEGG version used in an analysis for later reproduction.</p>
+</section>
+<section id="using-createkeggdb" class="level3" data-number="6.3.3">
+<h3 data-number="6.3.3" class="anchored" data-anchor-id="using-createkeggdb"><span class="header-section-number">6.3.3</span> Using <code>createKEGGdb</code></h3>
+<p>Another approach is to create a local <code>KEGG.db</code> package containing the KEGG data. While the official <code>KEGG.db</code> has not been updated since 2011, we can generate a new one using the <code>createKEGGdb</code> package.</p>
+<p>First, install <code>createKEGGdb</code> from GitHub:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"YuLab-SMU/createKEGGdb"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Then, use <code>create_kegg_db()</code> to download data and package it. You can specify one or more species, or even “all” to download data for all supported species.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(createKEGGdb)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create KEGG.db for human and Arabidopsis</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">create_kegg_db</span>(<span class="fu">c</span>(<span class="st">"hsa"</span>, <span class="st">"ath"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This command will generate a <code>KEGG.db_1.0.tar.gz</code> file in the current directory. Install it as a standard R package:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"KEGG.db_1.0.tar.gz"</span>, <span class="at">repos=</span><span class="cn">NULL</span>, <span class="at">type=</span><span class="st">"source"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Once installed, you can perform enrichment analysis using the local data by setting <code>use_internal_data = TRUE</code> in <code>enrichKEGG()</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(KEGG.db)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene         =</span> gene,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">organism     =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">use_internal_data =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This ensures that the analysis runs offline and is fully reproducible using the installed <code>KEGG.db</code> version.</p>
+</section>
+</section>
+<section id="kegg-id-conversion" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="kegg-id-conversion"><span class="header-section-number">6.4</span> KEGG ID Conversion</h2>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package provides the <code>bitr_kegg()</code> function to support ID conversion via the KEGG API. This is particularly useful for species that do not have an <code>OrgDb</code> object but are supported by KEGG.</p>
+<p>The examples in this section require live KEGG REST access. To keep the book build reproducible when the KEGG API is slow or unreachable, we show them without executing them during rendering.</p>
+<section id="basic-usage" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="basic-usage"><span class="header-section-number">6.4.1</span> Basic Usage</h3>
+<p>Here is an example of converting KEGG IDs to NCBI Protein IDs and then to UniProt IDs for human genes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gcSample)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>hg <span class="ot">&lt;-</span> gcSample[[<span class="dv">1</span>]]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hg)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert KEGG ID to NCBI Protein ID</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>eg2np <span class="ot">&lt;-</span> <span class="fu">bitr_kegg</span>(hg, <span class="at">fromType=</span><span class="st">'kegg'</span>, <span class="at">toType=</span><span class="st">'ncbi-proteinid'</span>, <span class="at">organism=</span><span class="st">'hsa'</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(eg2np)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert NCBI Protein ID to UniProt ID</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>np2up <span class="ot">&lt;-</span> <span class="fu">bitr_kegg</span>(eg2np[,<span class="dv">2</span>], <span class="at">fromType=</span><span class="st">'ncbi-proteinid'</span>, <span class="at">toType=</span><span class="st">'uniprot'</span>, <span class="at">organism=</span><span class="st">'hsa'</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(np2up)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The ID type (both <code>fromType</code> and <code>toType</code>) should be one of ‘kegg’, ‘ko’, ‘ncbi-geneid’, ‘ncbi-proteinid’, or ‘uniprot’. The ‘kegg’ ID is the primary gene ID used in the KEGG database, while ‘ko’ refers to KEGG Orthology identifiers. A rule of thumb is that ‘kegg’ gene ID corresponds to <code>entrezgene</code> ID for eukaryote species and <code>Locus</code> ID for prokaryotes.</p>
+<p>For many prokaryote species, <code>entrezgene</code> IDs are not available. For example, <code>ece:Z5100</code> (E. coli O157:H7 EDL933) has <code>NCBI-ProteinID</code> and <code>UniProt</code> links, but not <code>NCBI-GeneID</code>. Attempting to convert <code>Z5100</code> to <code>ncbi-geneid</code> will result in an error stating that <code>ncbi-geneid</code> is not supported. However, conversion to <code>ncbi-proteinid</code> or <code>uniprot</code> is possible.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example for prokaryote ID conversion</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bitr_kegg</span>(<span class="st">"Z5100"</span>, <span class="at">fromType=</span><span class="st">"kegg"</span>, <span class="at">toType=</span><span class="st">'ncbi-proteinid'</span>, <span class="at">organism=</span><span class="st">'ece'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bitr_kegg</span>(<span class="st">"Z5100"</span>, <span class="at">fromType=</span><span class="st">"kegg"</span>, <span class="at">toType=</span><span class="st">'uniprot'</span>, <span class="at">organism=</span><span class="st">'ece'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="converting-ko-numbers-to-pathways" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="converting-ko-numbers-to-pathways"><span class="header-section-number">6.4.2</span> Converting KO numbers to Pathways</h3>
+<p>A common confusion exists between <code>K</code> numbers (KEGG Orthology) and <code>ko</code> numbers (KEGG Pathway maps). <code>K</code> numbers represent orthologous groups, while <code>ko</code> numbers represent pathway maps. Users often want to map <code>K</code> numbers to pathways.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bitr_kegg</span>(<span class="st">"K00844"</span>, <span class="st">"kegg"</span>, <span class="st">"Path"</span>, <span class="st">"ko"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To retrieve the names of the pathways (e.g., “Glutathione metabolism” instead of “ko00480”), we can define a simple helper function <code>ko2name</code> to query the KEGG API.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">bitr_kegg</span>(<span class="st">"K00799"</span>, <span class="st">"kegg"</span>, <span class="st">"Path"</span>, <span class="st">"ko"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">ko2name</span>(x<span class="sc">$</span>Path)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(x, y, <span class="at">by.x=</span><span class="st">'Path'</span>, <span class="at">by.y=</span><span class="st">'ko'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="clusterprofiler-kegg-pathway-ora" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="clusterprofiler-kegg-pathway-ora"><span class="header-section-number">6.5</span> KEGG pathway over-representation analysis</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package=</span><span class="st">"DOSE"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>gene <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene         =</span> gene,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">organism     =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(kk)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Input ID type can be <code>kegg</code>, <code>ncbi-geneid</code>, <code>ncbi-proteinid</code> or <code>uniprot</code> (see also <span class="quarto-unresolved-ref">?sec-kegg-id-conversion</span>). Unlike <code>enrichGO()</code>, there is no <code>readable</code> parameter for <code>enrichKEGG()</code>. However, users can use the <code>setReadable()</code> function (see also <a href="utilities.html#sec-setReadable" class="quarto-xref"><span>Section 19.2</span></a>) if there is an <code>OrgDb</code> available for the species.</p>
+</section>
+<section id="sec-setReadable" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="sec-setReadable"><span class="header-section-number">6.6</span> Translating Gene IDs to Names</h2>
+<p>For GO analysis, the <code>readable</code> parameter controls whether to translate the IDs to human-readable gene names. This parameter is not available for KEGG analysis. However, the <code>setReadable()</code> function can translate input gene IDs to gene names if the corresponding <code>OrgDb</code> object is available.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 'kk' is the enrichKEGG result from the previous section</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(kk, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">keyType=</span><span class="st">"ENTREZID"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(kk)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="clusterprofiler-kegg-pathway-gsea" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="clusterprofiler-kegg-pathway-gsea"><span class="header-section-number">6.7</span> KEGG pathway gene set enrichment analysis</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>kk2 <span class="ot">&lt;-</span> <span class="fu">gseKEGG</span>(<span class="at">geneList     =</span> geneList,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">organism     =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">minGSSize    =</span> <span class="dv">120</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose      =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(kk2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="topology-aware-kegg-enrichment" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="topology-aware-kegg-enrichment"><span class="header-section-number">6.8</span> Topology-aware KEGG enrichment</h2>
+<p>The same high-level design is now available for topology-aware KEGG analysis. <code>nseKEGG()</code> performs single-network enrichment and <code>mnseKEGG()</code> extends the workflow to multiple network layers, while keeping the familiar <code>clusterProfiler</code> interface.</p>
+<p>For a lightweight and reproducible example, we reuse the same shared demo object as in the GO chapter and pass a local KEGG-style <code>GSON</code> object through the <code>organism</code> argument.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">clusterprofiler_enrichit_demo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>kk_nse <span class="ot">&lt;-</span> <span class="fu">nseKEGG</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList =</span> demo<span class="sc">$</span>geneList_evidence,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">network =</span> demo<span class="sc">$</span>network,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">organism =</span> demo<span class="sc">$</span>kegg_gson,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">5</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">1e-6</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIter =</span> <span class="dv">50</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"sample"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPerm =</span> <span class="dv">30</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(kk_nse)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Description"</span>, <span class="st">"NES"</span>, <span class="st">"p.adjust"</span>)], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           ID                      Description      NES
+hsa_demo_04010 hsa_demo_04010    MAPK signaling pathway (demo) 5.350182
+hsa_demo_04910 hsa_demo_04910 Insulin signaling pathway (demo) 5.168976
+hsa_demo_04110 hsa_demo_04110                Cell cycle (demo) 5.144267
+                 p.adjust
+hsa_demo_04010 0.03225806
+hsa_demo_04910 0.03225806
+hsa_demo_04110 0.03225806</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>kk_mnse <span class="ot">&lt;-</span> <span class="fu">mnseKEGG</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed_list =</span> demo<span class="sc">$</span>seed_list,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">networks =</span> <span class="fu">list</span>(<span class="at">RNA =</span> demo<span class="sc">$</span>network, <span class="at">PROT =</span> demo<span class="sc">$</span>network_2),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">couplings =</span> demo<span class="sc">$</span>couplings,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">organism =</span> demo<span class="sc">$</span>kegg_gson,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse =</span> <span class="st">"weighted_mean"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">layer_weights =</span> <span class="fu">c</span>(<span class="at">RNA =</span> <span class="dv">1</span>, <span class="at">PROT =</span> <span class="fl">1.2</span>),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">5</span>,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">1e-6</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIter =</span> <span class="dv">50</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"sample"</span>,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPerm =</span> <span class="dv">30</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(kk_mnse)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Description"</span>, <span class="st">"NES"</span>, <span class="st">"p.adjust"</span>)], <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           ID                      Description      NES
+hsa_demo_04110 hsa_demo_04110                Cell cycle (demo) 5.700310
+hsa_demo_04010 hsa_demo_04010    MAPK signaling pathway (demo) 5.499738
+hsa_demo_04910 hsa_demo_04910 Insulin signaling pathway (demo) 4.737510
+                 p.adjust
+hsa_demo_04110 0.03225806
+hsa_demo_04010 0.03225806
+hsa_demo_04910 0.03225806</code></pre>
+</div>
+</div>
+<p>In a real analysis, users can pass a KEGG organism code such as <code>"hsa"</code> directly. Here we use a local <code>GSON</code> object to keep the example self-contained and reproducible.</p>
+</section>
+<section id="kegg-pathway-classification" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="kegg-pathway-classification"><span class="header-section-number">6.9</span> KEGG Pathway Classification</h2>
+<p>KEGG pathways are organized into a hierarchical structure with top-level categories such as “Metabolism”, “Genetic Information Processing”, “Environmental Information Processing”, “Cellular Processes”, “Organismal Systems”, “Human Diseases”, and “Drug Development”. This classification helps users interpret enrichment results by providing higher-level biological context. For instance, users might be interested specifically in signaling pathways (“Environmental Information Processing”) or metabolic pathways (“Metabolism”) while excluding disease-related pathways.</p>
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package integrates this classification information directly into the enrichment results. The output <code>data.frame</code> contains <code>category</code> and <code>subcategory</code> columns, which can be used to filter or group the results.</p>
+<section id="data-update-strategy" class="level3" data-number="6.9.1">
+<h3 data-number="6.9.1" class="anchored" data-anchor-id="data-update-strategy"><span class="header-section-number">6.9.1</span> Data Update Strategy</h3>
+<p>While <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> queries the KEGG API for species-specific gene sets to ensure the latest data is used, the pathway classification structure is relatively stable and universal across species. To optimize performance and avoid unnecessary dependencies (e.g., web scraping packages), <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> caches this classification data within the package.</p>
+<p>To prevent this cached data from becoming outdated, the package utilizes <strong>GitHub Actions</strong> for automated maintenance. A workflow is triggered weekly to crawl the latest pathway classification from the KEGG website. If any discrepancies are found between the online data and the cached data, the workflow automatically creates a Pull Request to update the package. This automation ensures that the classification data in <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> remains synchronized with KEGG updates efficiently and reliably.</p>
+</section>
+</section>
+<section id="clusterprofiler-kegg-module-ora" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="clusterprofiler-kegg-module-ora"><span class="header-section-number">6.10</span> KEGG module over-representation analysis</h2>
+<p><a href="http://www.genome.jp/kegg/module.html">KEGG Module</a> is a collection of manually defined functional units. In some situations, KEGG Modules have a more straightforward interpretation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mkk <span class="ot">&lt;-</span> <span class="fu">enrichMKEGG</span>(<span class="at">gene =</span> gene,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">organism =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">qvalueCutoff =</span> <span class="dv">1</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mkk)                   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="clusterprofiler-kegg-module-gsea" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="clusterprofiler-kegg-module-gsea"><span class="header-section-number">6.11</span> KEGG module gene set enrichment analysis</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>mkk2 <span class="ot">&lt;-</span> <span class="fu">gseMKEGG</span>(<span class="at">geneList =</span> geneList,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">organism =</span> <span class="st">'hsa'</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pvalueCutoff =</span> <span class="dv">1</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mkk2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="visualize-enriched-kegg-pathways" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="visualize-enriched-kegg-pathways"><span class="header-section-number">6.12</span> Visualize enriched KEGG pathways</h2>
+<p>The <a href="http://bioconductor.org/packages/enrichplot">enrichplot</a> package implements <a href="enrichplot.html">several methods</a> to visualize enriched terms. Most of them are general methods that can be used on GO, KEGG, MSigDb, and other gene set annotations. Here, we introduce the <code>clusterProfiler::browseKEGG()</code> and <code>pathview::pathview()</code> functions to help users explore enriched KEGG pathways with genes of interest.</p>
+<p>To view the KEGG pathway, users can use the <code>browseKEGG()</code> function, which will open a web browser and highlight enriched genes. See <a href="#fig-browseKEGG" class="quarto-xref">Figure&nbsp;<span>6.1</span></a> for a screenshot example.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">browseKEGG</span>(kk, <span class="st">'hsa04110'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-browseKEGG" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Explore selected KEGG pathway.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-browseKEGG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/browseKEGG.png" class="img-fluid figure-img" style="width:100.0%" data-fig-scap="Explore selected KEGG pathway.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-browseKEGG-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1: <strong>Explore selected KEGG pathway.</strong> Differentially expressed genes that are enriched in the selected pathway will be highlighted.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Users can also use the <code>pathview()</code> function from the <a href="http://bioconductor.org/packages/pathview">pathview</a> <span class="citation" data-cites="luo_pathview">(<a href="#ref-luo_pathview" role="doc-biblioref">Luo and Brouwer 2013</a>)</span> to visualize enriched KEGG pathways identified by the <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package <span class="citation" data-cites="yu2012">(<a href="#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>. See <a href="#fig-pathview" class="quarto-xref">Figure&nbsp;<span>6.2</span></a> for a rendered pathway image.</p>
+<p>The following example illustrates how to visualize the “hsa04110” pathway, which was enriched in our previous analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"pathview"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>hsa04110 <span class="ot">&lt;-</span> <span class="fu">pathview</span>(<span class="at">gene.data  =</span> geneList,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pathway.id =</span> <span class="st">"hsa04110"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">species    =</span> <span class="st">"hsa"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">limit      =</span> <span class="fu">list</span>(<span class="at">gene=</span><span class="fu">max</span>(<span class="fu">abs</span>(geneList)), <span class="at">cpd=</span><span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-pathview" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Visualize selected KEGG pathway by `pathview()`.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pathview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/hsa04110_pathview.png" class="img-fluid figure-img" style="width:100.0%" data-fig-scap="Visualize selected KEGG pathway by `pathview()`.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pathview-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2: <strong>Visualize selected KEGG pathway by <code>pathview()</code>.</strong> Gene expression values can be mapped to gradient color scale.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-luo_pathview" class="csl-entry" role="listitem">
+Luo, Weijun, and Cory Brouwer. 2013. <span>“Pathview: An <span>R/Bioconductor</span> Package for Pathway-Based Data Integration and Visualization.”</span> <em>Bioinformatics</em> 29 (July): 1830–31. <a href="https://doi.org/10.1093/bioinformatics/btt285">https://doi.org/10.1093/bioinformatics/btt285</a>.
+</div>
+<div id="ref-yu2012" class="csl-entry" role="listitem">
+Yu, Guangchuang, Le-Gen Wang, Yanyan Han, and Qing-Yu He. 2012. <span>“clusterProfiler: An r Package for Comparing Biological Themes Among Gene Clusters.”</span> <em>OMICS: A Journal of Integrative Biology</em> 16 (5): 284–87. <a href="https://doi.org/10.1089/omi.2011.0118">https://doi.org/10.1089/omi.2011.0118</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./021-go.html" class="pagination-link" aria-label="GO enrichment analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./023-other-dbs.html" class="pagination-link" aria-label="Analysis with Other Knowledge Bases">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/022-kegg.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

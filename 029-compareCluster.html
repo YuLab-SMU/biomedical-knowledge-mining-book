@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>13&nbsp; Biological theme comparison – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./enrichplot.html" rel="next">
+<link href="./028-chipseeker.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3f70bac5631458d474a321d4182f9338.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./029-compareCluster.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-enrichment-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-other-dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PPI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#comparing-multiple-gene-lists" id="toc-comparing-multiple-gene-lists" class="nav-link active" data-scroll-target="#comparing-multiple-gene-lists"><span class="header-section-number">13.1</span> Comparing multiple gene lists</a></li>
+  <li><a href="#formula-interface-of-comparecluster" id="toc-formula-interface-of-comparecluster" class="nav-link" data-scroll-target="#formula-interface-of-comparecluster"><span class="header-section-number">13.2</span> Formula interface of compareCluster</a></li>
+  <li><a href="#functional-analysis-of-single-cell-marker-genes" id="toc-functional-analysis-of-single-cell-marker-genes" class="nav-link" data-scroll-target="#functional-analysis-of-single-cell-marker-genes"><span class="header-section-number">13.3</span> Functional analysis of single-cell marker genes</a>
+  <ul class="collapse">
+  <li><a href="#using-seurat-results" id="toc-using-seurat-results" class="nav-link" data-scroll-target="#using-seurat-results"><span class="header-section-number">13.3.1</span> Using Seurat results</a></li>
+  <li><a href="#using-cosg-results" id="toc-using-cosg-results" class="nav-link" data-scroll-target="#using-cosg-results"><span class="header-section-number">13.3.2</span> Using COSG results</a></li>
+  </ul></li>
+  <li><a href="#vis-compare-profile" id="toc-vis-compare-profile" class="nav-link" data-scroll-target="#vis-compare-profile"><span class="header-section-number">13.4</span> Visualization of functional profile comparison</a>
+  <ul class="collapse">
+  <li><a href="#compare-dotplot" id="toc-compare-dotplot" class="nav-link" data-scroll-target="#compare-dotplot"><span class="header-section-number">13.4.1</span> Dot plot</a></li>
+  <li><a href="#compare-cnetplot" id="toc-compare-cnetplot" class="nav-link" data-scroll-target="#compare-cnetplot"><span class="header-section-number">13.4.2</span> Gene-Concept Network</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">13.5</span> Summary</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/029-compareCluster.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./029-compareCluster.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="clusterprofiler-comparecluster" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> package was developed for biological theme comparison <span class="citation" data-cites="yu2012 wu_clusterprofiler_2021">(<a href="#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>; <a href="#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>, and it provides a function, <code>compareCluster</code>, to automatically calculate enriched functional profiles of each gene clusters and aggregate the results into a single object. Comparing functional profiles can reveal functional consensus and differences among different experiments and helps in identifying differential functional modules in omics datasets.</p>
+<section id="comparing-multiple-gene-lists" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="comparing-multiple-gene-lists"><span class="header-section-number">13.1</span> Comparing multiple gene lists</h2>
+<p>The <code>compareCluster()</code> function applies selected function (via the <code>fun</code> parameter) to perform enrichment analysis for each gene list.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(gcSample)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(gcSample) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 8
+ $ X1: chr [1:216] "4597" "7111" "5266" "2175" ...
+ $ X2: chr [1:805] "23450" "5160" "7126" "26118" ...
+ $ X3: chr [1:392] "894" "7057" "22906" "3339" ...
+ $ X4: chr [1:838] "5573" "7453" "5245" "23450" ...
+ $ X5: chr [1:929] "5982" "7318" "6352" "2101" ...
+ $ X6: chr [1:585] "5337" "9295" "4035" "811" ...
+ $ X7: chr [1:582] "2621" "2665" "5690" "3608" ...
+ $ X8: chr [1:237] "2665" "4735" "1327" "3192" ...</code></pre>
+</div>
+</div>
+<p>Users can use a named list of gene IDs as the input that passed to the <code>geneCluster</code> parameter.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(<span class="at">geneCluster =</span> gcSample, <span class="at">fun =</span> enrichGO, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">ont=</span><span class="st">"BP"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ck <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(ck, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">keyType=</span><span class="st">"ENTREZID"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ck) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Cluster         ID
+1      X1 GO:0061844
+2      X1 GO:0019730
+3      X1 GO:0086005
+4      X1 GO:1990266
+5      X1 GO:0061337
+6      X1 GO:0086091
+                                                              Description
+1 antimicrobial humoral immune response mediated by antimicrobial peptide
+2                                          antimicrobial humoral response
+3                        ventricular cardiac muscle cell action potential
+4                                                    neutrophil migration
+5                                                      cardiac conduction
+6                          regulation of heart rate by cardiac conduction
+  GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
+1     9/198 142/18842 0.06338028       6.031370 6.201898 1.953016e-05
+2    10/198 189/18842 0.05291005       5.035006 5.745341 3.230336e-05
+3     5/198  37/18842 0.13513514      12.859678 7.441356 4.040326e-05
+4     7/198  93/18842 0.07526882       7.162702 6.139580 5.620341e-05
+5     7/198  95/18842 0.07368421       7.011909 6.053734 6.440834e-05
+6     5/198  42/18842 0.11904762      11.328764 6.905722 7.556233e-05
+    p.adjust      qvalue
+1 0.03040124 0.004425159
+2 0.03040124 0.004425159
+3 0.03040124 0.004425159
+4 0.03040124 0.004425159
+5 0.03040124 0.004425159
+6 0.03040124 0.004425159
+                                                    geneID Count
+1     CXCL5/H2BC11/CXCL8/KNG1/CXCL3/PLA2G1B/MUC7/BPI/CCL20     9
+2 CXCL5/H2BC11/CXCL8/KNG1/PI3/CXCL3/PLA2G1B/MUC7/BPI/CCL20    10
+3                           CTNNA3/SCN3B/KCNE5/KCND3/KCNH2     5
+4                S100A8/CXCL5/CXCL8/FUT7/GP2/CXCL3/PLA2G1B     7
+5               ACE2/ATP2B2/CTNNA3/SCN3B/KCNE5/KCND3/KCNH2     7
+6                           CTNNA3/SCN3B/KCNE5/KCND3/KCNH2     5</code></pre>
+</div>
+</div>
+</section>
+<section id="formula-interface-of-comparecluster" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="formula-interface-of-comparecluster"><span class="header-section-number">13.2</span> Formula interface of compareCluster</h2>
+<p>As an alternative to using named list, the <code>compareCluster()</code> function also supports passing a formula to describe more complicated experimental designs (<em>e.g.</em>, <span class="math inline">\(Gene \sim time + treatment\)</span>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package=</span><span class="st">'DOSE'</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mydf <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Entrez=</span><span class="fu">names</span>(geneList), <span class="at">FC=</span>geneList)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>mydf <span class="ot">&lt;-</span> mydf[<span class="fu">abs</span>(mydf<span class="sc">$</span>FC) <span class="sc">&gt;</span> <span class="dv">1</span>,]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mydf<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="st">"upregulated"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>mydf<span class="sc">$</span>group[mydf<span class="sc">$</span>FC <span class="sc">&lt;</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="st">"downregulated"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>mydf<span class="sc">$</span>othergroup <span class="ot">&lt;-</span> <span class="st">"A"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>mydf<span class="sc">$</span>othergroup[<span class="fu">abs</span>(mydf<span class="sc">$</span>FC) <span class="sc">&gt;</span> <span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">"B"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>formula_res <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(Entrez<span class="sc">~</span>group<span class="sc">+</span>othergroup, <span class="at">data=</span>mydf, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">fun=</span>enrichGO, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">ont=</span><span class="st">"BP"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(formula_res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Cluster         group othergroup         ID
+1 downregulated.A downregulated          A GO:0030198
+2 downregulated.A downregulated          A GO:0043062
+3 downregulated.A downregulated          A GO:0045229
+4 downregulated.A downregulated          A GO:0001501
+5 downregulated.A downregulated          A GO:0008015
+6 downregulated.A downregulated          A GO:0030199
+                                    Description GeneRatio   BgRatio RichFactor
+1             extracellular matrix organization    38/631 278/18842  0.1366906
+2          extracellular structure organization    38/631 279/18842  0.1362007
+3 external encapsulating structure organization    38/631 280/18842  0.1357143
+4                   skeletal system development    35/631 341/18842  0.1026393
+5                             blood circulation    42/631 480/18842  0.0875000
+6                  collagen fibril organization    14/631  65/18842  0.2153846
+  FoldEnrichment   zScore       pvalue     p.adjust       qvalue
+1       4.081656 9.635419 1.617110e-13 2.761734e-10 1.696848e-10
+2       4.067027 9.607167 1.814206e-13 2.761734e-10 1.696848e-10
+3       4.052502 9.579047 2.034177e-13 2.761734e-10 1.696848e-10
+4       3.064865 7.162604 4.392006e-09 4.472160e-06 2.747757e-06
+5       2.612797 6.662545 1.479521e-08 1.205218e-05 7.405025e-06
+6       6.431501 8.165131 2.435878e-08 1.653555e-05 1.015967e-05
+                                                                                                                                                                                                            geneID
+1              10218/81035/1513/2200/7075/1842/1296/2192/2191/4856/11117/1289/10631/7177/7049/1300/2331/3249/11096/1805/4319/2006/2621/8292/4016/3908/1287/165/4035/3913/1290/1294/1471/10266/7373/4313/50509/1281
+2              10218/81035/1513/2200/7075/1842/1296/2192/2191/4856/11117/1289/10631/7177/7049/1300/2331/3249/11096/1805/4319/2006/2621/8292/4016/3908/1287/165/4035/3913/1290/1294/1471/10266/7373/4313/50509/1281
+3              10218/81035/1513/2200/7075/1842/1296/2192/2191/4856/11117/1289/10631/7177/7049/1300/2331/3249/11096/1805/4319/2006/2621/8292/4016/3908/1287/165/4035/3913/1290/1294/1471/10266/7373/4313/50509/1281
+4                           7481/2200/7704/2202/4653/1009/4856/3952/1462/1289/2121/1300/1746/5364/6926/81029/2487/3479/284266/116039/4982/63923/4488/85477/658/55112/7227/6424/50509/5744/1281/1909/5125/2697/2690
+5 5138/8864/477/2200/26509/5350/290/3778/11117/7122/3952/18/9365/3357/2946/4922/5348/6387/3751/2006/6863/185/9590/775/857/1359/150/10266/23171/23327/4313/6833/55800/9607/6505/7349/7220/6444/1909/5125/2697/63895
+6                                                                                                                                           2200/4856/11117/1289/2331/1805/4016/1287/165/1290/1294/7373/50509/1281
+  Count
+1    38
+2    38
+3    38
+4    35
+5    42
+6    14</code></pre>
+</div>
+</div>
+</section>
+<section id="functional-analysis-of-single-cell-marker-genes" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="functional-analysis-of-single-cell-marker-genes"><span class="header-section-number">13.3</span> Functional analysis of single-cell marker genes</h2>
+<p>The <code>compareCluster()</code> function is highly versatile and can be directly integrated into single-cell analysis workflows. For example, after identifying marker genes for each cluster using <code>Seurat</code>, the results can be directly used for functional enrichment analysis.</p>
+<section id="using-seurat-results" class="level3" data-number="13.3.1">
+<h3 data-number="13.3.1" class="anchored" data-anchor-id="using-seurat-results"><span class="header-section-number">13.3.1</span> Using Seurat results</h3>
+<p>Typically, <code>FindAllMarkers()</code> from <code>Seurat</code> returns a data frame where rows are genes and columns include cluster information and statistical metrics.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SeuratData)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load example data</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"pbmc3k"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>sce <span class="ot">&lt;-</span> pbmc3k.final</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify marker genes</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>sce.markers <span class="ot">&lt;-</span> <span class="fu">FindAllMarkers</span>(<span class="at">object =</span> sce, <span class="at">only.pos =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                              <span class="at">min.pct =</span> <span class="fl">0.25</span>, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                              <span class="at">thresh.use =</span> <span class="fl">0.25</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter markers</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>markers <span class="ot">&lt;-</span> sce.markers <span class="sc">|&gt;</span> </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(cluster) <span class="sc">|&gt;</span> </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(p_val_adj <span class="sc">&lt;</span> <span class="fl">0.001</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ID conversion (if needed)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>gid <span class="ot">&lt;-</span> <span class="fu">bitr</span>(<span class="fu">unique</span>(markers<span class="sc">$</span>gene), <span class="st">'SYMBOL'</span>, <span class="st">'ENTREZID'</span>, <span class="at">OrgDb =</span> <span class="st">'org.Hs.eg.db'</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>markers <span class="ot">&lt;-</span> <span class="fu">full_join</span>(markers, gid, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">'gene'</span> <span class="ot">=</span> <span class="st">'SYMBOL'</span>))</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform comparison using formula interface</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(ENTREZID <span class="sc">~</span> cluster, <span class="at">data =</span> markers, <span class="at">fun =</span> <span class="st">'enrichKEGG'</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(x, <span class="at">label_format =</span> <span class="dv">40</span>) <span class="sc">+</span> </span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="using-cosg-results" class="level3" data-number="13.3.2">
+<h3 data-number="13.3.2" class="anchored" data-anchor-id="using-cosg-results"><span class="header-section-number">13.3.2</span> Using COSG results</h3>
+<p>Methods like <code>COSG</code> return marker genes as a list or data frame where columns represent clusters. Since a data frame is essentially a list of equal-length vectors, it can be passed directly to <code>compareCluster()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(COSG)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify markers using COSG</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>marker_cosg <span class="ot">&lt;-</span> <span class="fu">cosg</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    sce,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">groups =</span> <span class="st">'all'</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">assay =</span> <span class="st">'RNA'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">slot =</span> <span class="st">'data'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu =</span> <span class="dv">1</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_genes_user =</span> <span class="dv">100</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># The first element is a data frame of gene symbols</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Columns correspond to clusters</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(marker_cosg[[<span class="dv">1</span>]])</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Directly use the data frame for enrichment</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(marker_cosg[[<span class="dv">1</span>]], </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                    <span class="at">fun =</span> <span class="st">'enrichGO'</span>, </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">OrgDb =</span> <span class="st">'org.Hs.eg.db'</span>, </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                    <span class="at">keyType =</span> <span class="st">'SYMBOL'</span>, </span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ont =</span> <span class="st">"MF"</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(y, <span class="at">label_format =</span> <span class="dv">60</span>) <span class="sc">+</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This demonstrates that <code>compareCluster()</code> can seamlessly handle various data structures commonly produced by single-cell analysis tools, simplifying the downstream functional interpretation.</p>
+</section>
+</section>
+<section id="vis-compare-profile" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="vis-compare-profile"><span class="header-section-number">13.4</span> Visualization of functional profile comparison</h2>
+<section id="compare-dotplot" class="level3" data-number="13.4.1">
+<h3 data-number="13.4.1" class="anchored" data-anchor-id="compare-dotplot"><span class="header-section-number">13.4.1</span> Dot plot</h3>
+<p>We can visualize the result using the <code>dotplot()</code> method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(ck)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(formula_res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ccn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Comparing enrichment results of multiple gene lists. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ccn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-ccn-1.png" class="img-fluid figure-img" style="width:100.0%" data-fig-scap="Comparing enrichment results of multiple gene lists. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ccn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.1: <strong>Comparing enrichment results of multiple gene lists.</strong> (A) Using a named list of gene clusters, the results were displayed as multiple columns with each one represents an enrichment result of a gene cluster. (B) Using formula interface, the columns represent gene clusters defined by the formula.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The formula interface allows more complicated gene cluster definition. In <a href="#fig-ccn" class="quarto-xref">Figure&nbsp;<span>13.1</span></a>(B), the gene clusters were defined by two variables (i.e.&nbsp;<code>group</code> that divides genes into <code>upregulated</code> and <code>downregulated</code> and <code>othergroup</code> that divides the genes into two categories of <code>A</code> and <code>B</code>.). The <code>dotplot()</code> function allows us to use one variable to divide the result into different facet and plot the result with other variables in each facet panel (<a href="#fig-ccf" class="quarto-xref">Figure&nbsp;<span>13.2</span></a>).</p>
+<div class="cell" data-crop="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(formula_res, <span class="at">x=</span><span class="st">"group"</span>) <span class="sc">+</span> <span class="fu">facet_grid</span>(<span class="sc">~</span>othergroup)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-ccf" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="Comparing enrichment results of multiple gene lists defined by multiple variable. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ccf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-ccf-1.png" class="img-fluid figure-img" style="width:90.0%" data-fig-scap="Comparing enrichment results of multiple gene lists defined by multiple variable. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ccf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.2: <strong>Comparing enrichment results of multiple gene lists defined by multiple variable.</strong> The results were visualized as a dot plot with an x-axis representing one level of conditions (the <em>group</em> variable) and a facet panel indicating another level of conditions (the <em>othergroup</em> variable).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>By default, only the top 5 (most significant) categories of each cluster are shown. Users can change <code>showCategory</code> to specify how many categories should be displayed for each cluster, and if <code>showCategory</code> is set to <code>NULL</code>, the whole result will be plotted. The <code>showCategory</code> parameter also accepts a character vector of selected categories to <a href="FAQ.html#showing-specific-pathways">plot pathways of interest</a>.</p>
+<p><code>dotplot()</code> tries to make the comparison among different clusters more informative and reasonable. After extracting, for example, 10 categories for each cluster, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> collects overlap of these categories among clusters. For example, <code>term A</code> may be enriched in all gene clusters (<em>e.g.</em>, <code>g1</code> and <code>g2</code>) and ranked among the 10 most significant categories of <code>g1</code> but not of <code>g2</code>. In this case, <a href="http://bioconductor.org/packages/clusterProfiler">clusterProfiler</a> will still include <code>term A</code> in the <code>g2</code> cluster to make the comparison more reasonable.</p>
+<p>This feature ensures that if a term is significant and selected for one cluster, its statistics in other clusters are also displayed, allowing for a valid comparison. Consequently, the number of categories shown for some clusters might exceed the <code>showCategory</code> limit (e.g., 15 categories shown for <em>g2</em> while <code>showCategory</code> is 10). Disabling this by setting <code>includeAll = FALSE</code> in <code>dotplot()</code> may result in a plot that suggests zero overlap between clusters, which can be misleading (see <a href="#fig-includeAll" class="quarto-xref">Figure&nbsp;<span>13.3</span></a> A vs B) and is not recommended.</p>
+<p>The same selection logic is used by <code>cnetplot()</code> for <code>compareCluster()</code> results. In both functions, a numeric <code>showCategory</code> selects the top terms within each cluster by default, while <code>includeAll</code> controls whether matched terms from other clusters should be retained for comparison.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(ck, <span class="at">showCategory=</span><span class="dv">5</span>, <span class="at">includeAll=</span><span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"includeAll=FALSE"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(ck, <span class="at">showCategory=</span><span class="dv">5</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"default"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">tag_levels=</span><span class="st">'A'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-includeAll" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-includeAll-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-includeAll-1.svg" class="img-fluid figure-img" style="width:98.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-includeAll-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.3: <strong>Comparison of dotplot with and without includeAll parameter.</strong> (A) <code>includeAll=FALSE</code> produces a plot that strictly follows <code>showCategory</code> but may hide overlapping terms. (B) The default behavior (<code>includeAll=TRUE</code>) recovers the missing overlap information, making the comparison more reasonable.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The <code>dotplot()</code> function accepts a parameter <code>size</code> for setting the scale of dot sizes. The default parameter <code>size</code> is set to <code>geneRatio</code>, which corresponds to the <code>GeneRatio</code> column of the output. If it is set to <code>count</code>, the comparison will be based on gene counts, while if set to <code>rowPercentage</code>, the dot sizes will be normalized by <code>count/(sum of each row)</code>. Users can also map the dot size to other variables or derived variables (see <a href="dplyr.html">Chapter 16</a>).</p>
+<p>To provide the full information, we also provide number of identified genes in each category (numbers in parentheses) when <code>by</code> is set to <code>rowPercentage</code> and number of gene clusters in each cluster label (numbers in parentheses) when <code>by</code> is set to <code>geneRatio</code>, as shown in <a href="#fig-ccn" class="quarto-xref">Figure&nbsp;<span>13.1</span></a>.</p>
+<p>The p-values indicate which categories are more likely to have biological meanings. The dots in the plot are color-coded based on their corresponding adjusted p-values. Color gradient ranging from red to blue corresponds to the order of increasing adjusted p-values. That is, red indicates low p-values (high enrichment), and blue indicates high p-values (low enrichment). Adjusted p-values were filtered out by the threshold given by the parameter <code>pvalueCutoff</code>, and FDR can be estimated by <code>qvalue</code>.</p>
+</section>
+<section id="compare-cnetplot" class="level3" data-number="13.4.2">
+<h3 data-number="13.4.2" class="anchored" data-anchor-id="compare-cnetplot"><span class="header-section-number">13.4.2</span> Gene-Concept Network</h3>
+<p>The <a href="enrichplot.html#cnetplot">cnetplot</a> also works with <code>compareCluster()</code> result. For <code>compareClusterResult</code> objects, enriched terms are drawn as pies so that the composition of each term across gene clusters can be displayed directly in the network. Like <code>dotplot()</code>, a numeric <code>showCategory</code> selects the top enriched terms within each cluster by default, and <code>includeAll = TRUE</code> keeps comparable terms from other clusters in the plot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cluster_cols <span class="ot">&lt;-</span> <span class="fu">setNames</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>)[<span class="fu">seq_along</span>(<span class="fu">unique</span>(<span class="fu">as.data.frame</span>(ck)<span class="sc">$</span>Cluster))],</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>(<span class="fu">as.data.frame</span>(ck)<span class="sc">$</span>Cluster)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(ck, <span class="at">showCategory =</span> <span class="dv">3</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(ck, <span class="at">showCategory =</span> <span class="dv">3</span>, <span class="at">includeAll =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(ck, <span class="at">showCategory =</span> <span class="dv">3</span>, <span class="at">categorySizeBy =</span> <span class="sc">~</span> <span class="sc">-</span><span class="fu">log10</span>(p.adjust))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(ck, <span class="at">showCategory =</span> <span class="dv">3</span>, <span class="at">categorySizeBy =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> cluster_cols)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_list</span>(p1, p2, p3, p4, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">tag_levels =</span> <span class="st">"A"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-mcnetplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-scap="`cnetplot()` for comparing functional profiles of multiple gene clusters. ">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mcnetplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="029-compareCluster_files/figure-html/fig-mcnetplot-1.svg" class="img-fluid figure-img" style="width:98.0%" data-fig-scap="`cnetplot()` for comparing functional profiles of multiple gene clusters. ">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcnetplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13.4: <strong><code>cnetplot()</code> for comparing functional profiles of multiple gene clusters.</strong> Default per-cluster selection (A), <code>includeAll = FALSE</code> (B), <code>categorySizeBy = ~ -log10(p.adjust)</code> (C), and custom pie colors (D).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Compared with ordinary enrichment results, there are several useful parameters to keep in mind for <code>compareCluster()</code> output:</p>
+<ul>
+<li><code>showCategory = 3</code> means that the top 3 enriched terms are selected within each cluster by default.</li>
+<li><code>showCategory</code> can also be a character vector if you want to display a manually selected set of terms.</li>
+<li><code>includeAll = TRUE</code> keeps comparable terms that also appear in other clusters; set <code>includeAll = FALSE</code> if you only want the directly selected terms.</li>
+<li><code>categorySizeBy</code> controls the size of category pies and supports expressions such as <code>~itemNum</code>, <code>~p.adjust</code>, or <code>~ -log10(p.adjust)</code>.</li>
+<li>Pie colors are mapped to <code>Cluster</code>, so custom cluster colors can be supplied with <code>ggplot2::scale_fill_manual()</code>.</li>
+</ul>
+<p>As in <code>dotplot()</code>, the <code>split</code> parameter can be used when term selection should be carried out within another grouping variable rather than only by cluster. For example, when GO enrichment is performed with <code>ont = "ALL"</code>, users can select the top terms within each ontology:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ck_all <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneCluster =</span> gcSample,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> enrichGO,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">OrgDb =</span> org.Hs.eg.db,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ont =</span> <span class="st">"ALL"</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ck_all <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(ck_all, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">keyType =</span> <span class="st">"ENTREZID"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cnetplot</span>(ck_all, <span class="at">showCategory =</span> <span class="dv">3</span>, <span class="at">split =</span> <span class="st">"ONTOLOGY"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="summary" class="level2" data-number="13.5">
+<h2 data-number="13.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">13.5</span> Summary</h2>
+<p>The comparison function was designed as a framework for comparing gene clusters of any kind of ontology associations, not only <a href="021-go.html#go-classification">groupGO</a>, <a href="021-go.html#clusterprofiler-go-ora">enrichGO</a>, <a href="022-kegg.html#clusterprofiler-kegg-pathway-ora">enrichKEGG</a>, <a href="022-kegg.html#clusterprofiler-kegg-module-ora">enrichMKEGG</a>, <a href="023-other-dbs.html#clusterprofiler-wikipathway-ora">enrichWP</a> and <a href="027-universal-enrichment.html">enricher</a> that were provided in this package, but also other biological and biomedical ontologies, including but not limited to <a href="024-reactome.html#reactomepa-ora">enrichPathway</a>, <a href="025-do-enrichment.html#dose-do-ora">enrichDO</a>, <a href="025-do-enrichment.html#dose-ncg-ora">enrichNCG</a>, <a href="025-do-enrichment.html#dose-dgn-ora">enrichDGN</a> and <a href="026-meshes-enrichment.html#meshes-ora">enrichMeSH</a>.</p>
+<p>In <span class="citation" data-cites="yu2012">(<a href="#ref-yu2012" role="doc-biblioref">Yu et al. 2012</a>)</span>, we analyzed the publicly available expression dataset of breast tumor tissues from 200 patients (GSE11121, Gene Expression Omnibus) <span class="citation" data-cites="schmidt2008">(<a href="#ref-schmidt2008" role="doc-biblioref">Schmidt et al. 2008</a>)</span>. We identified 8 gene clusters from differentially expressed genes, and used the <code>compareCluster()</code> function to compare these gene clusters by their enriched biological process. In <span class="citation" data-cites="wu_clusterprofiler_2021">(<a href="#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>, we analyzed the GSE8057 dataset which contains expression data from ovarian cancer cells at multiple time points and under two treatment conditions. Eight groups of DEG lists were analyzed simultaneously using <code>compareCluster()</code> with WikiPathways. The result indicates that the two drugs have distinct effects at the beginning but consistent effects in the later stages (Fig. 4 of <span class="citation" data-cites="wu_clusterprofiler_2021">(<a href="#ref-wu_clusterprofiler_2021" role="doc-biblioref">Wu et al. 2021</a>)</span>).</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-schmidt2008" class="csl-entry" role="listitem">
+Schmidt, Marcus, Daniel B?hm, Christian von T?rne, et al. 2008. <span>“The Humoral Immune System Has a Key Prognostic Impact in Node-Negative Breast Cancer.”</span> <em>Cancer Research</em> 68 (13): 5405–13. <a href="https://doi.org/10.1158/0008-5472.CAN-07-5206">https://doi.org/10.1158/0008-5472.CAN-07-5206</a>.
+</div>
+<div id="ref-wu_clusterprofiler_2021" class="csl-entry" role="listitem">
+Wu, Tianzhi, Erqiang Hu, Shuangbin Xu, et al. 2021. <span>“<span class="nocase">clusterProfiler</span> 4.0: A Universal Enrichment Tool for Interpreting Omics Data.”</span> <em>The Innovation</em> 2 (3): 100141. <a href="https://doi.org/10.1016/j.xinn.2021.100141">https://doi.org/10.1016/j.xinn.2021.100141</a>.
+</div>
+<div id="ref-yu2012" class="csl-entry" role="listitem">
+Yu, Guangchuang, Le-Gen Wang, Yanyan Han, and Qing-Yu He. 2012. <span>“clusterProfiler: An r Package for Comparing Biological Themes Among Gene Clusters.”</span> <em>OMICS: A Journal of Integrative Biology</em> 16 (5): 284–87. <a href="https://doi.org/10.1089/omi.2011.0118">https://doi.org/10.1089/omi.2011.0118</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./028-chipseeker.html" class="pagination-link" aria-label="Functional enrichment analysis of genomic coordinations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./enrichplot.html" class="pagination-link" aria-label="Visualization of functional enrichment result">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/029-compareCluster.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>16&nbsp; Bayesian term selection for enrichment results – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./interpretation.html" rel="next">
+<link href="./PPI.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3f70bac5631458d474a321d4182f9338.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./bayesian-term-selection.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-enrichment-algorithms.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-other-dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PPI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#input-requirements" id="toc-input-requirements" class="nav-link active" data-scroll-target="#input-requirements"><span class="header-section-number">16.1</span> Input requirements</a></li>
+  <li><a href="#candidate-term-space" id="toc-candidate-term-space" class="nav-link" data-scroll-target="#candidate-term-space"><span class="header-section-number">16.2</span> Candidate term space</a></li>
+  <li><a href="#the-model" id="toc-the-model" class="nav-link" data-scroll-target="#the-model"><span class="header-section-number">16.3</span> The model</a></li>
+  <li><a href="#mcmc-inference" id="toc-mcmc-inference" class="nav-link" data-scroll-target="#mcmc-inference"><span class="header-section-number">16.4</span> MCMC inference</a></li>
+  <li><a href="#why-this-helps" id="toc-why-this-helps" class="nav-link" data-scroll-target="#why-this-helps"><span class="header-section-number">16.5</span> Why this helps</a></li>
+  <li><a href="#a-worked-example" id="toc-a-worked-example" class="nav-link" data-scroll-target="#a-worked-example"><span class="header-section-number">16.6</span> A worked example</a></li>
+  <li><a href="#output-columns" id="toc-output-columns" class="nav-link" data-scroll-target="#output-columns"><span class="header-section-number">16.7</span> Output columns</a></li>
+  <li><a href="#relationship-to-simplify" id="toc-relationship-to-simplify" class="nav-link" data-scroll-target="#relationship-to-simplify"><span class="header-section-number">16.8</span> Relationship to <code>simplify()</code></a></li>
+  <li><a href="#scope-and-interpretation" id="toc-scope-and-interpretation" class="nav-link" data-scroll-target="#scope-and-interpretation"><span class="header-section-number">16.9</span> Scope and interpretation</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/bayesian-term-selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./bayesian-term-selection.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-bayes-enrich" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Traditional over-representation analysis (ORA) often returns a long list of significant terms. Because each term is tested independently, groups of overlapping GO terms or pathways may all be reported as significant even when they describe the same underlying biological program.</p>
+<p><code>bayes_enrich()</code> adds a Bayesian term-selection layer on top of ORA results. Instead of asking only which terms are individually enriched, it asks which terms are most likely to represent the active biological programs that jointly explain the observed gene list. This procedure does not replace the ORA <em>p</em>-value and does not convert <code>p.adjust</code> into a posterior probability. It reuses the information already stored in an <code>enrichResult</code> object and builds a model based on term-gene coverage.</p>
+<section id="input-requirements" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="input-requirements"><span class="header-section-number">16.1</span> Input requirements</h2>
+<p><code>bayes_enrich()</code> accepts an <code>enrichResult</code> object and extracts the information it needs directly from that object. In particular, it reuses the observed genes, the background universe, the term-to-gene mapping, and the enrichment table. Users therefore do not need to provide <code>gene</code> or <code>universe</code> again.</p>
+<p>Internally, this means the Bayesian layer starts from the same enrichment result that users already trust, but asks a different question: among the candidate enriched terms, which ones provide the best joint explanation for the observed genes?</p>
+</section>
+<section id="candidate-term-space" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="candidate-term-space"><span class="header-section-number">16.2</span> Candidate term space</h2>
+<p>The <code>candidate</code> argument defines the term space used by Bayesian inference. It is not a posterior filter. Instead, it determines which terms are allowed to compete for active-term selection.</p>
+<ul>
+<li><code>candidate = "top"</code> sorts <code>x@result</code> by <code>by</code> and takes the first <code>n_terms</code> rows. By default, <code>by = "p.adjust"</code>, so the Bayesian model starts from the most significant ORA terms.</li>
+<li><code>candidate = "significant"</code> uses <code>as.data.frame(x)</code>, which respects the cutoffs stored in the enrichment object and therefore works on the significant terms that users usually inspect.</li>
+<li><code>candidate = "all"</code> uses the full <code>x@result</code> slot.</li>
+<li>Users can also provide a character vector of term IDs to define a custom candidate set.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ego2 <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ego, <span class="at">candidate =</span> <span class="st">"top"</span>, <span class="at">n_terms =</span> <span class="dv">200</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ego3 <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ego, <span class="at">candidate =</span> <span class="st">"significant"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ego4 <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ego, <span class="at">candidate =</span> <span class="st">"all"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ego5 <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ego, <span class="at">candidate =</span> <span class="fu">c</span>(<span class="st">"GO:0006955"</span>, <span class="st">"GO:0002376"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Using a restricted candidate space is often helpful in practice because it keeps the model focused, runs faster, and reduces interference from weakly related terms.</p>
+</section>
+<section id="the-model" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="the-model"><span class="header-section-number">16.3</span> The model</h2>
+<p>Let <span class="math inline">\(G\)</span> be the background gene universe and <span class="math inline">\(T\)</span> the candidate term set. For each gene <span class="math inline">\(g \in G\)</span>, let <span class="math inline">\(y_g\)</span> denote whether the gene appears in the observed gene list. For each candidate term <span class="math inline">\(t \in T\)</span>, let <span class="math inline">\(z_t\)</span> denote whether the term is active, and let <span class="math inline">\(A_t\)</span> be the set of genes covered by that term.</p>
+<p>Each candidate term has a latent binary state:</p>
+<p><span class="math display">\[
+z_t =
+\begin{cases}
+1, &amp; \text{term } t \text{ is active} \\
+0, &amp; \text{term } t \text{ is inactive}
+\end{cases}
+\]</span></p>
+<p>The prior is</p>
+<p><span class="math display">\[
+P(z_t = 1) = \text{prior}, \qquad P(z_t = 0) = 1 - \text{prior}.
+\]</span></p>
+<p>A gene is considered covered if it belongs to at least one active term:</p>
+<p><span class="math display">\[
+\mathrm{covered}_g = \mathbb{I}\left(\exists t \in T \text{ such that } z_t = 1 \text{ and } g \in A_t \right).
+\]</span></p>
+<p>If a gene is covered, the model assumes that it is observed with probability <span class="math inline">\(1 - \text{false\_negative}\)</span>. If it is not covered, it may still appear in the observed gene list with probability <code>false_positive</code>:</p>
+<p><span class="math display">\[
+P(y_g = 1 \mid \mathrm{covered}_g = 1) = 1 - \text{false\_negative}
+\]</span></p>
+<p><span class="math display">\[
+P(y_g = 1 \mid \mathrm{covered}_g = 0) = \text{false\_positive}.
+\]</span></p>
+<p>This leads to the posterior quantity of interest:</p>
+<p><span class="math display">\[
+P(z_t = 1 \mid \text{observed genes, candidate terms, term-gene mapping}),
+\]</span></p>
+<p>which represents the posterior support that term <span class="math inline">\(t\)</span> is an active explanatory term under the current candidate space and model parameters.</p>
+</section>
+<section id="mcmc-inference" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="mcmc-inference"><span class="header-section-number">16.4</span> MCMC inference</h2>
+<p><code>bayes_enrich()</code> uses a lightweight Metropolis-Hastings sampler. In each iteration, one candidate term is selected at random, its active state is flipped, and only the genes covered by that term are updated. The acceptance probability is</p>
+<p><span class="math display">\[
+\min\left(1, \exp\left[\log p(\text{proposal}) - \log p(\text{current})\right]\right).
+\]</span></p>
+<p>After burn-in, the sampler records active states every <code>thin</code> iterations. The posterior probability of a term is then estimated as the proportion of saved samples in which that term is active. Because the implementation updates only the genes affected by the flipped term, the computational cost of one iteration is driven mainly by the size of that term rather than the size of the whole universe.</p>
+</section>
+<section id="why-this-helps" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="why-this-helps"><span class="header-section-number">16.5</span> Why this helps</h2>
+<p>ORA tests each term independently. In ontologies such as GO, many significant terms overlap heavily. For example, terms such as “immune response”, “immune system process”, “lymphocyte activation”, and “T cell activation” may all be enriched because they share many of the same genes.</p>
+<p><code>bayes_enrich()</code> performs joint explanation instead of independent scoring. If one specific term already explains most of the observed genes, another highly overlapping term may no longer be necessary. Because every active term pays a prior cost, redundant terms compete with one another during MCMC sampling. Terms with high posterior support therefore tend to be the ones that explain a large portion of the observed genes while remaining worth keeping after sparsity is taken into account.</p>
+</section>
+<section id="a-worked-example" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="a-worked-example"><span class="header-section-number">16.6</span> A worked example</h2>
+<p>The following example uses a smaller number of iterations than the default settings so that the book can render quickly. For interactive analysis, users can increase <code>n_iter</code> and <code>burnin</code> for more stable posterior estimates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichit)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package =</span> <span class="st">"DOSE"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="dv">2</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> de,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> <span class="fu">names</span>(geneList),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">OrgDb =</span> org.Hs.eg.db,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ont =</span> <span class="st">"BP"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">qvalueCutoff =</span> <span class="fl">0.2</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>ego2 <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ego,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">candidate =</span> <span class="st">"top"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_terms =</span> <span class="dv">100</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_iter =</span> <span class="dv">1000</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">burnin =</span> <span class="dv">200</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">thin =</span> <span class="dv">2</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed =</span> <span class="dv">1</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">bayes_summary</span>(ego2, <span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           ID                                                  Description
+1  GO:1901970   positive regulation of mitotic sister chromatid separation
+2  GO:0033045                   regulation of sister chromatid segregation
+3  GO:0051231                                           spindle elongation
+4  GO:2000816   negative regulation of mitotic sister chromatid separation
+5  GO:0007059                                       chromosome segregation
+6  GO:0000022                                   mitotic spindle elongation
+7  GO:0007052                                 mitotic spindle organization
+8  GO:0045841 negative regulation of mitotic metaphase/anaphase transition
+9  GO:0051255                                     spindle midzone assembly
+10 GO:0045839              negative regulation of mitotic nuclear division
+   GeneRatio   BgRatio RichFactor FoldEnrichment   zScore       pvalue
+1      7/194  17/11525  0.4117647      24.461795 12.66643 5.796310e-09
+2     15/194  94/11525  0.1595745       9.479875 10.80139 4.160561e-11
+3      7/194  11/11525  0.6363636      37.804592 15.97915 1.071608e-10
+4     10/194  48/11525  0.2083333      12.376503 10.33436 5.435313e-09
+5     33/194 310/11525  0.1064516       6.323994 12.43332 1.187757e-17
+6      6/194  10/11525  0.6000000      35.644330 14.34064 4.181987e-09
+7     16/194 110/11525  0.1454545       8.641050 10.53610 3.904210e-11
+8     10/194  48/11525  0.2083333      12.376503 10.33436 5.435313e-09
+9      6/194  10/11525  0.6000000      35.644330 14.34064 4.181987e-09
+10    12/194  54/11525  0.2222222      13.201604 11.75930 6.805963e-11
+       p.adjust       qvalue
+1  2.884779e-07 8.482451e-08
+2  5.383766e-09 1.583051e-09
+3  1.113735e-08 3.274844e-09
+4  2.758155e-07 8.110124e-08
+5  4.391308e-15 1.291227e-15
+6  2.352822e-07 6.918277e-08
+7  5.317945e-09 1.563697e-09
+8  2.758155e-07 8.110124e-08
+9  2.352822e-07 6.918277e-08
+10 8.006287e-09 2.354182e-09
+                                                                                                                                                                               geneID
+1                                                                                                                                                55143/9787/220134/11065/991/9212/332
+2                                                                                                        891/55143/9787/220134/7272/983/11065/1062/10403/991/9212/332/4085/10460/9319
+3                                                                                                                                                 55143/9055/3832/9212/332/9493/24137
+4                                                                                                                                  891/55143/220134/7272/10403/991/9212/332/4085/9319
+5  891/146909/55143/64151/81930/4751/9787/220134/55355/7272/983/11065/1062/9232/23397/10403/9055/3832/991/81620/9212/332/4085/7153/10460/9493/51203/24137/55839/22974/79019/3833/9319
+6                                                                                                                                                      55143/9055/9212/332/9493/24137
+7                                                                                                  891/55143/9787/7272/1062/10403/9055/3832/9212/332/10460/9493/6790/24137/22974/3833
+8                                                                                                                                  891/55143/220134/7272/10403/991/9212/332/4085/9319
+9                                                                                                                                                      55143/9055/9212/332/9493/24137
+10                                                                                                                        891/55143/220134/7272/652/10403/1111/991/9212/332/4085/9319
+   Count posterior posterior_odds bayes_rank bayes_active
+1      7    0.5425      1.1857923          1         TRUE
+2     15    0.4175      0.7167382          2        FALSE
+3      7    0.4125      0.7021277          3        FALSE
+4     10    0.3450      0.5267176          4        FALSE
+5     33    0.2750      0.3793103          5        FALSE
+6      6    0.2550      0.3422819          6        FALSE
+7     16    0.2475      0.3289037          7        FALSE
+8     10    0.2175      0.2779553          8        FALSE
+9      6    0.2050      0.2578616          9        FALSE
+10    12    0.2000      0.2500000         10        FALSE
+                                                                                                                                                                   bayes_covered_gene
+1                                                                                                                                                332/991/9212/9787/11065/55143/220134
+2                                                                                                        332/891/983/991/1062/4085/7272/9212/9319/9787/10403/10460/11065/55143/220134
+3                                                                                                                                                 332/3832/9055/9212/9493/24137/55143
+4                                                                                                                                  332/891/991/4085/7272/9212/9319/10403/55143/220134
+5  332/891/983/991/1062/3832/3833/4085/4751/7153/7272/9055/9212/9232/9319/9493/9787/10403/10460/11065/22974/23397/24137/51203/55143/55355/55839/64151/79019/81620/81930/146909/220134
+6                                                                                                                                                      332/9055/9212/9493/24137/55143
+7                                                                                                  332/891/1062/3832/3833/6790/7272/9055/9212/9493/9787/10403/10460/22974/24137/55143
+8                                                                                                                                  332/891/991/4085/7272/9212/9319/10403/55143/220134
+9                                                                                                                                                      332/9055/9212/9493/24137/55143
+10                                                                                                                        332/652/891/991/1111/4085/7272/9212/9319/10403/55143/220134
+   bayes_covered_count
+1                    7
+2                   15
+3                    7
+4                   10
+5                   33
+6                    6
+7                   16
+8                   10
+9                    6
+10                  12</code></pre>
+</div>
+</div>
+<p>We can also focus on terms that pass a posterior cutoff:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bayes_summary</span>(ego2, <span class="at">active =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          ID                                                Description
+1 GO:1901970 positive regulation of mitotic sister chromatid separation
+  GeneRatio  BgRatio RichFactor FoldEnrichment   zScore      pvalue
+1     7/194 17/11525  0.4117647        24.4618 12.66643 5.79631e-09
+      p.adjust       qvalue                               geneID Count
+1 2.884779e-07 8.482451e-08 55143/9787/220134/11065/991/9212/332     7
+  posterior posterior_odds bayes_rank bayes_active
+1    0.5425       1.185792          1         TRUE
+                    bayes_covered_gene bayes_covered_count
+1 332/991/9212/9787/11065/55143/220134                   7</code></pre>
+</div>
+</div>
+</section>
+<section id="output-columns" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="output-columns"><span class="header-section-number">16.7</span> Output columns</h2>
+<p><code>bayes_enrich()</code> returns the original enrichment object and adds several columns to the result table:</p>
+<ul>
+<li><code>posterior</code>, the posterior probability that a term is active.</li>
+<li><code>posterior_odds</code>, calculated as <code>posterior / (1 - posterior)</code>.</li>
+<li><code>bayes_rank</code>, the rank induced by ordering terms by posterior support.</li>
+<li><code>bayes_active</code>, whether <code>posterior &gt;= posterior_cutoff</code>.</li>
+<li><code>bayes_covered_gene</code>, the observed genes covered by the term.</li>
+<li><code>bayes_covered_count</code>, the number of covered observed genes.</li>
+</ul>
+<p>These columns make it easy to keep working with the same enrichment object while gaining a second ranking criterion that emphasizes explanation rather than marginal significance.</p>
+</section>
+<section id="relationship-to-simplify" class="level2" data-number="16.8">
+<h2 data-number="16.8" class="anchored" data-anchor-id="relationship-to-simplify"><span class="header-section-number">16.8</span> Relationship to <code>simplify()</code></h2>
+<p><code>simplify()</code> and <code>bayes_enrich()</code> address different kinds of redundancy.</p>
+<ul>
+<li><code>simplify()</code> uses semantic similarity among GO terms and keeps one representative term from a redundant semantic cluster.</li>
+<li><code>bayes_enrich()</code> uses term-gene coverage and asks which terms are jointly needed to explain the observed genes.</li>
+</ul>
+<p>These approaches can be used together. For example, one can first compute posterior support and then use it as the selection criterion in <code>simplify()</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(<span class="at">gene =</span> de, <span class="at">universe =</span> <span class="fu">names</span>(geneList), <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">ont =</span> <span class="st">"BP"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ego)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ego <span class="ot">&lt;-</span> <span class="fu">simplify</span>(ego, <span class="at">by =</span> <span class="st">"posterior"</span>, <span class="at">select_fun =</span> max)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="scope-and-interpretation" class="level2" data-number="16.9">
+<h2 data-number="16.9" class="anchored" data-anchor-id="scope-and-interpretation"><span class="header-section-number">16.9</span> Scope and interpretation</h2>
+<p>The current implementation is designed primarily for ORA and other analyses that operate on a binary observed gene list. Ranked-list methods such as GSEA require an additional step to define which genes count as “observed”, for example by using leading-edge genes or another thresholding rule. For this reason, <code>bayes_enrich()</code> should be viewed as a posterior term-selection layer for ORA-style enrichment rather than a direct replacement for GSEA statistics.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>posterior</code> should be interpreted as posterior support for a term being an active explanatory program under the chosen candidate space and model parameters. It is not a Bayesian-adjusted <em>p</em>-value, not direct experimental proof of pathway activation, and not an absolute probability over the entire ontology.</p>
+</div>
+</div>
+</div>
+<p>In practice, the main value of <code>bayes_enrich()</code> is that it compresses a long list of overlapping enriched terms into a smaller set of high-posterior programs, which is often much easier to interpret and report.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./PPI.html" class="pagination-link" aria-label="Protein-Protein Interaction Network">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./interpretation.html" class="pagination-link" aria-label="AI-Assisted Biological Interpretation">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/bayesian-term-selection.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

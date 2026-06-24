@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>4&nbsp; Algorithms of Enrichment Analysis – Biomedical Knowledge Mining using GOSemSim and clusterProfiler</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./021-go.html" rel="next">
+<link href="./02-Enrichment.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-3f70bac5631458d474a321d4182f9338.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./020-enrichment-algorithms.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining using GOSemSim and clusterProfiler</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Semantic Similarity Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./011-GOSemSim.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./012-DOSE-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./013-meshes-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-Enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Enrichment Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-enrichment-algorithms.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./021-go.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./022-kegg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./023-other-dbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./024-reactome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./025-do-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./026-meshes-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./027-universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./028-chipseeker.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./029-compareCluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Biological theme comparison</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./PPI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Protein-Protein Interaction Network</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI-Assisted Biological Interpretation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Miscellaneous topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">dplyr verbs for manipulating enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Useful utilities</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#ora-algorithm" id="toc-ora-algorithm" class="nav-link active" data-scroll-target="#ora-algorithm"><span class="header-section-number">4.1</span> Over-Representation Analysis (ORA)</a></li>
+  <li><a href="#gsea-algorithm" id="toc-gsea-algorithm" class="nav-link" data-scroll-target="#gsea-algorithm"><span class="header-section-number">4.2</span> Gene Set Enrichment Analysis (GSEA)</a>
+  <ul class="collapse">
+  <li><a href="#leading-edge-analysis-and-core-enriched-genes" id="toc-leading-edge-analysis-and-core-enriched-genes" class="nav-link" data-scroll-target="#leading-edge-analysis-and-core-enriched-genes"><span class="header-section-number">4.2.1</span> Leading edge analysis and core enriched genes</a></li>
+  </ul></li>
+  <li><a href="#network-based-set-enrichment-analysis-nsea" id="toc-network-based-set-enrichment-analysis-nsea" class="nav-link" data-scroll-target="#network-based-set-enrichment-analysis-nsea"><span class="header-section-number">4.3</span> Network-based Set Enrichment Analysis (NSEA)</a>
+  <ul class="collapse">
+  <li><a href="#direction-aware-propagation-signed-mode" id="toc-direction-aware-propagation-signed-mode" class="nav-link" data-scroll-target="#direction-aware-propagation-signed-mode"><span class="header-section-number">4.3.1</span> Direction-aware Propagation (Signed Mode)</a></li>
+  <li><a href="#multi-layer-network-based-enrichment-mnsea" id="toc-multi-layer-network-based-enrichment-mnsea" class="nav-link" data-scroll-target="#multi-layer-network-based-enrichment-mnsea"><span class="header-section-number">4.3.2</span> Multi-layer Network-based Enrichment (MNSEA)</a></li>
+  <li><a href="#explanation-ready-outputs-for-multi-layer-results" id="toc-explanation-ready-outputs-for-multi-layer-results" class="nav-link" data-scroll-target="#explanation-ready-outputs-for-multi-layer-results"><span class="header-section-number">4.3.3</span> Explanation-ready Outputs for Multi-layer Results</a></li>
+  </ul></li>
+  <li><a href="#weighted-enrichment" id="toc-weighted-enrichment" class="nav-link" data-scroll-target="#weighted-enrichment"><span class="header-section-number">4.4</span> Weighted Enrichment Analysis</a>
+  <ul class="collapse">
+  <li><a href="#weighted-ora-de-biasing-with-wallenius-distribution" id="toc-weighted-ora-de-biasing-with-wallenius-distribution" class="nav-link" data-scroll-target="#weighted-ora-de-biasing-with-wallenius-distribution"><span class="header-section-number">4.4.1</span> Weighted ORA: De-biasing with Wallenius Distribution</a></li>
+  <li><a href="#weighted-gsea-fusing-weights-with-statistics" id="toc-weighted-gsea-fusing-weights-with-statistics" class="nav-link" data-scroll-target="#weighted-gsea-fusing-weights-with-statistics"><span class="header-section-number">4.4.2</span> Weighted GSEA: Fusing Weights with Statistics</a></li>
+  </ul></li>
+  <li><a href="#bayesian-term-selection" id="toc-bayesian-term-selection" class="nav-link" data-scroll-target="#bayesian-term-selection"><span class="header-section-number">4.5</span> Bayesian Term Selection</a></li>
+  <li><a href="#multi-omics-early-integration" id="toc-multi-omics-early-integration" class="nav-link" data-scroll-target="#multi-omics-early-integration"><span class="header-section-number">4.6</span> Multi-omics Early Integration</a>
+  <ul class="collapse">
+  <li><a href="#statistical-aggregation-aggregate_omics" id="toc-statistical-aggregation-aggregate_omics" class="nav-link" data-scroll-target="#statistical-aggregation-aggregate_omics"><span class="header-section-number">4.6.1</span> 1. Statistical Aggregation (<code>aggregate_omics</code>)</a></li>
+  <li><a href="#a.-correlation-aware-aggregation-with-browns-method" id="toc-a.-correlation-aware-aggregation-with-browns-method" class="nav-link" data-scroll-target="#a.-correlation-aware-aggregation-with-browns-method"><span class="header-section-number">4.6.2</span> 1a. Correlation-aware Aggregation with Brown’s Method</a></li>
+  <li><a href="#id-harmonization-harmonize_ids" id="toc-id-harmonization-harmonize_ids" class="nav-link" data-scroll-target="#id-harmonization-harmonize_ids"><span class="header-section-number">4.6.3</span> 2. ID Harmonization (<code>harmonize_ids</code>)</a></li>
+  <li><a href="#handling-directional-conflicts-conflict_policy" id="toc-handling-directional-conflicts-conflict_policy" class="nav-link" data-scroll-target="#handling-directional-conflicts-conflict_policy"><span class="header-section-number">4.6.4</span> 3. Handling Directional Conflicts (<code>conflict_policy</code>)</a></li>
+  <li><a href="#distribution-to-enrichment-backends" id="toc-distribution-to-enrichment-backends" class="nav-link" data-scroll-target="#distribution-to-enrichment-backends"><span class="header-section-number">4.6.5</span> 4. Distribution to Enrichment Backends</a></li>
+  <li><a href="#late-fusion-at-the-pathway-level" id="toc-late-fusion-at-the-pathway-level" class="nav-link" data-scroll-target="#late-fusion-at-the-pathway-level"><span class="header-section-number">4.6.6</span> 5. Late Fusion at the Pathway Level</a></li>
+  <li><a href="#contribution-tracing" id="toc-contribution-tracing" class="nav-link" data-scroll-target="#contribution-tracing"><span class="header-section-number">4.6.7</span> 6. Contribution Tracing</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/020-enrichment-algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-Enrichment.html">Enrichment Analysis</a></li><li class="breadcrumb-item"><a href="./020-enrichment-algorithms.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="enrichment-algorithms" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Algorithms of Enrichment Analysis</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Functional enrichment analysis is a staple in bioinformatics for interpreting lists of genes identified from omics experiments. Behind the scenes of our ecosystem (<code>clusterProfiler</code>, <code>DOSE</code>, etc.), the heavy lifting is powered by the <code>enrichit</code> package.</p>
+<p>We built <code>enrichit</code> with a clear philosophy: <strong>minimal dependencies, maximum performance, and elegant extensibility</strong>. It provides extremely fast, C++-based implementations of classical methods (via <code>Rcpp</code>), while introducing modern, advanced algorithms to address long-standing blind spots in the field.</p>
+<p>In this chapter, we will walk through the algorithmic backbone of enrichment analysis, moving from the standard ORA and GSEA to our newly introduced Network-based, multi-omics, and Weighted enrichment frameworks.</p>
+<p>At the package architecture level, <code>enrichit</code> serves as the algorithm engine, while <code>clusterProfiler</code> provides the knowledge-base-aware high-level entry points. In practice, this means that topology-aware workflows are now available through wrappers such as <code>nseGO()</code>, <code>mnseGO()</code>, <code>nseKEGG()</code>, and <code>mnseKEGG()</code>, while multi-omics helpers such as <code>aggregate_omics()</code> and <code>aggregate_enrichment()</code> are also re-exported by <code>clusterProfiler</code> for downstream biological interpretation.</p>
+<section id="ora-algorithm" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="ora-algorithm"><span class="header-section-number">4.1</span> Over-Representation Analysis (ORA)</h2>
+<p>Over Representation Analysis (ORA) <span class="citation" data-cites="boyle2004">(<a href="#ref-boyle2004" role="doc-biblioref">Boyle et al. 2004</a>)</span> is a widely used approach to determine whether known biological functions or processes are over-represented (= enriched) in an experimentally-derived gene list, <em>e.g.</em> a list of differentially expressed genes (DEGs).</p>
+<p><code>enrichit</code> implements ORA using the <strong>hypergeometric distribution</strong> (one-sided Fisher’s exact test). The p-value is calculated as the probability of observing at least <span class="math inline">\(k\)</span> genes from the specific gene set in the selected list of <span class="math inline">\(n\)</span> genes, given a background population (universe) of <span class="math inline">\(N\)</span> genes containing <span class="math inline">\(M\)</span> genes from that set.</p>
+<p><span class="math display">\[
+p = 1 - \sum_{i=0}^{k-1} \frac{\binom{M}{i} \binom{N-M}{n-i}}{\binom{N}{n}}
+\]</span></p>
+<p><strong>Example:</strong> Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. From these, 2641 are annotated to gene set of interest. Among the differentially expressed genes, 28 belong to the gene set<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">non_DE_gene=</span><span class="fu">c</span>(<span class="dv">2613</span>, <span class="dv">15310</span>), <span class="at">DE_gene=</span><span class="fu">c</span>(<span class="dv">28</span>, <span class="dv">29</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">row.names</span>(d) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"In_category"</span>, <span class="st">"not_in_category"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>d</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                non_DE_gene DE_gene
+In_category            2613      28
+not_in_category       15310      29</code></pre>
+</div>
+</div>
+<p>Whether the gene set of interest is significantly over-represented in the differentially expressed genes can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher’s exact test.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fisher.test</span>(d, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Fisher's Exact Test for Count Data
+
+data:  d
+p-value = 1
+alternative hypothesis: true odds ratio is greater than 1
+95 percent confidence interval:
+ 0.110242      Inf
+sample estimates:
+odds ratio 
+ 0.1767937 </code></pre>
+</div>
+</div>
+<p>While mathematically sound, this classic model makes a naive assumption: it assumes that every gene has an <em>equal probability</em> of being detected. We will see how to fix this systematic bias later in the <a href="#weighted-enrichment">Weighted Enrichment Analysis</a> section.</p>
+</section>
+<section id="gsea-algorithm" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="gsea-algorithm"><span class="header-section-number">4.2</span> Gene Set Enrichment Analysis (GSEA)</h2>
+<p>Unlike ORA, which requires an arbitrary threshold to define “significant” genes and ignores the rest, GSEA uses the entire ranked list of genes. It calculates an <strong>Enrichment Score (ES)</strong> that reflects the degree to which a gene set is over-represented at the top or bottom of a ranked list.</p>
+<p>There are three key elements of the GSEA method:</p>
+<ul>
+<li>Calculation of an Enrichment Score.
+<ul>
+<li>The enrichment score (<em>ES</em>) represents the degree to which a set <em>S</em> is over-represented at the top or bottom of the ranked list <em>L</em>. The score is calculated by walking down the list <em>L</em>, increasing a running-sum statistic when we encounter a gene in <em>S</em> and decreasing when it is not encountered. The magnitude of the increment depends on the gene statistics (e.g., correlation of the gene with phenotype). The <em>ES</em> is the maximum deviation from zero encountered in the random walk; it corresponds to a weighted Kolmogorov-Smirnov(KS)-like statistic <span class="citation" data-cites="subramanian_gene_2005">(<a href="#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>.</li>
+</ul></li>
+<li>Estimation of Significance Level of <em>ES</em>.
+<ul>
+<li>The <em>p</em>-value of the <em>ES</em> is calculated using a permutation test. Specifically, we permute the gene labels of the gene list <em>L</em> and recompute the <em>ES</em> of the gene set for the permutated data, which generates a null distribution for the <em>ES</em>. The <em>p</em>-value of the observed <em>ES</em> is then calculated relative to this null distribution.</li>
+</ul></li>
+<li>Adjustment for Multiple Hypothesis Testing.
+<ul>
+<li>When the entire gene sets are evaluated, the estimated significance level is adjusted to account for multiple hypothesis testing and also <em>q</em>-values are calculated for FDR control.</li>
+</ul></li>
+</ul>
+<p>We implemented the GSEA algorithm proposed by Subramanian <span class="citation" data-cites="subramanian_gene_2005">(<a href="#ref-subramanian_gene_2005" role="doc-biblioref">Subramanian et al. 2005</a>)</span>. <code>enrichit</code> offers a fast C++ implementation of GSEA. The default method (<code>method = "multilevel"</code>) uses an adaptive multi-level splitting Monte Carlo approach (derived from <code>fgsea</code> <span class="citation" data-cites="korotkevich_fast_2019">(<a href="#ref-korotkevich_fast_2019" role="doc-biblioref">Korotkevich et al. 2019</a>)</span>) to estimate low p-values efficiently with high accuracy.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichit)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate synthetic ranked gene list</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>geneList <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rnorm</span>(<span class="dv">1000</span>), <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(geneList) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Gene"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>gene_sets <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">PathwayTop =</span> <span class="fu">names</span>(geneList)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">PathwayBottom =</span> <span class="fu">names</span>(geneList)[<span class="dv">951</span><span class="sc">:</span><span class="dv">1000</span>]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Run GSEA using the multilevel method</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>gsea_result <span class="ot">&lt;-</span> <span class="fu">gsea</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList =</span> geneList,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> gene_sets,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"multilevel"</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="leading-edge-analysis-and-core-enriched-genes" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="leading-edge-analysis-and-core-enriched-genes"><span class="header-section-number">4.2.1</span> Leading edge analysis and core enriched genes</h3>
+<p>Leading edge analysis reports <code>Tags</code> to indicate the percentage of genes contributing to the enrichment score, <code>List</code> to indicate where in the list the enrichment score is attained and <code>Signal</code> for enrichment signal strength.</p>
+<p>It would also be very interesting to get the core enriched genes that contribute to the enrichment. Our packages (<code>clusterProfiler</code>, <code>DOSE</code>, <code>meshes</code> and <code>ReactomePA</code>) support leading edge analysis and report core enriched genes in GSEA analysis.</p>
+</section>
+</section>
+<section id="network-based-set-enrichment-analysis-nsea" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="network-based-set-enrichment-analysis-nsea"><span class="header-section-number">4.3</span> Network-based Set Enrichment Analysis (NSEA)</h2>
+<p>Traditional enrichment methods treat pathways as independent “bags of genes,” completely ignoring the biological interactions between them. If you only look at the overlap, you are wasting a massive amount of network topological information.</p>
+<p>Some previous methods (like <em>EnrichNet</em>) attempted to solve this by calculating network distances. However, they suffered from a fatal flaw: they only provided a relative score without rigorous p-values, and calculating empirical p-values via network permutation was excruciatingly slow. Life is too short to wait for permutations.</p>
+<p>To break this bottleneck, we introduced <strong>Network-based Set Enrichment Analysis (NSEA)</strong>, a true Network-based GSEA.</p>
+<p>Our core philosophy is to leverage existing strengths seamlessly:</p>
+<ol type="1">
+<li><strong>Propagation</strong>: We take your input gene scores and diffuse them across a biological network using a Random Walk with Restart (RWR). To squeeze out every drop of performance, the RWR is powered by <code>RcppEigen</code> sparse matrix multiplication in C++. Even networks with hundreds of thousands of edges converge in a flash.</li>
+<li><strong>Enrichment</strong>: After diffusion, every node in the network receives a new “propagation score” containing global topological context. We take this fully ranked list and feed it directly into our extreme-speed multilevel GSEA engine.</li>
+</ol>
+<p>One RWR diffusion + one GSEA test. You get not only network-aware scores but also rigorous p-values and FDRs, with blazing speed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Fetch the full background PPI network for Human (taxID 9606)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Default output is "data.frame" (edge list), which nsea() natively supports</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>net <span class="ot">&lt;-</span> <span class="fu">get_ppi_network</span>(<span class="dv">9606</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Run NSEA</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (Assuming 'stats' is a named numeric vector of non-negative evidence scores)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>nsea_result <span class="ot">&lt;-</span> <span class="fu">nsea</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneList =</span> stats,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">network =</span> net,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> pathways</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="direction-aware-propagation-signed-mode" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="direction-aware-propagation-signed-mode"><span class="header-section-number">4.3.1</span> Direction-aware Propagation (Signed Mode)</h3>
+<p>Historically, RWR mathematically only accepts non-negative energy. This means you could only pass absolute statistics (like <code>-log10(p)</code>), and the result would only tell you if a pathway was “hit”, but not whether it was up-regulated or down-regulated.</p>
+<p>To solve this, <code>enrichit</code> introduces a dual-track propagation architecture (<code>mode = "signed"</code>). When you pass signed statistics (like <code>-log10(p) * sign(logFC)</code>), the algorithm automatically splits the input into up-regulated and down-regulated vectors. It runs two independent RWRs on the same network, and then subtracts the two diffused energy vectors to reconstruct a fully signed, network-aware score vector. This seamlessly bridges bidirectional network diffusion with dual-tail GSEA.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using signed statistics (e.g., -log10(p) * sign(logFC))</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>res_signed <span class="ot">&lt;-</span> <span class="fu">nsea</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneList =</span> signed_stats, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">network =</span> net, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> pathways, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"signed"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="multi-layer-network-based-enrichment-mnsea" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="multi-layer-network-based-enrichment-mnsea"><span class="header-section-number">4.3.2</span> Multi-layer Network-based Enrichment (MNSEA)</h3>
+<p>Single-layer propagation is already useful, but real multi-omics systems are rarely confined to one graph. Transcriptomics, proteomics, and phosphoproteomics often live on related yet non-identical network layers. Forcing everything into a single collapsed graph throws away layer-specific topology before the analysis even begins.</p>
+<p>To address this, <code>enrichit</code> introduces <strong>multi-layer NSEA</strong> through <code>mnsea()</code>. The algorithm builds a supra-graph from layer-specific networks plus explicit inter-layer couplings, performs Random Walk with Restart on the combined topology, and then collapses layer-wise diffusion scores into a unified ranked vector for GSEA. In other words, it is still “propagate first, enrich later”, but now the propagation itself respects the multi-layer structure.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Small multi-layer example with RNA and Protein layers</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>networks <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">RNA =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>, <span class="st">"Gene3"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="fu">c</span>(<span class="st">"Gene2"</span>, <span class="st">"Gene3"</span>, <span class="st">"Gene4"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">PROT =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene3"</span>, <span class="st">"Gene4"</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="fu">c</span>(<span class="st">"Gene3"</span>, <span class="st">"Gene4"</span>, <span class="st">"Gene1"</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">weight =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>couplings <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">from_layer =</span> <span class="fu">c</span>(<span class="st">"RNA"</span>, <span class="st">"RNA"</span>, <span class="st">"RNA"</span>),</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">from_id =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene3"</span>, <span class="st">"Gene4"</span>),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_layer =</span> <span class="fu">c</span>(<span class="st">"PROT"</span>, <span class="st">"PROT"</span>, <span class="st">"PROT"</span>),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_id =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene3"</span>, <span class="st">"Gene4"</span>),</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">weight =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>seed_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">RNA =</span> <span class="fu">c</span>(<span class="at">Gene1 =</span> <span class="fl">1.5</span>, <span class="at">Gene2 =</span> <span class="fl">0.8</span>, <span class="at">Gene4 =</span> <span class="sc">-</span><span class="fl">0.9</span>),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">PROT =</span> <span class="fu">c</span>(<span class="at">Gene1 =</span> <span class="fl">0.5</span>, <span class="at">Gene3 =</span> <span class="fl">1.2</span>, <span class="at">Gene4 =</span> <span class="sc">-</span><span class="fl">0.4</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>ml_gene_sets <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">SignalPath =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>, <span class="st">"Gene3"</span>),</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">DownPath =</span> <span class="fu">c</span>(<span class="st">"Gene4"</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>mnsea_res <span class="ot">&lt;-</span> <span class="fu">mnsea</span>(</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed_list =</span> seed_list,</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">networks =</span> networks,</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">couplings =</span> couplings,</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> ml_gene_sets,</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">"signed"</span>,</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse =</span> <span class="st">"weighted_mean"</span>,</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">layer_weights =</span> <span class="fu">c</span>(<span class="at">RNA =</span> <span class="dv">1</span>, <span class="at">PROT =</span> <span class="fl">1.5</span>),</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">1</span>,</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">10</span>,</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"sample"</span>,</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPerm =</span> <span class="dv">30</span>,</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The same topology-aware engine can now be accessed from <code>clusterProfiler</code> using knowledge-base-aware wrappers. For example, the following high-level workflow reuses a single shared example object and performs GO- and KEGG-aware network enrichment without manually constructing the annotation backend.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>demo <span class="ot">&lt;-</span> <span class="fu">clusterprofiler_enrichit_demo</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>go_nse <span class="ot">&lt;-</span> <span class="fu">nseGO</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList =</span> demo<span class="sc">$</span>geneList_evidence,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">network =</span> demo<span class="sc">$</span>network,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">OrgDb =</span> org.Hs.eg.db,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">keyType =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">ont =</span> <span class="st">"BP"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">5</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">1e-6</span>,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIter =</span> <span class="dv">50</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"sample"</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPerm =</span> <span class="dv">30</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>kegg_nse <span class="ot">&lt;-</span> <span class="fu">nseKEGG</span>(</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList =</span> demo<span class="sc">$</span>geneList_evidence,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">network =</span> demo<span class="sc">$</span>network,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">organism =</span> demo<span class="sc">$</span>kegg_gson,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">5</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">1e-6</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxIter =</span> <span class="dv">50</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"sample"</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPerm =</span> <span class="dv">30</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="explanation-ready-outputs-for-multi-layer-results" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="explanation-ready-outputs-for-multi-layer-results"><span class="header-section-number">4.3.3</span> Explanation-ready Outputs for Multi-layer Results</h3>
+<p>Once you start doing topology-aware enrichment, the next question is obvious: <em>which layer actually drove the hit?</em> Instead of baking plotting logic into the engine, <code>enrichit</code> prepares explanation-ready tables that downstream packages such as <code>enrichplot</code> can consume directly.</p>
+<p>The <code>mnseaResult</code> object stores precomputed pathway-level and feature-level contribution caches, and also supports extracting a pathway-specific explanation subnetwork.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pathway-level contribution table</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pathway_tbl <span class="ot">&lt;-</span> <span class="fu">get_mnsea_contribution</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  mnsea_res,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="st">"pathway"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Feature-level contribution table for one pathway</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>feature_tbl <span class="ot">&lt;-</span> <span class="fu">get_mnsea_contribution</span>(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  mnsea_res,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pathway_id =</span> pathway_tbl<span class="sc">$</span>ID[<span class="dv">1</span>],</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="st">"feature"</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract an explanation-ready subnetwork</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>subnet <span class="ot">&lt;-</span> <span class="fu">extract_mnsea_subnetwork</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  mnsea_res,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">pathway_id =</span> pathway_tbl<span class="sc">$</span>ID[<span class="dv">1</span>]</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="weighted-enrichment" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="weighted-enrichment"><span class="header-section-number">4.4</span> Weighted Enrichment Analysis</h2>
+<p>Have you ever noticed a weird phenomenon? No matter what odd phenotype you study, the enriched pathways always seem to feature the same “usual suspects”—like the ribosome, spliceosome, or broad immune responses.</p>
+<p>This is driven by a systematic bias. In real biological networks, genes are not created equal. Hub genes participate in numerous functions and are easily perturbed. If you don’t account for this, traditional ORA will be easily fooled by these highly active Hub genes, yielding false-positive significance for broad pathways.</p>
+<p>To correct this, <code>enrichit</code> introduces <strong>Weighted Enrichment Analysis</strong>, supporting both ORA and GSEA.</p>
+<section id="weighted-ora-de-biasing-with-wallenius-distribution" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="weighted-ora-de-biasing-with-wallenius-distribution"><span class="header-section-number">4.4.1</span> Weighted ORA: De-biasing with Wallenius Distribution</h3>
+<p>How do we correct the bias in ORA? We bring in the <strong>Wallenius’ noncentral hypergeometric distribution</strong>.</p>
+<p>By passing a <code>weight</code> vector (e.g., network centrality), the model calculates an <strong>Odds ratio</strong> for each pathway. If a pathway is full of high-weight core genes, the model applies a penalty to the p-value. The false significance driven by Hub genes is brought back to reality, allowing truly specific pathways to stand out.</p>
+<p><em>Note: In the early days of RNA-seq, <code>goseq</code> used gene length as a weight to correct ORA. However, in the era of 3’ poly-A sequencing and 10x single-cell, length bias is mostly obsolete. Our implementation is universal—your weights are dictated by your scientific question, not hardcoded to gene length.</em></p>
+</section>
+<section id="weighted-gsea-fusing-weights-with-statistics" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="weighted-gsea-fusing-weights-with-statistics"><span class="header-section-number">4.4.2</span> Weighted GSEA: Fusing Weights with Statistics</h3>
+<p>For GSEA, we seamlessly fuse your ranked statistics (like <span class="math inline">\(\log FC\)</span>) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch network as an igraph object to calculate topological weights</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>net_ig <span class="ot">&lt;-</span> <span class="fu">get_ppi_network</span>(<span class="dv">9606</span>, <span class="at">output =</span> <span class="st">"igraph"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate PageRank centrality as weights</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>pr_weights <span class="ot">&lt;-</span> <span class="fu">page_rank</span>(net_ig)<span class="sc">$</span>vector</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Run Weighted ORA</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>res_wora <span class="ot">&lt;-</span> <span class="fu">ora</span>(<span class="at">gene =</span> de_genes, </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">gene_sets =</span> pathways, </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">universe =</span> all_genes, </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">weight =</span> pr_weights)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run Weighted GSEA</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>res_wgsea <span class="ot">&lt;-</span> <span class="fu">gsea</span>(<span class="at">geneList =</span> stats, </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">gene_sets =</span> pathways, </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weight =</span> pr_weights)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The beauty of weighted enrichment lies in its <strong>infinite possibilities</strong>. Your <code>weight</code> doesn’t have to be network centrality. It can be a <strong>tissue specificity score</strong>, an evolutionary <strong>conservation score</strong>, or a <strong>multi-omics confidence score</strong>. If you have prior knowledge that “these genes are more important”, simply pass them to the <code>weight</code> parameter and let <code>enrichit</code> handle the rest.</p>
+</section>
+</section>
+<section id="bayesian-term-selection" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="bayesian-term-selection"><span class="header-section-number">4.5</span> Bayesian Term Selection</h2>
+<p>Finally, for ORA results, <code>enrichit</code> provides a Bayesian framework (<code>bayes_enrich()</code>) to estimate the posterior probability of explanatory terms. This helps to select the most likely active pathways while automatically penalizing redundancy among highly overlapping GO terms.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># After obtaining an ORA result object</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>bayes_res <span class="ot">&lt;-</span> <span class="fu">bayes_enrich</span>(ora_result)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>summary_res <span class="ot">&lt;-</span> <span class="fu">bayes_summary</span>(bayes_res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>With <code>enrichit</code> acting as the high-performance backend, tools like <code>clusterProfiler</code> can focus on biological interpretation and visualization, providing a seamless and powerful knowledge mining experience.</p>
+</section>
+<section id="multi-omics-early-integration" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="multi-omics-early-integration"><span class="header-section-number">4.6</span> Multi-omics Early Integration</h2>
+<p>With the rapid development of sequencing technologies, it is very common to perform functional analysis on multi-omics data (e.g., Transcriptomics + Proteomics). A naive approach is to perform enrichment analysis on each omics separately and then intersect the enriched pathways. However, this late-integration strategy completely ignores the fact that different omics might provide weak but consistent signals for the same pathway, which would be filtered out by strict thresholds in single-omics analysis.</p>
+<p>To solve this, <code>enrichit</code> introduces an <strong>Early Integration</strong> pipeline. The core philosophy is simple: <strong>Integrate first, enrich later. Decouple the integration layer from the enrichment layer.</strong></p>
+<section id="statistical-aggregation-aggregate_omics" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="statistical-aggregation-aggregate_omics"><span class="header-section-number">4.6.1</span> 1. Statistical Aggregation (<code>aggregate_omics</code>)</h3>
+<p>Instead of finding the intersection of pathways, we aggregate the evidence at the feature level. <code>aggregate_omics()</code> takes multi-source statistics (e.g., p-values or signed scores) and merges them into a unified evidence score. For p-values, it supports classic methods like <code>fisher</code> or <code>stouffer</code>, and internally converts them to a monotonically increasing score suitable for ranking. It also supports <strong>Brown’s method</strong> for correlation-aware p-value aggregation and <code>weighted_mean</code> for signed statistics with explicit layer weights.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichit)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create mock p-values for RNA and Protein data across 1000 genes</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>omics_gene_ids <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Gene"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>rna_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rna_pvals) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>prot_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prot_pvals) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Inject consistent but weak signals into the first 20 genes (pathway of interest)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>rna_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">20</span>, <span class="fl">0.01</span>, <span class="fl">0.08</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">20</span>, <span class="fl">0.01</span>, <span class="fl">0.08</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate p-values from RNA and Protein data using Fisher's method</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>agg_fisher_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_pvals, <span class="at">PROT =</span> prot_pvals),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"fisher"</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">feature_type =</span> <span class="st">"gene"</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the top aggregated scores</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">sort</span>(agg_fisher_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Gene911  Gene254    Gene9  Gene478   Gene74   Gene20 
+2.712320 2.551594 2.446322 2.394249 2.366397 2.273862 </code></pre>
+</div>
+</div>
+</section>
+<section id="a.-correlation-aware-aggregation-with-browns-method" class="level3" data-number="4.6.2">
+<h3 data-number="4.6.2" class="anchored" data-anchor-id="a.-correlation-aware-aggregation-with-browns-method"><span class="header-section-number">4.6.2</span> 1a. Correlation-aware Aggregation with Brown’s Method</h3>
+<p>Fisher’s method is simple and powerful, but it silently assumes that the evidences are independent. Real multi-omics layers are often correlated: RNA and protein do not live on separate planets. If you pretend they are independent, you are inviting double counting.</p>
+<p>Brown’s method fixes this by adjusting the degrees of freedom of Fisher’s statistic using an empirical or user-supplied covariance structure. In <code>enrichit</code>, this is exposed directly through <code>aggregate_omics(method = "brown")</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>omics_pmat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">RNA =</span> rna_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>], <span class="at">PROT =</span> prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(omics_pmat) <span class="ot">&lt;-</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">4</span>, <span class="fl">1.2</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.2</span>, <span class="dv">4</span>),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>agg_brown_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> omics_pmat,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"brown"</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cov_matrix =</span> cov_mat</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">sort</span>(agg_brown_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Gene9   Gene74   Gene20    Gene8    Gene5    Gene2 
+2.102805 2.038788 1.964581 1.935310 1.897638 1.887833 </code></pre>
+</div>
+</div>
+</section>
+<section id="id-harmonization-harmonize_ids" class="level3" data-number="4.6.3">
+<h3 data-number="4.6.3" class="anchored" data-anchor-id="id-harmonization-harmonize_ids"><span class="header-section-number">4.6.3</span> 2. ID Harmonization (<code>harmonize_ids</code>)</h3>
+<p>Proteomics data often use UniProt IDs or protein groups, while your pathway annotations are usually gene-based. Directly feeding protein-level data to gene set enrichment will cause a huge ID mismatch.</p>
+<p><code>harmonize_ids()</code> acts as a dedicated ID mapping layer. It maps the protein-level aggregated results to the gene-level, and handles many-to-one mappings gracefully using folding strategies like <code>min_p</code> or <code>max_abs</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Suppose our proteomics data used UniProt IDs (e.g., Q9Y6N7)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and we need to map them back to standard Gene Symbols</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>id_mapping_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_id =</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">target_id =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>) <span class="co"># P12345 and P12346 both map to Gene1</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, we create a mock protein-level aggregated result</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>protein_agg_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">PROT =</span> prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"fisher"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">feature_type =</span> <span class="st">"protein"</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(protein_agg_res<span class="sc">$</span>score) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>protein_agg_res<span class="sc">$</span>feature_id <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Map and collapse protein-level features to gene-level</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>harmonized_res <span class="ot">&lt;-</span> <span class="fu">harmonize_ids</span>(</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> protein_agg_res, <span class="co"># Assuming this is an aggregated result from proteomics</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> id_mapping_df,</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="st">"protein"</span>,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="st">"gene"</span>,</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">collapse =</span> <span class="st">"min_p"</span> <span class="co"># If multiple proteins map to one gene, take the most significant one</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="handling-directional-conflicts-conflict_policy" class="level3" data-number="4.6.4">
+<h3 data-number="4.6.4" class="anchored" data-anchor-id="handling-directional-conflicts-conflict_policy"><span class="header-section-number">4.6.4</span> 3. Handling Directional Conflicts (<code>conflict_policy</code>)</h3>
+<p>When integrating signed statistics across omics (e.g., transcriptomics and proteomics), you often encounter conflicting directions—a gene might be significantly up-regulated in RNA but down-regulated in Protein.</p>
+<p>Instead of naively averaging them out to zero, <code>aggregate_omics()</code> introduces a <code>conflict_policy</code> parameter when <code>input = "signed_score"</code>. You can choose <code>"strict"</code> to completely drop conflicting features, or <code>"penalty"</code> to halve their aggregated scores. This actively filters out biological noise and reduces false positives before enrichment.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example with conflicting directions between RNA and PROT</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>rna_signed <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log10</span>(rna_pvals) <span class="sc">*</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">length</span>(rna_pvals))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>prot_signed <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log10</span>(prot_pvals) <span class="sc">*</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">length</span>(prot_pvals))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rna_signed) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prot_signed) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>agg_strict <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_signed, <span class="at">PROT =</span> prot_signed),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"signed_score"</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"mean"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">conflict_policy =</span> <span class="st">"strict"</span> <span class="co"># Drops conflicting genes automatically</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="distribution-to-enrichment-backends" class="level3" data-number="4.6.5">
+<h3 data-number="4.6.5" class="anchored" data-anchor-id="distribution-to-enrichment-backends"><span class="header-section-number">4.6.5</span> 4. Distribution to Enrichment Backends</h3>
+<p>Once the multi-omics data is aggregated and harmonized, you obtain a unified object containing a ranking <code>score</code>.</p>
+<p>For <strong>GSEA</strong> or <strong>NSEA</strong>, you can directly extract the sorted score vector and feed it to the engine:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>omics_pathways <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">TargetPathway =</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>])</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>geneList <span class="ot">&lt;-</span> <span class="fu">sort</span>(agg_fisher_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>gsea_res <span class="ot">&lt;-</span> <span class="fu">gsea</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneList =</span> geneList,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For <strong>ORA</strong>, which requires discrete gene lists, <code>enrichit</code> provides an adapter function <code>select_features_for_ora()</code>. It takes the aggregated object and a cutoff, and returns the selected <code>gene</code> list and background <code>universe</code>, perfectly bridging the gap between continuous multi-omics scores and traditional hypergeometric tests.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a mock pathway containing the 20 genes we injected signal into</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>selected_ora_inputs <span class="ot">&lt;-</span> <span class="fu">select_features_for_ora</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> agg_fisher_res, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="fl">0.05</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"pvalue"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Only genes with significant aggregated evidence will be selected</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>early_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> selected_ora_inputs<span class="sc">$</span>gene,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> selected_ora_inputs<span class="sc">$</span>universe,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>By decoupling ID mapping, statistical integration, and pathway enrichment, <code>enrichit</code> provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.</p>
+<p>These workflow helpers are also available from <code>clusterProfiler</code>, which means the aggregated result can be sent directly to high-level functions such as <code>enrichGO()</code>, <code>gseGO()</code>, or <code>nseGO()</code> without changing the underlying multi-omics logic.</p>
+</section>
+<section id="late-fusion-at-the-pathway-level" class="level3" data-number="4.6.6">
+<h3 data-number="4.6.6" class="anchored" data-anchor-id="late-fusion-at-the-pathway-level"><span class="header-section-number">4.6.6</span> 5. Late Fusion at the Pathway Level</h3>
+<p>Early fusion is elegant when your features align cleanly. But sometimes that assumption collapses immediately: transcriptomics might have a background of 20,000 genes, proteomics might only detect 4,000 proteins, and region-based omics may not even live in gene space before annotation. In these cases, forcing everything into one feature matrix is a great way to manufacture missing values and mapping noise.</p>
+<p>This is where <strong>Late Fusion</strong> comes in. Each omics is enriched independently using its own background and preferred backend; then <code>aggregate_enrichment()</code> merges the pathway-level p-values across results. The mathematics is the same family as feature-level aggregation, but the biology is much cleaner because each layer is allowed to speak in its native space first.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>late_fusion_pathways <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">SharedPath =</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>],</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">RNAPath =</span> omics_gene_ids[<span class="dv">9</span><span class="sc">:</span><span class="dv">16</span>],</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ProtPath =</span> omics_gene_ids[<span class="dv">17</span><span class="sc">:</span><span class="dv">24</span>]</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>rna_sig <span class="ot">&lt;-</span> <span class="fu">c</span>(omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], omics_gene_ids[<span class="dv">9</span><span class="sc">:</span><span class="dv">13</span>])</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>prot_sig <span class="ot">&lt;-</span> <span class="fu">c</span>(omics_gene_ids[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)], omics_gene_ids[<span class="dv">17</span><span class="sc">:</span><span class="dv">21</span>])</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>rna_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> rna_sig,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> late_fusion_pathways</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>prot_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> prot_sig,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> omics_gene_ids[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)],</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> late_fusion_pathways</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>late_fusion_res <span class="ot">&lt;-</span> <span class="fu">aggregate_enrichment</span>(</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">res_list =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_ora_res, <span class="at">PROT =</span> prot_ora_res),</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"brown"</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(late_fusion_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"pvalue"</span>, <span class="st">"p.adjust"</span>, <span class="st">"Count"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID     pvalue   p.adjust Count
+SharedPath SharedPath 0.01646848 0.03719786     8
+RNAPath       RNAPath 0.02479857 0.03719786     5
+ProtPath     ProtPath 0.04647113 0.04647113     5</code></pre>
+</div>
+</div>
+</section>
+<section id="contribution-tracing" class="level3" data-number="4.6.7">
+<h3 data-number="4.6.7" class="anchored" data-anchor-id="contribution-tracing"><span class="header-section-number">4.6.7</span> 6. Contribution Tracing</h3>
+<p>After running a multi-omics integration, you may want to know whether a significant pathway was driven by the transcriptome, the proteome, or their combination. <code>enrichit</code> provides tools to trace the contribution back to the original omics data.</p>
+<p>First, you can classify the pattern of each pathway by comparing the merged results with single-omics results:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ORA for individual omics</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>rna_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> omics_gene_ids[rna_pvals <span class="sc">&lt;</span> <span class="fl">0.05</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>prot_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> omics_gene_ids[prot_pvals <span class="sc">&lt;</span> <span class="fl">0.05</span>],</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Classify contribution patterns</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>classified_ora_res <span class="ot">&lt;-</span> <span class="fu">classify_omics_pattern</span>(</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">merged_res =</span> early_ora_res,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">single_res =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_ora_res, <span class="at">PROT =</span> prot_ora_res),</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_cutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(classified_ora_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"pvalue"</span>, <span class="st">"Omics_Pattern"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>Omics_Pattern</code> column will label the pathway as <code>Shared</code>, <code>RNA-Specific</code>, <code>PROT-Specific</code>, or <code>Enhanced (1+1&gt;2)</code>.</p>
+<p>Then, you can extract the gene-level contribution for a specific pathway to see the original statistics of the core enrichment genes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get original multi-omics statistics for genes in the pathway</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>contribution_df <span class="ot">&lt;-</span> <span class="fu">get_omics_contribution</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">res =</span> classified_ora_res, </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">agg =</span> agg_fisher_res, </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pathway_id =</span> <span class="st">"TargetPathway"</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(contribution_df, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This data frame is extremely useful for downstream visualization, such as drawing multi-omics heatmaps for the core enriched genes.</p>
+</section>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-boyle2004" class="csl-entry" role="listitem">
+Boyle, Elizabeth I, Shuai Weng, Jeremy Gollub, et al. 2004. <span>“<span class="nocase">GO::TermFinder–open</span> Source Software for Accessing Gene Ontology Information and Finding Significantly Enriched Gene Ontology Terms Associated with a List of Genes.”</span> <em>Bioinformatics (Oxford, England)</em> 20 (18): 3710–15. <a href="https://doi.org/10.1093/bioinformatics/bth456">https://doi.org/10.1093/bioinformatics/bth456</a>.
+</div>
+<div id="ref-korotkevich_fast_2019" class="csl-entry" role="listitem">
+Korotkevich, Gennady, Vladimir Sukhov, and Alexey Sergushichev. 2019. <span>“Fast Gene Set Enrichment Analysis.”</span> <em><span class="nocase">bioRxiv</span></em>, October 22, 060012. <a href="https://doi.org/10.1101/060012">https://doi.org/10.1101/060012</a>.
+</div>
+<div id="ref-subramanian_gene_2005" class="csl-entry" role="listitem">
+Subramanian, Aravind, Pablo Tamayo, Vamsi K. Mootha, et al. 2005. <span>“Gene Set Enrichment Analysis: A Knowledge-Based Approach for Interpreting Genome-Wide Expression Profiles.”</span> <em>Proceedings of the National Academy of Sciences of the United States of America</em> 102 (43): 15545–50. <a href="https://doi.org/10.1073/pnas.0506580102">https://doi.org/10.1073/pnas.0506580102</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>example adopted from <a href="https://guangchuangyu.github.io/2012/04/enrichment-analysis/" class="uri">https://guangchuangyu.github.io/2012/04/enrichment-analysis/</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-Enrichment.html" class="pagination-link" aria-label="Enrichment Analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Enrichment Analysis</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./021-go.html" class="pagination-link" aria-label="GO enrichment analysis">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/020-enrichment-algorithms.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
