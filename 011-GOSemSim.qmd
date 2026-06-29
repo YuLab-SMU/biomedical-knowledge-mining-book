@@ -11,7 +11,7 @@ loadNamespace("Rcpp")
 ```
 
 
-`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods and one graph-based method. 
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @sec-tcss]. 
 
 ## Semantic data {#semantic-data}
 
@@ -65,6 +65,123 @@ go2 = c("GO:0009055","GO:0005515")
 mgoSim(go1, go2, semData=hsGO, measure="Wang", combine=NULL)
 mgoSim(go1, go2, semData=hsGO, measure="Wang", combine="BMA")
 ```
+
+## TCSS: Topology-based Clustering Semantic Similarity {#tcss}
+
+The TCSS (Topology-based Clustering Semantic Similarity) method, proposed by Jain and Bader [@jain_improved_2010], takes a fundamentally different approach from traditional IC-based or graph-based methods. Instead of computing similarity directly on the full GO DAG, TCSS first partitions the GO graph into **topological clusters** (sub-graphs) based on the topological information content (ICT) of each term, then computes a two-level semantic similarity within and across these clusters.
+
+### Motivation — the unbalanced GO DAG
+
+The GO DAG is highly imbalanced: some branches have deep, richly detailed paths (e.g. "intracellular" has depth 7 in yeast CC ontology) while others are shallow (e.g. "extracellular" has depth 0). Traditional IC-based methods like Resnik cannot differentiate between term pairs that share the same common ancestor but reside in different parts of the DAG—for instance, two proteins both annotated under "cytoplasm" will get the same Resnik score regardless of whether they localise to the nucleus or mitochondria. Lin and Jiang partially address this but tend to overestimate similarity for terms higher in the ontology.
+
+TCSS addresses these issues by clustering GO terms into sub-graphs of functionally related concepts (analogous to a GO slim, but learned from the topology rather than manually curated), and scoring terms higher when they belong to the same sub-graph. This effectively normalises the graph depth before computing similarity.
+
+### How TCSS works
+
+The algorithm proceeds in two phases: topology-based clustering, followed by two-level semantic similarity computation.
+
+**Phase 1: Topology-based clustering**
+
+1. **Compute ICT**: For each GO term $t$, the Topological Information Content is $ICT(t) = -\log_{10}(|N(t)| / |O|)$, where $|N(t)|$ is the number of offspring terms of $t$ (including itself) and $|O|$ is the total number of GO terms in the species. More specific terms (closer to leaves) have higher ICT values.
+
+2. **Select sub-graph roots (meta-terms)**: Terms with ICT below a `cutoff` threshold are designated as *meta-terms*—the roots of topological clusters. Terms above the cutoff are considered "leaves" assigned to the nearest meta-term ancestor.
+
+3. **Merge close clusters**: If a parent-child pair among meta-terms has ICT values within 20% of each other (ratio ≤ 1.2), the child cluster is merged into the parent. This prevents redundant clusters that represent nearly the same level of topological specificity.
+
+4. **Build mutually exclusive clusters**: Each meta-term forms a cluster containing itself and all its offspring terms. When a term could belong to multiple clusters (due to multiple parentage), it is assigned to the first encountered cluster and removed from others, ensuring clusters are non-overlapping.
+
+**Phase 2: Two-level semantic similarity**
+
+5. **Compute ICA**: Within each cluster, the Information Content Adjusted score normalises each term by the cluster's maximum IC: $ICA(t) = IC(t) / \max\{IC(t') : t' \in cluster\}$.
+
+6. **Measure similarity**: For two GO terms, TCSS finds all their common ancestors, looks up the ICA value of each ancestor (using the ancestor's own cluster), and returns the maximum ICA among them: $sim(t_1, t_2) = \max\{ICA(a) : a \in ancestors(t_1) \cap ancestors(t_2)\}$. This is equivalent to Resnik's max-of-common-ancestors approach, but using cluster-normalised IC instead of raw IC.
+
+### Basic usage
+
+TCSS is enabled by setting `processTCSS = TRUE` in `godata()`. The `cutoff` parameter controls the granularity of clustering:
+
+```{r gosemsim-tcss-basic}
+hsGO_tcss <- godata(annoDb = 'org.Hs.eg.db', ont = "BP", processTCSS = TRUE)
+
+# GO term similarity using TCSS
+goSim("GO:0004022", "GO:0005515", semData = hsGO_tcss, measure = "TCSS")
+
+# Gene similarity using TCSS
+GOSemSim::geneSim("241", "251", semData = hsGO_tcss, measure = "TCSS", combine = "BMA")
+
+# Multiple gene similarity
+mgeneSim(genes = c("835", "5261", "241", "994"),
+         semData = hsGO_tcss, measure = "TCSS", verbose = FALSE)
+```
+
+When `cutoff = NULL` (the default), empirical default values are used: `3.5` for BP and MF, `3.2` for CC. A smaller cutoff produces fewer, larger clusters (coarser granularity); a larger cutoff produces more, smaller clusters (finer granularity).
+
+### Optimising the cutoff with `tcss_cutoff()`
+
+The default cutoff works reasonably well, but for a specific species or research context, you can use `tcss_cutoff()` to find the optimal cutoff by leveraging known protein-protein interaction (PPI) data. The idea is simple: known interacting proteins should be functionally similar (positive set), while random protein pairs should not (negative set). The function searches for the cutoff that best separates these two sets — maximising both AUC and F1-score.
+
+`tcss_cutoff()` requires a `ppidata` data.frame with three columns: two protein IDs (character) and a logical label (`TRUE` for known interactions, `FALSE` for non-interactions). Here is an example using STRING data:
+
+```{r eval=FALSE}
+#| label: tcss-cutoff-example
+library(org.Hs.eg.db)
+library(STRINGdb)
+
+# Get PPI data from STRING
+string_db <- STRINGdb$new(version = "11.0", species = 9606,
+                           score_threshold = 700)
+string_proteins <- string_db$get_proteins()
+ppi <- string_db$get_interactions(string_proteins$protein_external_id)
+
+# Clean up STRING IDs
+ppi$from <- vapply(ppi$from, function(e) 
+                   strsplit(e, "9606.")[[1]][2], character(1))
+ppi$to <- vapply(ppi$to, function(e) 
+                 strsplit(e, "9606.")[[1]][2], character(1))
+
+# Construct positive and negative sets
+s_len <- 100
+pos_1 <- sample(nrow(ppi), s_len, replace = TRUE)
+pos_2 <- sample(nrow(ppi), s_len, replace = TRUE)
+pos_3 <- sample(nrow(ppi), s_len, replace = TRUE)
+
+ppidata <- data.frame(
+    pro1 = c(ppi$from[pos_1], ppi$from[pos_2]),
+    pro2 = c(ppi$to[pos_1], ppi$to[pos_3]),
+    label = c(rep(TRUE, s_len), rep(FALSE, s_len)),
+    stringsAsFactors = FALSE
+)
+
+# Determine optimal cutoff
+cutoff <- tcss_cutoff(
+    OrgDb = org.Hs.eg.db,
+    keytype = "ENSEMBLPROT",
+    ont = "BP",
+    combine_method = "max",
+    ppidata = ppidata
+)
+
+cutoff
+
+# Use the optimised cutoff
+hsGO_opt <- godata(
+    annoDb = org.Hs.eg.db,
+    keytype = "ENSEMBLPROT",
+    ont = "BP",
+    processTCSS = TRUE,
+    cutoff = cutoff
+)
+```
+
+The `combine_method` parameter in `tcss_cutoff()` specifies how multiple GO term similarities are combined for gene-level comparison. Options include `"max"`, `"BMA"`, `"avg"`, `"rcmax"`, and `"rcmax.avg"`.
+
+### Notes
+
+- TCSS requires `computeIC = TRUE`, which is automatically enforced when `processTCSS = TRUE`.
+- The `tcss_cutoff()` function depends on the `ROCR` package for AUC/F1-score calculation.
+- TCSS currently supports GO (BP, MF, CC), DO, MPO, and HPO ontologies.
+- For species without PPI data, using the default cutoff values is a reasonable starting point.
+
 
 ## Gene semantic similarity measurement {#gene-go-semantic-similarity}
 
