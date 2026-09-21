@@ -58,6 +58,45 @@ formula_res <- compareCluster(Entrez~group+othergroup, data=mydf,
 head(formula_res)
 ```
 
+::: {.callout-note}
+**`compareCluster()` takes gene lists, not enrichment tables.** This is the
+single most common misunderstanding about the formula interface. Both the named
+list and the formula form expect **genes**, and `compareCluster()` runs the
+enrichment test itself, once per group:
+
+- `data` must be a data frame with **one row per gene** — a gene identifier
+  column, plus the grouping columns on the right-hand side of the formula.
+- The statistics in the result are computed by `fun` (`enrichGO()` here) from
+  each group's gene list. They are **not** carried over from any input table.
+
+So if you already have two tables of enrichment results (`ID`, `Description`,
+`GeneRatio`, `pvalue`, `p.adjust`, ...), there is nothing to join: those numbers
+were produced by whatever run created them, on whatever background, and
+`compareCluster()` has no way to reuse them. To compare the two conditions,
+combine the **gene lists** that produced those tables and let
+`compareCluster()` re-run the test:
+
+```{r eval=FALSE}
+## one row per gene, with a column naming the group it belongs to
+genes <- rbind(
+    data.frame(gene = condition_A_genes, group = "A"),
+    data.frame(gene = condition_B_genes, group = "B")
+)
+res <- compareCluster(gene ~ group, data = genes, fun = "enrichGO",
+                      OrgDb = org.Hs.eg.db, ont = "BP")
+```
+
+Re-running the test is not a limitation to work around — it is what makes the
+two columns comparable. Enrichment p-values depend on the gene list, the
+universe/background and the multiple-testing correction, so p-values computed
+separately for A and B are not on a common footing and plotting them side by
+side would be misleading.
+
+If you want to carry a *pre-computed* gene-level statistic into the comparison
+instead (a ranked list rather than a cut-off list), use the GSEA route:
+`compareCluster(..., fun = "gseGO")`.
+:::
+
 ## Functional analysis of single-cell marker genes
 
 The `compareCluster()` function is highly versatile and can be directly integrated into single-cell analysis workflows. For example, after identifying marker genes for each cluster using `Seurat`, the results can be directly used for functional enrichment analysis.
@@ -99,6 +138,31 @@ x <- compareCluster(ENTREZID ~ cluster, data = markers, fun = 'enrichKEGG')
 dotplot(x, label_format = 40) + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+::: {.callout-note}
+**Enrichment plots need enrichment result objects, not a table of pathway
+statistics.** A frequent question is how to hand `enrichplot` a data frame of
+per-pathway statistics (`PValue`, `FDR`, `NES`, `logFC`, ...) obtained elsewhere.
+There is no way to do this directly: `dotplot()`, `gseaplot2()`, `ridgeplot()`
+and friends dispatch on `enrichResult` / `gseaResult` / `compareClusterResult`
+objects, and those carry the gene sets, the gene-to-set mapping and the
+background that the plots need. A bare table has none of that.
+
+The way in is to re-run the enrichment inside `clusterProfiler` on the same
+gene list and gene sets, which gives you an object the plotting functions
+understand:
+
+- **Cut-off gene list per cluster** (what `FindAllMarkers()` gives you) →
+  `compareCluster(ENTREZID ~ cluster, data = markers, fun = "enrichGO")`, then
+  `dotplot()` / `cnetplot()` / `emapplot()`, as above.
+- **A ranked list** (a statistic for every gene, not a cut-off list) →
+  `gseGO()` / `GSEA()`, then `gseaplot2()` / `ridgeplot()` / `gseaplot()`.
+
+If the statistics came from another tool (fgsea, GSEA desktop, a vendor
+report), re-running the equivalent analysis in `clusterProfiler` with the same
+gene list and gene sets is usually a couple of lines, and is the only way to get
+the object the visualisation layer requires.
+:::
 
 ### Using COSG results
 
