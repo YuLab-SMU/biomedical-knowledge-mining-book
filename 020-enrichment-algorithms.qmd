@@ -27,12 +27,14 @@ $$
 
 ```{r}
 #| label: enrichment-data
-d <- data.frame(non_DE_gene=c(2613, 15310), DE_gene=c(28, 29))
+d <- data.frame(DE_gene=c(28, 29), non_DE_gene=c(2613, 15310))
 row.names(d) <- c("In_category", "not_in_category")
 d
 ```                        
 
-Whether the gene set of interest is significantly over-represented in the differentially expressed genes can be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
+The orientation of the contingency table matters here. `fisher.test()` with `alternative = "greater"` tests whether the **top-left** cell is larger than expected under independence, so the top-left cell must hold the observed overlap — the 28 differentially expressed genes that belong to the gene set. Written this way, the alternative hypothesis reads exactly like our question: *are the DE genes over-represented in the gene set?*
+
+Whether the gene set of interest is significantly over-represented in the differentially expressed genes can then be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
 
 ```{r}
 #| label: fisher-test
@@ -82,6 +84,54 @@ gsea_result <- gsea(
 Leading edge analysis reports `Tags` to indicate the percentage of genes contributing to the enrichment score, `List` to indicate where in the list the enrichment score is attained and `Signal` for enrichment signal strength.
 
 It would also be very interesting to get the core enriched genes that contribute to the enrichment. Our packages (`clusterProfiler`, `DOSE`, `meshes` and `ReactomePA`) support leading edge analysis and report core enriched genes in GSEA analysis.
+
+### One-sided or two-sided: the `scoreType` argument {#scoretype}
+
+`scoreType` controls which end of the ranked list the enrichment score is allowed to look at. It takes three values, and the choice is not cosmetic — it decides which gene sets are even *visible* to the test:
+
+| `scoreType` | ES is | Detects |
+|---|---|---|
+| `"std"` (default) | the maximum deviation from zero in **either** direction | gene sets enriched at the top **and** at the bottom |
+| `"pos"` | the maximum deviation **above** zero only | gene sets enriched at the top only |
+| `"neg"` | the maximum deviation **below** zero only | gene sets enriched at the bottom only |
+
+With the usual signed metric (a log fold change or a signed correlation), the default `"std"` is what you want: it reports both up- and down-regulated sets. Running the three settings on the same mixed-sign ranking makes the difference obvious — `"pos"` misses the bottom-enriched set entirely (its ES is 0 and its p-value is 1), and `"neg"` misses the top-enriched one.
+
+```{r}
+#| label: gsea-scoretype
+#| eval: false
+## gene sets enriched at the top and at the bottom of the same ranking
+gsea(geneList, gene_sets, scoreType = "std")   # finds both
+gsea(geneList, gene_sets, scoreType = "pos")   # only the top set
+gsea(geneList, gene_sets, scoreType = "neg")   # only the bottom set
+```
+
+The case that trips people up is a metric that has **no sign at all** — a score where higher simply means "more strongly associated with the phenotype", such as an evidence score, a correlation magnitude, or a rank-based statistic that runs from 1 to $n$. Here every value is positive, so the "bottom" of the list is not a meaningful direction and `"std"` is the wrong model. Use `scoreType = "pos"`:
+
+```{r}
+#| label: gsea-scoretype-pos
+#| eval: false
+## all-positive evidence scores: higher = more associated
+gsea(evidence_score, gene_sets, scoreType = "pos")
+```
+
+The package warns you when it can detect this situation (`All values in the stats vector are greater than zero and scoreType is "std", maybe you should switch to scoreType = "pos"`), but the warning is easy to ignore — and it only fires when *every* value is positive, so it will not catch a metric that is positive except for a handful of zeros. Note also that the normalized enrichment score (NES) is computed against a null that depends on `scoreType`, so comparing NES values obtained with different settings is not meaningful.
+
+### Choosing between ORA and GSEA {#ora-vs-gsea}
+
+A question that comes up constantly in teaching: *given my experiment, which one should I run?* The deciding factor is mostly **how many genes pass your significance threshold** — not personal preference, and not the analysis software you happen to have installed.
+
+| Situation | Recommended | Why |
+|---|---|---|
+| Many DEGs (rule of thumb: dozens and up) | ORA | The gene list is long enough for the hypergeometric test to have real power, and the result is easy to read term by term. |
+| Few DEGs (say, under ~20–30) | GSEA | ORA has almost no power on a short list: with $n$ small, only a very strong overlap can reach significance. GSEA ranks the *whole* list, so a modest but coordinated shift across a gene set is still detectable. |
+| No DEG passes the cutoff at all | GSEA | ORA has literally nothing to test. GSEA only needs a ranking, so it still works when the threshold yields an empty list. |
+| You do not want to commit to an arbitrary cutoff | GSEA | No threshold is involved anywhere in the method. |
+| You want a per-term statement of the form "this set is over-represented in my DE genes" | ORA | That is exactly the question the hypergeometric test answers. |
+
+The failure mode to avoid is running ORA on a handful of genes. With, say, ten DEGs the test can only detect very large overlaps, so it typically returns nothing — and it is easy to misread that null result as "no biology here" rather than "not enough data for this test". In that regime GSEA (or the network-based and weighted methods introduced below) is the appropriate tool.
+
+The two methods are not mutually exclusive, and reporting both is common. They answer slightly different questions: ORA asks whether your *thresholded* genes hit a set more often than chance, while GSEA asks whether a set is *shifted* toward one end of the *full* ranking.
 
 ## Network-based Set Enrichment Analysis (NSEA)
 

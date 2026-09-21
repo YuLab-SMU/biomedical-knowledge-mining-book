@@ -53,6 +53,10 @@ mutate(edo, qscore = -log(p.adjust, base=10)) |>
     barplot(x="qscore")
 ```
 
+::: {.callout-note}
+`library(clusterProfiler)` is not optional here. `mutate()` on an `enrichResult` works through an S3 method that `clusterProfiler` registers on load, so if only `DOSE` (or another downstream package) has been loaded, `mutate()` falls back to `dplyr::mutate` and fails with `no applicable method for 'mutate' applied to an object of class "enrichResult"`.
+:::
+
 
 
 ```{r}
@@ -369,7 +373,11 @@ The `cnetplot()` depicts the linkages of genes and biological concepts (*e.g.* G
 with only core enriched genes displayed. For GSEA results, `cnetplot` specifically visualizes the core enriched genes identified through leading edge analysis, which represent the subset of genes most responsible for driving the enrichment signal.
 
 
-Users can use the 'fc_threshold' parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`). In addition, users can use the `node_label_gene` parameter to label genes that are shared between groups of terms (i.e. `node_label_gene = "share"`).
+Users can use the `fc_threshold` parameter in the `cnetplot` function to filter genes to only include those with `|foldChange| > fc_threshold`. This allows users to plot only high fold-change genes (e.g., `fc_threshold = 1`). In addition, users can use the `node_label` parameter to label genes that are shared between groups of terms (i.e. `node_label = "share"`).
+
+::: {.callout-tip}
+**Too many labels overlapping?** `cnetplot()` draws gene and category labels with `ggrepel`, which hides labels that would collide. If you want every label shown, raise the limit — `options(ggrepel.max.overlaps = Inf)`. If the network is simply too dense, it is usually better to reduce what gets drawn rather than to force all labels out: label only the categories with `node_label = "category"`, or keep only the genes you care about with `fc_threshold` (e.g. `fc_threshold = 1` keeps `|foldChange| > 1`) or by passing a `foldChange` vector that contains just those genes.
+:::
 
 ```{r}
 #| label: fig-Networkplot  
@@ -829,6 +837,18 @@ plot_list(p1, p2, p3, ncol=3, tag_levels='A')
 **Note**: Starting from enrichplot v1.29.2, log10 transformation of p-values is applied by default in functions like `dotplot()`. The `set_enrichplot_color()` function allows users to override this default behavior or customize color palettes consistently across all visualization types.
 
 Another method to plot GSEA result is the `gseaplot2` function:
+
+::: {.callout-note}
+**Reading the three panels.** `gseaplot2()` stacks three panels that share the same x-axis, which is the *position in the ranked gene list* (not a gene identifier):
+
+* **Running Enrichment Score** — the running-sum statistic. It rises when a gene in the set is encountered and falls otherwise; the enrichment score is its maximum deviation from zero (marked by the dashed vertical line).
+* **The middle band** — the black vertical ticks are the positions of the genes in the set. The coloured rectangles behind them are *meant* to divide the hits (not the ranked list) into equal-count bins, running from the top of the list (red) to the bottom (blue); their widths would then encode local hit density, with narrow rectangles indicating a region where the set's genes are packed tightly. A gene set enriched at the top should therefore show narrow red rectangles crowded on the left.
+* **Ranked List Metric** — the ranking statistic itself (e.g. the log fold change or the signed correlation), with the gene set members drawn as vertical segments.
+
+::: {.callout-warning}
+**Known bug in the coloured rectangles.** In current versions the hit bins are computed from a cumulative count taken from the *bottom* of the ranked list and are never reversed back, so the gradient comes out in the wrong order: for a strongly enriched gene set nearly all hits collapse into the leftmost rectangle and the remaining rectangles are empty. The intended picture is the one described above; until this is fixed upstream, do not read the red/blue split as a faithful picture of where the hits are. The coloured rectangles are in any case a property of `gseaplot2()`, not of the GSEA method — the original Broad GSEA plots colour the ranked-list-metric panel by the *sign* of the metric instead, so the two conventions do not agree either. Reported upstream as [enrichplot#20](https://github.com/YuLab-SMU/enrichplot/issues/20) and [enrichplot#221](https://github.com/YuLab-SMU/enrichplot/issues/221).
+:::
+:::
 
 
 ```{r}

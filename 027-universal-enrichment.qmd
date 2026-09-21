@@ -161,4 +161,115 @@ head(em2)
 ```
 
 
+## Proteomics data and UniProt identifiers {#uniprot-enrichment}
+
+Proteomics experiments normally report **UniProt accessions** rather than Entrez gene IDs, and the organism is frequently not one of the model organisms that have an `OrgDb` package. This is the situation where the usual `enrichGO()`-style entry points cannot be used directly, so it is worth spelling out the two ways out.
+
+### Model organisms: convert the identifiers
+
+If an `OrgDb` exists for your organism and carries the `UNIPROT` keytype, the simplest solution is to translate the accessions and then use the standard pipeline:
+
+```{r}
+#| label: uniprot-to-entrez
+library(org.Hs.eg.db)
+
+up <- c("P04637", "P00533", "Q9NQ11", "P38398", "O14746")
+bitr(up, fromType = "UNIPROT", toType = "ENTREZID", OrgDb = org.Hs.eg.db)
+```
+
+Use `keytypes(org.Hs.eg.db)` to check what is available for your organism — not every `OrgDb` provides `UNIPROT`.
+
+### Any organism: build `TERM2GENE` from the EBI GOA files
+
+For a non-model organism there is no `OrgDb` to convert with, but you do not need one. The Gene Ontology Annotation ([GOA](https://www.ebi.ac.uk/GOA)) group at EMBL-EBI publishes GO annotation for **complete proteomes** in the standard GAF format, keyed by UniProt accession:
+
+* Browse the available proteomes: <https://www.ebi.ac.uk/GOA/proteomes>
+* Download directory: <http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/>
+
+A GAF file is plain tab-delimited text, so it can be read with `read.delim()`. In the GAF 2.x layout the columns we need are: 2 = UniProt accession, 4 = qualifier, 5 = GO ID, and 9 = ontology aspect (`P`/`C`/`F`).
+
+```{r}
+#| label: goa-download
+#| eval: false
+
+## example: Solanum lycopersicum (tomato), proteome UP000004994
+url <- "http://ftp.ebi.ac.uk/pub/databases/GO/goa/proteomes/284179.S_lycopersicum_genome_cv_Heinz_1706.goa"
+goa_file <- "tomato.goa"
+download.file(url, goa_file)
+```
+
+```{r}
+#| label: goa-parse
+#| eval: false
+
+library(GO.db)
+library(AnnotationDbi)
+
+gaf <- read.delim(goa_file, header = FALSE, comment.char = "!", sep = "\t",
+                  quote = "", fill = TRUE, stringsAsFactors = FALSE)
+
+colnames(gaf) <- c("DB", "UniProt", "Symbol", "Qualifier", "GO", "Reference",
+                   "Evidence", "With", "Aspect", "Name", "Synonym", "Type",
+                   "Taxon", "Date", "AssignedBy", "Extension", "GeneProductForm")
+
+## drop negative annotations, which are written as "NOT|..."
+gaf <- gaf[!grepl("^NOT", gaf$Qualifier), ]
+
+## TERM2GENE: (GO id, UniProt accession)
+term2gene <- unique(gaf[, c("GO", "UniProt")])
+
+## TERM2NAME: GO term names come from GO.db
+goterm <- AnnotationDbi::select(GO.db, keys = unique(term2gene$GO),
+                                columns = c("TERM", "ONTOLOGY"), keytype = "GOID")
+term2name <- goterm[, c("GOID", "TERM")]
+```
+
+These two data frames plug straight into `enricher()` and `GSEA()`, exactly like the MSigDb example above — the only difference is that the gene identifiers are UniProt accessions:
+
+```{r}
+#| label: uniprot-enricher
+#| eval: false
+
+res <- enricher(gene     = my_proteins,
+                universe = all_proteins,
+                TERM2GENE = term2gene,
+                TERM2NAME = term2name)
+```
+
+Two details are easy to get wrong:
+
+* **`universe` should be the proteins detected in your experiment**, not the entire proteome. The GOA file annotates the full proteome, but the relevant background for a mass-spectrometry experiment is the set of proteins you could have quantified. Passing the whole proteome instead inflates the significance of everything.
+* **Aspect filtering.** If you only want one ontology, filter `term2gene` by the `ONTOLOGY` column of `goterm` before calling `enricher()`:
+
+```{r}
+#| label: uniprot-aspect
+#| eval: false
+
+bp_ids  <- goterm$GOID[goterm$ONTOLOGY == "BP"]
+term2gene_bp <- term2gene[term2gene$GO %in% bp_ids, ]
+```
+
+If you need curated annotations only, filter on the evidence code as well — the GOA files include electronically inferred (`IEA`) annotations, and `gaf[gaf$Evidence != "IEA", ]` keeps just the manually reviewed ones.
+
+### KEGG analysis with UniProt identifiers
+
+KEGG does accept UniProt accessions directly, so no conversion is needed for organisms that KEGG covers:
+
+```{r}
+#| label: kegg-uniprot
+#| eval: false
+
+kk <- enrichKEGG(gene = my_proteins, organism = "sly", keyType = "uniprot")
+```
+
+Use `bitr_kegg()` to check the coverage first — for most proteomes a substantial fraction of accessions has no KEGG entry, and those proteins are silently dropped:
+
+```{r}
+#| label: bitr-kegg-uniprot
+#| eval: false
+
+uni2kegg <- bitr_kegg(unique(gaf$UniProt), fromType = "uniprot",
+                      toType = "kegg", organism = "sly")
+```
+
 ## References {-}

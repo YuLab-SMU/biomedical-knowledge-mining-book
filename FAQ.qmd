@@ -47,6 +47,36 @@ geneList = sort(geneList, decreasing = TRUE)
 + <https://www.biostars.org/p/431270/>
 + <https://github.com/YuLab-SMU/clusterProfiler/issues/280>
 
+### First, check that your identifiers are still identifiers
+
+Before blaming the annotation database, look at the IDs themselves. A very common cause of `No gene can be mapped` is that the ID column passed through a spreadsheet on its way into R. Excel quietly turns long numbers into scientific notation, and when the column is too narrow or the cell is formatted as a number it writes out the *displayed* text rather than the value. A gene list then arrives looking like this:
+
+```
+25081
+84604
+1.01E+08     <- should be an Entrez ID
+1E+08        <- should be an Entrez ID
+24614
+```
+
+None of these can be mapped, and the failure is easy to misread as "clusterProfiler does not support my organism" — particularly when pasting the same list into DAVID seems to work, because DAVID re-parses the text differently.
+
+Note that `1E+08` is not merely mis-formatted, it is **lossy**: the original identifier is gone and cannot be recovered. The fix is therefore not to repair the strings in R, but to re-export the IDs from their source.
+
+A quick check in R — any ID that is not a plain integer is suspect:
+
+```{r}
+#| label: faq-check-ids
+ids <- c("25081", "84604", "1.01E+08", "1E+08", "24614")
+ids[!grepl("^[0-9]+$", ids)]
+```
+
+**How to avoid it.** Export the ID column as *text*: in Excel, format the column as "Text" *before* pasting the IDs in, or import via "Data → From Text/CSV" and set the column type to text. Then read it into R as character, e.g. `readr::read_tsv(file, col_types = readr::cols(ENTREZID = "c"))`. Never round-trip identifiers through a spreadsheet's default number formatting.
+
+### Other causes
+
+If the IDs are clean integers and the problem persists, the usual suspects are a mismatched `keyType`, an `organism` code that does not correspond to your IDs, or an outdated annotation source — see the two links above.
+
 
 ## Showing specific pathways {#showing-specific-pathways}
 
