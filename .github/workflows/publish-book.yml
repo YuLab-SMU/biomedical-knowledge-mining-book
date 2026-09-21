@@ -50,7 +50,8 @@ jobs:
             libtiff5-dev \
             libjpeg-dev \
             libgit2-dev \
-            libpq-dev
+            libpq-dev \
+            libglpk-dev
 
       - name: Install pak
         run: |
