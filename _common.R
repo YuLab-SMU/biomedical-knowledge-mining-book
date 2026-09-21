@@ -1,6 +1,70 @@
 library(yulab.utils)
 
 
+## Retry a network call, returning NULL if it keeps failing.
+##
+## The book build depends on several third-party services (Europe PMC, KEGG,
+## Enrichr, ...). A transient 5xx from one of them should not fail a scheduled
+## publication, so those calls are wrapped in retry() and the chunk degrades
+## gracefully instead of halting the render. A real bug still surfaces: retry()
+## only swallows the failure of the expression it is given, and it warns.
+##
+## The expression is captured unevaluated and re-evaluated on every attempt.
+## Passing it straight to tryCatch() would evaluate the promise once, and R
+## would then emit "restarting interrupted promise evaluation" on each retry.
+retry <- function(expr, times = 3, wait = 5) {
+  expr <- substitute(expr)
+  env <- parent.frame()
+  for (attempt in seq_len(times)) {
+    res <- tryCatch(eval(expr, env), error = function(e) e)
+    if (!inherits(res, "error")) {
+      return(res)
+    }
+    if (attempt < times) {
+      Sys.sleep(wait)
+    }
+  }
+  warning(conditionMessage(res), call. = FALSE)
+  NULL
+}
+
+
+## TRUE if the file begins with an HTML tag, i.e. a web page was saved where a
+## data file was expected. Compares raw bytes so it is safe on any encoding.
+is_html_response <- function(path) {
+  bytes <- readBin(path, "raw", n = 512L)
+  bytes <- bytes[!bytes %in% charToRaw(" \t\r\n")]
+  length(bytes) > 0 && bytes[1] == charToRaw("<")
+}
+
+## Download a file, retrying transient failures, and return its path -- or NULL
+## if the service stays unavailable.
+##
+## `download.file()` is inconsistent across backends: the "wget"/"curl" methods
+## warn and return a non-zero exit status, whereas the internal and libcurl
+## methods raise an error. Both are normalised into an error here so that
+## retry() can actually retry.
+##
+## A successful status is not sufficient either. Enrichr answers an unknown
+## library name with an HTML error page under HTTP 200, so download.file()
+## reports success and read.gmt() then returns an empty data frame -- a silently
+## wrong table rather than a visible failure. Such responses are treated as
+## failures. This assumes the caller wants a data file, which is the case for
+## every download in this book (GMT, GAF, xlsx).
+retry_download <- function(url, destfile, ...) {
+  retry({
+    status <- suppressWarnings(download.file(url, destfile = destfile, ...))
+    if (!identical(as.integer(status), 0L)) {
+      stop("download.file() returned status ", status, " for ", url)
+    }
+    if (file.exists(destfile) && is_html_response(destfile)) {
+      stop("the server returned an HTML page instead of a file: ", url)
+    }
+    destfile
+  })
+}
+
+
 ## Rasterise oversized figures.
 ##
 ## NOTE: do NOT enable this via `fig.process`. It is kept only for reference.

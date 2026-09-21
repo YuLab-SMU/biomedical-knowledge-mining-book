@@ -112,10 +112,16 @@ The `r Biocpkg("clusterProfiler")` package implemented a function, `read.gmt()`,
 # use `wget -c` in `download.file`
 wget::wget_set()
 url <- "https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&libraryName=COVID-19_Related_Gene_Sets"
-download.file(url, destfile = "COVID19_GeneSets.gmt")
 
-covid19_gs <- read.gmt("COVID19_GeneSets.gmt")
-head(covid19_gs)
+## Enrichr is an external service and the library name is not guaranteed to be
+## stable, so retry the download and skip this example if it is unavailable
+## rather than failing the whole book build.
+gmt <- retry_download(url, destfile = "COVID19_GeneSets.gmt")
+
+if (!is.null(gmt)) {
+    covid19_gs <- read.gmt(gmt)
+    head(covid19_gs)
+}
 ```
 
 

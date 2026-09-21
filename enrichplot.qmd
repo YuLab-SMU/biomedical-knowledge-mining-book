@@ -1119,10 +1119,16 @@ is valid as input of `pmcplot`.
 #| fig-cap: |
 #|   **Pmcplot of enrichment analysis.**
 #| 
+## Europe PMC is an external service and does intermittently answer 503.
+## retry() (defined in _common.R) tries a few times and returns NULL if it is
+## still unavailable, so a third-party outage skips this figure instead of
+## failing the entire book build.
 terms <- edo$Description[1:5]
-p <- pmcplot(terms, 2010:2020)
-p2 <- pmcplot(terms, 2010:2020, proportion=FALSE)
-plot_list(p, p2, ncol=2)
+p <- retry(pmcplot(terms, 2010:2020))
+p2 <- retry(pmcplot(terms, 2010:2020, proportion=FALSE))
+if (!is.null(p) && !is.null(p2)) {
+    plot_list(p, p2, ncol=2)
+}
 ```
 
 
