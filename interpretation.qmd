@@ -83,7 +83,7 @@ pbmc <- FindNeighbors(pbmc, dims = 1:10)
 pbmc <- FindClusters(pbmc, resolution = 0.5)
 pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE)
 
-libray(dplyr)
+library(dplyr)
 topN_marker <- function(markers, n) {
     markers %>%
         group_by(cluster) %>%
@@ -93,8 +93,10 @@ topN_marker <- function(markers, n) {
 }
 top20 <- topN_marker(pbmc.markers, 20)
 # downloaded from: http://www.bio-bigdata.center/CellMarker_download_files/file/Cell_marker_Human.xlsx
+# note: `gene` from FindAllMarkers() is a gene symbol, and so is CellMarker's
+# `marker` column -- both must be the same identifier type for the join to work.
 cm <- rio::import("Cell_marker_Human.xlsx") 
-x <- compareCluster(gene~cluster, data=top10, fun=enricher, TERM2GENE=cm[,c("cell_name", "marker")])
+x <- compareCluster(gene~cluster, data=top20, fun=enricher, TERM2GENE=cm[,c("cell_name", "marker")])
 y <- interpret(x, task="annotation")
 ```
 

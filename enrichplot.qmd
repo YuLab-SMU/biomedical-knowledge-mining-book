@@ -504,7 +504,36 @@ The `treeplot()` function performs hierarchical clustering of enriched terms. It
 
 The default agglomeration method in `treeplot()` is `ward.D`, and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*; see also the documentation of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specified by the `nCluster` parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability.
 
-For fine-grained control over text appearance, the `leave_fontsize` and `clade_fontsize` parameters allow users to adjust the font size of leaf labels and clade labels respectively. For example, `leave_fontsize = 8, clade_fontsize = 10` will set leaf labels to 8pt and clade labels to 10pt.
+For fine-grained control over text appearance, the `fontsize_tiplab` and `fontsize_cladelab` parameters allow users to adjust the font size of tip (leaf) labels and clade labels respectively. For example, `fontsize_tiplab = 8, fontsize_cladelab = 10` will set tip labels to 8pt and clade labels to 10pt.
+
+### Colouring the clades and wrapping labels {#treeplot-labels}
+
+Two things that are easy to get wrong here:
+
+**Colouring the clades.** Pass `group_color` a vector of colours, and it is used for both the clade labels and the highlight bars, so the two stay in sync:
+
+```{r eval=FALSE}
+treeplot(edox2, showCategory = 20,
+         group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
+```
+
+**Wrapping the tip labels.** `label_format` controls the wrap length of the **clade** labels (the word-cloud summaries of each cluster), not the tip labels — passing it a number or a function will not change the terms along the tips:
+
+```{r eval=FALSE}
+## wraps the clade labels only
+treeplot(edox2, label_format = 15)
+```
+
+The tip labels are taken straight from the `Description` of the enrichment result, so to wrap them you have to shorten the descriptions *before* building the tree. `pairwise_termsim()` names the similarity matrix from `Description`, and `treeplot()` labels the tips from that matrix, so wrapping at this stage propagates all the way through:
+
+```{r eval=FALSE}
+edox_wrapped <- edox
+edox_wrapped@result$Description <- stringr::str_wrap(edox_wrapped@result$Description, width = 30)
+
+treeplot(pairwise_termsim(edox_wrapped), showCategory = 20)
+```
+
+`str_wrap()` inserts newlines at word boundaries, which the labels render as line breaks. Note that this rewrites the term descriptions of the object, so do it on a copy if you still need the original wording elsewhere.
 
 
 ```{r}
@@ -562,6 +591,8 @@ GO annotations often contain redundant terms that can dominate enrichment result
 
 ```{r}
 #| label: fig-simplify-go
+#| fig-format: png
+#| fig-dpi: 150
 # Load required packages
 library(clusterProfiler)
 library(enrichplot)
@@ -751,6 +782,8 @@ the distribution of the gene set and the enrichment score.
 
 ```{r}
 #| label: fig-gseaplot  
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 16
 #| fig-scap: |
@@ -769,6 +802,8 @@ The `gseaplot` function also allows users to customize the colors of the running
 
 ```{r}
 #| label: fig-gseaplot-custom-color
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-cap: |
@@ -853,6 +888,8 @@ Another method to plot GSEA result is the `gseaplot2` function:
 
 ```{r}
 #| label: fig-gseaplot2  
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-scap: |
@@ -867,6 +904,8 @@ The `gseaplot2` also supports multile gene sets to be displayed on the same figu
 
 ```{r}
 #| label: fig-gseaplot22  
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-scap: |
@@ -882,6 +921,8 @@ parameter:
 
 ```{r}
 #| label: fig-gseaplot23  
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-scap: |
@@ -901,6 +942,8 @@ The `pvalue_table` can be customized using the following parameters:
 
 ```{r}
 #| label: fig-gseaplot-pvalue  
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-scap: |
@@ -919,6 +962,8 @@ User can specify `subplots` to only display a subset of plots:
 
 ```{r}
 #| label: fig-gseaplot24
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-scap: |
@@ -939,6 +984,8 @@ Users can use `geom_gsea_gene()` to label specific genes in the GSEA plot.
 
 ```{r}
 #| label: fig-geom-gsea-gene
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
 #| fig-cap: |

@@ -51,22 +51,41 @@ head(gene)
 
 ```{r eval=FALSE}
 #| label: cellmarker-data-prep
-# not execcute, as the url is no longer valid
+# not executed: it downloads an ~8 MB file, and the URL changes between
+# CellMarker releases (see the note below).
 
-## cell_marker_data <- vroom::vroom('http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt')
-url <- "http://yikedaxue.slwshop.cn/Cell_marker_Human.xlsx"
+## The original download endpoint no longer resolves:
+##   http://bio-bigdata.hrbmu.edu.cn/CellMarker/download/Human_cell_markers.txt
+## The file is now served from the CellMarker download page
+##   http://117.50.127.228/CellMarker/CellMarker_download.html
+## This direct link worked when this chapter was last checked:
+url <- "http://www.bio-bigdata.center/CellMarker_download_files/file/Cell_marker_Human.xlsx"
 f <- tempfile(fileext = ".xlsx")
-download.file(url, f)
+download.file(url, f, mode = "wb")
 
 cell_marker_data <- readxl::read_excel(f, 1)
 
+## Column names differ between CellMarker releases (`Cell name` in older
+## exports, `cell_name` in the current one), so check before selecting:
+##   names(cell_marker_data)
 
-## instead of `cellName`, users can use other features (e.g. `cancerType`)
+## instead of `cell_name`, users can use other features (e.g. `cancer_type`)
 cells <- cell_marker_data %>%
-    dplyr::select('Cell name', GeneID) %>%
-    dplyr::mutate(GeneID = strsplit(GeneID, ', ')) %>%
+    dplyr::select(cell_name, GeneID) %>%
+    dplyr::mutate(GeneID = strsplit(GeneID, ", ")) %>%
     tidyr::unnest(cols = c(GeneID))
 ```
+
+::: {.callout-note}
+**The CellMarker download URL is not stable.** The host has moved more than once
+(`bio-bigdata.hrbmu.edu.cn` now refuses connections; the mirror that used to be
+cited here, `yikedaxue.slwshop.cn`, no longer resolves), and the column headers
+have been renamed between releases — older exports used `Cell name` and
+`cellType`, the current one uses `cell_name` and `cell_type`. If the code above
+fails, download the file from the CellMarker download page by hand and run
+`names(cell_marker_data)` to see which names your copy uses, then adjust the
+`dplyr::select()` call accordingly.
+:::
 
 ### Cell Marker over-representation analysis {#cell-marker-ora}
 

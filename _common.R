@@ -1,6 +1,29 @@
 library(yulab.utils)
 
 
+## Rasterise oversized figures.
+##
+## NOTE: do NOT enable this via `fig.process`. It is kept only for reference.
+##
+## The idea was sound: several enrichment plots (gseaplot2() in particular) draw
+## one graphical element per gene in the ranked list, so their SVG output runs
+## to tens of megabytes. A single figure can contain >20,000 <path> elements and
+## one path whose `d` attribute is ~290 kB of coordinates, which makes the page
+## take minutes to render and often never finish (issue #41).
+##
+## But ImageMagick's built-in SVG renderer cannot parse these files. It reports
+##
+##   convert-im6.q16: unbalanced graphic context push-pop `graphic-context'
+##   convert-im6.q16: non-conforming drawing primitive definition `use'
+##
+## and writes a PNG containing only the axes: the curves, hit ticks and
+## ranked-list panel are all silently dropped. Enabling this would therefore
+## replace heavy figures with empty ones.
+##
+## The figures are rasterised properly by letting R draw them as PNG in the
+## first place -- add `#| fig-format: png` to the offending chunk (see the
+## gseaplot2 chunks in enrichplot.qmd). That is 60x smaller and needs no
+## external converter.
 svg2png <- function(path, options) {
   if (!grepl('[.]svg$', path)) {
     return(path)
@@ -10,8 +33,19 @@ svg2png <- function(path, options) {
     ## less than 1.2M
     return(path)
   }
+
   output <- sub(".svg$", ".png", path)
-  system2("convert", paste("-density 150", path, output))
+  status <- system2("convert",
+                    c("-density", "150", shQuote(path), shQuote(output)),
+                    stdout = FALSE, stderr = FALSE)
+
+  if (status != 0 || !file.exists(output)) {
+    ## Keep the SVG rather than deleting it: a failed conversion should make
+    ## the page heavy, not remove the figure altogether.
+    warning("svg2png(): could not convert '", path, "'; keeping the SVG")
+    return(path)
+  }
+
   file.remove(path)
   return(output)
 }
