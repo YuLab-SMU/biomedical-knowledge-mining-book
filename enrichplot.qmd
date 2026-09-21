@@ -29,12 +29,12 @@ and color @fig-Barplot. Users can specify the number of terms (most significant)
 
 
 ```{r}
-#| label: fig-enrichDGN
+#| label: dose-enrichdo-setup
 library(DOSE)
 data(geneList)
 de <- names(geneList)[abs(geneList) > 2]
 
-edo <- enrichDGN(de)
+edo <- enrichDO(de)
 ```
 
 ```{r eval=F}
@@ -362,7 +362,7 @@ library(enrichplot)
 library(org.Hs.eg.db)
 data(geneList, package="DOSE")
 de <- names(geneList)[abs(geneList) > 2]
-edo <- enrichDGN(de)
+edo <- enrichDO(de)
 ```
 
 Both the `barplot()` and `dotplot()` only displayed most significant or selected enriched terms,
@@ -848,7 +848,7 @@ The `set_enrichplot_color()` function can be added to any `enrichplot` visualiza
 library(DOSE)
 data(geneList)
 de <- names(geneList)[abs(geneList) > 2]
-edo <- enrichDGN(de)
+edo <- enrichDO(de)
 
 # A: Default log10 transformation
 p1 <- dotplot(edo, showCategory=15) + 

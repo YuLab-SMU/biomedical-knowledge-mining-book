@@ -17,7 +17,7 @@ We developed `r Biocpkg("DOSE")` [@yu_dose_2015] package to promote the investig
 ## Disease over-representation analysis {#dose-ora}
 
 
-`r Biocpkg("DOSE")` supports enrichment analysis of Disease Ontology (DO) [@schriml_disease_2011], [Network of Cancer Gene](http://ncg.kcl.ac.uk/) [@omer_ncg] and [Disease Gene Network](http://disgenet.org/) (DisGeNET) [@janet_disgenet]. In addition, several visualization methods were provided by `r Biocpkg("enrichplot")` to help interpreting semantic and enrichment results.
+`r Biocpkg("DOSE")` supports enrichment analysis of Disease Ontology (DO) [@schriml_disease_2011] and [Network of Cancer Gene](http://ncg.kcl.ac.uk/) [@omer_ncg]. In addition, several visualization methods were provided by `r Biocpkg("enrichplot")` to help interpreting semantic and enrichment results.
 
 
 ### Over-representation analysis for disease ontology {#dose-do-ora}
@@ -66,25 +66,34 @@ ncg <- enrichNCG(gene2)
 head(ncg)
 ```
 
-### Over-representation analysis for the disease gene network {#dose-dgn-ora}
+### DisGeNET support has been removed {#dose-dgn-ora}
 
 
-[DisGeNET](http://disgenet.org/)[@janet_disgenet] is an integrative and comprehensive resource of gene-disease associations from several public data sources and the literature. It contains gene-disease associations and snp-gene-disease associations.
+::: {.callout-warning}
+**`enrichDGN()`, `enrichDGNv()` and `gseDGN()` no longer exist.** DOSE used to
+provide over-representation and GSEA against
+[DisGeNET](http://disgenet.org/) [@janet_disgenet], an integrative resource of
+gene-disease associations. DisGeNET changed its licence from CC BY-NC-SA to a
+proprietary one, so the data can no longer be redistributed with the package,
+and the functions and their bundled datasets were removed in DOSE 4.7.0
+(June 2026).
 
-The enrichment analysis of disease-gene associations is supported by the `enrichDGN` function and analysis of snp-gene-disease associations is supported by the `enrichDGNv` function.
+If you have code calling them, use the Disease Ontology route instead:
 
-```{r}
-#| label: enrichdgn-example
-dgn <- enrichDGN(gene) 
-head(dgn)
+```{r eval=FALSE}
+## over-representation
+x <- enrichDO(gene, ont = "HDO")
 
-snp <- c("rs1401296", "rs9315050", "rs5498", "rs1524668", "rs147377392",
-         "rs841", "rs909253", "rs7193343", "rs3918232", "rs3760396",
-         "rs2231137", "rs10947803", "rs17222919", "rs386602276", "rs11053646",
-         "rs1805192", "rs139564723", "rs2230806", "rs20417", "rs966221")
-dgnv <- enrichDGNv(snp)
-head(dgnv)
+## GSEA
+y <- gseDO(geneList, ont = "HDO")
 ```
+
+`ont = "HDO"` is the human Disease Ontology and is the default. This is a
+genuine change of data source: DO annotates genes to *disease terms*, whereas
+DisGeNET aggregated *gene-disease associations* from several sources, so the
+results are not interchangeable. DisGeNET itself is still available for direct
+download from its own website under its current terms.
+:::
 
 ## Disease gene set enrichment analysis {#dose-gsea}
 
@@ -114,18 +123,6 @@ ncg <- gseNCG(geneList,
               verbose       = FALSE)
 ncg <- setReadable(ncg, 'org.Hs.eg.db')
 head(ncg, 3) 
-```
-
-### `gseDGN` function
-
-```{r}
-#| label: gsedgn-example
-dgn <- gseDGN(geneList,
-              pvalueCutoff  = 0.2,
-              pAdjustMethod = "BH",
-              verbose       = FALSE)
-dgn <- setReadable(dgn, 'org.Hs.eg.db')
-head(dgn, 3) 
 ```
 
 ## References {-}
