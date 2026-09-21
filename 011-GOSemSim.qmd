@@ -88,11 +88,11 @@ The algorithm proceeds in two phases: topology-based clustering, followed by two
 
 3. **Merge close clusters**: If a parent-child pair among meta-terms has ICT values within 20% of each other (ratio ≤ 1.2), the child cluster is merged into the parent. This prevents redundant clusters that represent nearly the same level of topological specificity.
 
-4. **Build mutually exclusive clusters**: Each meta-term forms a cluster containing itself and all its offspring terms. When a term could belong to multiple clusters (due to multiple parentage), it is assigned to the first encountered cluster and removed from others, ensuring clusters are non-overlapping.
+4. **Build clusters**: Each meta-term forms a cluster containing itself, plus those offspring terms that no *deeper* meta-term has already claimed. Because GO is a DAG, a term with more than one meta-term ancestor is not forced into a single cluster—it belongs to every applicable one. In practice roughly 70% of human BP terms sit in more than one cluster, so the clusters overlap rather than partitioning the graph.
 
 **Phase 2: Two-level semantic similarity**
 
-5. **Compute ICA**: Within each cluster, the Information Content Adjusted score normalises each term by the cluster's maximum IC: $ICA(t) = IC(t) / \max\{IC(t') : t' \in cluster\}$.
+5. **Compute ICA**: Within each cluster, the Information Content Adjusted score normalises each term by the cluster's maximum IC: $ICA(t) = IC(t) / \max\{IC(t') : t' \in cluster\}$. A cluster with a single member has no internal spread, which would make its ICA identically 1 no matter how general the term is; such clusters are instead normalised by the global maximum IC, so a very general term does not receive a maximally specific score.
 
 6. **Measure similarity**: For two GO terms, TCSS finds all their common ancestors, looks up the ICA value of each ancestor (using the ancestor's own cluster), and returns the maximum ICA among them: $sim(t_1, t_2) = \max\{ICA(a) : a \in ancestors(t_1) \cap ancestors(t_2)\}$. This is equivalent to Resnik's max-of-common-ancestors approach, but using cluster-normalised IC instead of raw IC.
 
@@ -103,11 +103,13 @@ TCSS is enabled by setting `processTCSS = TRUE` in `godata()`. The `cutoff` para
 ```{r gosemsim-tcss-basic}
 hsGO_tcss <- godata(annoDb = 'org.Hs.eg.db', ont = "BP", processTCSS = TRUE)
 
-# GO term similarity using TCSS
-goSim("GO:0004022", "GO:0005515", semData = hsGO_tcss, measure = "TCSS")
+# GO term similarity using TCSS: the more specific the shared ancestor, the higher the score
+goSim("GO:0006954", "GO:0006952", semData = hsGO_tcss, measure = "TCSS") # inflammatory vs defense response
+goSim("GO:0006954", "GO:0006955", semData = hsGO_tcss, measure = "TCSS") # inflammatory vs immune response
+goSim("GO:0006954", "GO:0006412", semData = hsGO_tcss, measure = "TCSS") # inflammatory response vs translation
 
-# Gene similarity using TCSS
-GOSemSim::geneSim("241", "251", semData = hsGO_tcss, measure = "TCSS", combine = "BMA")
+# Gene similarity using TCSS (geneSim() also returns the GO terms it used)
+GOSemSim::geneSim("835", "5261", semData = hsGO_tcss, measure = "TCSS", combine = "BMA")$geneSim
 
 # Multiple gene similarity
 mgeneSim(genes = c("835", "5261", "241", "994"),
