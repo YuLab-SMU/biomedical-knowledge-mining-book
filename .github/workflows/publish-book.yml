@@ -104,6 +104,7 @@ jobs:
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
+            "github::YuLab-SMU/aisdk",
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
@@ -155,6 +156,11 @@ jobs:
 
         
       - name: Render Quarto Book
+        # The interpret() examples in interpretation.qmd run only when this key
+        # is present. GitHub does not expose secrets to workflows triggered from
+        # forked repositories, so there the chunk is skipped instead of failing.
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: |
           quarto render
           

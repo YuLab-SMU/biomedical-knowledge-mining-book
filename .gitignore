@@ -8,6 +8,8 @@ biomedicalKnowledge_files
 
 /.quarto/
 **/*.quarto_ipynb
+# API credentials for the interpret() examples must never be committed
+.env
 *_files/
 *_cache/
 *.html
