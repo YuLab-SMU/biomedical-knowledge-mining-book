@@ -1,6 +1,6 @@
 # Welcome {.unnumbered}
 
-```{r initial}
+```{r}
 #| label: setup-badges
 #| cache: false
 #| include: false
@@ -40,7 +40,7 @@ source("_common.R")
 
 hello
 
-```{r summaryDiagram}
+```{r}
 #| label: summary-diagram
 #| echo: false
 #| eval: false

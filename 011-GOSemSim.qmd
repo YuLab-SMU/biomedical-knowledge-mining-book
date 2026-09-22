@@ -11,7 +11,7 @@ loadNamespace("Rcpp")
 ```
 
 
-`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @sec-tcss]. 
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @tcss]. 
 
 ## Semantic data {#semantic-data}
 

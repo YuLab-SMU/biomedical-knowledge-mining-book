@@ -18,10 +18,17 @@ has_ai <- nzchar(Sys.getenv("DEEPSEEK_API_KEY"))
 ## placeholder whose `confidence` is "None". opts_chunk$set(warning = FALSE)
 ## hides that warning, so without an explicit check a missing or invalid key
 ## would silently publish an empty report. Fail loudly instead.
+##
+## A second, quieter failure mode exists: when the model answers but the reply
+## cannot be parsed (for example a reasoning model that exhausts `max_tokens`
+## and returns truncated JSON), interpret() falls back to a placeholder with
+## `confidence == "Low"` and no parsed fields. A successful call always carries
+## a `narrative`, so requiring it separates the two cases.
 interpret_failed <- function(res) {
     identical(res$confidence, "None") ||
         is.null(res$overview) ||
-        grepl("^LLM call failed", res$overview)
+        grepl("^LLM call failed", res$overview) ||
+        (identical(res$confidence, "Low") && is.null(res$narrative))
 }
 ```
 
@@ -417,9 +424,11 @@ You can activate this deep mode using the `interpret_agent()` function.
 ```{r}
 #| label: interpret-agent
 #| eval: false
-## Kept off: the agent pipeline makes several LLM calls per build on top of the
-## basic example above. Enable it (eval: !expr has_ai) once the build is known
-## to be green.
+## Kept off: the multi-agent pipeline runs three LLM calls per cluster (Cleaner,
+## Detective, Storyteller) on top of the single-call examples above, which would
+## push this chapter's cost per build well past its budget. To enable it once the
+## build is known to be green, replace `eval: false` with `eval: !expr has_ai` and
+## wrap the result in `interpret_failed()` as the examples above do.
 # Provide biological context to help Agent Cleaner
 context <- "scRNA-seq analysis of CD8+ T cells in Tumor Microenvironment, comparing Exhausted vs. Naive states."
 
@@ -437,8 +446,6 @@ By setting `add_ppi = TRUE`, the system fetches protein-protein interaction data
 By providing `gene_fold_change`, the AI can infer the direction of pathway activity. For example, if the "Apoptosis" pathway is enriched but pro-apoptotic genes are downregulated while anti-apoptotic genes are upregulated, the AI will correctly interpret this as "Apoptosis Resistance."
 
 ```r
-#| label: interpret-knowledge-guided
-#| eval: false
 # Prepare a named vector of fold changes
 gene_list <- c("CD8A" = 2.5, "PDCD1" = 1.8, "GZMB" = 3.2)
 
@@ -476,7 +483,6 @@ For complex datasets, `interpret_hierarchical()` mimics the human thought proces
 This approach is also highly applicable to **Single-cell Trajectory Inference**. Developmental processes inherently follow a hierarchical structure (e.g., Stem Cell -> Progenitor -> Terminally Differentiated Cell). By utilizing this hierarchical relationship, `interpret_hierarchical()` can provide context-aware interpretations that respect the biological differentiation path, ensuring that downstream states are interpreted within the context of their upstream progenitors.
 
 ```r
-#| eval: false
 # Mapping between minor and major clusters
 cluster_mapping <- c(
   "SubCluster1_1" = "MajorCluster1", 
@@ -502,7 +508,6 @@ In real-world research, enrichment analysis sometimes fails to return significan
 3.  Infers biological function based on gene connectivity and function, providing a "Medium Confidence" report instead of an empty result.
 
 ```r
-#| eval: false
 # When enrichment fails, this still works
 res <- interpret_agent(tough_genes, add_ppi = TRUE)
 ```
@@ -517,9 +522,272 @@ The resulting plot highlights:
 *   **Interactions (Grey)**: Physical associations.
 
 ```r
-#| eval: false
 # Visualize the interpretation result
 plot(res)
 ```
 
 This feature creates a closed loop: from **Enrichment** (Statistics) to **Interpretation** (Insight) and finally to **Visualization** (Communication).
+
+## Best Practices and Common Questions
+
+The examples above are deliberately small. This section collects the guidance
+that matters once you point `interpret()` at a real analysis: how to write
+`context`, how to choose and switch models, what multi-model workflows are (and
+are not) supported, and how to keep the report honest.
+
+### How Specific Should `context` Be?
+
+`context` is the only place where the model learns *what experiment produced the
+gene list*, and it is the highest-leverage input you control. An enrichment
+table is ambiguous on its own: "extracellular matrix organization" is
+up-regulated in fibrosis, in wound healing and in tumour invasion alike. The
+model cannot tell those apart, so it averages over them and returns a bland
+report. A specific context removes the ambiguity.
+
+A weak context names only the assay:
+
+```r
+context <- "scRNA-seq of T cells"
+```
+
+A strong context answers six questions in one or two sentences:
+
+| Question | Example |
+| :--- | :--- |
+| Species and tissue | human breast tumour, bulk tissue |
+| Disease / biological setting | breast carcinoma, tumour grade |
+| Experimental design | 200 samples from the MAINZ cohort |
+| Contrast tested, and its direction | grade III vs. grade I; positive values are higher in grade III |
+| Cell type / composition | bulk tissue, no cell-type resolution |
+| Hypothesis under test | progression involves loss of epithelial differentiation and ECM remodelling |
+
+Written out, that is still only a few lines:
+
+```r
+context <- paste(
+  "Human breast-cancer transcriptome (MAINZ cohort, bulk tumour tissue, 200",
+  "samples). Genes are ranked by the log2 ratio of geometric-mean expression in",
+  "grade III versus grade I tumours, so positive values are higher in the",
+  "higher-grade tumours. No cell-type resolution is available. Hypothesis:",
+  "progression from grade I to grade III involves loss of epithelial",
+  "differentiation and increased extracellular-matrix remodelling."
+)
+```
+
+Two rules of thumb follow. First, state the **direction of the contrast** --
+"A vs. B" without saying which side is up is a common way to get a report with
+the regulation backwards. Second, **do not put the answer in the context**: if
+you write "we expect apoptosis to be suppressed", the model will often agree
+with you regardless of the data. Describe the design, not the conclusion you are
+hoping for. (If your data are from single cells, add the cell type or the
+compartment the cluster belongs to; for bulk tissue, saying that no cell-type
+resolution exists is more useful than omitting the point.)
+
+### Choosing a Model and Switching Provider
+
+Model selection is delegated to `aisdk`. `interpret()` itself has no model
+registry and no provider logic: when `model` is left at its default (`NULL`) it
+uses whatever `aisdk` currently considers the default, and `model = "provider:model"`
+overrides that default for a single call.
+
+```r
+library(aisdk)
+
+# Session-wide default, used by every interpret() call that omits `model`
+set_model("deepseek:deepseek-v4-flash")
+get_model()
+```
+
+The setup chunk on this page calls `set_model()` once, so every example that
+omits `model` uses DeepSeek. To send one call elsewhere, pass `model` directly:
+
+```r
+res <- interpret(edo, model = "openai:gpt-4o")
+```
+
+Credentials follow the same rule. `aisdk` reads each provider's key from an
+environment variable: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` and `GEMINI_API_KEY`
+for the three providers bundled with `aisdk`, and the corresponding variable for
+the adapters in `aisdk.providers` (for example `DEEPSEEK_API_KEY`, which is what
+this chapter uses). Put the key in a project `.Renviron` or export it in the
+shell; `interpret()` never takes a key argument. If you never call
+`set_model()`, `aisdk` falls back to its built-in default, `openai:gpt-4o` --
+which is why the examples you may have seen elsewhere appear to use GPT-4o by
+default.
+
+`aisdk` ships a catalogue of the providers and models it knows about:
+
+```r
+list_models()            # every provider and model aisdk knows about
+list_models("openai")    # just one provider
+```
+
+Which one should you use? `interpret()` only needs a model that can follow the
+structured-output schema. In practice the useful split is between small, cheap
+models -- fine for first-pass triage -- and larger reasoning models, which tend
+to produce more coherent mechanistic narratives but cost more and consume more
+of the output budget (see `max_tokens` below). Whatever you choose, keep it
+fixed once you start comparing reports: different models write different
+reports, and that is the subject of the next subsection.
+
+### Multi-Model and Consensus Workflows
+
+There is **no built-in consensus or ensemble mode** in `interpret()` or
+`interpret_agent()`. A call goes to exactly one model. `interpret_agent()` is a
+multi-*agent* pipeline, not a multi-*model* one: its three agents share a single
+model.
+
+What you *can* do today is run the same input through several models and compare
+the reports yourself. Because `model =` is a per-call argument, this needs no
+extra machinery:
+
+```r
+res_deepseek <- interpret(edo, model = "deepseek:deepseek-v4-flash")
+res_gpt      <- interpret(edo, model = "openai:gpt-4o")
+```
+
+Each call is a separate, billable request, and the two reports will not be
+identical even for the same model (see below). A pragmatic middle ground is to
+use one model to write the report and a second, independent call only to
+*criticise* it: ask a different model whether every gene and pathway named in
+the narrative is actually present in the input table. That is a manual
+workflow, but it catches the most common failure mode -- plausible-sounding
+genes that were never in the data. If what you need is provider *failover*
+rather than consensus, note that `aisdk` provides `generate_text_fallback()` for
+its own generation calls, but `interpret()` does not expose a fallback argument.
+
+### Practical Guidance and Pitfalls
+
+**Non-determinism.** `interpret()` samples at `temperature = 0.3` by default, so
+two calls with identical input will differ in wording and occasionally in
+emphasis. This is expected, not a bug. It has a direct consequence for
+reproducible builds: Quarto's chunk cache (`cache: true`) is what keeps the
+published page stable -- the LLM call runs once and its output is reused on
+later renders. Clear the cache and you will get a different report. If you need
+the exact same text in two places, cache the object rather than calling twice.
+
+**Hallucination.** The system prompt instructs the model to ground every claim
+in the supplied table and to cite supporting terms, and the structured output
+forces it to name genes in `refined_network` and `network_evidence`. That
+reduces hallucination; it does not eliminate it. Before you quote a report,
+check the two things that are cheap to check: every gene named in the narrative
+appears in the `geneID` (or, for GSEA, `core_enrichment`) column of the input
+table, and every pathway named appears in its `Description` column. If you set
+`add_ppi = TRUE`, remember that the edges the model cites come from a STRING
+query, not from your data.
+
+**`n_pathways`.** Only the top `n_pathways` terms (default 20) are sent to the
+model, ordered by adjusted p-value (`p.adjust`, falling back to `pvalue`).
+Raising it gives the model more to work with but dilutes the signal and enlarges
+the prompt; lowering it forces a tighter focus. For a `compareClusterResult`,
+`interpret()` splits the result by cluster and returns one report per cluster,
+so the number of calls -- and the cost -- scales with the number of clusters,
+not with `n_pathways`.
+
+**`max_tokens`.** The default is 8192. Reasoning models spend part of that
+budget deliberating before they emit the JSON, and if they run out, the reply is
+truncated and cannot be parsed; the symptom is a warning mentioning
+`finish_reason: length` and a placeholder report. If you hit it, raise
+`max_tokens` (the diagnostic suggests 16384 or more) or switch to a model that
+does not reason before answering.
+
+**Seeing the cost.** `interpret()` returns only the parsed report; token usage
+is not part of the returned object. Run with `verbose = TRUE` to print the raw
+response and the prompt/completion/total token counts -- the practical way to
+watch spend while you tune `n_pathways` and `max_tokens`.
+
+**`add_ppi`.** Setting `add_ppi = TRUE` queries STRING for the genes in the top
+terms and injects the edge list into the prompt, which lets the model identify
+functional modules rather than isolated genes. It requires network access, adds
+latency, and is a second failure point; the query is wrapped so that a STRING
+outage degrades to "no network evidence" instead of an error. Leave it at its
+default (`FALSE`) unless module-level reasoning is what you need.
+
+**`gene_fold_change`.** Passing a named numeric vector of log fold changes adds
+the direction of regulation to the prompt. Note the limitation: the helper
+intersects your vector with the genes in the result's `geneID` column, and a
+`gseaResult` table has no `geneID` column (it carries `core_enrichment`
+instead). So `gene_fold_change` is used for over-representation results
+(`enrichResult`, `compareClusterResult`) and silently ignored for GSEA results
+-- which is harmless, because a GSEA result already encodes direction in the
+sign of its enrichment score.
+
+**Ranking.** For over-representation results the terms are ordered by
+`p.adjust`; for GSEA the direction the model sees is the sign of `NES`. If your
+GSEA ranked list was built so that positive means "up in the condition of
+interest", say so in `context` -- otherwise the model has to guess the
+orientation.
+
+**Validating a report before trusting it.** Treat the output as a first draft
+from a competent but over-eager collaborator. The minimum checks are the two
+above (every gene and pathway exists in the input); beyond that, ask whether the
+narrative is *falsifiable* by your data -- if it claims a mechanism, is there a
+term or gene in the table that could have contradicted it? A report that only
+restates the pathway names in longer sentences has added no information, and
+sharpening `context` or raising `n_pathways` is usually the fix.
+
+## Worked Example: From Enrichment to a Report
+
+This example runs end to end: it builds a GSEA result offline from the `geneList`
+shipped with `DOSE`, interprets it with a specific `context`, and prints the
+report. It is the `interpret()` counterpart of the `interpret_agent()` call that
+users often start from; `interpret_agent()` itself is kept disabled on this page
+because it makes several LLM calls per build.
+
+```{r}
+#| label: interpret-worked-example
+#| eval: !expr has_ai
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+data(geneList, package = "DOSE")
+
+# A real enrichment result, computed offline: GSEA over GO cellular components.
+# geneList is the DOSE demo list -- log2 ratios of grade III vs. grade I tumours
+# from the MAINZ breast-cancer cohort.
+gse <- gseGO(
+    geneList      = geneList,
+    OrgDb         = org.Hs.eg.db,
+    keyType       = "ENTREZID",
+    ont           = "CC",
+    minGSSize     = 15,
+    maxGSSize     = 100,
+    eps           = 0,
+    pvalueCutoff  = 0.05,
+    pAdjustMethod = "BH"
+)
+
+# A context that names the species, tissue, design, contrast and hypothesis.
+context <- paste(
+    "Human breast-cancer transcriptome (MAINZ cohort, bulk tumour tissue).",
+    "Genes are ranked by the log2 ratio of geometric-mean expression in grade",
+    "III versus grade I tumours, so positive values are higher in the",
+    "higher-grade tumours. Hypothesis: progression from grade I to grade III",
+    "involves loss of epithelial differentiation and increased",
+    "extracellular-matrix remodelling."
+)
+
+report <- interpret(gse, context = context, n_pathways = 15)
+
+if (interpret_failed(report)) {
+    stop("interpret() returned no report -- check the API key and quota:\n",
+         report$overview)
+}
+
+report
+```
+
+The printed report follows the schema described at the top of this chapter. Read
+it in this order:
+
+1.  **1. Overview** -- the model's one-paragraph summary. If it is vague, the
+    `context` was probably too vague.
+2.  **2. Regulatory Drivers** and **3. Key Mechanisms** -- the "who" and the
+    "how". Check every named gene against your input table.
+3.  **5. Hypothesis** -- the "so what". This is the part worth arguing with.
+4.  **6. Narrative Draft** -- a paragraph written for a Results or Discussion
+    section. It is a draft: edit it, do not paste it.
+5.  **7. Refined Regulatory Network** -- populated only when the model can
+    support edges; `plot(report)` draws the same network with `ggtangle` when it
+    is available.
+

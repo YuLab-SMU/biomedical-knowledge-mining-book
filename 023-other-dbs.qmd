@@ -70,7 +70,7 @@ head(ewp2)
 
 ### WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
 
-```{r enrichwp}
+```{r}
 #| label: enrichwp-example
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
@@ -81,7 +81,7 @@ enrichWP(gene, organism = "Homo sapiens")
 ### WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
 
 
-```{r gsewp}
+```{r}
 #| label: gsewp-example
 gseWP(geneList, organism = "Homo sapiens")
 ```

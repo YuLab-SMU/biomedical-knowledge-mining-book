@@ -126,6 +126,11 @@ It supports several species:
 
 ```{r}
 #| label: msigdbr-species
+#| cache: false
+## Must not be cached: attaching the package is a side effect, and the chunks
+## below call msigdbr() unqualified (they are cache: false themselves). With a
+## warm cache this chunk would be skipped, the package would never be attached,
+## and those chunks would fail with "could not find function msigdbr".
 library(msigdbr)
 msigdbr_species()
 ```

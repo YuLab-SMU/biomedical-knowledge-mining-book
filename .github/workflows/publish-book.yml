@@ -105,6 +105,9 @@ jobs:
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
             "github::YuLab-SMU/aisdk",
+            # the DeepSeek (and other non-bundled) adapters live here: without it
+            # interpret() fails with "Provider not found: deepseek"
+            "github::YuLab-SMU/aisdk.providers",
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
