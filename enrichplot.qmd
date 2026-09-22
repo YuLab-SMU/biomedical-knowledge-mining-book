@@ -521,18 +521,23 @@ gene nodes no longer overrides `color_category`: the term nodes keep their
 #| fig-cap: |
 #|   **Node and edge color customization in cnetplot.**
 #|   Edges in a single color with custom category nodes (A), edges colored by
-#|   category (B), and gene nodes re-colored via `scale_color_manual()` (C).
+#|   category (B), and gene nodes re-colored via `scale_color_gradient()` (C).
 p1 <- cnetplot(edox, node_label = "none", color_edge = "grey55",
                color_category = "steelblue")
 p2 <- cnetplot(edox, node_label = "none", color_edge = "category")
 p3 <- cnetplot(edox, node_label = "category", foldChange = geneList) +
-    scale_color_manual(values = c("blue", "red"))
+    scale_color_gradient(low = "blue", high = "red")
 plot_list(p1, p2, p3, ncol = 3, tag_levels = "A")
 ```
 
 Because these plots are ordinary `ggplot` objects, any `ggplot2` scale can be
 plugged on top to re-map the aesthetics — `scale_color_*()` for gene / label
-colors and `scale_fill_*()` for node fills. For `emapplot()`, node colors are
+colors and `scale_fill_*()` for node fills. Match the scale to the aesthetic:
+`foldChange` puts a **continuous** value (the fold change) on the colour
+aesthetic, so re-colour it with a continuous scale such as
+`scale_color_gradient()` / `scale_color_gradient2()`; a discrete
+`scale_color_manual()` would fail with *"Continuous value supplied to a discrete
+scale"*. For `emapplot()`, node colors are
 mapped to the fill aesthetic, so use `scale_fill_manual(values = ...)` (or
 `scale_fill_gradient*()`) there to customize the node colors.
 
