@@ -202,7 +202,7 @@ kk <- enrichKEGG(gene         = gene,
 
 This ensures that the analysis runs offline and is fully reproducible using the installed `KEGG.db` version.
 
-## KEGG ID Conversion {#kegg-id-conversion}
+## KEGG ID Conversion {#sec-kegg-id-conversion}
 
 The `r Biocpkg("clusterProfiler")` package provides the `bitr_kegg()` function to support ID conversion via the KEGG API. This is particularly useful for species that do not have an `OrgDb` object but are supported by KEGG.
 
@@ -275,7 +275,7 @@ kk <- enrichKEGG(gene         = gene,
 head(kk)
 ```
 
-Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @kegg-id-conversion). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function (see also @sec-setReadable) if there is an `OrgDb` available for the species.
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @sec-kegg-id-conversion). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function (see also @sec-setReadable) if there is an `OrgDb` available for the species.
 
 ## Translating Gene IDs to Names {#sec-setReadable}
 

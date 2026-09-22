@@ -62,7 +62,7 @@ Note: If you want to extract genes in your input gene list that are belong to a 
 
 ### `bitr_kegg`: converting biological IDs using KEGG API {#sec-bitr_kegg}
 
-The `bitr_kegg()` function supports ID conversion via the KEGG API, which is useful for species supported by KEGG but lacking an `OrgDb` object. For detailed usage and examples, please refer to the [KEGG ID Conversion](#kegg-id-conversion) section in the KEGG analysis chapter.
+The `bitr_kegg()` function supports ID conversion via the KEGG API, which is useful for species supported by KEGG but lacking an `OrgDb` object. For detailed usage and examples, please refer to the [KEGG ID Conversion](#sec-kegg-id-conversion) section in the KEGG analysis chapter.
 
 
 

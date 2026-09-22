@@ -11,7 +11,7 @@ loadNamespace("Rcpp")
 ```
 
 
-`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @tcss]. 
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @sec-tcss]. 
 
 ## Semantic data {#semantic-data}
 
@@ -66,7 +66,7 @@ mgoSim(go1, go2, semData=hsGO, measure="Wang", combine=NULL)
 mgoSim(go1, go2, semData=hsGO, measure="Wang", combine="BMA")
 ```
 
-## TCSS: Topology-based Clustering Semantic Similarity {#tcss}
+## TCSS: Topology-based Clustering Semantic Similarity {#sec-tcss}
 
 The TCSS (Topology-based Clustering Semantic Similarity) method, proposed by Jain and Bader [@jain_improved_2010], takes a fundamentally different approach from traditional IC-based or graph-based methods. Instead of computing similarity directly on the full GO DAG, TCSS first partitions the GO graph into **topological clusters** (sub-graphs) based on the topological information content (ICT) of each term, then computes a two-level semantic similarity within and across these clusters.
 
