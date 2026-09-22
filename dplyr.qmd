@@ -88,13 +88,30 @@ ggplot(y, showCategory = 20,
 ```
 
 
-A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N). Using `mutate` to add the fold enrichment variable is also easy:
+A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N):
 
 ```r
 mutate(x, FoldEnrichment = parse_ratio(GeneRatio) / parse_ratio(BgRatio))
 ```
 
-Here, the calculation of rich factor and fold enrichment is only for demonstration purposes. The `enrichplot` package provides the `dotplot` function that can directly visualize these two values without adding them to the enrichment result.
+Note that an enrichment result **already carries these columns**, so the `mutate()` calls above are demonstrations of the arithmetic rather than something you have to do:
+
+```{r}
+#| eval: false
+head(as.data.frame(x)[, c("ID", "GeneRatio", "BgRatio", "RichFactor", "FoldEnrichment", "oddsRatio")])
+```
+
+`oddsRatio` is provided alongside them and is a different kind of effect size: `FoldEnrichment` compares two proportions, whereas the odds ratio is the effect size the hypergeometric (Fisher) test itself is built on. It comes from the 2x2 table
+
+```
+                 in gene set   not in gene set
+  in gene list       k             n - k
+  not in list      M - k      N - M - n + k
+```
+
+so `oddsRatio = k (N - M - n + k) / ((n - k) (M - k))`. Because this is the plain cross-product odds ratio, it differs slightly from `fisher.test()$estimate`, which reports the *conditional* MLE (the two are close but not identical).
+
+Here, the calculation of rich factor and fold enrichment is only for demonstration purposes. The `enrichplot` package provides the `dotplot` function that can directly visualize these values without adding them to the enrichment result.
 
 ## slice
 
