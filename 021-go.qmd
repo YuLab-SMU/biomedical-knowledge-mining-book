@@ -259,6 +259,18 @@ GO enrichment analysis often results in many redundant terms due to the hierarch
 
 The `dropGO()` function can be used to remove specific GO terms or GO levels from the results. The `enrichGO()` function tests the whole GO corpus and enriched result may contains very general terms. If users want to restrict the result to a specific GO level (e.g., level 3 or 4), they can use the `gofilter()` function. Both functions work with results obtained from `enrichGO()`, `gseGO()` and `compareCluster()`.
 
+To see the level of each term rather than filter by a level you already know, `add_go_level()` appends it as a `level` column, where level 1 is the ontology root (`GO:0008150` for BP, `GO:0005575` for CC, `GO:0003674` for MF). This makes an arbitrary band easy to keep:
+
+```{r}
+#| label: go-add-level
+#| eval: false
+x <- enrichGO(gene, OrgDb = "org.Hs.eg.db", ont = "BP")
+x <- add_go_level(x)
+subset(x, level >= 3 & level <= 6)
+```
+
+Note that GO is a directed acyclic graph, so a term can be reachable at more than one depth; the shallowest level is reported. The level is resolved from the ontology the term itself belongs to, so an `ont = "ALL"` result (or a `compareCluster()` result) is labelled term by term.
+
 ### Simplifying enriched GO terms
 
 To reduce redundancy, `clusterProfiler` provides a `simplify` method. It uses semantic similarity (via `GOSemSim`) to calculate the similarity between enriched terms and removes highly similar terms, keeping the most significant one.
