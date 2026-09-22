@@ -359,6 +359,21 @@ to keep in mind for `compareCluster()` output:
 - `categorySizeBy` controls the size of category pies and supports expressions such as `~itemNum`, `~p.adjust`, or `~ -log10(p.adjust)`.
 - Pie colors are mapped to `Cluster`, so custom cluster colors can be supplied with `ggplot2::scale_fill_manual()`.
 
+Because the default cluster colors are taken from the set of clusters actually
+present in the plot, the scale can **shift when a cluster has no enriched terms**
+(i.e. when it disappears from the network). Supplying an explicit fixed palette
+with `scale_fill_manual(values = ...)` (as in @fig-mcnetplot) keeps the same
+cluster consistently colored across plots, which makes interpretation easier when
+comparing multiple networks or when some clusters lack enriched terms.
+
+Data attributes carried by `compareCluster()` that are shared with ordinary
+enrichment results can also be mapped to node / edge aesthetics — `size_category`
+/ `size_item` / `size_edge` control the relative node and edge sizes, and
+`color_edge = "category"` colors edges by their term. (Note that `foldChange`
+coloring of gene nodes, demonstrated in the [cnetplot section](#cnetplot), is
+designed for ordinary `enrichResult` / `gseaResult` objects rather than for the
+pie-composed `compareCluster` network.)
+
 As in `dotplot()`, the `split` parameter can be used when term selection should
 be carried out within another grouping variable rather than only by cluster. For
 example, when GO enrichment is performed with `ont = "ALL"`, users can select

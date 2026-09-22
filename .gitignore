@@ -14,3 +14,4 @@ biomedicalKnowledge_files
 *_cache/
 *.html
 *.rmarkdown
+book-issues.md

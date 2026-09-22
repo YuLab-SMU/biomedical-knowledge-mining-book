@@ -471,6 +471,71 @@ g + guides(alpha=guide_legend(
 ```
 
 
+### Tuning cnetplot labels and edge colors
+
+Besides the size of the category / item nodes (`size_category` / `size_item`)
+and the fold-change coloring above, two dedicated knobs are commonly needed:
+
+- `color_edge = "category"` colors each edge by the category (term) it belongs to,
+  instead of mapping every edge to a single color. `color_edge` also accepts a
+  single color, e.g. `color_edge = "grey"`.
+- `geom_cnet_label()` is the label layer behind `cnetplot()` (from `ggtangle`).
+  Because `cnetplot()` returns a `ggplot` object, you can add another
+  `geom_cnet_label()` layer on top with `size`, `color` and `fontface` to
+  fine-tune the label text of a specific node type (e.g. only the category
+  labels), which is useful when the last few labels are clipped or you want a
+  distinct label style.
+
+```{r}
+#| label: fig-cnet-label-tune
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Tuning cnetplot edges and labels.
+#| fig-cap: |
+#|   **Tuning cnetplot edges and labels.**
+#|   Default single-color edges (A), edges colored by category with category
+#|   labels re-styled via `geom_cnet_label()` (B).
+p1 <- cnetplot(edox, node_label = "none", showCategory = 4)
+p2 <- cnetplot(edox, node_label = "none", showCategory = 4, color_edge = "category") +
+    geom_cnet_label(node_label = "category", size = 5, color = "firebrick", fontface = "bold")
+plot_list(p1, p2, ncol = 2, tag_levels = "A")
+```
+
+#### Node and edge colors
+
+The default edge color (a red/green pair on gene-ID plots in some releases) can be
+replaced either with a single color (`color_edge = "grey55"`) or, when you want
+the edges colored separately for each term and shown in the legend, with
+`color_edge = "category"`. Category node colors are set with
+`color_category`, and — unlike some older versions — setting `foldChange` for the
+gene nodes no longer overrides `color_category`: the term nodes keep their
+`color_category` fill while the gene nodes get the fold-change palette.
+
+```{r}
+#| label: fig-cnet-node-edge-color
+#| fig-width: 12
+#| fig-height: 8
+#| fig-scap: |
+#|   Node and edge color customization in cnetplot.
+#| fig-cap: |
+#|   **Node and edge color customization in cnetplot.**
+#|   Edges in a single color with custom category nodes (A), edges colored by
+#|   category (B), and gene nodes re-colored via `scale_color_manual()` (C).
+p1 <- cnetplot(edox, node_label = "none", color_edge = "grey55",
+               color_category = "steelblue")
+p2 <- cnetplot(edox, node_label = "none", color_edge = "category")
+p3 <- cnetplot(edox, node_label = "category", foldChange = geneList) +
+    scale_color_manual(values = c("blue", "red"))
+plot_list(p1, p2, p3, ncol = 3, tag_levels = "A")
+```
+
+Because these plots are ordinary `ggplot` objects, any `ggplot2` scale can be
+plugged on top to re-map the aesthetics — `scale_color_*()` for gene / label
+colors and `scale_fill_*()` for node fills. For `emapplot()`, node colors are
+mapped to the fill aesthetic, so use `scale_fill_manual(values = ...)` (or
+`scale_fill_gradient*()`) there to customize the node colors.
+
 Note: The `cnetplot()` function also works with [`compareCluster()` output](#compare-cnetplot).
 
 ## Heatmap-like functional classification
@@ -877,11 +942,11 @@ Another method to plot GSEA result is the `gseaplot2` function:
 **Reading the three panels.** `gseaplot2()` stacks three panels that share the same x-axis, which is the *position in the ranked gene list* (not a gene identifier):
 
 * **Running Enrichment Score** — the running-sum statistic. It rises when a gene in the set is encountered and falls otherwise; the enrichment score is its maximum deviation from zero (marked by the dashed vertical line).
-* **The middle band** — the black vertical ticks are the positions of the genes in the set. The coloured rectangles behind them are *meant* to divide the hits (not the ranked list) into equal-count bins, running from the top of the list (red) to the bottom (blue); their widths would then encode local hit density, with narrow rectangles indicating a region where the set's genes are packed tightly. A gene set enriched at the top should therefore show narrow red rectangles crowded on the left.
+* **The middle band** — the black vertical ticks are the positions of the genes in the set. The coloured rectangles behind them divide the *hits* (not the ranked list) into equal-count bins, running from the top of the list (red) to the bottom (blue); their widths therefore encode local hit density, with narrow rectangles indicating a region where the set's genes are packed tightly, and the final rectangle extending to the end of the list. A gene set enriched at the top shows narrow red rectangles crowded on the left.
 * **Ranked List Metric** — the ranking statistic itself (e.g. the log fold change or the signed correlation), with the gene set members drawn as vertical segments.
 
 ::: {.callout-warning}
-**Known bug in the coloured rectangles.** In current versions the hit bins are computed from a cumulative count taken from the *bottom* of the ranked list and are never reversed back, so the gradient comes out in the wrong order: for a strongly enriched gene set nearly all hits collapse into the leftmost rectangle and the remaining rectangles are empty. The intended picture is the one described above; until this is fixed upstream, do not read the red/blue split as a faithful picture of where the hits are. The coloured rectangles are in any case a property of `gseaplot2()`, not of the GSEA method — the original Broad GSEA plots colour the ranked-list-metric panel by the *sign* of the metric instead, so the two conventions do not agree either. Reported upstream as [enrichplot#20](https://github.com/YuLab-SMU/enrichplot/issues/20) and [enrichplot#221](https://github.com/YuLab-SMU/enrichplot/issues/221).
+**The coloured rectangles used to be wrong — the bug is fixed in this build.** Earlier versions computed the hit bins from a cumulative count taken from the *bottom* of the ranked list and never reversed it, so the gradient came out backwards: for a strongly enriched gene set nearly all hits collapsed into a single rectangle and the rest were empty. That is the bug behind [enrichplot#20](https://github.com/YuLab-SMU/enrichplot/issues/20) and [enrichplot#221](https://github.com/YuLab-SMU/enrichplot/issues/221). It is fixed in the development version of `enrichplot`, which is the version this book builds against: measured on a gene set with 40 hits in a 1000-gene list, all 9 rectangles are populated and the largest holds 15% of the hits, instead of one rectangle holding all of them. **On an older release the `master` branch still carries the old order**, so there the red/blue split is not a faithful picture of where the hits are; if the rectangles look collapsed, that is why. The coloured rectangles are in any case a property of `gseaplot2()`, not of the GSEA method — the original Broad GSEA plots colour the ranked-list-metric panel by the *sign* of the metric instead, so the two conventions do not agree either.
 :::
 :::
 
@@ -1214,6 +1279,293 @@ The `plotGOgraph()` function is another option to visualize the GO topology.
 
 ```{r eval=FALSE}
 plotGOgraph(ego)
+```
+
+
+## Importing results from other tools {#sec-import-other-tools}
+
+The visualization methods described above work with any `enrichResult` or `gseaResult` object, and results produced by other enrichment tools can be brought into this framework with two routes:
+
+1. **Tool-specific importers**: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` map the output tables of popular tools to the canonical schema (see @sec-import-custom) and return enrichment objects directly.
+2. **Generic constructors**: `as_enrichResult()` and `as_gseaResult()`, provided by the `enrichit` package and re-exported by `enrichplot`, convert any result table that follows the canonical column schema.
+
+Both routes return standard `enrichResult` / `gseaResult` objects, so every visualization introduced in this chapter (`barplot()`, `dotplot()`, `cnetplot()`, `gseaplot()`, ...) works on them.
+
+::: {.callout-note}
+The import functions are currently available in the **development version** of `enrichplot` (they will be included in the upcoming version 2.0.0). The `as_enrichResult()` and `as_gseaResult()` constructors are provided by the `enrichit` package, which can be installed with `remotes::install_github("YuLab-SMU/enrichit")`.
+Without that development version the code in this section is still shown, but it is not executed.
+:::
+
+```{r}
+#| label: import-other-tools-setup
+#| echo: false
+#| cache: false
+## The importers used below ship with the development version of enrichplot.
+## Where that version is not installed, a sibling checkout of the converters
+## branch can be attached instead: point ENRICHPLOT_DEV_DIR at it, or rely on the
+## default location next to this book. The path is deliberately not
+## machine-specific, and it is only used when it really exists -- so a build
+## without the checkout (CI, a reader's laptop) skips the chunks below instead of
+## failing.
+if (!exists("import_enrichr")) {
+    dev_dir <- Sys.getenv("ENRICHPLOT_DEV_DIR", "../enrichplot-converters")
+    if (nzchar(dev_dir) && dir.exists(dev_dir) &&
+        requireNamespace("pkgload", quietly = TRUE)) {
+        pkgload::load_all(dev_dir, quiet = TRUE)
+    }
+}
+library(ggplot2)
+
+## Gate for every chunk in this section: the code is always shown, but it only
+## executes where the importers are genuinely available.
+has_importers <- exists("import_enrichr")
+```
+
+### enrichr
+
+The `enrichR::enrichr()` function queries the [enrichr](https://maayanlab.cloud/enrichr/) web service and returns a list of result tables (one per database) with columns `Term`, `Overlap`, `P.value`, `Adjusted.P.value` and `Genes`:
+
+```{r}
+#| label: import-enrichr-online
+#| eval: false
+library(enrichR)
+res <- enrichr(de_genes, databases = c("KEGG_2021_Human", "GO_Biological_Process_2023"))
+```
+
+`import_enrichr()` accepts either that list (use the `db` parameter to select a database) or a single result table. Here we use a small table that mimics the enrichr output, and pass the query genes (`gene`) and the background gene list (`universe`) so that `GeneRatio`, `BgRatio` and related statistics can be derived:
+
+```{r}
+#| label: import-enrichr-import
+#| eval: !expr has_importers
+enrichr_table <- data.frame(
+    Term = c("GO:0006915;;apoptotic process", "COVID-19"),
+    Overlap = c("5/150", "3/60"),
+    P.value = c(1.2e-4, 3.4e-3),
+    Adjusted.P.value = c(0.011, 0.079),
+    Genes = c("CASP3; BAX; BCL2; TP53; FAS", "ACE2; TMPRSS2; IL6"),
+    stringsAsFactors = FALSE
+)
+de_genes <- c("CASP3", "BAX", "BCL2", "TP53", "FAS",
+              "ACE2", "TMPRSS2", "IL6", "TNF", "MYC")
+
+edo_er <- import_enrichr(enrichr_table, gene = de_genes,
+                         universe = paste0("Gene", 1:2000))
+edo_er
+```
+
+The result is a standard `enrichResult` object, ready for any visualization:
+
+```{r}
+#| label: fig-import-enrichr
+#| eval: !expr has_importers
+#| fig-width: 14
+#| fig-height: 7
+#| fig-scap: |
+#|   Dot plot and gene-concept network of the imported enrichr result.
+#| fig-cap: |
+#|   **Visualization of the imported enrichr result.**
+#|   dot plot (A) and gene-concept network (B).
+aplot::plot_list(
+    dotplot(edo_er, showCategory = 10) + ggtitle("enrichr result"),
+    cnetplot(edo_er, showCategory = 2),
+    ncol = 2, tag_levels = "A"
+)
+```
+
+### g:Profiler
+
+`gprofiler2::gost()` returns a list whose `result` element is a data.frame with columns `term_id`, `term_name`, `p_value`, `query_size`, `intersection_size`, `term_size`, `effective_domain_size` and `intersections`:
+
+```{r}
+#| label: import-gost-online
+#| eval: false
+library(gprofiler2)
+gostres <- gost(de_genes, organism = "hsapiens")
+```
+
+```{r}
+#| label: import-gost-import
+#| eval: !expr has_importers
+gost_table <- data.frame(
+    term_id = c("GO:0006915", "GO:0002376"),
+    term_name = c("apoptotic process", "immune system process"),
+    p_value = c(1.2e-4, 3.4e-3),
+    adjusted_p_value = c(0.011, 0.079),
+    query_size = c(10L, 10L),
+    intersection_size = c(5L, 3L),
+    term_size = c(150L, 60L),
+    effective_domain_size = c(2000L, 2000L),
+    intersections = I(list(c("CASP3", "BAX", "BCL2", "TP53", "FAS"),
+                           c("CASP3", "BAX", "TNF"))),
+    stringsAsFactors = FALSE
+)
+x_gp <- import_gprofiler2(list(result = gost_table))
+as.data.frame(x_gp)[, c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "Count")]
+```
+
+If the table has no `query_size` column, pass the query genes with the `gene` parameter for exact `GeneRatio` values.
+
+```{r}
+#| label: fig-import-gost
+#| eval: !expr has_importers
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the imported g:Profiler result.
+#| fig-cap: |
+#|   **Dot plot of the imported g:Profiler result.**
+dotplot(x_gp, showCategory = 10) + ggtitle("g:Profiler result")
+```
+
+### WebGestalt
+
+`WebGestaltR()` returns a summary table with columns `geneSet`, `description`, `size`, `overlap`, `rawPValue`, `adjPValue` and `userIds`:
+
+```{r}
+#| label: import-webgestalt-online
+#| eval: false
+library(WebGestaltR)
+wg <- WebGestaltR(enrichMethod = "ORA", organism = "hsapiens",
+                  enrichDatabase = "pathway_KEGG", interestGene = de_genes,
+                  interestGeneType = "genesymbol", referenceGene = background,
+                  referenceGeneType = "genesymbol")
+```
+
+```{r}
+#| label: import-webgestalt-import
+#| eval: !expr has_importers
+wg_table <- data.frame(
+    geneSet = c("hsa04210", "hsa04110"),
+    description = c("Apoptosis", "Cell cycle"),
+    size = c(60L, 120L),
+    overlap = c(5L, 3L),
+    rawPValue = c(1.2e-4, 3.4e-3),
+    adjPValue = c(0.011, 0.079),
+    userIds = c("CASP3;BAX;BCL2;TP53;FAS", "CASP3;BAX;TNF"),
+    stringsAsFactors = FALSE
+)
+x_wg <- import_webgestalt(wg_table, gene = de_genes,
+                          universe = paste0("Gene", 1:2000))
+```
+
+```{r}
+#| label: fig-import-webgestalt
+#| eval: !expr has_importers
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the imported WebGestalt result.
+#| fig-cap: |
+#|   **Dot plot of the imported WebGestalt result.**
+dotplot(x_wg, showCategory = 10) + ggtitle("WebGestalt result")
+```
+
+### fgsea
+
+The `fgsea()` function [@korotkevich_fast_2019] takes a named statistics vector and a list of gene sets, and returns a data.frame with columns `pathway`, `ES`, `NES`, `pval`, `padj`, `size` and `leadingEdge`:
+
+```{r}
+#| label: import-fgsea-online
+#| eval: false
+library(fgsea)
+data(geneList, package = "DOSE")
+pathways <- split(gene_ids, term_ids)   # named list of gene sets
+fgres <- fgsea(pathways, stats = geneList)
+```
+
+`import_fgsea()` additionally requires the ranked statistics vector (`stats`), as most GSEA visualizations consume the ranked list. Passing the `pathways` list used as input (via the `geneSets` parameter) enables exact running-score plots. Here we convert a small fgsea-style result table, with ranked statistics taken from the `DOSE` example data:
+
+```{r}
+#| label: import-fgsea-import
+#| eval: !expr has_importers
+data(geneList, package = "DOSE")
+stats <- sort(geneList, decreasing = TRUE)
+set1 <- names(stats)[1:40]
+set2 <- names(stats)[200:240]
+
+fgres <- data.frame(
+    pathway = c("Set1", "Set2"),
+    ES = c(0.62, -0.48),
+    NES = c(2.1, -1.7),
+    pval = c(1e-4, 0.01),
+    padj = c(2e-4, 0.01),
+    size = c(40L, 41L),
+    stringsAsFactors = FALSE
+)
+fgres$leadingEdge <- list(
+    names(stats)[1:10],
+    rev(names(stats))[1:8]
+)
+
+gx <- import_fgsea(fgres, stats = stats, geneSets = list(Set1 = set1, Set2 = set2))
+gx
+```
+
+```{r}
+#| label: fig-import-fgsea
+#| eval: !expr has_importers
+#| fig-format: png
+#| fig-dpi: 150
+#| fig-width: 8
+#| fig-height: 10
+#| fig-scap: |
+#|   GSEA plot of the imported fgsea result.
+#| fig-cap: |
+#|   **GSEA plot of the imported fgsea result.**
+gseaplot(gx, geneSetID = "Set1")
+```
+
+### Arbitrary result tables {#sec-import-custom}
+
+Tools that do not have a dedicated importer (*e.g.* DAVID, or in-house scripts) can be converted with the generic constructors. `as_enrichResult()` requires a data.frame with `ID`, `pvalue` and at least one of `geneID`, `Count` or `GeneRatio`; the remaining canonical columns are derived when the query genes (`gene`), the universe (`universe`) and optionally the gene sets (`geneSets`) are supplied. Column aliases (*e.g.* `PValue`, `term_id`, `padj`, `FDR`) are recognized automatically:
+
+| column | required | content |
+|--------|----------|---------|
+| `ID` | yes | term identifier |
+| `Description` | no | term name (defaults to `ID`) |
+| `pvalue` | yes | raw p-value |
+| `p.adjust` | no | adjusted p-value (computed with `pAdjustMethod` if absent) |
+| `qvalue` | no | q-value (estimated if absent) |
+| `geneID` | no | overlap genes, separated by `/` |
+| `Count` | no | number of overlap genes |
+| `GeneRatio` | no | `k/n`: overlap size / query size |
+| `BgRatio` | no | `M/N`: gene set size / universe size |
+
+```{r}
+#| label: import-custom-import
+#| eval: !expr has_importers
+custom <- data.frame(
+    term_id = c("custom:001", "custom:002"),
+    name = c("my in-house gene set", "another custom set"),
+    PValue = c(0.001, 0.02),
+    FDR = c(0.01, 0.05),
+    Genes = c("CASP3, BAX, BCL2", "ACE2, TMPRSS2, IL6"),
+    stringsAsFactors = FALSE
+)
+x_ct <- as_enrichResult(custom, gene = de_genes)
+as.data.frame(x_ct)[, c("ID", "Description", "geneID", "Count", "GeneRatio",
+                        "pvalue", "p.adjust")]
+```
+
+```{r}
+#| label: fig-import-custom
+#| eval: !expr has_importers
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the result converted from an arbitrary table.
+#| fig-cap: |
+#|   **Dot plot of the result converted from an arbitrary table.**
+dotplot(x_ct, showCategory = 10) + ggtitle("custom table")
+```
+
+For GSEA-type results (with ranked statistics), use `as_gseaResult()` instead, passing the ranked vector via the `geneList` parameter:
+
+```{r}
+#| label: import-as-gsearesult
+#| eval: false
+gx2 <- as_gseaResult(fgres, geneList = stats,
+                     geneSets = list(Set1 = set1, Set2 = set2))
 ```
 
 
