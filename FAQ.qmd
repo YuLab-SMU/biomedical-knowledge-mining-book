@@ -77,6 +77,26 @@ ids[!grepl("^[0-9]+$", ids)]
 
 If the IDs are clean integers and the problem persists, the usual suspects are a mismatched `keyType`, an `organism` code that does not correspond to your IDs, or an outdated annotation source — see the two links above.
 
+### Do not confuse a failed download with a failed mapping {#sec-failed-download}
+
+`No gene can be mapped` means the *mapping* step found nothing, which invites you to question your identifiers. But a download that never delivered usable annotation used to produce the same symptom, because an empty gene-set table simply maps nothing. Since clusterProfiler 4.21.2 the two are reported separately, so read the message before editing your gene list:
+
+* **unreachable network** — `Failed to reach the KEGG REST API at '<url>'. The network is unreachable (connection failed, timed out or DNS lookup failed). ...` Your IDs are fine; the machine could not reach KEGG (proxy, firewall, or a timeout on a large response).
+* **HTTP error status** — `... the request returned HTTP status <code>. The KEGG REST API may have changed or is temporarily unavailable.` Either KEGG retired that endpoint (this is how a KEGG API change shows up) or the service is down; updating the package or using a local database is the fix.
+* **empty response** — `... the response was empty. The requested data may not exist in KEGG ...`
+* **empty annotation** — `No KEGG pathway annotation could be assembled for species '<x>': the downloaded gene/pathway table shares no ID with the pathway-name table.` The download succeeded but the two halves did not line up, which again usually means the KEGG response format changed.
+
+Only if none of those appear should you suspect the identifiers themselves.
+
+For an unstable or restricted connection, build the annotation once and reuse it locally instead of downloading on every run:
+
+```{r eval=FALSE}
+#| label: faq-local-kegg
+library(clusterProfiler)
+createKEGGdb::createKEGGdb("hsa")   # writes KEGG.db
+x <- enrichKEGG(gene, organism = "hsa", use_internal_data = TRUE)
+```
+
 
 ## Showing specific pathways {#showing-specific-pathways}
 

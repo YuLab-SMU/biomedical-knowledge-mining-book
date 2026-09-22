@@ -292,15 +292,15 @@ plot_list(p1, p2, ncol=2, tag_levels = 'A')
 
 Alternatively, users can use slim version of GO and use the `enricher()` or `gseGO()` functions to analyze.
 
-**Note on `enricher` results**: The `simplify()` method is designed for `enrichGO()` results where the ontology (BP, CC, or MF) is known. If you use `enricher()` to perform GO analysis (e.g., with custom annotation), the result object does not strictly define the ontology. To use `simplify()`, you must explicitly set the ontology slot in the result object:
+**Note on `enricher` results**: The `simplify()` method only needs to know which ontology the terms belong to. For `enrichGO()` and `gseGO()` results that ontology is recorded in the object, but a result built with `enricher()` (e.g. from a custom annotation or an MSigDB GO collection) does not carry one. In that case `simplify()` now derives it from the GO IDs themselves, so no manual step is required:
 
 ```{r eval=FALSE}
 #| label: simplify-enricher-example
-# Assuming 'res' is the result from enricher() using GO annotation
-# Set the ontology (must be one of "BP", "MF", "CC")
-res@ontology <- "BP" 
+# 'res' is the result from enricher() using a GO gene-set collection
 res_simplified <- simplify(res)
 ```
+
+The inference requires that the gene-set IDs really are GO terms (`GO:0008150`, ...): if a single ontology is represented it is used directly, and if the terms span several ontologies they are simplified as `GOALL`. A result whose gene sets are *not* GO terms is still rejected, because `simplify()` reduces redundancy through GO semantic similarity. Setting the slot explicitly (`res@ontology <- "BP"`) still works, and remains necessary only when the IDs are not GO terms.
 
 
 ## Troubleshooting

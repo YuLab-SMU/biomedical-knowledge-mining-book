@@ -41,6 +41,17 @@ Whether the gene set of interest is significantly over-represented in the differ
 fisher.test(d, alternative = "greater")
 ```
 
+::: {.callout-note}
+**`universe` must be a character vector.** It is matched against gene IDs as strings, so a numeric background (for example `universe = as.numeric(ids)`) matches nothing and is discarded — the analysis then silently falls back to the default background, which shifts every p-value with no sign that the argument was ignored.
+
+Since clusterProfiler 4.21.2 you are told: the enrichment functions warn that they will ignore a non-character `universe`, and `compareCluster()` raises that warning itself — it wraps each per-cluster call in `suppressMessages()`, which previously swallowed the message completely. Pass the IDs as character:
+
+```{r}
+#| eval: false
+universe = as.character(background_ids)
+```
+:::
+
 While mathematically sound, this classic model makes a naive assumption: it assumes that every gene has an *equal probability* of being detected. We will see how to fix this systematic bias later in the [Weighted Enrichment Analysis](#weighted-enrichment) section.
 
 ## Gene Set Enrichment Analysis (GSEA) {#gsea-algorithm}

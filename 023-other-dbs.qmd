@@ -118,6 +118,8 @@ barplot(david)
 cnetplot(david, foldChange=geneList)
 ```
 
+`barplot(david)` above is the ordinary `barplot()` generic: because `david` is an `enrichResult`, it dispatches to the `barplot.enrichResult()` method supplied by `r Biocpkg("enrichplot")`, which is what draws the enrichment bar chart. (The automatic code link on this page sends `barplot` to `graphics::barplot` because the class of `david` is not statically known in the chunk; the method that actually runs is `barplot.enrichResult()`.)
+
 ### DAVID Web Service Limitations
 
 DAVID Web Service has the following limitations:
