@@ -50,23 +50,25 @@ Choose the one that matches your data. For example, if we choose `dosa`.
 
 Once the `organism` is determined, we need to know what gene ID types (`keyType`) are supported for that organism. A practical trick is to use `enrichKEGG()` as a query tool. By inputting a dummy gene ID and a likely `keyType`, the function will return an error message listing the expected ID format if the input is invalid.
 
+KEGG is a remote service that can fail transiently, so the calls in this chapter are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
+
 ```{r eval=FALSE}
 #| label: find-keyType
 # Try 'kegg' as keyType with a dummy gene
-enrichKEGG(gene = "abc", organism = "dosa", keyType = "kegg")
+retry(enrichKEGG(gene = "abc", organism = "dosa", keyType = "kegg"))
 # Output:
 # --> No gene can be mapped....
 # --> Expected input gene ID: Os06t0664200-01,Os02t0534400-01,Os06t0185100-00...
 # --> return NULL...
 
 # Try 'ncbi-geneid'
-enrichKEGG(gene = "abc", organism = "dosa", keyType = "ncbi-geneid")
+retry(enrichKEGG(gene = "abc", organism = "dosa", keyType = "ncbi-geneid"))
 # Output:
 # Error in KEGG_convert("kegg", keyType, species) :
 #   ncbi-geneid is not supported for dosa ...
 
 # Try 'uniprot'
-enrichKEGG(gene = "abc", organism = "dosa", keyType = "uniprot")
+retry(enrichKEGG(gene = "abc", organism = "dosa", keyType = "uniprot"))
 # Output:
 # Error in KEGG_convert("kegg", keyType, species) :
 #   uniprot is not supported for dosa ...
@@ -102,16 +104,16 @@ With the correct `organism`, `keyType`, and converted gene IDs, you can now run 
 ```{r eval=FALSE}
 #| label: enrichKEGG-rice
 # For osa (using Entrez IDs)
-kk <- enrichKEGG(gene         = gene_list_entrez,
-                 organism     = "osa",
-                 keyType      = "kegg", # or 'ncbi-geneid' if supported
-                 pvalueCutoff = 0.05)
+kk <- retry(enrichKEGG(gene         = gene_list_entrez,
+                       organism     = "osa",
+                       keyType      = "kegg", # or 'ncbi-geneid' if supported
+                       pvalueCutoff = 0.05))
 
 # For dosa (using RAP-IDs)
-kk <- enrichKEGG(gene         = gene_list_rap,
-                 organism     = "dosa",
-                 keyType      = "kegg",
-                 pvalueCutoff = 0.05)
+kk <- retry(enrichKEGG(gene         = gene_list_rap,
+                       organism     = "dosa",
+                       keyType      = "kegg",
+                       pvalueCutoff = 0.05))
 ```
 
 This approach of identifying `organism` code and verifying `keyType` via error messages applies to any species available in the KEGG database.
@@ -156,8 +158,8 @@ saveRDS(kk_gson, file = "kegg_hsa_gson.rds")
 ## on the server
 kk_gson <- readRDS("kegg_hsa_gson.rds")
 
-kk <- enrichKEGG(gene = gene, organism = kk_gson)
-kk2 <- gseKEGG(geneList = geneList, organism = kk_gson)
+kk <- retry(enrichKEGG(gene = gene, organism = kk_gson))
+kk2 <- retry(gseKEGG(geneList = geneList, organism = kk_gson))
 ```
 
 This approach is useful when the analysis server has unstable network access, when the KEGG API is temporarily unavailable, or when users want to freeze the exact KEGG version used in an analysis for later reproduction.
@@ -194,10 +196,10 @@ Once installed, you can perform enrichment analysis using the local data by sett
 ```{r eval=FALSE}
 #| label: enrichKEGG-internal
 library(KEGG.db)
-kk <- enrichKEGG(gene         = gene,
-                 organism     = 'hsa',
-                 pvalueCutoff = 0.05,
-                 use_internal_data = TRUE)
+kk <- retry(enrichKEGG(gene         = gene,
+                       organism     = 'hsa',
+                       pvalueCutoff = 0.05,
+                       use_internal_data = TRUE))
 ```
 
 This ensures that the analysis runs offline and is fully reproducible using the installed `KEGG.db` version.
@@ -269,9 +271,9 @@ merge(x, y, by.x='Path', by.y='ko')
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
-kk <- enrichKEGG(gene         = gene,
-                 organism     = 'hsa',
-                 pvalueCutoff = 0.05)
+kk <- retry(enrichKEGG(gene         = gene,
+                       organism     = 'hsa',
+                       pvalueCutoff = 0.05))
 head(kk)
 ```
 
@@ -293,11 +295,11 @@ head(kk)
 
 ```{r}
 #| eval: false
-kk2 <- gseKEGG(geneList     = geneList,
-               organism     = 'hsa',
-               minGSSize    = 120,
-               pvalueCutoff = 0.05,
-               verbose      = FALSE)
+kk2 <- retry(gseKEGG(geneList     = geneList,
+                     organism     = 'hsa',
+                     minGSSize    = 120,
+                     pvalueCutoff = 0.05,
+                     verbose      = FALSE))
 head(kk2)
 ```
 
@@ -373,10 +375,10 @@ To prevent this cached data from becoming outdated, the package utilizes **GitHu
 ```{r}
 #| label: kegg-module-example
 #| eval: false
-mkk <- enrichMKEGG(gene = gene,
-                   organism = 'hsa',
-                   pvalueCutoff = 1,
-                   qvalueCutoff = 1)
+mkk <- retry(enrichMKEGG(gene = gene,
+                         organism = 'hsa',
+                         pvalueCutoff = 1,
+                         qvalueCutoff = 1))
 head(mkk)                   
 ```
 
@@ -401,10 +403,10 @@ Pathways can also be analysed from the metabolite side. Passing the special valu
 #| eval: false
 cpd <- c("C00022", "C00024", "C00031", "C00033", "C00036")
 
-res_cpd <- enrichKEGG(gene = cpd,
-                      organism = "cpd",
-                      pvalueCutoff = 1,
-                      qvalueCutoff = 1)
+res_cpd <- retry(enrichKEGG(gene = cpd,
+                            organism = "cpd",
+                            pvalueCutoff = 1,
+                            qvalueCutoff = 1))
 head(res_cpd)
 ```
 

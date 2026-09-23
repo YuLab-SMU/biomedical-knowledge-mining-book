@@ -105,6 +105,8 @@ The `compareCluster()` function is highly versatile and can be directly integrat
 
 Typically, `FindAllMarkers()` from `Seurat` returns a data frame where rows are genes and columns include cluster information and statistical metrics.
 
+This example is wrapped in `retry()` (defined in `_common.R`) because its `fun` reaches the remote KEGG service, so a transient failure is retried a few times before giving up; the `enrichGO` examples further on stay unwrapped because they run locally.
+
 ```{r eval=FALSE}
 #| label: sc-seurat-example
 library(Seurat)
@@ -132,7 +134,7 @@ gid <- bitr(unique(markers$gene), 'SYMBOL', 'ENTREZID', OrgDb = 'org.Hs.eg.db')
 markers <- full_join(markers, gid, by = c('gene' = 'SYMBOL'))
 
 # Perform comparison using formula interface
-x <- compareCluster(ENTREZID ~ cluster, data = markers, fun = 'enrichKEGG')
+x <- retry(compareCluster(ENTREZID ~ cluster, data = markers, fun = 'enrichKEGG'))
 
 # Visualization
 dotplot(x, label_format = 40) + 
@@ -337,7 +339,11 @@ terms from other clusters in the plot.
 #|   Default per-cluster selection (A), `includeAll = FALSE` (B),
 #|   `categorySizeBy = ~ -log10(p.adjust)` (C), and custom pie colors (D).
 cluster_cols <- setNames(
-    c("#0072B2", "#D55E00")[seq_along(unique(as.data.frame(ck)$Cluster))],
+    ## `length.out` keeps the palette the same length as the number of clusters:
+    ## indexing a two-colour vector by the cluster count would leave every
+    ## cluster past the second one without a colour (`NA`), which shows up as an
+    ## empty legend entry and an unpainted pie.
+    rep(c("#0072B2", "#D55E00"), length.out = length(unique(as.data.frame(ck)$Cluster))),
     unique(as.data.frame(ck)$Cluster)
 )
 

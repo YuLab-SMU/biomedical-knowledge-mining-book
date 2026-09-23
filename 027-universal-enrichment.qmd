@@ -137,11 +137,12 @@ msigdbr_species()
 
 We can retrieve human gene sets with `msigdbr()`. Since the complete human MSigDB table is large, it is usually better to request only the collection you need in analysis workflows.
 
+`msigdbr()` downloads the gene set archive from a remote host, and that download can fail transiently, so these calls are wrapped in `retry()` (defined in `_common.R`); feel free to drop the wrapper in your own analysis.
 
 ```{r}
 #| label: msigdbr-human
 #| cache: false
-msigdbr(species = "Homo sapiens", collection = "C6") |>
+retry(msigdbr(species = "Homo sapiens", collection = "C6")) |>
   head(2) |>
   as.data.frame()
 ```
@@ -152,7 +153,7 @@ Or specific collection. Here we use C6, oncogenic gene sets as an example:
 ```{r}
 #| label: msigdbr-c6
 #| cache: false
-m_t2g <- msigdbr(species = "Homo sapiens", collection = "C6") |>
+m_t2g <- retry(msigdbr(species = "Homo sapiens", collection = "C6")) |>
   dplyr::select(gs_name, ncbi_gene)
 head(m_t2g)
 ```
@@ -176,7 +177,7 @@ In over-representation analysis, we use oncogenic gene sets (i.e. C6) to test wh
 ```{r}
 #| label: msigdb-gsea-example
 #| cache: false
-C3_t2g <- msigdbr(species = "Homo sapiens", collection = "C3") |>
+C3_t2g <- retry(msigdbr(species = "Homo sapiens", collection = "C3")) |>
   dplyr::select(gs_name, ncbi_gene)
 head(C3_t2g)
 
@@ -283,7 +284,7 @@ KEGG does accept UniProt accessions directly, so no conversion is needed for org
 #| label: kegg-uniprot
 #| eval: false
 
-kk <- enrichKEGG(gene = my_proteins, organism = "sly", keyType = "uniprot")
+kk <- retry(enrichKEGG(gene = my_proteins, organism = "sly", keyType = "uniprot"))
 ```
 
 Use `bitr_kegg()` to check the coverage first — for most proteomes a substantial fraction of accessions has no KEGG entry, and those proteins are silently dropped:

@@ -1297,33 +1297,14 @@ The visualization methods described above work with any `enrichResult` or `gseaR
 Both routes return standard `enrichResult` / `gseaResult` objects, so every visualization introduced in this chapter (`barplot()`, `dotplot()`, `cnetplot()`, `gseaplot()`, ...) works on them.
 
 ::: {.callout-note}
-The import functions are currently available in the **development version** of `enrichplot` (they will be included in the upcoming version 2.0.0). The `as_enrichResult()` and `as_gseaResult()` constructors are provided by the `enrichit` package, which can be installed with `remotes::install_github("YuLab-SMU/enrichit")`.
-Without that development version the code in this section is still shown, but it is not executed.
+The import functions ship with `enrichplot` (development version 2.0.0), and the `as_enrichResult()` / `as_gseaResult()` constructors are provided by the `enrichit` package, which `enrichplot` re-exports. Every example in this section therefore runs as written.
 :::
 
 ```{r}
 #| label: import-other-tools-setup
 #| echo: false
 #| cache: false
-## The importers used below ship with the development version of enrichplot.
-## Where that version is not installed, a sibling checkout of the converters
-## branch can be attached instead: point ENRICHPLOT_DEV_DIR at it, or rely on the
-## default location next to this book. The path is deliberately not
-## machine-specific, and it is only used when it really exists -- so a build
-## without the checkout (CI, a reader's laptop) skips the chunks below instead of
-## failing.
-if (!exists("import_enrichr")) {
-    dev_dir <- Sys.getenv("ENRICHPLOT_DEV_DIR", "../enrichplot-converters")
-    if (nzchar(dev_dir) && dir.exists(dev_dir) &&
-        requireNamespace("pkgload", quietly = TRUE)) {
-        pkgload::load_all(dev_dir, quiet = TRUE)
-    }
-}
 library(ggplot2)
-
-## Gate for every chunk in this section: the code is always shown, but it only
-## executes where the importers are genuinely available.
-has_importers <- exists("import_enrichr")
 ```
 
 ### enrichr
@@ -1341,7 +1322,6 @@ res <- enrichr(de_genes, databases = c("KEGG_2021_Human", "GO_Biological_Process
 
 ```{r}
 #| label: import-enrichr-import
-#| eval: !expr has_importers
 enrichr_table <- data.frame(
     Term = c("GO:0006915;;apoptotic process", "COVID-19"),
     Overlap = c("5/150", "3/60"),
@@ -1362,7 +1342,6 @@ The result is a standard `enrichResult` object, ready for any visualization:
 
 ```{r}
 #| label: fig-import-enrichr
-#| eval: !expr has_importers
 #| fig-width: 14
 #| fig-height: 7
 #| fig-scap: |
@@ -1390,7 +1369,6 @@ gostres <- gost(de_genes, organism = "hsapiens")
 
 ```{r}
 #| label: import-gost-import
-#| eval: !expr has_importers
 gost_table <- data.frame(
     term_id = c("GO:0006915", "GO:0002376"),
     term_name = c("apoptotic process", "immune system process"),
@@ -1412,7 +1390,6 @@ If the table has no `query_size` column, pass the query genes with the `gene` pa
 
 ```{r}
 #| label: fig-import-gost
-#| eval: !expr has_importers
 #| fig-width: 8
 #| fig-height: 6
 #| fig-scap: |
@@ -1438,7 +1415,6 @@ wg <- WebGestaltR(enrichMethod = "ORA", organism = "hsapiens",
 
 ```{r}
 #| label: import-webgestalt-import
-#| eval: !expr has_importers
 wg_table <- data.frame(
     geneSet = c("hsa04210", "hsa04110"),
     description = c("Apoptosis", "Cell cycle"),
@@ -1455,7 +1431,6 @@ x_wg <- import_webgestalt(wg_table, gene = de_genes,
 
 ```{r}
 #| label: fig-import-webgestalt
-#| eval: !expr has_importers
 #| fig-width: 8
 #| fig-height: 6
 #| fig-scap: |
@@ -1482,7 +1457,6 @@ fgres <- fgsea(pathways, stats = geneList)
 
 ```{r}
 #| label: import-fgsea-import
-#| eval: !expr has_importers
 data(geneList, package = "DOSE")
 stats <- sort(geneList, decreasing = TRUE)
 set1 <- names(stats)[1:40]
@@ -1508,7 +1482,6 @@ gx
 
 ```{r}
 #| label: fig-import-fgsea
-#| eval: !expr has_importers
 #| fig-format: png
 #| fig-dpi: 150
 #| fig-width: 8
@@ -1538,7 +1511,6 @@ Tools that do not have a dedicated importer (*e.g.* DAVID, or in-house scripts) 
 
 ```{r}
 #| label: import-custom-import
-#| eval: !expr has_importers
 custom <- data.frame(
     term_id = c("custom:001", "custom:002"),
     name = c("my in-house gene set", "another custom set"),
@@ -1554,7 +1526,6 @@ as.data.frame(x_ct)[, c("ID", "Description", "geneID", "Count", "GeneRatio",
 
 ```{r}
 #| label: fig-import-custom
-#| eval: !expr has_importers
 #| fig-width: 8
 #| fig-height: 6
 #| fig-scap: |

@@ -70,12 +70,14 @@ head(ewp2)
 
 ### WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
 
+`enrichWP()` and `gseWP()` download the WikiPathways GMT file over the network, and that download can fail transiently, so these calls are wrapped in `retry()` (defined in `_common.R`); feel free to drop the wrapper in your own analysis.
+
 ```{r}
 #| label: enrichwp-example
 data(geneList, package="DOSE")
 gene <- names(geneList)[abs(geneList) > 2]
 
-enrichWP(gene, organism = "Homo sapiens") 
+retry(enrichWP(gene, organism = "Homo sapiens")) 
 ```
 
 ### WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
@@ -83,7 +85,7 @@ enrichWP(gene, organism = "Homo sapiens")
 
 ```{r}
 #| label: gsewp-example
-gseWP(geneList, organism = "Homo sapiens")
+retry(gseWP(geneList, organism = "Homo sapiens"))
 ```
 
 
