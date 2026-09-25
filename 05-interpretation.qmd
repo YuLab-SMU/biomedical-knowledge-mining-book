@@ -1,0 +1,17 @@
+# Interpret and report biological evidence {-}
+
+This part moves from a checked enrichment result to an evidence-based interpretation and a reproducible report. Read the result first, inspect supporting genes and context, then use the optional AI layer only to organize evidence that has already been verified.
+
+## Interpretation checklist {-}
+
+1. What was the tested input and background universe?
+2. Which terms are significant after correction, and what is their direction or effect?
+3. Which genes or leading-edge members drive each term?
+4. Are the terms redundant, database-dependent, or supported by a network or external source?
+5. Which claims are associations supported by the analysis, and which require independent validation?
+
+- [How to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment)
+- [Evidence-guided biological interpretation](interpretation.qmd#evidence-guided-interpretation)
+- [From analysis to a reproducible report](reproducible-report.qmd#reproducible-report)
+
+The optional LLM examples in the evidence-guided chapter consume validated result objects; they do not replace the statistical test, database provenance, or literature review.

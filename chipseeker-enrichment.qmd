@@ -1,0 +1,33 @@
+# Functional enrichment analysis of genomic coordinations {#chipseeker-enrichment}
+
+
+
+Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015].
+
+
+## Chapter overview
+
+| Aspect | Genomic coordination enrichment |
+|---|---|
+| **Questions** | How can genomic regions such as peaks be mapped to candidate genes before functional enrichment? |
+| **Input** | Annotated genomic regions, a genome/annotation configuration, and a region-to-gene mapping rule such as nearest, host, promoter, or flanking genes. |
+| **Methods** | Region annotation and `seq2gene()` many-to-many coordination, followed by standard ORA, GSEA, comparison, or visualization workflows. |
+| **Main functions** | `annotatePeak()`, `seq2gene()`, and downstream `enricher()` / `GSEA()` after constructing gene-level inputs. |
+| **Output** | Region annotations, candidate gene mappings, and downstream `enrichResult` / `gseaResult` objects. |
+| **Main limitations** | Region-to-gene assignment is an inference, not proof of regulation. Results depend on genome build, annotation release, promoter/flanking parameters, and many-to-many mapping choices. |
+
+::: {.callout-note}
+After mapping regions to genes, return to the shared [data contract](data-contract.qmd) and choose an enrichment route. Preserve the genome build, annotation release, and mapping rule with the result.
+:::
+
+
+
+
+## Next steps
+
+- Use [universal enrichment](universal-enrichment.qmd#universal-api) when the mapped genes require custom or non-model annotations.
+- Compare region-derived gene sets with the [analysis engines](01-analysis-engines.qmd) or [compareCluster](comparecluster-analysis.qmd#clusterprofiler-comparecluster).
+- Visualize the resulting enrichment objects with the [visualization map](enrichplot.qmd#sec-enrichplot).
+
+
+## References {-}

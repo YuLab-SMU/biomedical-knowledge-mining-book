@@ -1,0 +1,360 @@
+# Import and visualize results from other tools {#sec-visualization-import}
+
+| Aspect | External-result import |
+|---|---|
+| **Question** | How can an external enrichment table be converted into a standard object without pretending that the source tool used the same design? |
+| **Input** | A complete external result schema, gene-set membership, identifier namespace, and source-tool/database metadata. |
+| **Functions** | `as_enrichResult()`, `as_gseaResult()`, `import_fgsea()`, and source-specific import helpers. |
+| **Output** | Standard `enrichResult`/`gseaResult` objects suitable for `enrichplot`, plus an import record. |
+| **Limitations** | Importing changes representation, not the original statistical design. Missing universe, ranking, gene–term membership, or database release cannot be reconstructed reliably. Online examples are optional and can fail independently of local plotting. |
+
+This chapter imports results from enrichR, g:Profiler, WebGestalt, fgsea, and arbitrary result tables, then visualizes them as standard enrichment objects. For network failures and provenance, see [external-service troubleshooting](troubleshooting.qmd#external-services).
+
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(enrichplot)
+    library(dplyr)
+})
+```
+
+```{r}
+# Prepare one local GO result and reuse its full table for the importer examples.
+library(ggplot2)
+library(enrichit)
+library(DOSE)
+library(org.Hs.eg.db)
+library(fgsea)
+
+data(geneList, package = "DOSE")
+stats <- sort(geneList, decreasing = TRUE)
+de_genes <- names(stats)[abs(stats) > 1.5]
+background <- names(stats)
+
+ego_full <- enrichGO(
+    gene = de_genes,
+    OrgDb = org.Hs.eg.db,
+    keyType = "ENTREZID",
+    ont = "BP",
+    universe = background,
+    minGSSize = 5,
+    pvalueCutoff = 1,
+    qvalueCutoff = 1,
+    readable = FALSE
+)
+ego_table <- as.data.frame(ego_full)
+term_genes <- strsplit(as.character(ego_table$geneID), "/", fixed = TRUE)
+ratio_num <- function(x) as.numeric(sub("/.*", "", x))
+ratio_den <- function(x) as.numeric(sub(".*/", "", x))
+term_gene_text <- vapply(term_genes, paste, collapse = ";", FUN.VALUE = character(1))
+term_gene_text_comma <- vapply(term_genes, paste, collapse = ", ", FUN.VALUE = character(1))
+
+# ORA overlaps are kept above; GSEA needs complete pathways from the background.
+go_map <- AnnotationDbi::select(
+    org.Hs.eg.db,
+    keys = background,
+    columns = c("GO", "ONTOLOGY"),
+    keytype = "ENTREZID"
+) |>
+    dplyr::filter(!is.na(GO), ONTOLOGY == "BP") |>
+    dplyr::transmute(term = GO, gene = ENTREZID) |>
+    dplyr::distinct()
+go_sets <- split(go_map$gene, go_map$term)
+go_sets <- go_sets[lengths(go_sets) >= 5 & lengths(go_sets) <= 500]
+go_names <- AnnotationDbi::select(
+    GO.db::GO.db,
+    keys = names(go_sets),
+    columns = "TERM",
+    keytype = "GOID"
+) |>
+    dplyr::filter(!is.na(TERM)) |>
+    dplyr::transmute(term = GOID, name = TERM) |>
+    dplyr::distinct()
+pathway_names <- stats::setNames(go_names$name, go_names$term)
+
+# The ranked gene sets are complete pathways, not selected-gene overlaps.
+fgsea_table <- fgsea(
+    pathways = go_sets,
+    stats = stats,
+    minSize = 5,
+    maxSize = 500,
+    eps = 0
+)
+```
+
+## Importing results from other tools {#sec-import-other-tools}
+
+The visualization methods described above work with any `enrichResult` or `gseaResult` object, and results produced by other enrichment tools can be brought into this framework with two routes:
+
+1. **Tool-specific importers**: `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()` and `import_fgsea()` map the output tables of popular tools to the canonical schema (see @sec-import-custom) and return enrichment objects directly.
+2. **Generic constructors**: `as_enrichResult()` and `as_gseaResult()`, provided by the `enrichit` package and re-exported by `enrichplot`, convert any result table that follows the canonical column schema.
+
+Both routes return standard `enrichResult` / `gseaResult` objects, so every visualization introduced in this chapter (`barplot()`, `dotplot()`, `cnetplot()`, `gseaplot()`, ...) works on them.
+
+::: {.callout-note}
+The online calls are marked `eval: false` because service databases and network availability change over time. The runnable examples use the local GO result above and reshape its full tables to the schemas returned by enrichR, g:Profiler, WebGestalt, fgsea, and arbitrary-table workflows.
+:::
+
+### enrichr
+
+The `enrichR::enrichr()` function queries the [enrichr](https://maayanlab.cloud/enrichr/) web service and returns a list of result tables (one per database) with columns `Term`, `Overlap`, `P.value`, `Adjusted.P.value` and `Genes`:
+
+```{r}
+#| label: import-enrichr-online
+#| eval: false
+library(enrichR)
+res <- enrichr(de_genes, databases = c("KEGG_2021_Human", "GO_Biological_Process_2023"))
+```
+
+`import_enrichr()` accepts either that list (use the `db` parameter to select a database) or a single result table.
+
+```{r}
+#| label: import-enrichr-import
+enrichr_table <- data.frame(
+    Term = paste(ego_table$ID, ego_table$Description, sep = ";;"),
+    Overlap = paste(ego_table$Count, ratio_den(ego_table$BgRatio), sep = "/"),
+    P.value = ego_table$pvalue,
+    Adjusted.P.value = ego_table$p.adjust,
+    Genes = term_gene_text,
+    stringsAsFactors = FALSE
+)
+edo_er <- import_enrichr(enrichr_table, gene = de_genes,
+                         universe = background)
+edo_er
+```
+
+The result is a standard `enrichResult` object, ready for any visualization:
+
+```{r}
+#| label: fig-import-enrichr
+#| fig-width: 14
+#| fig-height: 7
+#| fig-scap: |
+#|   Dot plot and gene-concept network of the imported enrichr result.
+#| fig-cap: |
+#|   **Visualization of the imported enrichr result.**
+#|   dot plot (A) and gene-concept network (B).
+aplot::plot_list(
+    dotplot(edo_er, showCategory = 10) + ggtitle("enrichr result"),
+    cnetplot(edo_er, showCategory = 2),
+    ncol = 2, tag_levels = "A"
+)
+```
+
+### g:Profiler
+
+`gprofiler2::gost()` returns a list whose `result` element is a data.frame with columns `term_id`, `term_name`, `p_value`, `query_size`, `intersection_size`, `term_size`, `effective_domain_size` and `intersections`:
+
+```{r}
+#| label: import-gost-online
+#| eval: false
+library(gprofiler2)
+gostres <- gost(de_genes, organism = "hsapiens")
+```
+
+```{r}
+#| label: import-gost-import
+gost_table <- data.frame(
+    term_id = ego_table$ID,
+    term_name = ego_table$Description,
+    p_value = ego_table$pvalue,
+    adjusted_p_value = ego_table$p.adjust,
+    query_size = length(de_genes),
+    intersection_size = ego_table$Count,
+    term_size = ratio_num(ego_table$BgRatio),
+    effective_domain_size = length(background),
+    stringsAsFactors = FALSE
+)
+gost_table$intersections <- I(term_genes)
+x_gp <- import_gprofiler2(list(result = gost_table))
+head(
+    as.data.frame(x_gp)[,
+        c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "Count")
+    ],
+    3
+)
+```
+
+If the table has no `query_size` column, pass the query genes with the `gene` parameter for exact `GeneRatio` values.
+
+```{r}
+#| label: fig-import-gost
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the imported g:Profiler result.
+#| fig-cap: |
+#|   **Dot plot of the imported g:Profiler result.**
+dotplot(x_gp, showCategory = 10) + ggtitle("g:Profiler result")
+```
+
+### WebGestalt
+
+`WebGestaltR()` returns a summary table with columns `geneSet`, `description`, `size`, `overlap`, `rawPValue`, `adjPValue` and `userIds`:
+
+```{r}
+#| label: import-webgestalt-online
+#| eval: false
+library(WebGestaltR)
+wg <- WebGestaltR(enrichMethod = "ORA", organism = "hsapiens",
+                  enrichDatabase = "pathway_KEGG", interestGene = de_genes,
+                  interestGeneType = "genesymbol", referenceGene = background,
+                  referenceGeneType = "genesymbol")
+```
+
+```{r}
+#| label: import-webgestalt-import
+wg_table <- data.frame(
+    geneSet = ego_table$ID,
+    description = ego_table$Description,
+    size = ratio_num(ego_table$BgRatio),
+    overlap = ego_table$Count,
+    rawPValue = ego_table$pvalue,
+    adjPValue = ego_table$p.adjust,
+    userIds = term_gene_text,
+    stringsAsFactors = FALSE
+)
+x_wg <- import_webgestalt(wg_table, gene = de_genes,
+                          universe = background)
+```
+
+```{r}
+#| label: fig-import-webgestalt
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the imported WebGestalt result.
+#| fig-cap: |
+#|   **Dot plot of the imported WebGestalt result.**
+dotplot(x_wg, showCategory = 10) + ggtitle("WebGestalt result")
+```
+
+### fgsea
+
+The `fgsea()` function [@korotkevich_fast_2019] takes a named statistics vector and a list of gene sets, and returns a data.frame with columns `pathway`, `ES`, `NES`, `pval`, `padj`, `size` and `leadingEdge`:
+
+```{r}
+#| label: import-fgsea-online
+#| eval: false
+library(fgsea)
+data(geneList, package = "DOSE")
+# Use complete gene sets; an ORA overlap is not a pathway definition.
+pathways <- go_sets
+fgres <- fgsea(pathways = pathways, stats = stats)
+```
+
+For plots that use ranked positions, pass the original statistics vector and the complete pathway list to `import_fgsea()`.
+
+```{r}
+#| label: import-fgsea-import
+fgres <- fgsea_table
+genesets_for_import <- go_sets
+
+gx <- import_fgsea(fgres, stats = stats, geneSets = genesets_for_import)
+gx@result$Description <- unname(pathway_names[as.character(gx@result$ID)])
+gx@result$Description[is.na(gx@result$Description)] <-
+    as.character(gx@result$ID[is.na(gx@result$Description)])
+fgsea_id <- which.max(abs(gx@result$NES))
+gx@result[fgsea_id, c("ID", "Description", "NES", "p.adjust")]
+```
+
+The ranked-metric panel is dense for a list of this size, so the figure shows the running-score panel. The score is still computed from the full ranking.
+
+```{r}
+#| label: fig-import-fgsea
+#| fig-format: png
+#| fig-dpi: 150
+#| fig-width: 9
+#| fig-height: 6
+#| fig-scap: |
+#|   Running-score plot of the strongest imported fgsea pathway.
+#| fig-cap: |
+#|   **Running-score plot of the imported fgsea result.**
+#|   The curve is computed from the complete ranked statistics vector;
+#|   the selected pathway is the one with the largest absolute NES.
+gseaplot(
+    gx,
+    geneSetID = fgsea_id,
+    by = "runningScore",
+    title = gx@result$Description[fgsea_id]
+)
+```
+
+### Arbitrary result tables {#sec-import-custom}
+
+Tools that do not have a dedicated importer (*e.g.* DAVID, or in-house scripts) can be converted with the generic constructors. `as_enrichResult()` requires a data.frame with `ID`, `pvalue` and at least one of `geneID`, `Count` or `GeneRatio`; the remaining canonical columns are derived when the query genes (`gene`), the universe (`universe`) and optionally the gene sets (`geneSets`) are supplied. Column aliases (*e.g.* `PValue`, `term_id`, `padj`, `FDR`) are recognized automatically:
+
+| column | required | content |
+|--------|----------|---------|
+| `ID` | yes | term identifier |
+| `Description` | no | term name (defaults to `ID`) |
+| `pvalue` | yes | raw p-value |
+| `p.adjust` | no | adjusted p-value (computed with `pAdjustMethod` if absent) |
+| `qvalue` | no | q-value (estimated if absent) |
+| `geneID` | no | overlap genes, separated by `/` |
+| `Count` | no | number of overlap genes |
+| `GeneRatio` | no | `k/n`: overlap size / query size |
+| `BgRatio` | no | `M/N`: gene set size / universe size |
+
+```{r}
+#| label: import-custom-import
+custom <- data.frame(
+    term_id = ego_table$ID[seq_len(min(30, nrow(ego_table)))],
+    name = ego_table$Description[seq_len(min(30, nrow(ego_table)))],
+    PValue = ego_table$pvalue[seq_len(min(30, nrow(ego_table)))],
+    FDR = ego_table$p.adjust[seq_len(min(30, nrow(ego_table)))],
+    Genes = term_gene_text_comma[seq_len(min(30, nrow(ego_table)))],
+    stringsAsFactors = FALSE
+)
+x_ct <- as_enrichResult(custom, gene = de_genes)
+head(
+    as.data.frame(x_ct)[,
+        c("ID", "Description", "geneID", "Count", "GeneRatio",
+          "pvalue", "p.adjust")
+    ],
+    3
+)
+```
+
+```{r}
+#| label: fig-import-custom
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Dot plot of the result converted from an arbitrary table.
+#| fig-cap: |
+#|   **Dot plot of the result converted from an arbitrary table.**
+dotplot(x_ct, showCategory = 10) + ggtitle("custom table")
+```
+
+For GSEA-type results (with ranked statistics), use `as_gseaResult()` instead, passing the ranked vector via the `geneList` parameter:
+
+```{r}
+#| label: import-as-gsearesult
+#| eval: false
+gx2 <- as_gseaResult(fgres, geneList = stats,
+                     geneSets = genesets_for_import)
+```
+
+
+## Reproducibility record
+
+When importing an external result, retain the source tool and version, database and release, original query genes or ranked statistics, universe/background, identifier namespace, conversion parameters, and the canonical result object. The session information below records the software environment used to render this chapter; it is not a substitute for recording the external database release.
+
+```{r}
+#| label: import-session-info
+sessionInfo()
+```
+
+## Next steps
+
+- For custom annotations rather than external result tables, see [universal enrichment](universal-enrichment.qmd#universal-api).
+- For reusable resource metadata, see [GSON](gson.qmd#sec-gson).
+
+## References {-}

@@ -1,1 +1,15 @@
 # Appendix {-}
+
+## Reference routes
+
+For a term definition, function lookup, citation, or version record, use the [glossary and API index](glossary-api-index.qmd#glossary-api-index). This appendix remains a concise route map rather than a duplicate function catalog.
+
+- **Data and identifiers:** [The data contract](data-contract.qmd) — identifier namespace, ranking, universe, custom annotations, and result classes.
+- **Analysis decisions:** [Choose a route](choose-a-route.qmd) — ORA, GSEA, comparison, network-aware, and custom-enrichment routes.
+- **Knowledge resources:** [GSON](gson.qmd#sec-gson), [GO](go-enrichment.qmd#clusterprofiler-go), [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg), [Reactome](reactome-enrichment.qmd#reactomepa), [DO](disease-enrichment.qmd#dose-enrichment), and [MeSH](mesh-enrichment.qmd#meshes-enrichment).
+- **Evidence integration:** [Result objects](result-objects.qmd#clusterProfiler-dplyr), [semantic similarity](semantic-similarity.qmd), and [Bayesian term selection](bayesian-term-selection.qmd#sec-bayes-enrich).
+- **Presentation and interpretation:** [Visualization](enrichplot.qmd#sec-enrichplot) and [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation).
+
+## Reproducibility record
+
+For a published or shared analysis, retain the input file or accession, identifier type, universe definition, genome/annotation/database release, package versions, function parameters, result objects, exported figures, and citations. The [capability map](capability-map.qmd) provides the package-to-layer index; it does not replace this provenance record.

@@ -1,0 +1,207 @@
+# Choose an enrichment route {#choose-a-route}
+
+Start with the shape of the evidence, not with the function name. The route determines the null question, the required background, and the result class that can be visualized later.
+
+## The route-selection table
+
+| What you have | What you want to ask | Recommended route | Core function(s) | Result class |
+|---|---|---|---|---|
+| A thresholded vector of genes and a defensible background | Are terms over-represented among selected genes? | **ORA** | `enrichGO()`, `enrichDO()`, `enrichKEGG()`, or `enricher()` | `enrichResult` |
+| A numeric statistic for most or all measured genes | Are terms shifted toward the top or bottom of the ranking? | **GSEA** | `gseGO()`, `gseDO()`, `gseKEGG()`, or `GSEA()` | `gseaResult` |
+| Several named thresholded gene vectors | Which terms are shared or different across groups? | **Compare ORA profiles** | `compareCluster(..., fun = "enrichGO")` | `compareClusterResult` |
+| Several groups with a gene-level statistic | Which ranked profiles differ across groups? | **Compare GSEA profiles** | `compareCluster(..., fun = "gseGO")` | `compareClusterResult` |
+| A custom term-to-gene membership table | Test a local or private gene-set collection | **Custom ORA/GSEA** | `enricher()` or `GSEA()` with `TERM2GENE` | `enrichResult` or `gseaResult` |
+| Genomic intervals or peaks rather than genes | Which genes and functions are associated with regions? | **Annotate first** | `ChIPseeker`/annotation, then an enrichment route | Depends on downstream route |
+| Gene symbols, Ensembl IDs, or another namespace | Run one of the routes above | **Map and validate IDs** | `bitr()`, `keytypes()`, `select()` | Same as selected route |
+
+The table is a decision aid, not a promise that two routes answer the same question. In particular, an ORA p-value is not a GSEA p-value, and separately computed enrichment tables should not be passed to `compareCluster()` as if they were gene lists.
+
+## A short decision tree
+
+1. **Do you have a cutoff-defined set?**
+   * Yes: start with ORA, and supply the measured/eligible universe.
+   * No: continue.
+2. **Do you have one signed or directional statistic per gene?**
+   * Yes: use GSEA on the complete ranked list.
+   * No: define an appropriate gene-level statistic before choosing GSEA, or obtain a thresholded list for ORA.
+3. **Do you have more than one condition, cluster, or contrast?**
+   * Yes: keep the gene-level inputs separated and use `compareCluster()` to run a common method for each group.
+   * No: use the single-profile function.
+4. **Are the gene sets supplied by a local table rather than an `OrgDb` or supported database?**
+   * Yes: use `TERM2GENE` and, optionally, `TERM2NAME` with `enricher()` or `GSEA()`.
+5. **Are your inputs regions rather than genes?**
+   * Yes: annotate regions to genes first. Do not pass peak coordinates as if they were gene IDs.
+
+## Route A: one thresholded gene vector → ORA
+
+Use ORA when the selected list itself is the scientific object of interest—for example, genes passing a pre-registered adjusted-p-value and effect-size rule. The universe should contain genes that could have entered that list.
+
+```{r eval=FALSE}
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+ora <- enrichGO(
+  gene          = selected_genes,
+  universe      = measured_genes,
+  OrgDb         = org.Hs.eg.db,
+  keyType       = "ENTREZID",
+  ont           = "BP",
+  pAdjustMethod = "BH"
+)
+dotplot(ora, showCategory = 10)
+```
+
+If a short list returns no terms, check list size, identifier mapping, term-size filters, and the universe before concluding that there is no biological signal. A thresholded test has little power when only a few genes are selected.
+
+## Route B: one complete ranking → GSEA
+
+Use GSEA when thresholding would discard a meaningful gradient or when no sensible cutoff exists. A named numeric vector is required; preserve the sign if it represents direction.
+
+```{r eval=FALSE}
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+gsea <- gseGO(
+  geneList      = ranked_statistic,
+  OrgDb         = org.Hs.eg.db,
+  keyType       = "ENTREZID",
+  ont           = "BP",
+  minGSSize     = 10,
+  maxGSSize     = 500,
+  pAdjustMethod = "BH",
+  verbose       = FALSE
+)
+dotplot(gsea, showCategory = 10)
+gseaplot2(gsea, geneSetID = 1)
+```
+
+A signed ranking can reveal terms at both ends. If all values are positive because they are evidence magnitudes, the bottom of the list is not a biological opposite; choose a one-sided score model where available.
+
+## Route C: several groups → `compareCluster()`
+
+`compareCluster()` takes gene-level inputs and performs the enrichment method once per group. It does not merge pre-computed pathway tables. Use a named list for simple groups:
+
+```{r eval=FALSE}
+clusters <- list(
+  treatment_A = genes_A,
+  treatment_B = genes_B,
+  treatment_C = genes_C
+)
+
+cc <- compareCluster(
+  geneCluster = clusters,
+  fun         = "enrichGO",
+  OrgDb       = org.Hs.eg.db,
+  keyType     = "ENTREZID",
+  ont         = "BP",
+  universe    = measured_genes
+)
+dotplot(cc, showCategory = 10)
+```
+
+For a ranked statistic per group, use the GSEA function through the same interface where supported. Keep the ranking for each group in the form expected by that function; do not replace a ranking with its top genes unless ORA is the intended question.
+
+```{r eval=FALSE}
+ranked_groups <- list(
+  treatment_A = ranked_A,
+  treatment_B = ranked_B
+)
+
+cc_gsea <- compareCluster(
+  geneCluster = ranked_groups,
+  fun         = "gseGO",
+  OrgDb       = org.Hs.eg.db,
+  keyType     = "ENTREZID",
+  ont         = "BP"
+)
+dotplot(cc_gsea, showCategory = 10)
+```
+
+For the formula interface, use one row per gene and put grouping variables on the right-hand side. The left-hand side is a gene identifier, not a pathway ID and not a pre-computed p-value.
+
+## Route D: custom gene sets → `TERM2GENE`
+
+Use a custom route for a private pathway collection, a marker module, a transcription-factor target catalogue, or any annotation that can be expressed as term–gene membership.
+
+```{r eval=FALSE}
+custom_ora <- enricher(
+  gene       = selected_genes,
+  universe   = measured_genes,
+  TERM2GENE  = TERM2GENE,
+  TERM2NAME  = TERM2NAME
+)
+
+custom_gsea <- GSEA(
+  geneList   = ranked_statistic,
+  TERM2GENE  = TERM2GENE,
+  TERM2NAME  = TERM2NAME,
+  verbose    = FALSE
+)
+```
+
+Before running either function, check that the gene identifier namespace in `TERM2GENE` matches the input and that term sizes are sensible. If `TERM2NAME` is omitted, the term IDs remain usable but less readable.
+
+## Route E: regions → genes → enrichment
+
+Peak coordinates, genomic intervals, and variant positions are not gene vectors. First choose an annotation policy (nearest gene, promoter overlap, genomic region, or another justified mapping), then document the resulting gene set and background. Packages such as `ChIPseeker` can provide the region annotation; the resulting gene IDs can then enter ORA, GSEA, or comparison workflows.
+
+```{r eval=FALSE}
+# Conceptual hand-off after region annotation:
+annotated_genes <- unique(peak_annotation$ENTREZID)
+ora_from_peaks <- enrichGO(
+  gene       = annotated_genes,
+  universe   = measured_genes,
+  OrgDb      = org.Hs.eg.db,
+  keyType    = "ENTREZID",
+  ont        = "BP"
+)
+```
+
+The enrichment result describes the annotated gene set under the chosen region-to-gene policy; it does not remove uncertainty introduced by that policy.
+
+## Route F: identifier mismatch → map before testing
+
+Check available key types in the local annotation package and map explicitly. Keep the mapping table so that dropped or multiply mapped IDs can be audited.
+
+```{r eval=FALSE}
+keytypes(org.Hs.eg.db)
+
+mapped <- bitr(
+  input_ids,
+  fromType = "SYMBOL",
+  toType   = "ENTREZID",
+  OrgDb    = org.Hs.eg.db
+)
+
+mapped <- mapped[!duplicated(mapped$ENTREZID), ]
+```
+
+Do not mix symbols and Entrez IDs in the same vector, and do not infer an identifier type from its appearance alone. Confirm the namespace with the data producer or with annotation metadata.
+
+## Pick plots after you pick the object
+
+| Result object | Start with | Add when needed |
+|---|---|---|
+| `enrichResult` | `dotplot()` or `barplot()` | `cnetplot()` for shared genes; `emapplot()` for term similarity |
+| `gseaResult` | `dotplot()` | `gseaplot2()` for one term; `ridgeplot()` for several distributions |
+| `compareClusterResult` | `dotplot()` | `cnetplot()` or `treeplot()` for cross-group structure |
+
+These plotting methods expect the structured result object. If you only have a table exported by another program, recreate the equivalent analysis in `clusterProfiler` with the same gene sets, input IDs, and background before using the object-aware plots.
+
+::: {.callout-warning}
+**Do not choose a route from the desired plot.** A visually attractive dot plot cannot turn a thresholded list into a ranked analysis, and a custom table cannot recover a missing universe. Decide the input contract and null question first; then select the function and visualization.
+:::
+
+## Record the choice
+
+A minimal analysis record contains:
+
+* the route (`ORA`, `GSEA`, comparison, or custom sets);
+* the identifier type and mapping release;
+* the selected gene vector or ranked-list definition;
+* the universe and how it was measured;
+* term-size filters and multiple-testing method;
+* the annotation package and version; and
+* the result object used to create figures.
+
+This record makes a route reproducible and makes it possible to tell whether two enrichment results are genuinely comparable.

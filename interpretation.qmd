@@ -1,4 +1,8 @@
-# AI-Assisted Biological Interpretation
+# Evidence-guided biological interpretation {#evidence-guided-interpretation}
+
+Statistical enrichment results are evidence to inspect, not biological conclusions by themselves. This chapter describes how to move from enriched terms, core genes, networks, expression trends, and prior knowledge to a transparent interpretation. AI assistance is presented as an optional evidence-synthesis layer after those checks, not as a replacement for the enrichment analysis or literature review.
+
+<a id="ai-assisted-biological-interpretation"></a>
 
 ```{r}
 #| label: load-packages
@@ -8,11 +12,20 @@
 
 source("_common.R")
 
+## Load the project-local credentials before deciding which LLM chunks to run.
+## The key itself is never printed or written to the rendered book.
+if (file.exists(".env") && requireNamespace("dotenv", quietly = TRUE)) {
+    dotenv::load_dot_env(".env")
+}
+
 ## The LLM examples below run only when an API key is available. GitHub does
 ## not expose repository secrets to workflows triggered from forked
 ## repositories, and a local build has no key either, so the key doubles as the
 ## switch: no key, examples skipped, book still renders.
 has_ai <- nzchar(Sys.getenv("DEEPSEEK_API_KEY"))
+if (has_ai && requireNamespace("aisdk", quietly = TRUE)) {
+    aisdk::set_model("deepseek:deepseek-v4-flash")
+}
 
 ## interpret() does not raise when the API call fails: it warns and returns a
 ## placeholder whose `confidence` is "None". opts_chunk$set(warning = FALSE)
@@ -30,17 +43,22 @@ interpret_failed <- function(res) {
         grepl("^LLM call failed", res$overview) ||
         (identical(res$confidence, "Low") && is.null(res$narrative))
 }
+
+annotation_failed <- function(res) {
+    is.null(res$cell_type) ||
+        is.null(res$confidence) ||
+        is.null(res$reasoning) ||
+        identical(res$confidence, "None")
+}
 ```
 
-Traditional enrichment analysis typically results in a list of significant pathways or GO terms. While statistically sound, these lists often leave researchers asking, "**So what?**" What is the underlying biological mechanism? Who are the key drivers? Is this a pro-survival or pro-death signal?
+Enrichment results identify terms and genes associated with the input, but they do not by themselves establish a mechanism. Interpretation therefore starts with the result object, core genes, background, database provenance, and any supporting expression or network evidence.
 
-To bridge the gap between statistical results and biological insights, `clusterProfiler` introduces an AI-powered interpretation module. By leveraging Large Language Models (LLMs) and a multi-agent system, `clusterProfiler` can now act as a virtual bioinformatician, converting dry enrichment lists into coherent, evidence-based biological narratives.
+## The `interpret` function
 
-## The `interpret` Function
+`interpret()` accepts `enrichResult`, `gseaResult`, or `compareClusterResult` objects and asks an LLM to organize the supplied evidence into a structured report. The report is a draft for evidence review, not a replacement for the enrichment test or literature validation.
 
-The core function for this feature is `interpret()`. It accepts enrichment results (e.g., from `enrichKEGG`, `enrichGO`, or `compareCluster`) and uses an LLM to generate a structured report.
-
-To use this feature, you need to configure an API key for a provider supported by `aisdk`. Model selection is now delegated to `aisdk`: if `model` is not specified, `interpret()` uses the current default model managed by `aisdk::get_model()` / `aisdk::set_model()`, while an explicit `model = ...` argument overrides that default for a single call. In practice, this usually means loading credentials from your `.env` file or setting the relevant environment variables before calling `set_model()`. For provider configuration details, see the `aisdk` documentation. The examples on this page use DeepSeek, whose key `aisdk` reads from the `DEEPSEEK_API_KEY` environment variable; any other provider supported by `aisdk` can be used instead.
+The function requires an API key for a provider supported by `aisdk`. If `model` is not supplied, it uses the current model from `aisdk::get_model()` / `aisdk::set_model()`; an explicit `model` argument overrides that default for one call. The examples below use DeepSeek through `DEEPSEEK_API_KEY`, but other `aisdk` providers can be used.
 
 ```{r}
 #| label: interpret-setup
@@ -63,6 +81,7 @@ get_model()
 ```{r}
 #| label: interpret-basic
 #| eval: !expr has_ai
+#| results: asis
 library(clusterProfiler)
 library(DOSE)
 
@@ -81,468 +100,230 @@ if (interpret_failed(res)) {
     stop("interpret() returned no report -- check the API key and quota:\n",
          res$overview)
 }
-print(res)
+cat(render_interpretation_blocks(res), sep = "\n")
 ```
 
 ### Tasks and Inputs
 
-`interpret()` is not just for explaining enrichment results. It breaks down LLM capabilities into three distinct tasks:
+`interpret()` supports three tasks:
 
-+ **`task = "interpretation"`**: (Default) Converts enrichment results into a mechanistic narrative suitable for publication (What -> So What).
-+ **`task = "annotation"`**: Performs cell type annotation for single-cell clusters using both marker genes and enrichment terms as evidence.
-+ **`task = "phenotyping"`**: Assigns a "state/phenotype label" to a group (e.g., "Pro-inflammatory" or "Senescent-like").
++ **`task = "interpretation"`**: organize enrichment evidence into a biological narrative;
++ **`task = "annotation"`**: combine marker genes and enrichment terms for cell-type annotation;
++ **`task = "phenotyping"`**: propose a state or phenotype label for a group.
 
-To strengthen the evidence, `interpret()` supports "evidence synthesis" from multiple sources:
+The input can be one result object, a list of compatible objects, or a `compareCluster` result processed by cluster. For example, `list(go_res, kegg_res)` combines compatible knowledge sources, while a `compareCluster` result returns one report per cluster. The returned fields are structured so that reports can be checked, compared, and rendered consistently.
 
-+ **Single Object**: `enrichResult`, `gseaResult`, or `compareClusterResult`.
-+ **Multiple Objects**: A `list()` of results (e.g., `list(kegg_res, go_res)` or `list(cellmarker_res, go_res)`).
-+ **Batch Processing**: If the input is a `compareCluster` result, it automatically splits by cluster and generates a report for each.
-
-The key features of `interpret()` include:
-
-+ **Prompt Skeleton**: A fixed structure to guide the LLM.
-+ **Structured Output**: Enforced structure for parsing, comparison, and batch processing.
-+ **Reasoning First**: Encourages "deduction before writing" to avoid merely listing pathway names.
+For single-cell data, the marker table can come from `Seurat::FindAllMarkers()` or another marker-calling method. Keep the cluster and gene columns, use the same identifier namespace in the marker and CellMarker tables, and pass the grouped markers through `compareCluster()` before annotation. The executable example below uses the repository-local CellMarker table so that it does not depend on a separate count matrix or a pasted annotation report. A complete Seurat marker workflow is available in the [pbmc3k tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#assigning-cell-type-identity-to-clusters).
 
 ### Cell Type Annotation
 
-For example, we can use `Seurat` to identify marker genes for each cluster in a single-cell RNA-seq dataset. Then we can use `compareCluster` to perform enrichment analysis for each cluster. Finally, we can use `interpret` to annotate cell types based on the enrichment results and marker genes.
+The cell-type example reads the local `datasets/Cell_marker_Human.xlsx` marker table, builds four marker profiles, runs `compareCluster()` with `enricher()`, and passes the result to `interpret(task = "annotation")` when `DEEPSEEK_API_KEY` is available.
 
 ```{r}
-#| eval: false
+#| eval: !expr has_ai
 #| label: interpret-annotation
-## Not run in the book build: needs Seurat plus the pbmc3k 10x matrix
-## (data/filtered_gene_bc_matrices/hg19) and the CellMarker xlsx file.
-library(Seurat)
-dir = "data/filtered_gene_bc_matrices/hg19"
-pbmc.data <- Read10X(data.dir = dir)
-pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", 
-                          min.cells=3, min.features=200)
-pbmc[["percent.mt"]] <- PercentageFeatureSet(pbmc, pattern = "^MT-")
-pbmc <- subset(pbmc,
-  subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5
-)
-pbmc <- NormalizeData(pbmc, normalization.method = "LogNormalize",
-                      scale.factor = 10000)
-pbmc <- ScaleData(pbmc)
-pbmc <- FindVariableFeatures(pbmc, selection.method = "vst",
-                             nfeatures = 2000)
-pbmc <- RunPCA(pbmc, features = VariableFeatures(object = pbmc))
-pbmc <- RunUMAP(pbmc, dims = 1:10)
-pbmc <- FindNeighbors(pbmc, dims = 1:10)
-pbmc <- FindClusters(pbmc, resolution = 0.5)
-pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE)
+#| cache: true
+#| results: hide
 
+library(clusterProfiler)
+library(readxl)
 library(dplyr)
-topN_marker <- function(markers, n) {
-    markers %>%
-        group_by(cluster) %>%
-        dplyr::filter(avg_log2FC > 1) %>%
-        slice_head(n = n) %>%
-        ungroup()
+
+cell_marker_path <- file.path("datasets", "Cell_marker_Human.xlsx")
+if (!file.exists(cell_marker_path)) {
+    stop("The cell-marker dataset is missing: ", cell_marker_path)
 }
-top20 <- topN_marker(pbmc.markers, 20)
-# downloaded from: http://www.bio-bigdata.center/CellMarker_download_files/file/Cell_marker_Human.xlsx
-# note: `gene` from FindAllMarkers() is a gene symbol, and so is CellMarker's
-# `marker` column -- both must be the same identifier type for the join to work.
-cm <- rio::import("Cell_marker_Human.xlsx") 
-x <- compareCluster(gene~cluster, data=top20, fun=enricher, TERM2GENE=cm[,c("cell_name", "marker")])
-y <- interpret(x, task="annotation")
+
+cell_marker <- readxl::read_excel(cell_marker_path)
+TERM2GENE_cell <- cell_marker |>
+    transmute(
+        cell_name = .data[["Cell name"]],
+        marker = toupper(.data[["Marker"]])
+    ) |>
+    filter(
+        !is.na(cell_name), !is.na(marker),
+        nzchar(cell_name), nzchar(marker)
+    ) |>
+    distinct()
+
+# A compact marker panel keeps the example transparent and the prompt small.
+marker_sets <- list(
+    T_cell = c("CD3D", "CD3E", "TRBC1", "IL7R", "LTB", "MAL", "CCR7", "LST1"),
+    B_cell = c("CD79A", "MS4A1", "CD37", "CD79B", "HLA-DRA", "CD74", "BANK1"),
+    Monocyte = c("LYZ", "S100A8", "S100A9", "CTSS", "FCN1", "LGALS3", "TYROBP", "LST1"),
+    NK_cell = c("NKG7", "GNLY", "PRF1", "GZMB", "KLRD1", "FCGR3A", "XCL1", "XCL2")
+)
+marker_table <- do.call(
+    rbind,
+    lapply(names(marker_sets), function(cluster) {
+        data.frame(
+            cluster = cluster,
+            gene = marker_sets[[cluster]],
+            stringsAsFactors = FALSE
+        )
+    })
+)
+
+cell_marker_enrichment <- compareCluster(
+    gene ~ cluster,
+    data = marker_table,
+    fun = enricher,
+    TERM2GENE = TERM2GENE_cell,
+    pvalueCutoff = 1,
+    qvalueCutoff = 1,
+    minGSSize = 2,
+    maxGSSize = 500
+)
+
+annotation_reports <- interpret(
+    cell_marker_enrichment,
+    task = "annotation",
+    context = paste(
+        "Human single-cell marker panels. Each cluster is a compact set of",
+        "top marker genes and was tested against the local CellMarker database.",
+        "Use the enrichment terms as supporting evidence, but prefer markers",
+        "that distinguish closely related cell types. Return a concise label",
+        "and explain which supplied markers and cell-marker terms support it."
+    ),
+    n_pathways = 12,
+    max_tokens = 4096,
+    temperature = 0.1
+)
+
+if (inherits(annotation_reports, "interpretation")) {
+    annotation_reports <- list(Default = annotation_reports)
+}
+if (!is.list(annotation_reports) || length(annotation_reports) == 0) {
+    stop("DeepSeek returned no cell-type annotation reports.")
+}
+for (report in annotation_reports) {
+    if (annotation_failed(report)) {
+        stop(
+            "DeepSeek cell-type annotation failed for cluster ",
+            if (!is.null(report$cluster)) report$cluster else "(unknown)",
+            ": ",
+            if (!is.null(report$overview)) report$overview else "no diagnostic returned"
+        )
+    }
+}
 ```
 
-The output `y` is a list of interpretation results, one for each cluster. We can extract the inferred cell types.
-
-```
-> sapply(y, \(x) x$cell_type)
-                                        0 
-                           "Naive T Cell"
-                                        1
-                     "Classical Monocyte"
-                                        2
-                            "CD4+ T cell"
-                                        3
-                      "Follicular B cell"
-                                        4
-                  "CD8+ Cytotoxic T Cell" 
-                                        5
-"CD16+ monocyte (Non-classical monocyte)"
-                                        6
-               "Natural Killer (NK) cell"
-                                        7
-      "Plasmacytoid Dendritic Cell (pDC)"
-                                        8 
-                          "Megakaryocyte"
-```
-
-This result is highly consistent with the manual annotation from the [Seurat pbmc3k tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#assigning-cell-type-identity-to-clusters):
-
-| Cluster ID | Markers | Cell Type |
-| :--- | :--- | :--- |
-| 0 | IL7R, CCR7 | Naive CD4+ T |
-| 1 | CD14, LYZ | CD14+ Mono |
-| 2 | IL7R, S100A4 | Memory CD4+ |
-| 3 | MS4A1 | B |
-| 4 | CD8A | CD8+ T |
-| 5 | FCGR3A, MS4A7 | FCGR3A+ Mono |
-| 6 | GNLY, NKG7 | NK |
-| 7 | FCER1A, CST3 | DC |
-| 8 | PPBP | Platelet |
-
-The full report provides detailed reasoning, confidence levels, and supporting evidence (markers/pathways) for each cluster assignment, offering transparency and explainability that simple label transfer methods lack.
+The result below is generated from the live object returned by DeepSeek. It is
+rendered as an HTML block, not Markdown headings: the preview is readable
+in the chapter, while the raw `print()` output remains available in a collapsed
+section without entering the book's table of contents.
 
 ```{r}
-#| eval: false
+#| eval: !expr has_ai
 #| label: print-annotation-result
-## Output of the annotation example above, which is not run in the book build.
-print(y)
+#| results: asis
+
+cat(render_interpretation_blocks(annotation_reports), sep = "\n")
 ```
 
-::: {.callout-note icon=false}
-# Enrichment Interpretation / Annotation Report {.unnumbered .unlisted}
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 0 {.unnumbered .unlisted}
-
-**Cell Type:** Naive T Cell
-**Confidence:** High
-
-**Reasoning:**
- The cluster is definitively identified as a naive T cell based on the co-expression of canonical pan-T cell markers (CD3D, CD3E) and the master regulator of naive T cell identity, TCF7 (cited in top terms: Naive CD8+ T cell, Naive CD4+ T cell, etc.). The high expression of CCR7, a critical homing receptor for naive and central memory T cells, and LEF1, another Wnt-pathway TF co-operating with TCF7, further solidifies this identity. The enrichment list is dominated by naive and central memory T cell subtypes, with effector/cytotoxic terms ranking lower and lacking their specific markers (e.g., GZMB, PRF1). The presence of both CD4+ and CD8+ associated terms suggests a mixed population or a shared naive state before lineage commitment, but the core identity is naive T cell.
-
-**Supporting Markers/Pathways:**
-- CD3D
-- CD3E
-- TCF7
-- CCR7
-- LEF1
-- NOSIP
-- MAL
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 1 {.unnumbered .unlisted}
-
-**Cell Type:** Classical Monocyte
-**Confidence:** High
-
-**Reasoning:**
- The enrichment list contains many related myeloid cell types, but the specific marker gene profile is definitive. The cluster expresses the core classical monocyte signature: high expression of CD14, S100A8, S100A9, FCN1, and LYZ (Top Specific/Marker Genes). While 'Myeloid cell' and 'Macrophage' are top-ranked by p-value, they are broad categories. The specific 'Classical monocyte' term (GeneRatio: 5/20, p.adjust: 1.637326e-07) is strongly supported by its gene list (S100A9/FCN1/CD14/S100A8/LYZ), which perfectly matches the top markers. The cluster lacks definitive markers to distinguish it as a Dendritic Cell (e.g., no FLT3, CD1C, CLEC9A), Macrophage (e.g., low/absent MRC1/CD163), or Neutrophil (e.g., absent MPO, ELANE). The presence of FCN1 and CD14 together is a hallmark of classical monocytes, and the absence of FCGR3A (CD16) argues against non-classical monocytes. 
-
-**Supporting Markers/Pathways:**
-- CD14
-- S100A8
-- S100A9
-- FCN1
-- LYZ
-- CST3
-- TYROBP
-- MS4A6A
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 2 {.unnumbered .unlisted}
-
-**Cell Type:** CD4+ T cell
-**Confidence:** High
-
-**Reasoning:**
- The cluster is definitively a T cell, as the top enriched term is 'T cell' (p.adjust: 2.86e-17) and the marker list includes the core T-cell receptor complex genes CD3D, CD3E, CD3G, and CD247 (LAT). Among T-cell subtypes, the evidence strongly favors a CD4+ lineage over CD8+. The second most significant term is 'CD4+ T cell' (p.adjust: 2.40e-14), and its gene list (IL32, CD3E, IL7R, CD27, CD3D, TNFRSF4, MAL, CD2, LTB, CD40LG, CD3G) is almost entirely contained within the top 'T cell' markers. Key CD4+ T-cell markers IL7R and CD27 are among the top specific genes. While 'CD8+ T cell' is also enriched, its signature genes (like AQP3) are present but lower in the marker list, and definitive cytotoxic CD8+ markers (e.g., GZMB, PRF1) are absent. The presence of CD40LG and TNFRSF4 (OX40), which are associated with CD4+ T helper and regulatory functions, further supports this assignment. The cluster lacks exclusive markers for NK cells (e.g., NCAM1, KLR genes) or Tregs (FOXP3), though it shows some regulatory association.
-
-**Supporting Markers/Pathways:**
-- CD3D
-- CD3E
-- CD3G
-- IL7R
-- CD27
-- CD40LG
-- IL32
-- LTB
-- TNFRSF4
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 3 {.unnumbered .unlisted}
-
-**Cell Type:** Follicular B cell
-**Confidence:** High
-
-**Reasoning:**
- The top enriched term is 'Follicular B cell' (p.adjust: 2.95e-16), and its gene list contains definitive B cell lineage markers (CD79A, CD79B, MS4A1, BANK1, FCER2, TCL1A) that are also present in the cluster's top specific genes. While other top terms like 'Secretory cell' and 'Classical monocyte' are enriched, they are driven almost exclusively by MHC Class II genes (HLA-DRA, HLA-DRB1, etc.), which are not specific to those cell types but are also expressed by antigen-presenting B cells. The presence of core B cell receptor components (CD79A/B) and mature B cell markers (MS4A1, FCER2, TCL1A) that are absent from monocyte/dendritic cell definitions, combined with the lack of specific monocyte (e.g., CD14, FCGR3A) or secretory cell markers, confirms the identity as a Follicular B cell.
-
-**Supporting Markers/Pathways:**
-- CD79A
-- MS4A1
-- CD79B
-- TCL1A
-- FCER2
-- BANK1
-- CD37
-- HLA-DRA
-- HLA-DRB1
-- CD74
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 4 {.unnumbered .unlisted}
-
-**Cell Type:** CD8+ Cytotoxic T Cell
-**Confidence:** High
-
-**Reasoning:**
- The top enriched terms are a mixture of 'Natural killer cell' and various T cell subtypes, indicating shared cytotoxic function. However, the specific marker gene list is definitive. It includes the core T cell receptor complex genes CD3D, CD8A, and CD8B (present in 'CD8+ T cell' and 'Cytotoxic T cell' enrichments), which are lineage-defining for CD8+ T cells and absent from NK cells. While NKG7, PRF1, GZMA, GZMK, and GZMH are shared cytotoxic molecules, the co-expression of CD3D with CD8A/CD8B specifically identifies a cytotoxic T cell lineage. The absence of definitive NK-specific markers (e.g., NCAM1/CD56, KLRD1/CD94, FCGR3A/CD16) from the top marker list, and the presence of the T cell-specific signaling adaptor HCST (DAP10), supports a T cell identity. The 'Cytotoxic CD8+ T cell' enrichment term (GeneRatio: 8/20) provides the most precise functional and lineage match.
-
-**Supporting Markers/Pathways:**
-- CD3D
-- CD8A
-- CD8B
-- GZMK
-- NKG7
-- CCL5
-- PRF1
-- GZMA
-- GZMH
-- CST7
-- LAG3
-- KLRG1
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 5 {.unnumbered .unlisted}
-
-**Cell Type:** CD16+ monocyte (Non-classical monocyte)
-**Confidence:** High
-
-**Reasoning:**
- The top enriched term is 'CD1C-CD141- dendritic cell' (p.adjust: 3.68e-23), but this is likely a misannotation due to shared myeloid markers. The gene list for this term (LST1, CKB, HCK, CSF1R, IFITM3, MS4A7, SERPINA1, LILRB1, CDKN1C, PILRA, FCGR3A, HMOX1, RHOC, LRRC25, SIGLEC10, MS4A4A) is a composite of pan-myeloid and monocyte-specific genes, and lacks definitive dendritic cell markers (e.g., CD1C, CLEC9A, BATF3). The cluster's specific marker list is dominated by canonical markers for non-classical monocytes: FCGR3A (CD16) is the defining marker, supported by MS4A7, CSF1R, and HES4 (enriched in 'CD16+ monocyte' and 'Non-classical monocyte' terms). The absence of T/NK/B cell markers and the presence of macrophage/pan-myeloid genes (e.g., CST3, CTSL) confirm a myeloid lineage, while the high expression of FCGR3A, MS4A7, and HES4 specifically distinguishes the non-classical monocyte subset from classical monocytes, macrophages, and dendritic cells. 
-
-**Supporting Markers/Pathways:**
-- FCGR3A (CD16)
-- MS4A7
-- HES4
-- CSF1R
-- LST1
-- IFITM3
-- SIGLEC10
-- PILRA
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 6 {.unnumbered .unlisted}
-
-**Cell Type:** Natural Killer (NK) cell
-**Confidence:** High
-
-**Reasoning:**
- The top enriched terms include both 'Natural killer cell' (17/20 genes, p=2.79e-27) and 'Cytotoxic CD4+ T cell' (14/20 genes, p=5.24e-28). While the latter has a slightly better p-value, the discriminatory marker analysis strongly favors NK cells. The cluster's top specific genes include canonical NK markers FGFBP2, SPON2, XCL2, XCL1, SH2D1B, and FCGR3A (CD16a), which are not specific to T cells. Critically, the cluster lacks definitive T-cell lineage markers (e.g., CD3D, CD3E, CD4, CD8A). The shared cytotoxic genes (PRF1, GNLY, GZMB, GZMA, NKG7) are expressed by both NK cells and cytotoxic T cells, but the presence of NK-specific markers and absence of T-cell receptor complex genes confirms NK cell identity.
-
-**Supporting Markers/Pathways:**
-- FGFBP2
-- SPON2
-- XCL2
-- XCL1
-- SH2D1B
-- FCGR3A (CD16a)
-- KLRD1 (CD94)
-- GNLY
-- PRF1
-- GZMB
-- GZMA
-- NKG7
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 7 {.unnumbered .unlisted}
-
-**Cell Type:** Plasmacytoid Dendritic Cell (pDC)
-**Confidence:** High
-
-**Reasoning:**
- The enrichment list contains two distinct dendritic cell lineages: conventional/myeloid DCs (cDC2, CD1C+ DCs) and plasmacytoid DCs (pDC). While the top-ranked term is 'CD1C+_A dendritic cell' (a cDC2 subtype), the cluster's specific marker genes are definitive for pDC identity. The pDC-specific markers LILRA4, CLEC4C (BDCA-2), SERPINF1, and P2RY6 are present in the top marker list and are the defining genes for the 'Plasmacytoid dendritic cell(pDC)' and 'Plasmacytoid dendritic cell' enrichment terms. Critically, the cluster lacks the core, non-overlapping markers for cDC2s: while it expresses CD1C and FCER1A (which can be expressed at low levels in some pDCs), it does NOT express the definitive cDC2 markers CLEC10A (in the cDC2 enrichment term but not in the pDC-specific marker set from the top genes) and CD1C at high specificity relative to pDC markers. The rule of exclusion applies: the top term is a cDC2 type, but the specific marker gene list is dominated by pDC markers and lacks exclusive cDC2 commitment.
-
-
-**Supporting Markers/Pathways:**
-- LILRA4 (ILT7)
-- CLEC4C (BDCA-2)
-- SERPINF1
-- P2RY6
-- CLIC2
-- SCT
-- LRRC26
-
----
-
-## Cell Type Annotation {.unnumbered .unlisted}
-
-### Cluster: 8 {.unnumbered .unlisted}
-
-**Cell Type:** Megakaryocyte
-**Confidence:** High
-
-**Reasoning:**
- The assignment is based on the definitive convergence of enrichment terms and marker genes. The top enriched term is 'Megakaryocyte' (p.adjust: 3.58e-10) with genes SPARC, GNG11, PF4, GP9, ITGA2B, GP1BA. The related terms 'Platelet' and 'Progenitor cell' are lower-ranked and share subsets of these genes (e.g., PF4, GP9, ITGA2B), which is expected as platelets are anucleate fragments of megakaryocytes. The top specific marker gene list is dominated by canonical megakaryocyte/platelet markers (GP9, ITGA2B, GP1BA, PF4, ITGB3, SPARC, GNG11) and lacks definitive markers for other hematopoietic lineages that could challenge this identity (e.g., no CD3, CD19, CD14, ELANE). The 'Progenitor cell' term is likely reflective of the shared SPARC and PF4 expression in some progenitor states, but the presence of terminal differentiation markers like GP1BA and ITGA2B confirms a mature megakaryocyte identity. 
-
-**Supporting Markers/Pathways:**
-- GP9
-- ITGA2B
-- GP1BA
-- PF4
-- SPARC
-- GNG11
-- ITGB3
-- CLDN5
-- CMTM5
-- SDPR
-
----
+::: {.callout-note}
+When the book is rendered without `DEEPSEEK_API_KEY`, the two chunks above are
+skipped and the rest of the chapter still renders. When the key is present, a
+render performs a real DeepSeek call; keep the cache enabled for ordinary builds
+and clear `interpretation_cache/` deliberately when a fresh report is wanted.
 :::
 
-## The Multi-Agent System
+<!-- The previous pasted annotation report was removed; the live DeepSeek output above is the maintained example. -->
 
-Instead of relying on a single prompt, `clusterProfiler` employs a **Multi-Agent System (MAS)** to ensure accuracy and depth. This system consists of three specialized agents that work in a pipeline:
+## Extended evidence inputs
 
-1.  **Agent Cleaner**: Acts as a curator. It filters out "housekeeping" pathways (e.g., Ribosome, Spliceosome) that may be statistically significant but irrelevant to the specific biological context (e.g., tumor immunology), reducing noise.
-2.  **Agent Detective**: Acts as a systems biologist. It analyzes the gene list, looks for **Hub Genes** in Protein-Protein Interaction (PPI) networks, and combines this with Fold Change data to identify **Key Drivers** and infer regulatory mechanisms.
-3.  **Agent Storyteller**: Acts as a scientific writer. It synthesizes the findings from the Cleaner and Detective into a logical narrative, distinguishing between observations ("What"), mechanisms ("How"), and implications ("So What").
+`interpret_agent()` applies three sequential stages to an interpretation request:
 
-You can activate this deep mode using the `interpret_agent()` function.
+1. **Term curation** selects and organizes the supplied enrichment terms in the
+   stated biological context; it does not rerun the enrichment test.
+2. **Evidence inspection** combines the result object with optional gene-level
+   changes and interaction data to identify genes or modules that support each
+   term.
+3. **Narrative drafting** writes the checked inputs into the structured
+   interpretation fields used by the report and plotting methods.
+
+The implementation refers to these stages as **Cleaner**, **Detective**, and **Storyteller**. They are components of one shared-model pipeline, not separate statistical analyses. The stages share one evidence bundle, and their output remains a model-generated draft that should be checked against the original result object.
 
 ```{r}
 #| label: interpret-agent
 #| eval: false
-## Kept off: the multi-agent pipeline runs three LLM calls per cluster (Cleaner,
-## Detective, Storyteller) on top of the single-call examples above, which would
-## push this chapter's cost per build well past its budget. To enable it once the
-## build is known to be green, replace `eval: false` with `eval: !expr has_ai` and
-## wrap the result in `interpret_failed()` as the examples above do.
-# Provide biological context to help Agent Cleaner
-context <- "scRNA-seq analysis of CD8+ T cells in Tumor Microenvironment, comparing Exhausted vs. Naive states."
-
+context <- "scRNA-seq analysis of CD8+ T cells in tumor microenvironment, comparing exhausted and naive states."
 res <- interpret_agent(edo, context = context)
 ```
 
-## Knowledge-Guided Interpretation
+## PPI and expression evidence
 
-Enrichment analysis often treats genes as a "bag of words," ignoring their interactions and expression changes. The **Knowledge-Guided Interpretation** mode injects external knowledge to empower the AI's reasoning.
-
-### 1. PPI Networks and Hub Genes
-By setting `add_ppi = TRUE`, the system fetches protein-protein interaction data (from STRING). The AI can then identify functional modules (e.g., a TCR signaling complex) rather than just isolated genes.
-
-### 2. Expression Trends
-By providing `gene_fold_change`, the AI can infer the direction of pathway activity. For example, if the "Apoptosis" pathway is enriched but pro-apoptotic genes are downregulated while anti-apoptotic genes are upregulated, the AI will correctly interpret this as "Apoptosis Resistance."
+Set `add_ppi = TRUE` to request protein interactions from STRING. Pass a named `gene_fold_change` vector to retain expression direction in the interpretation. These inputs add network and expression evidence; they do not establish pathway activity or causality.
 
 ```r
 # Prepare a named vector of fold changes
 gene_list <- c("CD8A" = 2.5, "PDCD1" = 1.8, "GZMB" = 3.2)
 
-res <- interpret(edo, 
-                 task = "cell_type",
-                 add_ppi = TRUE,                # Enable PPI network analysis
-                 gene_fold_change = gene_list   # Inject expression data
+res <- interpret(
+    edo,
+    task = "interpretation",
+    add_ppi = TRUE,
+    gene_fold_change = gene_list
 )
 ```
 
-## Reference-Guided Interpretation
+## Prior labels and hierarchical inputs
 
-For cell type annotation, LLMs can sometimes hallucinate. To prevent this, `clusterProfiler` supports **Reference-Guided Interpretation**.
-
-### Prior Knowledge Injection
-You can provide "prior knowledge" (e.g., results from SingleR, scGPT, or manual rough annotation) to the AI. The AI acts as a validator and refiner:
-*   **Validation**: Checks if pathway evidence supports the prior label.
-*   **Refinement**: Refines a broad label (e.g., "T cell") into a specific state (e.g., "Proliferating CD8+ T cell") based on pathway activity.
-*   **Correction**: Flags potential misannotations if the evidence contradicts the prior.
+For cell-type annotation, `prior` supplies an existing label for comparison. The returned annotation can agree with, refine, or disagree with that label; inspect the markers and enrichment terms before accepting a change.
 
 ```{r}
 #| label: interpret-prior-knowledge
 #| eval: false
-## Kept off: assigns to `res` and prints nothing, so running it would only add
-## an API call per build without changing the rendered page.
-# Prior knowledge from SingleR
 my_priors <- c("Cluster1" = "T cells")
-
-res <- interpret(edo, prior = my_priors, task = "cell_type")
+res <- interpret(edo, prior = my_priors, task = "annotation")
 ```
 
-### Hierarchical Interpretation
-For complex datasets, `interpret_hierarchical()` mimics the human thought process of annotating major lineages first (e.g., Myeloid) and then subtypes (e.g., M1 Macrophage). It enforces lineage constraints to prevent impossible annotations (e.g., a T cell subtype appearing within a Myeloid cluster).
-
-This approach is also highly applicable to **Single-cell Trajectory Inference**. Developmental processes inherently follow a hierarchical structure (e.g., Stem Cell -> Progenitor -> Terminally Differentiated Cell). By utilizing this hierarchical relationship, `interpret_hierarchical()` can provide context-aware interpretations that respect the biological differentiation path, ensuring that downstream states are interpreted within the context of their upstream progenitors.
+`interpret_hierarchical()` accepts major- and minor-cluster enrichment objects together with a mapping. It constrains each minor-cluster interpretation to the supplied major-cluster context; the mapping itself must be checked against the experimental design.
 
 ```r
-# Mapping between minor and major clusters
 cluster_mapping <- c(
-  "SubCluster1_1" = "MajorCluster1", 
-  "SubCluster1_2" = "MajorCluster1",
-  "SubCluster2_1" = "MajorCluster2"
+    "SubCluster1_1" = "MajorCluster1",
+    "SubCluster1_2" = "MajorCluster1",
+    "SubCluster2_1" = "MajorCluster2"
 )
 
-# Hierarchical interpretation
 res_hier <- interpret_hierarchical(
-    x_minor = enrich_minor, 
-    x_major = enrich_major, 
+    x_minor = enrich_minor,
+    x_major = enrich_major,
     mapping = cluster_mapping
 )
 ```
 
-## Gene-Based Fallback Mode
+## When enrichment returns no terms
 
-In real-world research, enrichment analysis sometimes fails to return significant pathways due to small gene sets or background noise.
-
-`clusterProfiler` introduces a **Gene-Based Fallback Mode**. When no enriched pathways are found, the agent does not simply error out. Instead, it:
-1.  Directly analyzes the function of the input genes.
-2.  Retrieves PPI networks for these genes.
-3.  Infers biological function based on gene connectivity and function, providing a "Medium Confidence" report instead of an empty result.
+When a result has no enriched terms, `interpret_agent()` can be given the input genes and optional PPI data. The implementation warns that no significant pathways were found, passes the raw genes to the Detective and Storyteller stages, and marks the returned object with `data_source = "gene_list_only"`. The output should therefore be reported as a gene-based hypothesis; its confidence is taken from the returned object rather than assigned a fixed value.
 
 ```r
-# When enrichment fails, this still works
 res <- interpret_agent(tough_genes, add_ppi = TRUE)
 ```
 
-## Visualization: From Story to Figure
+## Visualization of interpretation objects
 
-Text reports are great, but graphical representations are often preferred for presentations. The `plot()` method for interpretation results uses `ggtangle` (a grammar of graphics for networks) to visualize the AI-inferred regulatory network.
-
-The resulting plot highlights:
-*   **Key Drivers**: Central nodes identified by the AI.
-*   **Activation (Green)** / **Inhibition (Red)**: Regulatory relationships inferred from data.
-*   **Interactions (Grey)**: Physical associations.
+The `plot()` method displays relationships stored in an interpretation object. When the returned object contains them, the plot can distinguish key drivers, activation or inhibition labels, and physical interactions. These labels are model outputs and require review against the supplied expression and interaction evidence.
 
 ```r
-# Visualize the interpretation result
 plot(res)
 ```
 
-This feature creates a closed loop: from **Enrichment** (Statistics) to **Interpretation** (Insight) and finally to **Visualization** (Communication).
+The complete hand-off is:
 
-## Best Practices and Common Questions
+```text
+enrichment result → optional fold-change/PPI/prior evidence
+                  → interpretation object → report or plot
+```
 
-The examples above are deliberately small. This section collects the guidance
-that matters once you point `interpret()` at a real analysis: how to write
-`context`, how to choose and switch models, what multi-model workflows are (and
-are not) supported, and how to keep the report honest.
+The final report and plot are views of the interpretation object. They do not
+constitute a second enrichment test, and interaction edges remain external
+supporting evidence.
 
-### How Specific Should `context` Be?
+## Operational checks
 
-`context` is the only place where the model learns *what experiment produced the
-gene list*, and it is the highest-leverage input you control. An enrichment
-table is ambiguous on its own: "extracellular matrix organization" is
-up-regulated in fibrosis, in wound healing and in tumour invasion alike. The
-model cannot tell those apart, so it averages over them and returns a bland
-report. A specific context removes the ambiguity.
+`context` should identify the experiment, biological setting, contrast direction, and any relevant cell-type or tissue resolution. `interpret()` cannot infer these details from pathway names alone.
 
 A weak context names only the assay:
 
@@ -598,8 +379,7 @@ set_model("deepseek:deepseek-v4-flash")
 get_model()
 ```
 
-The setup chunk on this page calls `set_model()` once, so every example that
-omits `model` uses DeepSeek. To send one call elsewhere, pass `model` directly:
+Calls that omit `model` use the session-wide setting selected with `set_model()`. Pass `model` for a one-off provider or model.
 
 ```r
 res <- interpret(edo, model = "openai:gpt-4o")
@@ -622,13 +402,7 @@ list_models()            # every provider and model aisdk knows about
 list_models("openai")    # just one provider
 ```
 
-Which one should you use? `interpret()` only needs a model that can follow the
-structured-output schema. In practice the useful split is between small, cheap
-models -- fine for first-pass triage -- and larger reasoning models, which tend
-to produce more coherent mechanistic narratives but cost more and consume more
-of the output budget (see `max_tokens` below). Whatever you choose, keep it
-fixed once you start comparing reports: different models write different
-reports, and that is the subject of the next subsection.
+Model choice affects latency, cost, context capacity, and output variability. Fix the model when comparing reports, because different models can produce different summaries from the same input.
 
 ### Multi-Model and Consensus Workflows
 
@@ -652,9 +426,9 @@ use one model to write the report and a second, independent call only to
 *criticise* it: ask a different model whether every gene and pathway named in
 the narrative is actually present in the input table. That is a manual
 workflow, but it catches the most common failure mode -- plausible-sounding
-genes that were never in the data. If what you need is provider *failover*
-rather than consensus, note that `aisdk` provides `generate_text_fallback()` for
-its own generation calls, but `interpret()` does not expose a fallback argument.
+genes that were never in the data. For provider failover, `aisdk` provides
+`generate_text_fallback()` for its own generation calls, but `interpret()` does
+not expose a fallback argument.
 
 ### Practical Guidance and Pitfalls
 
@@ -664,17 +438,9 @@ emphasis. This is expected, not a bug. It has a direct consequence for
 reproducible builds: Quarto's chunk cache (`cache: true`) is what keeps the
 published page stable -- the LLM call runs once and its output is reused on
 later renders. Clear the cache and you will get a different report. If you need
-the exact same text in two places, cache the object rather than calling twice.
+the exact same text in two places, cache the object and reuse it.
 
-**Hallucination.** The system prompt instructs the model to ground every claim
-in the supplied table and to cite supporting terms, and the structured output
-forces it to name genes in `refined_network` and `network_evidence`. That
-reduces hallucination; it does not eliminate it. Before you quote a report,
-check the two things that are cheap to check: every gene named in the narrative
-appears in the `geneID` (or, for GSEA, `core_enrichment`) column of the input
-table, and every pathway named appears in its `Description` column. If you set
-`add_ppi = TRUE`, remember that the edges the model cites come from a STRING
-query, not from your data.
+**Unsupported entities.** The model is instructed to ground claims in the supplied table, but it can still produce incorrect output. Before quoting a report, check that every gene named in the narrative appears in the `geneID` (or, for GSEA, `core_enrichment`) column and every pathway named appears in `Description`. If `add_ppi = TRUE`, identify the cited edges as STRING evidence, not measurements from the experiment.
 
 **`n_pathways`.** Only the top `n_pathways` terms (default 20) are sent to the
 model, ordered by adjusted p-value (`p.adjust`, falling back to `pvalue`).
@@ -698,7 +464,7 @@ watch spend while you tune `n_pathways` and `max_tokens`.
 
 **`add_ppi`.** Setting `add_ppi = TRUE` queries STRING for the genes in the top
 terms and injects the edge list into the prompt, which lets the model identify
-functional modules rather than isolated genes. It requires network access, adds
+functional modules from individual genes. It requires network access, adds
 latency, and is a second failure point; the query is wrapped so that a STRING
 outage degrades to "no network evidence" instead of an error. Leave it at its
 default (`FALSE`) unless module-level reasoning is what you need.
@@ -718,25 +484,16 @@ GSEA ranked list was built so that positive means "up in the condition of
 interest", say so in `context` -- otherwise the model has to guess the
 orientation.
 
-**Validating a report before trusting it.** Treat the output as a first draft
-from a competent but over-eager collaborator. The minimum checks are the two
-above (every gene and pathway exists in the input); beyond that, ask whether the
-narrative is *falsifiable* by your data -- if it claims a mechanism, is there a
-term or gene in the table that could have contradicted it? A report that only
-restates the pathway names in longer sentences has added no information, and
-sharpening `context` or raising `n_pathways` is usually the fix.
+Treat the output as an unverified draft. Check every gene and pathway named in the narrative against the input table; then assess whether each mechanistic statement has supporting evidence.
 
 ## Worked Example: From Enrichment to a Report
 
-This example runs end to end: it builds a GSEA result offline from the `geneList`
-shipped with `DOSE`, interprets it with a specific `context`, and prints the
-report. It is the `interpret()` counterpart of the `interpret_agent()` call that
-users often start from; `interpret_agent()` itself is kept disabled on this page
-because it makes several LLM calls per build.
+This example builds a GSEA result offline from the `geneList` shipped with `DOSE`, passes a defined `context` to `interpret()`, and renders the returned report. The `interpret_agent()` example above is disabled because it makes multiple model calls.
 
 ```{r}
 #| label: interpret-worked-example
 #| eval: !expr has_ai
+#| results: asis
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
@@ -774,7 +531,7 @@ if (interpret_failed(report)) {
          report$overview)
 }
 
-report
+cat(render_interpretation_blocks(report), sep = "\n")
 ```
 
 The printed report follows the schema described at the top of this chapter. Read
@@ -790,4 +547,10 @@ it in this order:
 5.  **7. Refined Regulatory Network** -- populated only when the model can
     support edges; `plot(report)` draws the same network with `ggtangle` when it
     is available.
+
+## Next steps
+
+- For the preceding evidence objects, see [evidence integration](03-evidence-integration.qmd).
+- For a reproducible hand-off, record the analysis in the [reference appendix](appendix.qmd).
+- Keep optional AI assistance after statistical checking and external evidence review.
 

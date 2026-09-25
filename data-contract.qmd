@@ -1,0 +1,156 @@
+# Data contracts for enrichment analysis {#data-contract}
+
+Enrichment functions are easiest to use when the input has an explicit **data contract**: what one element represents, which identifier namespace it uses, and what population is eligible for testing. The same contract also explains why `clusterProfiler` and `enrichplot` return several related S4 classes.
+
+## The five objects to keep separate
+
+| Object | What it represents | Typical R form | Used by |
+|---|---|---|---|
+| **Gene vector** | A thresholded set of genes; order has no meaning | `character` vector of IDs | ORA functions such as `enrichGO()` and `enricher()` |
+| **Ranked list** | One numeric statistic per gene; order and sign carry meaning | Named numeric vector | GSEA functions such as `gseGO()` and `GSEA()` |
+| **Universe** | The genes that could have appeared in the selected list | `character` vector of IDs | The denominator/background for ORA |
+| **TERM2GENE** | The membership relation between a term and a gene | Two-column `data.frame` | Custom ORA/GSEA with `enricher()` or `GSEA()` |
+| **TERM2NAME** | Optional human-readable name for each term | Two-column `data.frame` | Labels custom terms in result tables and plots |
+
+These objects are related, but they are not interchangeable. A ranked list is not a gene vector, and a list of all genes in an annotation database is not automatically the experimental universe.
+
+## Gene vectors: sets for a cut-off question
+
+A gene vector is a character vector of identifiers. It answers a question such as:
+
+> Among the genes called selected by my rule, which terms occur more often than expected?
+
+The vector should use one identifier type throughout, contain no missing values, and normally contain one entry per biological gene. The following example uses Entrez Gene IDs because that is the identifier namespace used by the bundled `DOSE::geneList` data and supported by `org.Hs.eg.db`.
+
+```{r}
+# A gene vector has no scores and no meaningful order.
+gene <- c("7157", "1956", "5290", "4609")
+gene <- unique(gene[!is.na(gene) & nzchar(gene)])
+is.character(gene)
+```
+
+For an expression-derived ranking, a cut-off can be made explicit. Keep the rule in the analysis record because changing it changes the biological question.
+
+```{r}
+data(geneList, package = "DOSE")
+geneList <- sort(geneList, decreasing = TRUE)
+gene <- names(geneList)[abs(geneList) >= 2]
+```
+
+A gene vector is sufficient for ORA, but it is not sufficient for a defensible background. The next object supplies that background.
+
+## Ranked lists: preserve the statistic, not just the winners
+
+A ranked list is a named numeric vector. Names are gene IDs; values are the statistic used to rank genes (for example, a signed log fold change, a test statistic, or a signed correlation). GSEA uses the complete list, including genes that would not pass a threshold.
+
+```{r}
+data(geneList, package = "DOSE")
+geneList <- geneList[is.finite(geneList)]
+geneList <- geneList[!duplicated(names(geneList))]
+geneList <- sort(geneList, decreasing = TRUE)
+
+stopifnot(is.numeric(geneList), !is.null(names(geneList)))
+stopifnot(!anyNA(names(geneList)), !anyDuplicated(names(geneList)))
+head(geneList)
+```
+
+The sign must have an interpretation. With a signed statistic, the top and bottom of the list represent opposite directions. With an all-positive evidence score, only the top of the list has a directional meaning; use a one-sided GSEA setting when the method supports it rather than inventing a negative direction.
+
+Do not turn a ranked list into a gene vector merely because a function requires one. If the scientific question is about a coordinated shift across many genes, use GSEA and retain the ranking.
+
+## Universe: the eligible population
+
+For ORA, the **universe** is the set of genes that could have been selected in the experiment. It is usually the set that passed the measurement, filtering, and identifier-mapping steps—not every gene in the annotation database. If the experiment measured 12,000 genes, genes never measurable in that experiment should not increase the denominator.
+
+```{r}
+data(geneList, package = "DOSE")
+geneList <- sort(geneList, decreasing = TRUE)
+universe <- names(geneList)
+selected <- names(geneList)[abs(geneList) >= 2]
+
+stopifnot(is.character(universe))
+stopifnot(all(selected %in% universe))
+```
+
+Pass the universe as character IDs. A numeric vector such as `as.numeric(universe)` is not the same contract: enrichment functions match identifiers as strings, so coercing IDs to numbers can discard the background and silently change the test. Also remove duplicated IDs before analysis.
+
+The universe affects the expected overlap and therefore the p-value. Record how it was constructed, the identifier type, and any filtering rule alongside the result.
+
+## TERM2GENE and TERM2NAME: a custom annotation contract
+
+When an annotation is not supplied by an `OrgDb` package, represent it as two tables:
+
+* `TERM2GENE` has one row per term–gene membership. Column 1 is a term ID and column 2 is a gene ID.
+* `TERM2NAME` has one row per term ID and its display name. It is optional, but makes result tables readable.
+
+A term can have many genes, and a gene can belong to many terms, so repeated term IDs and repeated gene IDs across different terms are expected.
+
+```{r}
+TERM2GENE <- data.frame(
+  term = c("T_A", "T_A", "T_A", "T_B", "T_B", "T_C"),
+  gene = c("7157", "1956", "5290", "4609", "7157", "672"),
+  stringsAsFactors = FALSE
+)
+
+TERM2NAME <- data.frame(
+  term = c("T_A", "T_B", "T_C"),
+  name = c("DNA damage response", "cell-cycle control", "example term C"),
+  stringsAsFactors = FALSE
+)
+
+stopifnot(ncol(TERM2GENE) == 2, ncol(TERM2NAME) == 2)
+stopifnot(all(TERM2GENE[[1]] %in% TERM2NAME[[1]]))
+```
+
+The gene IDs in `TERM2GENE`, the selected gene vector, and the universe must use the same namespace. If the annotation uses symbols but the input uses Entrez IDs, map one side before testing; do not expect a text label conversion to repair a namespace mismatch.
+
+Custom tables are consumed locally:
+
+```{r eval=FALSE}
+library(clusterProfiler)
+custom_ora <- enricher(
+  gene = selected,
+  universe = universe,
+  TERM2GENE = TERM2GENE,
+  TERM2NAME = TERM2NAME
+)
+custom_gsea <- GSEA(
+  geneList = geneList,
+  TERM2GENE = TERM2GENE,
+  TERM2NAME = TERM2NAME,
+  verbose = FALSE
+)
+```
+
+## Result classes: analysis objects, not just output tables
+
+`clusterProfiler` returns structured objects that keep the tested terms, gene-to-term mapping, ratios, p-values, and analysis metadata together:
+
+| Class | Created by | Main question | Typical plots |
+|---|---|---|---|
+| `enrichResult` | `enrichGO()`, `enricher()`, `enrichDO()` | Are terms over-represented in a selected gene vector? | `barplot()`, `dotplot()`, `cnetplot()`, `emapplot()` |
+| `gseaResult` | `gseGO()`, `GSEA()`, `gseDO()` | Is a term shifted toward one end of a ranked list? | `gseaplot2()`, `ridgeplot()`, `dotplot()`, `cnetplot()` |
+| `compareClusterResult` | `compareCluster()` | How do enrichment profiles differ across gene groups? | `dotplot()`, `cnetplot()`, `treeplot()` |
+
+Convert a result to a data frame when exporting or joining it with another table, but keep the original object for visualization. A bare table of pathway statistics does not contain enough information for functions such as `cnetplot()` or `gseaplot2()` to reconstruct gene–term membership.
+
+```{r eval=FALSE}
+ora_table <- as.data.frame(ora_result)
+gsea_table <- as.data.frame(gsea_result)
+write.csv(ora_table, "ora-results.csv", row.names = FALSE)
+write.csv(gsea_table, "gsea-results.csv", row.names = FALSE)
+```
+
+`setReadable()` changes how mapped IDs are displayed; it does not change the underlying enrichment question. Apply it after the analysis when symbols make a table easier to read, and retain the original ID namespace in the analysis record.
+
+## A compact pre-flight checklist
+
+Before running an enrichment function, verify:
+
+1. **Question:** Is this a thresholded set (ORA) or a complete ranking (GSEA)?
+2. **Namespace:** Are all IDs, including the universe and annotation tables, in the same key type?
+3. **Uniqueness:** Have missing and duplicated IDs been handled explicitly?
+4. **Background:** Does the universe describe genes that could actually have been selected?
+5. **Object:** Are you retaining `enrichResult`, `gseaResult`, or `compareClusterResult` rather than only a printed table?
+
+The next chapter applies these contracts to one offline, end-to-end example.

@@ -1,0 +1,210 @@
+
+# Manipulating enrichment result objects {#clusterProfiler-dplyr}
+
+| Aspect | Result-object manipulation |
+|---|---|
+| **Question** | How can a result be filtered, ordered, summarized, or made readable without losing the gene–term structure needed downstream? |
+| **Input** | `enrichResult`, `gseaResult`, or `compareClusterResult` objects plus explicit filtering rules. |
+| **Functions** | `as.data.frame()`, `dplyr` verbs, `geneInCategory()`, `setReadable()`, and result-object accessors. |
+| **Output** | A checked object or derived table for plotting/export; retain the original S4 object as the analysis record. |
+| **Limitations** | A table alone does not reconstruct all object metadata or gene–term membership. Readable labels change display, not the underlying statistical test. |
+
+Use this chapter after enrichment and before redundancy reduction, comparison, visualization, or interpretation. For input/background decisions, see the [data contract](data-contract.qmd#data-contract).
+
+
+```{r}
+#| label: load-packages
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+library(ReactomePA)
+library(DOSE)
+library(forcats)
+library(enrichplot)
+library(dplyr)
+
+library(ggplot2)
+theme_set(theme_grey())
+
+select <- clusterProfiler:::select.enrichResult
+slice <- clusterProfiler:::slice.enrichResult
+```
+
+
+```{r}
+#| label: enrichDO-example
+library(DOSE)
+data(geneList)
+de = names(geneList)[1:100]
+x = enrichDO(de)
+```
+
+## filter
+
+```{r}
+#| label: filter-example
+filter(x, p.adjust < .05, qvalue < 0.2)
+```
+
+## arrange
+```{r}
+#| label: arrange-example
+mutate(x, geneRatio = parse_ratio(GeneRatio)) %>%
+  arrange(desc(geneRatio))
+```
+
+## select
+
+```{r}
+#| label: select-example
+select(x, -geneID) %>% head
+```
+
+## mutate {#sec-mutate}
+
+
+```{r}
+#| label: fig-dot-richfactor  
+#| fig-width: 7
+#| fig-height: 7
+#| fig-scap: |
+#|   Visualizing rich factor of enriched terms using lolliplot.
+#| fig-cap: |
+#|   **Visualizing rich factor of enriched terms using lolliplot.** 
+
+
+# k/M
+y <- mutate(x, richFactor = Count / as.numeric(sub("/\\d+", "", BgRatio)))
+y
+
+library(ggplot2)
+library(forcats)
+library(enrichplot)
+
+ggplot(y, showCategory = 20, 
+  aes(richFactor, fct_reorder(Description, richFactor))) + 
+  geom_segment(aes(xend=0, yend = Description)) +
+  geom_point(aes(color=p.adjust, size = Count)) +
+  scale_color_viridis_c(guide=guide_colorbar(reverse=TRUE)) +
+  scale_size_continuous(range=c(2, 10)) +
+  theme_minimal() + 
+  xlab("rich factor") +
+  ylab(NULL) + 
+  ggtitle("Enriched Disease Ontology")
+```
+
+
+A very similar concept is Fold Enrichment, which is defined as the ratio of two proportions, (k/n) / (M/N):
+
+```r
+mutate(x, FoldEnrichment = parse_ratio(GeneRatio) / parse_ratio(BgRatio))
+```
+
+Note that an enrichment result **already carries these columns**, so the `mutate()` calls above are demonstrations of the arithmetic rather than something you have to do:
+
+```{r}
+#| eval: false
+head(as.data.frame(x)[, c("ID", "GeneRatio", "BgRatio", "RichFactor", "FoldEnrichment", "oddsRatio")])
+```
+
+`oddsRatio` is provided alongside them and is a different kind of effect size: `FoldEnrichment` compares two proportions, whereas the odds ratio is the effect size the hypergeometric (Fisher) test itself is built on. It comes from the 2x2 table
+
+```
+                 in gene set   not in gene set
+  in gene list       k             n - k
+  not in list      M - k      N - M - n + k
+```
+
+so `oddsRatio = k (N - M - n + k) / ((n - k) (M - k))`. Because this is the plain cross-product odds ratio, it differs slightly from `fisher.test()$estimate`, which reports the *conditional* MLE (the two are close but not identical).
+
+Here, the calculation of rich factor and fold enrichment is only for demonstration purposes. The `enrichplot` package provides the `dotplot` function that can directly visualize these values without adding them to the enrichment result.
+
+## slice
+
+We can use `slice` to choose rows by their ordinal position in the enrichment result. Grouped result use the ordinal position with the group.
+
+In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in @fig-dot-sliceNES.
+
+
+
+```{r}
+#| label: fig-dot-sliceNES  
+#| fig-width: 9
+#| fig-height: 5
+#| fig-scap: |
+#|   Choose pathways by ordinal positions.
+#| fig-cap: |
+#|   **Choose pathways by ordinal positions.** 
+
+
+library(ReactomePA)
+x <- gsePathway(geneList)
+
+
+y <- arrange(x, abs(NES)) %>% 
+        group_by(sign(NES)) %>% 
+        slice(1:5)
+
+library(forcats)
+library(ggplot2)
+library(enrichplot)
+
+ggplot(y, aes(NES, fct_reorder(Description, NES), fill=qvalue), showCategory=10) + 
+    geom_col(orientation='y') + 
+    scale_fill_continuous(low='red', high='blue', guide=guide_colorbar(reverse=TRUE)) + 
+    theme_minimal() + ylab(NULL)
+```
+
+
+## summarise
+
+
+
+```{r}
+#| label: fig-p-bar  
+#| fig-width: 8
+#| fig-height: 6
+#| fig-scap: |
+#|   Distribution of adjusted p-values.
+#| fig-cap: |
+#|   **Distribution of adjusted p-values.** 
+#| eval: false
+#| 
+library(ggplot2)
+
+pbar <- function(x) {
+  pi=seq(0, 1, length.out=11)
+
+  mutate(x, pp = cut(p.adjust, pi)) |>
+    group_by(pp) |>
+    summarise(cnt = n()) |> 
+    ggplot(aes(pp, cnt)) + geom_col() + 
+    theme_minimal() +
+    xlab("p value intervals") +
+    ylab("Frequency") + 
+    ggtitle("p value distribution")
+}    
+
+x <- enrichDO(de, pvalueCutoff=1, qvalueCutoff=1)
+set.seed(2020-09-10)
+random_genes <- sample(names(geneList), 100)
+y <- enrichDO(random_genes, pvalueCutoff=1, qvalueCutoff=1)
+p1 <- pbar(x)
+p2 <- pbar(y)
+aplot::plot_list(p1, p2, ncol=1, tag_levels = 'A')
+```
+
+## Alternative filtering approaches
+
+While this chapter focuses on using `dplyr` verbs for manipulating enrichment results, users can also employ base R operations for filtering. For detailed information on using `[`, `[[`, and `$` operators with the `asis` parameter to preserve enrichment result objects, please refer to the [Data frame interface](identifier-utilities.qmd#data-frame-interface-for-accessing-enriched-results) section in the [Useful utilities](identifier-utilities.qmd#useful-utilities) chapter.
+
+The `dplyr` approach provides a more readable and chainable syntax for complex filtering operations, while base R operators offer familiarity for users accustomed to traditional data frame manipulation.
+
+## Next steps
+
+- After filtering or sorting, reduce redundancy with [semantic similarity](semantic-similarity.qmd).
+- Keep the result class for [visualization](enrichplot.qmd#sec-enrichplot) and [interpretation](interpretation.qmd#evidence-guided-interpretation).
+

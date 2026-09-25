@@ -1,0 +1,84 @@
+# From analysis to a reproducible report {#reproducible-report}
+
+A report should preserve the inputs, decisions, result objects, figures, and software context needed to reconstruct the analysis. A printed result table alone is not enough.
+
+## Record the analysis contract
+
+Keep the following with the report:
+
+- input file or accession and the preprocessing rule;
+- identifier namespace and mapping summary;
+- selected gene vector, complete ranking, and ORA universe;
+- `TERM2GENE` / `TERM2NAME` tables or the GSON file used;
+- organism, genome build, annotation/database release, and access date;
+- enrichment function, score type, cutoffs, multiple-testing method, and other parameters;
+- the complete result object, not only the rows shown in a figure.
+
+For external services, save the request parameters and returned table. For a live literature or pathway query, record the response date and service version when available.
+
+## Preserve objects and figures together
+
+Use canonical objects as the analysis record and derive tables and figures from them:
+
+```r
+saveRDS(
+    list(
+        ora = ora,
+        gsea = gsea,
+        input = list(
+            selected = selected,
+            universe = universe,
+            geneList = geneList
+        )
+    ),
+    file = "results/enrichment-objects.rds"
+)
+
+write.csv(
+    as.data.frame(ora),
+    "results/ora-results.csv",
+    row.names = FALSE
+)
+
+ggsave("figures/ora-dotplot.png", p_ora_dot, width = 8, height = 5, dpi = 300)
+```
+
+Keep the object and the exported table under the same analysis identifier. A readable copy made with `setReadable()` is useful for inspection, but it should not replace the original object.
+
+## Record the software context
+
+Save package versions and the R session used to create the report:
+
+```r
+writeLines(
+    capture.output(sessionInfo()),
+    "results/sessionInfo.txt"
+)
+```
+
+For a project that will be rerun, record the source commit, lockfile or environment specification, operating system, and any local database files. If a knowledge source is downloaded, keep its serialized copy or checksum alongside the analysis.
+
+## Report results with their scope
+
+A concise results section should state:
+
+1. what was tested and against which universe;
+2. which knowledge source and release were used;
+3. how terms were selected or reduced;
+4. which genes or leading-edge members support the retained terms;
+5. which claims are associations and which require independent validation.
+
+Figures should carry the filtering rule, color meaning, database identity, and relevant parameter values in their caption or accompanying metadata. Do not describe a term as a mechanism unless the result is supported by evidence beyond its annotation label.
+
+## A final delivery checklist
+
+- [ ] Input files and preprocessing steps are saved.
+- [ ] Identifier type, mapping loss, and universe are recorded.
+- [ ] Database or GSON source, release, and access date are recorded.
+- [ ] Original result objects and complete tables are preserved.
+- [ ] Reduction, comparison, and plotting parameters are recorded.
+- [ ] Figures can be regenerated from the saved objects.
+- [ ] Package versions, session information, and source commit are saved.
+- [ ] Interpretation distinguishes association from mechanism and notes external validation needs.
+
+Use [How to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment) before drafting the interpretation, and see [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation) for the optional evidence-synthesis layer.

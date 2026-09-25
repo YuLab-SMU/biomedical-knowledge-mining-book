@@ -1,0 +1,373 @@
+# GSON: the knowledge representation and exchange layer {#sec-gson}
+
+```{r}
+#| label: gson-load-packages
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: false
+
+source("_common.R")
+```
+
+A functional enrichment workflow has two different jobs:
+
+1. **the analysis engine** tests whether gene sets are enriched; and
+2. **the knowledge layer** defines which terms, pathways, diseases, or other
+   biological concepts belong to which genes.
+
+These jobs should not be confused. `enricher()` and `GSEA()` provide enrichment
+interfaces, whereas a gene-set resource provides the biological knowledge that
+those interfaces test. The `r Biocpkg("gson")` package supplies a standard way
+to represent that knowledge and to move it between data sources, analysis
+functions, and machines.
+
+## Chapter overview
+
+| Aspect | GSON knowledge layer |
+|---|---|
+| **Questions** | How can gene-set knowledge be represented, versioned, shared, combined, and passed to enrichment interfaces? |
+| **Input** | Term/gene mappings plus metadata such as names, species, identifier type, source, and release/version. |
+| **Methods** | Knowledge packaging, exchange, serialization, named multi-resource collections, and integration with ORA/GSEA; GSON is not a statistical test. |
+| **Main functions** | `gson_KEGG()`, `gson_WP()`, `gson_GO()`, `gson()`, `write.gson()`, `read.gson()`, `gsonList()`, `enricher()`. |
+| **Output** | Portable `GSON` objects/files and named `gsonList` collections for generalized enrichment. |
+| **Main limitations** | Converter availability and metadata arguments vary by package version; verify API and retain provenance. Combined resources remain biologically distinct. |
+
+## What GSON represents
+
+GSON means **Gene Set Object Notation**. The `r Biocpkg("gson")` package
+defines the `GSON` class for storing gene-set information together with the
+metadata needed to interpret and reuse it. A GSON object is therefore more
+than a two-column `TERM2GENE` table: it is a portable knowledge resource that
+can retain information about the source, species, identifiers, and the version
+or release from which the gene sets were obtained.
+
+This separation is useful in practice. The same enrichment engine can be used
+with GO, KEGG, WikiPathways, a disease collection, a cell-marker catalogue, or
+a project-specific annotation table. Only the knowledge object changes; the
+statistical question and the downstream result workflow can remain the same.
+
+::: {.callout-note}
+GSON is a **knowledge representation and exchange layer**, not a new
+statistical enrichment test. ORA, GSEA, network-aware enrichment, and other
+methods still determine how evidence is evaluated. GSON determines the
+knowledge that is evaluated.
+:::
+
+## Obtaining a GSON object
+
+`clusterProfiler` and related packages expose helper functions whose names
+usually start with `gson_`. The available helpers depend on the installed
+package versions. R's completion facilities and package help are the safest
+way to discover the current set of helpers.
+
+The following helpers are used in the existing knowledge-mining workflows:
+
+- `gson_KEGG()` downloads KEGG pathway and module data for an organism;
+- `gson_WP()` obtains WikiPathways data;
+- `gson_GO()` obtains Gene Ontology data from an `OrgDb` and ontology choice;
+- `gson::gson()` can be used to construct a GSON object from user-provided
+  tables.
+
+For example, a KEGG knowledge resource can be downloaded and frozen locally:
+
+```{r}
+#| label: gson-kegg-local
+#| eval: false
+
+library(gson)
+library(clusterProfiler)
+
+# Download KEGG data for human.
+kk_gson <- gson_KEGG(species = "hsa")
+
+# Write the GSON object to a portable file.
+write.gson(kk_gson, file = "kegg_hsa.gson")
+
+# Read the same knowledge resource back on another machine.
+kk_gson <- read.gson("kegg_hsa.gson")
+```
+
+The download step may require network access, but the analysis step does not
+have to repeat that download once the GSON file has been transferred to the
+analysis machine. This is particularly useful on compute servers with limited
+network access and in projects that need to preserve the knowledge release used
+for a publication.
+
+## The relationship with `enricher()` and `GSEA()`
+
+A GSON object is consumed by the enrichment layer. The existing generalized
+enrichment interface passes a GSON object, or a collection of GSON objects, to
+`enricher()` through the `gson` argument:
+
+```{r}
+#| label: gson-enricher
+#| eval: false
+
+library(gson)
+library(clusterProfiler)
+
+data(geneList, package = "DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+kk_gson <- gson_KEGG(species = "hsa")
+
+# The GSON object supplies the terms and gene membership tested by enricher().
+res <- enricher(gene = gene, gson = kk_gson)
+```
+
+The same conceptual separation applies to GSEA: a ranked gene list is the
+statistical input, while the GSON object supplies the gene sets against which
+the ranking is tested. The existing KEGG workflow documents that a GSON object
+or a saved GSON file can be used by `enricher()` and `GSEA()` through the
+`gson` interface (or by parsing the resource in the installed version).
+
+Because the exact generalized `GSEA()` argument names can vary with the
+installed `clusterProfiler`/`gson` versions, this chapter does not hard-code an
+unverified call signature. Check the local help before running a generalized
+GSEA workflow:
+
+```{r}
+#| label: gson-gsea-api-check
+#| eval: false
+
+library(gson)
+library(clusterProfiler)
+
+?GSEA
+?gson::gson
+
+# The installed version documents how to pass a GSON object or file to GSEA.
+# Do not replace this with an unverified TERM2GENE or gson argument without
+# checking the help for the versions used in the analysis.
+```
+
+For a KEGG-specific workflow, the existing API also supports passing a local
+GSON object to the KEGG wrappers:
+
+```{r}
+#| label: gson-kegg-wrappers
+#| eval: false
+
+# `kk_gson` is created with gson_KEGG() above, or read from a saved file.
+kk <- enrichKEGG(gene = gene, organism = kk_gson)
+kk2 <- gseKEGG(geneList = geneList, organism = kk_gson)
+```
+
+The wrapper form and the generalized form serve the same reproducibility goal:
+the analysis uses a local, explicit knowledge resource instead of silently
+retrieving a changing online database during every run.
+
+## Combining knowledge bases with `gsonList`
+
+Many biological questions are not well served by one database. GO may provide
+broad functional coverage, KEGG may provide pathway and module structure, and
+WikiPathways may contain a complementary collection of curated pathways. A
+`gsonList` combines named GSON objects so that the same input can be evaluated
+against several knowledge bases in one generalized enrichment workflow.
+
+The following example is the multi-resource pattern documented in the existing
+chapter. The exact download requirements depend on the current releases of the
+individual resources:
+
+```{r}
+#| label: gson-list
+#| eval: false
+
+library(gson)
+library(clusterProfiler)
+
+# Prepare or download the individual knowledge resources.
+kegg_gson <- gson_KEGG(species = "hsa")
+wp_gson <- gson_WP(species = "Homo sapiens")
+go_gson <- gson_GO(
+    OrgDb = org.Hs.eg.db,
+    keyType = "ENTREZID",
+    ont = "BP"
+)
+
+# Keep stable names so that the output can be traced back to its source.
+gsons <- gsonList(
+    kegg = kegg_gson,
+    wp = wp_gson,
+    go = go_gson
+)
+
+data(geneList, package = "DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+# Run one generalized enrichment request across the named resources.
+res <- enricher(gene = gene, gson = gsons)
+```
+
+When `enricher()` receives a `gsonList`, the result is organized by the named
+input resources. Each component corresponds to one knowledge base and can be
+accessed by name or by position. Naming the resources explicitly is preferable
+to relying on numeric positions because it makes reports and later audits
+readable.
+
+The results can also be visualized together. `enrichplot` provides
+`autofacet()` for faceting a multi-resource result by knowledge base:
+
+```{r}
+#| label: gson-list-plot
+#| eval: false
+
+library(enrichplot)
+
+dotplot(res) + autofacet()
+```
+
+A combined display is useful for comparison, but it does not make the
+knowledge bases interchangeable. A GO term, a KEGG pathway, and a WikiPathways
+pathway may differ in granularity, annotation coverage, update schedule, and
+biological interpretation. The database identity should remain visible in the
+result and in the figure.
+
+## Custom knowledge bases
+
+The main benefit of a generalized knowledge layer is that the same workflow can
+also use annotations that are not shipped as a standard organism database.
+Examples include:
+
+- a custom annotation generated for a non-model organism;
+- a project-specific collection of marker genes;
+- a locally curated pathway catalogue;
+- a versioned export from an external resource; and
+- a reduced or specialised ontology used for a particular experiment.
+
+The `gson::gson()` constructor is the documented entry point for manually
+creating a GSON object from user data. The exact constructor arguments should
+be checked against the installed package because the accepted metadata fields
+are part of the package API and may evolve:
+
+```{r}
+#| label: custom-gson
+#| eval: false
+
+library(gson)
+
+# Build TERM2GENE and (optionally) TERM2NAME tables from the project resource.
+# term2gene <- data.frame(term = ..., gene = ...)
+# term2name <- data.frame(term = ..., name = ...)
+
+# The constructor is intentionally shown as a checked API boundary. Consult
+# ?gson::gson for the current argument names and required metadata fields.
+# custom_gson <- gson::gson(
+#     TERM2GENE = term2gene,
+#     TERM2NAME = term2name,
+#     ...
+# )
+```
+
+If the current `gson::gson()` interface is not suitable for a particular
+custom table, the same annotations can still be used through the standard
+`TERM2GENE`/`TERM2NAME` interface of `enricher()` or `GSEA()`. In that case,
+record the source, identifier type, organism, filtering rules, and release in
+the analysis metadata even though the table is not yet packaged as GSON.
+
+A useful rule is:
+
+> Use a plain annotation table for a one-off exploratory test; promote it to a
+> versioned GSON object when it will be shared, reused, combined with other
+> resources, or cited in a report.
+
+## Versioning, metadata, and reproducibility
+
+Knowledge bases change independently of the code used to analyze them. A
+reproducible enrichment result therefore requires more than the R script and
+p-value cutoff. At minimum, preserve:
+
+- the GSON file or an immutable copy of the source tables;
+- the resource name and release or download date;
+- species and identifier type;
+- the source URL or package that produced the resource;
+- any filtering, ID conversion, or deduplication applied to the annotation;
+- the `clusterProfiler`, `gson`, and related package versions;
+- the analysis method, background universe, thresholds, and random seeds where
+  applicable; and
+- the names used in a `gsonList` when multiple resources are combined.
+
+The simplest local-freezing workflow is to write the GSON object once and read
+it during analysis:
+
+```{r}
+#| label: gson-reproducible-freeze
+#| eval: false
+
+library(gson)
+
+# On a machine with access to the remote resource:
+kk_gson <- gson_KEGG(species = "hsa")
+write.gson(kk_gson, file = "knowledge/kegg_hsa.gson")
+
+# On the analysis server or in a later rerun:
+kk_gson <- read.gson("knowledge/kegg_hsa.gson")
+```
+
+For larger projects, keep the GSON files under version control or an archival
+storage system alongside a small manifest. The manifest should state which file
+was used for which analysis and should not rely only on a mutable database URL.
+If the project uses `gsonList`, save every component and the list of names, not
+only the final enrichment table.
+
+## Where GSON fits in the toolchain
+
+GSON makes the boundaries between the layers explicit:
+
+```text
+custom or remote knowledge source
+                ↓
+       GSON object / GSON file
+                ↓
+       gsonList (optional)
+                ↓
+  enricher() / GSEA() / package wrappers
+                ↓
+ enrichment result objects and plots
+                ↓
+  interpretation and reproducible report
+```
+
+This architecture has three practical consequences:
+
+1. **The analysis engine can be reused.** The same ORA or GSEA logic can work
+   across multiple knowledge resources.
+2. **The knowledge resource can be frozen.** A saved GSON file separates a
+   publication or pipeline run from future changes in an online database.
+3. **The resource can be shared.** A custom annotation can be distributed as a
+   named, documented object rather than as an unexplained pair of data frames.
+
+GSON is therefore the bridge between biological knowledge and the rest of the
+biomedical knowledge-mining toolkit. It allows GO, KEGG, WikiPathways,
+project-specific annotations, and other compatible resources to enter a common
+workflow without pretending that they are the same biological evidence.
+
+## Summary
+
+- `gson` defines the `GSON` class for portable gene-set knowledge and metadata.
+- Helper functions such as `gson_KEGG()`, `gson_WP()`, and `gson_GO()` create
+  resource-specific GSON objects.
+- `write.gson()` and `read.gson()` support local freezing and offline reuse.
+- `gsonList()` combines named knowledge bases for generalized enrichment.
+- `enricher()` consumes a GSON object or `gsonList` through the generalized
+  knowledge interface; GSEA uses the same separation between ranked evidence
+  and gene-set knowledge, with the exact installed-version call documented by
+  `GSEA` help.
+- `gson::gson()` provides the entry point for custom knowledge resources, but
+  its constructor arguments should be checked in the installed version.
+- Resource identity, version, metadata, and the saved GSON files are part of a
+  reproducible analysis record.
+
+The next steps are to inspect the enrichment result, compare or reduce
+redundant terms, and choose a visualization appropriate to the question. See
+the chapters on result objects, semantic similarity, and `enrichplot` for those
+operations.
+
+## Next steps
+
+- To analyze custom or unsupported annotations, see [universal enrichment](universal-enrichment.qmd#universal-api).
+- For knowledge-source examples, see [GO](go-enrichment.qmd#clusterprofiler-go) or [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg).
+- For result visualization, continue to the [visualization map](enrichplot.qmd#sec-enrichplot).
+
+## References {-}

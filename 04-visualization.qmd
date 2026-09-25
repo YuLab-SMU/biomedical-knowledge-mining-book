@@ -1,0 +1,14 @@
+# Visualize and communicate results {-}
+
+This part turns enrichment results into readable, comparable, and reproducible figures. Choose a plot by the question it answers, not by the number of functions available in `enrichplot`.
+
+| Question | Useful view |
+|---|---|
+| Which terms are strongest and how many genes support them? | Bar plot or dot plot |
+| Which genes connect several terms? | Gene–concept network (`cnetplot()`) |
+| Which terms overlap with one another? | Enrichment map or tree plot |
+| Which terms are shifted along a ranking? | GSEA, ridge, or running-score plots |
+| How do groups differ? | CompareCluster dot, network, or profile plots |
+| Can an external result be shown in the same grammar? | Import and normalize the result, then plot it |
+
+The detailed [enrichplot chapter](enrichplot.qmd#sec-enrichplot) contains the plotting API. For external service outputs, see [importing and visualizing results](enrichplot-import.qmd#sec-import-other-tools). Keep the result object, filtering rule, color meaning, database identity, and export parameters with every figure so that visual polish does not hide a change in the underlying evidence.

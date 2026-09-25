@@ -1,0 +1,219 @@
+# Comparing biological themes from multiple gene lists {#clusterprofiler-comparecluster}
+
+This chapter answers the comparison question: which biological themes differ among gene lists, clusters, or experimental groups? `compareCluster()` reruns the same enrichment function for each group and returns one `compareClusterResult`, so the groups share an explicit analysis design and can be compared without treating independently generated p-values as if they were a common table.
+
+```{r include=FALSE}
+#| message: false
+#| cache: false
+source("_common.R")
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(DOSE)
+```
+
+## Chapter overview
+
+| Aspect | Comparison analysis |
+|---|---|
+| **Input** | A named list of gene vectors, or one gene-per-row data frame with formula grouping columns. |
+| **Engine** | One shared enrichment function (`enrichGO()`, `enrichKEGG()`, `GSEA()`, or another supported function) applied per group. |
+| **Output** | A `compareClusterResult` retaining group labels, terms, gene mappings, and per-group statistics. |
+| **Key limitation** | Groups must be compared under an explicit identifier namespace, universe/background, annotation source, and multiple-testing design. |
+
+The `r Biocpkg("clusterProfiler")` package was developed for biological theme comparison [@yu2012; @wu_clusterprofiler_2021], and it provides a function, `compareCluster`, to automatically calculate enriched functional profiles of each gene clusters and aggregate the results into a single object. Comparing functional profiles can reveal functional consensus and differences among different experiments and helps in identifying differential functional modules in omics datasets.
+
+## Comparing multiple gene lists
+
+The `compareCluster()` function applies selected function (via the `fun` parameter) to perform enrichment analysis for each gene list. 
+
+```{r}
+#| label: compare-multiple-gene-lists
+data(gcSample)
+str(gcSample) 
+```
+
+Users can use a named list of gene IDs as the input that passed to the `geneCluster` parameter. 
+
+```{r}
+#| label: compare-multiple-gene-lists-enrichGO
+ck <- compareCluster(geneCluster = gcSample, fun = enrichGO, 
+                    OrgDb = org.Hs.eg.db, ont="BP")
+ck <- setReadable(ck, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+head(ck) 
+```
+
+
+## Formula interface of compareCluster
+
+As an alternative to using named list, the `compareCluster()` function also supports passing a formula to describe more complicated experimental designs (*e.g.*, $Gene \sim time + treatment$).
+
+
+```{r}
+#| label: compare-formula
+data(geneList, package='DOSE')
+mydf <- data.frame(Entrez=names(geneList), FC=geneList)
+mydf <- mydf[abs(mydf$FC) > 1,]
+mydf$group <- "upregulated"
+mydf$group[mydf$FC < 0] <- "downregulated"
+mydf$othergroup <- "A"
+mydf$othergroup[abs(mydf$FC) > 2] <- "B"
+
+formula_res <- compareCluster(Entrez~group+othergroup, data=mydf, 
+                            fun=enrichGO, OrgDb = org.Hs.eg.db, ont="BP")
+  
+head(formula_res)
+```
+
+::: {.callout-note}
+**`compareCluster()` takes gene lists, not enrichment tables.** This is the
+single most common misunderstanding about the formula interface. Both the named
+list and the formula form expect **genes**, and `compareCluster()` runs the
+enrichment test itself, once per group:
+
+- `data` must be a data frame with **one row per gene** — a gene identifier
+  column, plus the grouping columns on the right-hand side of the formula.
+- The statistics in the result are computed by `fun` (`enrichGO()` here) from
+  each group's gene list. They are **not** carried over from any input table.
+
+So if you already have two tables of enrichment results (`ID`, `Description`,
+`GeneRatio`, `pvalue`, `p.adjust`, ...), there is nothing to join: those numbers
+were produced by whatever run created them, on whatever background, and
+`compareCluster()` has no way to reuse them. To compare the two conditions,
+combine the **gene lists** that produced those tables and let
+`compareCluster()` re-run the test:
+
+```{r eval=FALSE}
+## one row per gene, with a column naming the group it belongs to
+genes <- rbind(
+    data.frame(gene = condition_A_genes, group = "A"),
+    data.frame(gene = condition_B_genes, group = "B")
+)
+res <- compareCluster(gene ~ group, data = genes, fun = "enrichGO",
+                      OrgDb = org.Hs.eg.db, ont = "BP")
+```
+
+Re-running the test is not a limitation to work around — it is what makes the
+two columns comparable. Enrichment p-values depend on the gene list, the
+universe/background and the multiple-testing correction, so p-values computed
+separately for A and B are not on a common footing and plotting them side by
+side would be misleading.
+
+If you want to carry a *pre-computed* gene-level statistic into the comparison
+instead (a ranked list rather than a cut-off list), use the GSEA route:
+`compareCluster(..., fun = "gseGO")`.
+:::
+
+## Functional analysis of single-cell marker genes
+
+The `compareCluster()` function is highly versatile and can be directly integrated into single-cell analysis workflows. For example, after identifying marker genes for each cluster using `Seurat`, the results can be directly used for functional enrichment analysis.
+
+### Using Seurat results
+
+Typically, `FindAllMarkers()` from `Seurat` returns a data frame where rows are genes and columns include cluster information and statistical metrics.
+
+This example is wrapped in `retry()` (defined in `_common.R`) because its `fun` reaches the remote KEGG service, so a transient failure is retried a few times before giving up; the `enrichGO` examples further on stay unwrapped because they run locally.
+
+```{r eval=FALSE}
+#| label: sc-seurat-example
+library(Seurat)
+library(SeuratData)
+library(dplyr)
+library(clusterProfiler)
+
+# Load example data
+data("pbmc3k")
+sce <- pbmc3k.final
+
+# Identify marker genes
+sce.markers <- FindAllMarkers(object = sce, only.pos = TRUE, 
+                              min.pct = 0.25, 
+                              thresh.use = 0.25)
+
+# Filter markers
+markers <- sce.markers |> 
+    group_by(cluster) |> 
+    filter(p_val_adj < 0.001) |> 
+    ungroup()
+
+# ID conversion (if needed)
+gid <- bitr(unique(markers$gene), 'SYMBOL', 'ENTREZID', OrgDb = 'org.Hs.eg.db')
+markers <- full_join(markers, gid, by = c('gene' = 'SYMBOL'))
+
+# Perform comparison using formula interface
+x <- retry(compareCluster(ENTREZID ~ cluster, data = markers, fun = 'enrichKEGG'))
+
+# Visualization
+dotplot(x, label_format = 40) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+::: {.callout-note}
+**Enrichment plots need enrichment result objects, not a table of pathway
+statistics.** A frequent question is how to hand `enrichplot` a data frame of
+per-pathway statistics (`PValue`, `FDR`, `NES`, `logFC`, ...) obtained elsewhere.
+There is no way to do this directly: `dotplot()`, `gseaplot2()`, `ridgeplot()`
+and friends dispatch on `enrichResult` / `gseaResult` / `compareClusterResult`
+objects, and those carry the gene sets, the gene-to-set mapping and the
+background that the plots need. A bare table has none of that.
+
+The way in is to re-run the enrichment inside `clusterProfiler` on the same
+gene list and gene sets, which gives you an object the plotting functions
+understand:
+
+- **Cut-off gene list per cluster** (what `FindAllMarkers()` gives you) →
+  `compareCluster(ENTREZID ~ cluster, data = markers, fun = "enrichGO")`, then
+  `dotplot()` / `cnetplot()` / `emapplot()`, as above.
+- **A ranked list** (a statistic for every gene, not a cut-off list) →
+  `gseGO()` / `GSEA()`, then `gseaplot2()` / `ridgeplot()` / `gseaplot()`.
+
+If the statistics came from another tool (fgsea, GSEA desktop, a vendor
+report), re-running the equivalent analysis in `clusterProfiler` with the same
+gene list and gene sets is usually a couple of lines, and is the only way to get
+the object the visualisation layer requires.
+:::
+
+### Using COSG results
+
+Methods like `COSG` return marker genes as a list or data frame where columns represent clusters. Since a data frame is essentially a list of equal-length vectors, it can be passed directly to `compareCluster()`.
+
+```{r eval=FALSE}
+#| label: sc-cosg-example
+library(COSG)
+
+# Identify markers using COSG
+marker_cosg <- cosg(
+    sce,
+    groups = 'all',
+    assay = 'RNA',
+    slot = 'data',
+    mu = 1,
+    n_genes_user = 100
+)
+
+# The first element is a data frame of gene symbols
+# Columns correspond to clusters
+head(marker_cosg[[1]])
+
+# Directly use the data frame for enrichment
+y <- compareCluster(marker_cosg[[1]], 
+                    fun = 'enrichGO', 
+                    OrgDb = 'org.Hs.eg.db', 
+                    keyType = 'SYMBOL', 
+                    ont = "MF")
+
+# Visualization
+dotplot(y, label_format = 60) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+This demonstrates that `compareCluster()` can seamlessly handle various data structures commonly produced by single-cell analysis tools, simplifying the downstream functional interpretation.
+
+
+## Next steps
+
+- Visualize the resulting `compareClusterResult` with [comparison-aware dot and network plots](comparecluster-visualization.qmd#sec-comparecluster-visualization).
+- For generic comparison figures beyond `compareCluster()`, see [compare functional profiles](enrichplot-comparison.qmd#sec-visualization-comparison).
+- For term redundancy and organization, continue to [semantic similarity](semantic-similarity.qmd).
+- For biological reporting, see [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation).
+
+## References {-}

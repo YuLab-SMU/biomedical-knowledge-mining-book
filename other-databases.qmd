@@ -1,0 +1,194 @@
+# Analysis with Other Knowledge Bases
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+```
+
+
+## Chapter overview
+
+| Aspect | External and supplementary knowledge sources |
+|---|---|
+| **Questions** | How can WikiPathways and third-party enrichment services complement standard resources, and how can service results enter the common object workflow? |
+| **Input** | Organism-specific WikiPathways annotations or gene lists/tables accepted by services such as DAVID. |
+| **Methods** | WikiPathways ORA/GSEA; external service enrichment and result import/visualization. GSON packaging is covered separately. |
+| **Main functions** | `enrichWP()`, `gseWP()`, `get_wp_organisms()`, `enrichDAVID()`; see also import helpers in `enrichplot-import.qmd`. |
+| **Output** | Canonical enrichment objects where supported, or service-specific result tables for remote workflows. |
+| **Main limitations** | Remote availability, limits, schemas, and update cadence can change. Preserve queries/background details and cite the service; DAVID update cadence is a known limitation. |
+
+## WikiPathways analysis
+
+[WikiPathways](https://www.wikipathways.org) is a continuously updated pathway database curated by a community of researchers and pathway enthusiasts. WikiPathways produces monthly releases of GMT files for supported organisms at [data.wikipathways.org](http://data.wikipathways.org/current/gmt/). The `r Biocpkg("clusterProfiler")` package [@yu2012] supports enrichment analysis (either ORA or GSEA) for WikiPathways using the `enrichWP()` and `gseWP()` functions. These functions will automatically download and parse the latest WikiPathways GMT file for the selected organism.
+
+
+Supported organisms can be listed by. This query is network-backed, so it is disabled during the routine book build; run it explicitly when refreshing the supported-organism list.
+
+```{r get-wp-organisms}
+#| eval: false
+library(clusterProfiler)
+get_wp_organisms()
+```
+
+
+<!--
+
+
+Download the appropriate gmt file and then generate `TERM2GENE` and `TERM2NAME` to use `enricher()` and `GSEA()` functions. 
+
+Users can download WikiPathways manually:
+
+```r
+###################################
+# download file manually
+# 1. visit the website, http://data.wikipathways.org/current/gmt/, to get the url
+# 2. use the following code to download it
+####################################
+url <- "http://data.wikipathways.org/current/gmt/wikipathways-20200810-gmt-Homo_sapiens.gmt"
+wpgmtfile <- "wikiPathways-HS.gmt"
+download.file(url, destfile = wpgmtfile)
+```
+
+As an alternative to manually downloading gmt files, install the `r Biocpkg("rWikiPathways")` to gain scripting access to the latest gmt files using the `downloadPathwayArchive()` function.
+
+
+```r
+## supported organisms can be accessed via the following command:
+## rWikiPathways::listOrganisms()
+
+wpgmtfile <- rWikiPathways::downloadPathwayArchive(organism="Homo sapiens", format = "gmt")
+```
+
+Once the GMT file is downloaded, we can use `read.gmt.wp()` to parse it. Note that the `read.gmt.wp()` function is designed for WikiPathways GMT files. For ordinary GMT files, please use the `read.gmt()` function.
+
+```r
+wp2gene <- read.gmt.wp(wpgmtfile)
+#TERM2GENE
+wpid2gene <- wp2gene %>% dplyr::select(wpid, gene) 
+#TERM2NAME
+wpid2name <- wp2gene %>% dplyr::select(wpid, name) 
+
+ewp <- enricher(gene, TERM2GENE = wpid2gene, TERM2NAME = wpid2name)
+head(ewp)
+
+ewp2 <- GSEA(geneList, TERM2GENE = wpid2gene, TERM2NAME = wpid2name, verbose=FALSE)
+head(ewp2)
+```
+-->
+
+
+### WikiPathways over-representation analysis {#clusterprofiler-wikipathway-ora}
+
+`enrichWP()` and `gseWP()` download the WikiPathways GMT file over the network, and that download can fail transiently, so these calls are wrapped in `retry()` (defined in `_common.R`); feel free to drop the wrapper in your own analysis.
+
+```{r}
+#| label: enrichwp-example
+#| eval: false
+data(geneList, package="DOSE")
+gene <- names(geneList)[abs(geneList) > 2]
+
+retry(enrichWP(gene, organism = "Homo sapiens")) 
+```
+
+### WikiPathways gene set enrichment analysis {#clusterprofiler-wikipathway-gsea}
+
+
+```{r}
+#| label: gsewp-example
+#| eval: false
+retry(gseWP(geneList, organism = "Homo sapiens"))
+```
+
+
+If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](identifier-utilities.qmd#bitr) function to convert gene ID. If you want to convert the gene IDs in output result to gene symbols, you can use the `setReadable()` function, see also @sec-setReadable.
+
+
+## DAVID functional analysis
+
+[DAVID](https://david.ncifcrf.gov/) is a popular bioinformatics resource for functional annotation and enrichment analysis. Although we recommend using `enrichGO` and `enrichKEGG` which use up-to-date data maintained by Bioconductor, `r Biocpkg("clusterProfiler")` provides `enrichDAVID` to support DAVID analysis for users who prefer it.
+
+Users need to register an account on DAVID website and use the email address to access the web service.
+
+```{r}
+#| label: enrichdavid-example
+#| eval: false
+require(clusterProfiler)
+data(geneList, package="DOSE")
+gene = names(geneList)[abs(geneList) > 2]
+david = enrichDAVID(gene = gene, 
+                    idType="ENTREZ_GENE_ID", 
+                    listType="Gene", 
+                    annotation="KEGG_PATHWAY",
+                    david.user = "clusterProfiler@hku.hk")
+```
+
+The result can be visualized using the same functions as other enrichment results.
+
+```{r}
+#| label: visualize-david
+#| eval: false
+barplot(david)
+cnetplot(david, foldChange=geneList)
+```
+
+`barplot(david)` above is the ordinary `barplot()` generic: because `david` is an `enrichResult`, it dispatches to the `barplot.enrichResult()` method supplied by `r Biocpkg("enrichplot")`, which is what draws the enrichment bar chart. (The automatic code link on this page sends `barplot` to `graphics::barplot` because the class of `david` is not statically known in the chunk; the method that actually runs is `barplot.enrichResult()`.)
+
+### DAVID Web Service Limitations
+
+DAVID Web Service has the following limitations:
+
++ A job with more than 3000 genes to generate gene or term cluster report will not be handled by DAVID due to resource limit.
++ No more than 200 jobs in a day from one user or computer.
++ DAVID Team reserves right to suspend any improper uses of the web service without notice.
+
+For more details, please refer to [http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html](http://david.abcc.ncifcrf.gov/content.jsp?file=WS.html).
+
+### Custom Background
+
+The `enrichDAVID` function also supports a custom background (universe) using the `universe` parameter.
+
+```{r}
+#| label: enrichdavid-universe
+#| eval: false
+enrichDAVID(gene = gene,
+            universe = names(geneList),
+            idType = "ENTREZ_GENE_ID",
+            listType = "Gene",
+            annotation = "KEGG_PATHWAY")
+```
+
+### Comparing DAVID Functional Profiles
+
+Comparison of functional profiles among different gene clusters is also supported via `compareCluster`.
+
+```{r}
+#| label: compare-david
+#| eval: false
+data(gcSample)
+x=compareCluster(gcSample, fun="enrichDAVID", annotation="KEGG_PATHWAY")
+plot(x)
+```
+
+### Note on Data Updates
+
+
+As highlighted in a Nature Methods study (@wadi_impact_2016), DAVID has a very low update frequency, often going more than 5 years between updates, leading to a continuous decline in knowledge completeness. This means analysis results may only reflect outdated biological knowledge, which could introduce biases in current research. As shown in previous comparisons, using `clusterProfiler` with Bioconductor annotation data often yields more comprehensive results (more annotated genes and enriched pathways) compared to DAVID.
+
+## GSON knowledge packaging {#sec-gson-enrichment}
+
+The generalized enrichment interface is now documented in the dedicated [GSON chapter](gson.qmd). That chapter treats GSON as the knowledge representation and exchange layer: it explains how to create or download `GSON` objects, combine resources with `gsonList()`, freeze resources for reproducibility, and pass them to the enrichment and visualization layers.
+
+This chapter focuses on the remaining external databases and result-import workflows. Use GSON when the goal is to make a knowledge resource reusable, versioned, shareable, or combinable with other resources; use the external-resource sections below when the goal is to compare or import a result from a third-party service.
+
+## Next steps
+
+- For reusable, versioned resources, see [GSON](gson.qmd#sec-gson).
+- For network failures, service limits, and provenance records, see [external-service troubleshooting](troubleshooting.qmd#external-services).
+- To adapt external result schemas, see [result import](enrichplot-import.qmd#sec-import-other-tools).
+- For custom annotations beyond these connectors, see [universal enrichment](universal-enrichment.qmd#universal-api).
+
+## References {-}

@@ -65,6 +65,146 @@ retry_download <- function(url, destfile, ...) {
 }
 
 
+## Safe HTML formatting for live interpretation reports.
+##
+## The package print methods intentionally emit Markdown headings. That is useful
+## at the console, but unsafe in a Quarto `results: asis` chunk because those
+## headings become book-level TOC entries. These helpers render a structured
+## preview with HTML elements and keep the original print output escaped inside
+## a collapsed block.
+html_escape <- function(x) {
+  x <- paste(as.character(x), collapse = "\n")
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  x <- gsub('"', "&quot;", x, fixed = TRUE)
+  x
+}
+
+html_paragraphs <- function(x) {
+  x <- html_escape(x)
+  x <- gsub("\n[[:space:]]*\n", "</p><p>", x)
+  x <- gsub("\n", "<br />", x)
+  paste0("<p>", x, "</p>")
+}
+
+html_list <- function(x, empty = "<p>None returned.</p>") {
+  values <- unlist(x, use.names = FALSE)
+  values <- values[!is.na(values)]
+  if (!length(values)) {
+    return(empty)
+  }
+  paste0(
+    "<ul>",
+    paste0("<li>", vapply(values, html_escape, character(1)), "</li>", collapse = ""),
+    "</ul>"
+  )
+}
+
+html_named_fields <- function(x) {
+  if (is.null(x)) {
+    return("")
+  }
+  if (!is.list(x) || is.null(names(x))) {
+    return(html_paragraphs(x))
+  }
+  paste0(
+    vapply(seq_along(x), function(i) {
+      label <- names(x)[i]
+      value <- x[[i]]
+      if (is.list(value)) {
+        value <- paste(unlist(value, use.names = FALSE), collapse = ", ")
+      }
+      prefix <- if (!is.null(label) && nzchar(label)) {
+        paste0("<strong>", html_escape(label), ":</strong> ")
+      } else {
+        ""
+      }
+      paste0("<p>", prefix, html_escape(value), "</p>")
+    }, character(1)),
+    collapse = ""
+  )
+}
+
+html_report_field <- function(label, value, kind = c("text", "list", "named")) {
+  kind <- match.arg(kind)
+  body <- switch(
+    kind,
+    text = html_paragraphs(value),
+    list = html_list(value),
+    named = html_named_fields(value)
+  )
+  paste0("<p><strong>", html_escape(label), ":</strong></p>", body)
+}
+
+render_interpretation_block <- function(report, index = NULL) {
+  if (is.null(report)) {
+    return("<details class=\"interpretation-report\" open><summary>Empty interpretation report</summary></details>")
+  }
+
+  cluster <- if (!is.null(report$cluster)) report$cluster else NULL
+  confidence <- if (!is.null(report$confidence)) report$confidence else "Not returned"
+  raw <- paste(capture.output(print(report)), collapse = "\n")
+  fields <- character()
+
+  if (!is.null(report$cell_type)) {
+    title <- paste0("Cell type: ", report$cell_type)
+    if (!is.null(cluster)) title <- paste0("Cluster ", cluster, ": ", title)
+    fields <- c(
+      html_report_field("Cell type", report$cell_type),
+      if (!is.null(report$refinement_status)) html_report_field("Status", report$refinement_status),
+      html_report_field("Confidence", confidence),
+      html_report_field("Reasoning", if (!is.null(report$reasoning)) report$reasoning else "No reasoning returned."),
+      html_report_field("Supporting markers/pathways", report$markers, "list")
+    )
+  } else if (!is.null(report$phenotype)) {
+    title <- paste0("Phenotype: ", report$phenotype)
+    if (!is.null(cluster)) title <- paste0("Group ", cluster, ": ", title)
+    fields <- c(
+      html_report_field("Phenotype", report$phenotype),
+      html_report_field("Confidence", confidence),
+      html_report_field("Reasoning", if (!is.null(report$reasoning)) report$reasoning else "No reasoning returned."),
+      html_report_field("Key processes", report$key_processes, "list")
+    )
+  } else {
+    title <- if (!is.null(cluster)) paste0("Interpretation — cluster ", cluster) else "Interpretation report"
+    if (!is.null(report$overview)) fields <- c(fields, html_report_field("Overview", report$overview))
+    if (!is.null(report$regulatory_drivers)) fields <- c(fields, html_report_field("Regulatory drivers", report$regulatory_drivers, "list"))
+    if (!is.null(report$key_mechanisms)) fields <- c(fields, html_report_field("Key mechanisms", report$key_mechanisms, "named"))
+    if (!is.null(report$crosstalk)) fields <- c(fields, html_report_field("Crosstalk and interactions", report$crosstalk))
+    if (!is.null(report$hypothesis)) fields <- c(fields, html_report_field("Hypothesis", report$hypothesis, if (is.list(report$hypothesis)) "named" else "text"))
+    if (!is.null(report$narrative)) fields <- c(fields, html_report_field("Narrative draft", report$narrative))
+    if (!is.null(report$network_evidence)) fields <- c(fields, html_report_field("Network evidence", report$network_evidence))
+    if (!length(fields) && !is.null(report$overview)) fields <- html_paragraphs(report$overview)
+  }
+
+  if (!length(fields)) {
+    fields <- html_paragraphs("No structured fields were returned.")
+  }
+
+  paste0(
+    '<details class="interpretation-report" open>',
+    "<summary><strong>", html_escape(title), "</strong> <span class=\"interpretation-confidence\">(",
+    html_escape(confidence), ")</span></summary>",
+    '<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">',
+    paste(fields, collapse = ""),
+    '<details><summary>Raw object print</summary><pre><code>',
+    html_escape(raw),
+    "</code></pre></details>",
+    "</div></details>"
+  )
+}
+
+render_interpretation_blocks <- function(reports) {
+  is_single <- !is.list(reports) || inherits(reports, "interpretation") ||
+    !is.null(reports$cell_type) || !is.null(reports$phenotype) || !is.null(reports$overview)
+  items <- if (is_single) list(reports) else reports
+  paste(vapply(seq_along(items), function(i) {
+    render_interpretation_block(items[[i]], index = i)
+  }, character(1)), collapse = "\n")
+}
+
+
 ## Rasterise oversized figures.
 ##
 ## NOTE: do NOT enable this via `fig.process`. It is kept only for reference.

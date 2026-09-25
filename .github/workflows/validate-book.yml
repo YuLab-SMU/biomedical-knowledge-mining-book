@@ -1,0 +1,32 @@
+name: Validate book source
+
+on:
+  pull_request:
+    branches: [master, main]
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validate navigation and placeholders
+        run: python3 scripts/check_navigation.py
+
+      - name: Validate source and generated links
+        run: python3 scripts/check_links.py
+
+      - name: Check diff whitespace
+        run: git diff --check

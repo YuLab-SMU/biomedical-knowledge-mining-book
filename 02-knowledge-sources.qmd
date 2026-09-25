@@ -1,0 +1,27 @@
+# Connect biological knowledge {-}
+
+This part treats GO, KEGG, Reactome, disease, MeSH, pathway collections, and custom annotations as knowledge sources for one common analysis system. The analysis engine from Part 1 remains the same while the vocabulary, annotation coverage, update schedule, and biological interpretation change.
+
+## How to choose a knowledge source {-}
+
+| Need | Start with |
+|---|---|
+| Broad ontology-based functional coverage | [GO](go-enrichment.qmd#clusterprofiler-go) |
+| Curated pathways, modules, or compounds | [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg) or [Reactome](reactome-enrichment.qmd#reactomepa) |
+| Disease or phenotype concepts | [Disease enrichment](disease-enrichment.qmd#dose-enrichment) |
+| Literature-oriented biomedical concepts | [MeSH](mesh-enrichment.qmd#meshes-enrichment) |
+| A project-specific, unsupported, or multi-resource collection | [Universal enrichment](universal-enrichment.qmd#universal-api) and [GSON](gson.qmd#sec-gson) |
+| Genomic regions that must first be mapped to genes | [Genomic coordination enrichment](chipseeker-enrichment.qmd#chipseeker-enrichment) |
+
+## The shared knowledge contract {-}
+
+Every source should make its term-to-gene mapping, term names, identifier type, organism, release, and filtering rules explicit. A two-column `TERM2GENE` table is enough for an exploratory analysis; a versioned [GSON object](gson.qmd#sec-gson) is preferable when the knowledge will be reused, shared, combined, or cited.
+
+The domain chapters use the same pattern:
+
+```text
+biological question → source and identifier contract → ORA/GSEA
+                   → result object → visualization → limitations
+```
+
+Knowledge sources are not interchangeable evidence. GO terms, KEGG pathways, disease terms, and WikiPathways entries can differ in granularity and coverage. Combined plots should keep the source identity visible.

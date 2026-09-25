@@ -1,0 +1,96 @@
+# MeSH enrichment analysis {#meshes-enrichment}
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
+
+The `r Biocpkg("meshes")` package [@yu_meshes_2018] supports enrichment analysis (over-representation analysis and gene set
+enrichment analysis) of gene list or whole expression profile using MeSH
+annotation. Data source from `gendoo`, `gene2pubmed` and `RBBH` are all
+supported. User can select interesting category to test. All 16
+categories of MeSH are supported. The analysis supports about 200 species (see also @sec-meshes-semantic-similarity for more details).
+
+
+## Chapter overview
+
+| Aspect | MeSH enrichment |
+|---|---|
+| **Questions** | Which MeSH concepts/categories associate with a gene set or are enriched across a ranked profile? |
+| **Input** | A gene vector or ranked vector, species-specific `MeSHDb`, and a source such as `gendoo`, `gene2pubmed`, or `RBBH`. |
+| **Methods** | ORA and GSEA with selectable MeSH category and data source. |
+| **Main functions** | `enrichMeSH()`, `gseMeSH()`; semantic comparisons use the `meshes` similarity functions. |
+| **Output** | `enrichResult` / `gseaResult` objects for downstream plotting and comparison. |
+| **Main limitations** | Results depend on database preparation, source, species coverage, and ID mapping; the same concepts may differ across sources. |
+
+
+## MeSH over-representation analysis {#meshes-ora}
+
+
+First, we need to load/fetch species-specific MeSH annotation database, please refer to @sec-meshes-semantic-similarity.
+
+
+In this example, we use data source from `gendoo` and `C` (Diseases) category.
+
+
+
+```{r}
+#| label: enrichMeSH-example
+#| cache: true
+#| eval: false
+library(meshes)
+data(geneList, package="DOSE")
+de <- names(geneList)[1:100]
+x <- enrichMeSH(de, MeSHDb = db, database='gendoo', category = 'C')
+```
+
+```{r echo=FALSE}
+#| label: load-enrichMeSH-cache
+## saveRDS(x, file="cache/enrichMeSH.rds")
+x <- readRDS("cache/enrichMeSH.rds")
+```
+
+```{r}
+#| label: head-enrichMeSH
+head(x)
+```
+
+## MeSH gene set enrichment analysis {#meshes-gsea}
+
+
+In the following example, we use data source from `gene2pubmed` and test category `G` (Phenomena and Processes).
+
+```{r}
+#| label: gseMeSH-example
+#| cache: true
+#| eval: false
+y <- gseMeSH(geneList, MeSHDb = db, database = 'gene2pubmed', category = "G")
+```
+
+```{r}
+#| label: load-gseMeSH-cache
+#| echo: false
+## saveRDS(y, file="cache/gseMeSH.rds")
+y <- readRDS("cache/gseMeSH.rds")
+```
+
+```{r}
+#| label: head-gseMeSH
+head(y)
+```
+
+
+Users can use visualization methods implemented in `r Biocpkg("enrichplot")` to visualize these enrichment results. With these visualization methods, see also @sec-enrichplot, it's much easier to interpret enriched results.
+
+
+## Next steps
+
+- For database construction and similarity, see [MeSH semantic similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity).
+- For plotting, use the [visualization map](enrichplot.qmd#sec-enrichplot).
+- For reusable resource packaging, see [GSON](gson.qmd#sec-gson).
+
+## References {-}
+

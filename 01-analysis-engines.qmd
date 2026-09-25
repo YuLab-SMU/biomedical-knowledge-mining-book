@@ -1,0 +1,23 @@
+# Choose the analysis engine {-}
+
+The same biological question can be asked with different evidence models. Choose the engine before choosing a database: ORA tests overlap in a thresholded list, GSEA tests a coordinated shift across a ranking, and network-aware or weighted methods add information that the classical tests do not model.
+
+## Decision sequence {-}
+
+1. Do you have a thresholded list or a complete ranking?
+2. Is the sign of the statistic meaningful, and do you need both directions?
+3. Is there one list or several groups/conditions?
+4. Do detection bias, network topology, or multiple omics layers carry important evidence?
+5. Which result object should be preserved for comparison, visualization, and interpretation?
+
+Start with the [enrichment terminology](enrichment-overview.qmd#enrichment-overview), then compare [ORA and GSEA](enrichment-foundations.qmd#ora-vs-gsea). The same result can later be routed to knowledge sources in Part 2 and to evidence integration in Part 3.
+
+| Analysis question | Engine | Main chapter |
+|---|---|---|
+| Are selected genes over-represented? | ORA / hypergeometric test | [ORA](enrichment-foundations.qmd#ora-algorithm) |
+| Is a gene set shifted across the full ranking? | GSEA | [GSEA](enrichment-foundations.qmd#gsea-algorithm) |
+| Do several clusters or conditions have different profiles? | `compareCluster()` | [Comparing biological themes](comparecluster-analysis.qmd#clusterprofiler-comparecluster) |
+| Does network topology or detection bias matter? | NSEA / weighted enrichment | [Network and weighted methods](enrichment-network.qmd#sec-enrichment-network) |
+| Do several molecular layers contribute evidence? | Multi-omics aggregation and fusion | [Multi-omics section](enrichment-multiomics.qmd#sec-enrichment-multiomics) |
+
+The statistical engine determines what is tested. The knowledge source determines what the tested terms mean; those two responsibilities are intentionally separated in the next part.

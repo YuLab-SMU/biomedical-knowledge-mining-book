@@ -1,0 +1,20 @@
+# Organize and integrate evidence {-}
+
+A significant-term table is an intermediate result, not the end of the workflow. This part shows how to preserve result objects, reduce repeated terms, compare profiles, and add network context without losing the statistical provenance of the original analysis.
+
+## The evidence path {-}
+
+```text
+result object → inspect/filter → semantic similarity or term selection
+             → compare groups or add PPI context → visualize → interpret
+```
+
+Start with [identifier and result utilities](identifier-utilities.qmd#useful-utilities) and [result-object manipulation](result-objects.qmd#clusterProfiler-dplyr). Then use semantic similarity in the appropriate vocabulary:
+
+- [GO semantic similarity](go-semantic-similarity.qmd#GOSemSim);
+- [Disease Ontology similarity](do-semantic-similarity.qmd#DOSE-semantic-similarity);
+- [MeSH similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity).
+
+For redundant enrichment terms, compare [semantic simplification](go-enrichment.qmd#clusterprofiler-go) with [Bayesian term selection](bayesian-term-selection.qmd#sec-bayes-enrich). For gene-level support and interaction context, continue to [PPI and evidence networks](ppi.qmd#protein-protein-interaction-network).
+
+The goal is not to make a result smaller at any cost. The goal is to make the evidence traceable: every retained theme should still point back to its terms, genes, input ranking, knowledge source, and analysis parameters.

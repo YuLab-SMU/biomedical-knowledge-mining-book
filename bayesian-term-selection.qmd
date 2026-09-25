@@ -1,5 +1,16 @@
 # Bayesian term selection for enrichment results {#sec-bayes-enrich}
 
+| Aspect | Bayesian term selection |
+|---|---|
+| **Question** | Which candidate enriched terms jointly explain the observed genes while avoiding a redundant list of near-duplicate terms? |
+| **Input** | A checked `enrichResult`-like term/gene table, candidate term-to-gene mappings, and a declared selection criterion. |
+| **Engine** | Bayesian term selection on top of an existing enrichment result; it does not replace ORA, GSEA, or the original multiple-testing correction. |
+| **Output** | A selected set of representative terms with posterior or scoring information that can be compared with `simplify()` and semantic-similarity results. |
+| **Limitations** | The selected theme depends on the candidate space, gene-set overlap, priors, and annotation release. Selection is an evidence-organization step, not causal validation. |
+
+Use this chapter after [result-object inspection](result-objects.qmd#clusterProfiler-dplyr) and before [visualization](enrichplot.qmd#sec-enrichplot); keep the original enrichment result for auditability.
+
+
 ```{r}
 #| label: load-packages
 #| echo: false
@@ -182,3 +193,8 @@ The current implementation is designed primarily for ORA and other analyses that
 :::
 
 In practice, the main value of `bayes_enrich()` is that it compresses a long list of overlapping enriched terms into a smaller set of high-posterior programs, which is often much easier to interpret and report.
+
+## Next steps
+
+- Compare posterior coverage with [`simplify()`](go-enrichment.qmd#clusterprofiler-go-summary).
+- Present the selected terms using [summary and network plots](enrichplot-summary.qmd#sec-visualization-summary).

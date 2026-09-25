@@ -1,0 +1,112 @@
+# Task recipes {#task-recipes}
+
+These short recipes start with a common input and point to the next analysis decision. The main chapters provide the statistical details and knowledge-source constraints.
+
+## RNA-seq differential genes
+
+Use a thresholded differential-expression table for ORA when the cutoff is part of the study design. Keep the full signed statistic for GSEA as well. The canonical local example is `datasets/de_table.tsv`, generated from the Bioconductor `airway` data; its fields and regeneration command are recorded in `datasets/readme.md`. It uses `gene_id`, `log2FoldChange`, `stat`, and `padj` columns.
+
+```r
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+de_table <- read.delim("datasets/de_table.tsv", stringsAsFactors = FALSE)
+annotation_keys <- AnnotationDbi::keys(org.Hs.eg.db, keytype = "ENSEMBL")
+eligible <- is.finite(de_table$stat) & de_table$gene_id %in% annotation_keys
+
+universe <- de_table$gene_id[eligible]
+selected <- de_table$gene_id[
+    eligible & !is.na(de_table$padj) &
+        de_table$padj < 0.05 &
+        abs(de_table$log2FoldChange) >= 1
+]
+
+ora <- enrichGO(
+    gene = selected,
+    universe = universe,
+    OrgDb = org.Hs.eg.db,
+    keyType = "ENSEMBL",
+    ont = "BP"
+)
+
+ranking <- de_table$stat[eligible]
+names(ranking) <- de_table$gene_id[eligible]
+ranking <- sort(ranking, decreasing = TRUE)
+gsea <- gseGO(ranking, OrgDb = org.Hs.eg.db, keyType = "ENSEMBL", ont = "BP")
+```
+
+Check the identifier namespace and construct `universe` from genes eligible for detection, not from the significant subset. The [first workflow](first-workflow.qmd#first-workflow) shows the same route with plots, mapping-loss reporting, and object export.
+
+## No significant differential genes
+
+When a thresholded list is empty or unstable, use the complete ranking rather than relaxing the cutoff after looking at the enrichment output:
+
+```r
+ranking <- setNames(de_table$stat, de_table$gene_id)
+ranking <- sort(ranking[is.finite(ranking)], decreasing = TRUE)
+gsea <- GSEA(ranking, TERM2GENE = term2gene, TERM2NAME = term2name)
+```
+
+Report how the statistic was defined and whether its sign has a biological direction. Continue to [ORA and GSEA foundations](enrichment-foundations.qmd#sec-enrichment-foundations) for score types and leading-edge interpretation.
+
+## Single-cell markers
+
+For marker tables with one row per gene and cluster, retain the grouping column and run one enrichment analysis per cluster:
+
+```r
+markers <- data.frame(
+    gene = c("G1", "G2", "G3"),
+    cluster = c("T_cell", "T_cell", "B_cell")
+)
+
+cc <- compareCluster(
+    geneCluster = split(markers$gene, markers$cluster),
+    fun = "enricher",
+    TERM2GENE = term2gene,
+    TERM2NAME = term2name
+)
+```
+
+Use the formula interface when marker metadata contain several grouping variables. Compare clusters with the [compareCluster analysis](comparecluster-analysis.qmd#clusterprofiler-comparecluster) and [visualization](comparecluster-visualization.qmd#sec-comparecluster-visualization) chapters. Cell-type annotation requires marker evidence in addition to enrichment terms; the optional LLM route is described in [interpretation](interpretation.qmd#evidence-guided-interpretation).
+
+## Protein and UniProt identifiers
+
+First map the identifier namespace, then keep the mapped and unmapped counts:
+
+```r
+mapped <- bitr(
+    proteins,
+    fromType = "UNIPROT",
+    toType = "ENTREZID",
+    OrgDb = org.Hs.eg.db
+)
+
+mapped_ids <- unique(mapped$ENTREZID)
+ora <- enrichGO(
+    mapped_ids,
+    OrgDb = org.Hs.eg.db,
+    keyType = "ENTREZID",
+    universe = unique(background_map$ENTREZID),
+    ont = "BP"
+)
+```
+
+Do not treat unmapped proteins as absent biology without checking the annotation release and species. Preserve the mapping table with the result. The [universal enrichment](universal-enrichment.qmd#universal-api) chapter covers custom namespaces and annotation tables.
+
+## ChIP-seq and genomic regions
+
+For peaks or other genomic regions, the first decision is how regions map to genes. Use nearest, host, flanking, promoter, or `seq2gene()` mappings according to the biological question, then pass the resulting gene sets to enrichment. See [genomic coordination enrichment](chipseeker-enrichment.qmd#chipseeker-enrichment); the downstream ORA/GSEA choice remains the same as for other gene-level inputs.
+
+## Protein-plus-transcript or other multi-omics data
+
+Keep each layer’s identifiers, direction, and uncertainty separate until the integration method is chosen. Use early feature-level aggregation when the layers measure compatible features; use late pathway-level fusion when the layers should retain separate evidence. The [multi-omics chapter](enrichment-multiomics.qmd#sec-enrichment-multiomics) documents `aggregate_omics()`, ID harmonization, and contribution tracing.
+
+## Non-model organisms
+
+For organisms without a standard `OrgDb`, construct explicit `TERM2GENE` and `TERM2NAME` tables from a documented annotation source. The [non-model recipe](leading-edge-nonmodel.qmd#recipes) gives an eggNOG-based route; package reusable annotations as [GSON](gson.qmd#sec-gson) when they will be shared or reused.
+
+## Next steps
+
+- For leading-edge genes, see [leading-edge analysis](leading-edge-nonmodel.qmd#recipes).
+- For input failures and mapping problems, see [FAQ and troubleshooting](troubleshooting.qmd#faq).
+- For package and function lookup, see the [capability map](capability-map.qmd#part-6-capability-map).

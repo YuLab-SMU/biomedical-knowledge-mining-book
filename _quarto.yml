@@ -1,16 +1,17 @@
 project:
   type: book
   output-dir: docs
+  post-render: scripts/write_legacy_redirects.py
 
 book:
-  title: "Biomedical Knowledge Mining using GOSemSim and clusterProfiler"
+  title: "Biomedical Knowledge Mining Toolkit"
   reader-mode: true
   author: "Guangchuang Yu"
   date: "11/18/2025"
 
   page-footer:
     left: |
-      Biomedical Knowledge Mining using GOSemSim and clusterProfiler was written by Guangchuang Yu.
+      Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.
     right: |
       This book was built with <a href="https://quarto.org/">Quarto</a>.
   site-url: https://yulab-smu.top/biomedical-knowledge-mining-book/
@@ -20,37 +21,68 @@ book:
   chapters:
     - index.qmd
 
-    - part: 01-semantic-similarity.qmd
+    - part: 00-start-here.qmd
       chapters:
-        - 011-GOSemSim.qmd
-        - 012-DOSE-semantic-similarity.qmd
-        - 013-meshes-semantic-similarity.qmd
+        - first-workflow.qmd
+        - data-contract.qmd
+        - choose-a-route.qmd
 
-    - part: 02-Enrichment.qmd
+    - part: 01-analysis-engines.qmd
       chapters:
-        - 020-enrichment-algorithms.qmd
-        - 021-go.qmd
-        - 022-kegg.qmd
-        - 023-other-dbs.qmd
-        - 024-reactome.qmd
-        - 025-do-enrichment.qmd
-        - 026-meshes-enrichment.qmd
-        - 027-universal-enrichment.qmd
-        - 028-chipseeker.qmd
-        - 029-compareCluster.qmd
-        - enrichplot.qmd
-        - PPI.qmd
+        - enrichment-overview.qmd
+        - enrichment-foundations.qmd
+        - enrichment-network.qmd
+        - enrichment-multiomics.qmd
+        - comparecluster-analysis.qmd
+
+    - part: 02-knowledge-sources.qmd
+      chapters:
+        - gson.qmd
+        - go-enrichment.qmd
+        - kegg-enrichment.qmd
+        - reactome-enrichment.qmd
+        - disease-enrichment.qmd
+        - mesh-enrichment.qmd
+        - universal-enrichment.qmd
+        - other-databases.qmd
+        - chipseeker-enrichment.qmd
+
+    - part: 03-evidence-integration.qmd
+      chapters:
+        - identifier-utilities.qmd
+        - result-objects.qmd
+        - semantic-similarity.qmd
+        - go-semantic-similarity.qmd
+        - do-semantic-similarity.qmd
+        - mesh-semantic-similarity.qmd
         - bayesian-term-selection.qmd
+        - ppi.qmd
+
+    - part: 04-visualization.qmd
+      chapters:
+        - enrichplot.qmd
+        - enrichplot-summary.qmd
+        - enrichplot-networks.qmd
+        - enrichplot-gsea.qmd
+        - enrichplot-comparison.qmd
+        - comparecluster-visualization.qmd
+        - enrichplot-specialized.qmd
+        - enrichplot-import.qmd
+
+    - part: 05-interpretation.qmd
+      chapters:
+        - interpretation-reading.qmd
         - interpretation.qmd
+        - reproducible-report.qmd
 
-    - part: misc.qmd
+    - part: 06-recipes-reference.qmd
       chapters:
-        - dplyr.qmd
-        - utilities.qmd
-
-    - part: appendix.qmd
-      chapters:
-        - FAQ.qmd
+        - recipes.qmd
+        - leading-edge-nonmodel.qmd
+        - troubleshooting.qmd
+        - capability-map.qmd
+        - glossary-api-index.qmd
+        - appendix.qmd
 
 bibliography: references.bib
 
@@ -61,7 +93,7 @@ format:
   html:
     theme:
       - cosmo
-    code-link: true
+    code-link: false
 
     author-meta: "Guangchuang Yu"
     callout-appearance: simple

@@ -1,0 +1,58 @@
+# How to read an enrichment result {#how-to-read-enrichment}
+
+An enrichment result is an association between an input feature set and a knowledge source. Read it from the input and the null model outward, rather than from the term names alone.
+
+## Start with the tested question
+
+- **ORA** asks whether a thresholded set contains more members of a term than expected under the chosen universe.
+- **GSEA** asks whether members of a term accumulate toward one end of a complete ranking.
+- **compareCluster** repeats the selected enrichment function for several groups; the groups are comparable only when their input and background definitions are compatible.
+- **Network-aware methods** add topology or feature weights to the evidence model and should not be interpreted as ordinary ORA or GSEA.
+
+The result class records which route was used. Keep the original `enrichResult`, `gseaResult`, or `compareClusterResult` object with the analysis.
+
+## Check the input and background
+
+Before interpreting a term, check:
+
+1. identifier type and mapping rate;
+2. the selected gene vector or the complete ranked vector;
+3. the universe used for ORA;
+4. the gene-set source, organism, release, and filtering rules;
+5. the number of tested terms and the multiple-testing method.
+
+A small p-value cannot correct an incorrect identifier namespace or an unsuitable universe. For GSEA, inspect the ranking direction and the score type before assigning biological direction.
+
+## Read significance together with effect and coverage
+
+For ORA, inspect `Count`, `GeneRatio`, `BgRatio`, `pvalue`, and `p.adjust` together. A term with a small adjusted p-value but a small overlap may be sensitive to the background and annotation coverage.
+
+For GSEA, inspect `ES` or `NES`, `p.adjust`, `setSize`, and the `core_enrichment` or leading-edge genes. A positive NES indicates accumulation toward the top of the supplied ranking; it does not by itself establish activation or causality.
+
+For comparisons, inspect the cluster label, term identity, effect measure, and adjusted significance together. A term appearing in only one group may reflect biology, input size, annotation coverage, or differences in the tested background.
+
+## Reduce redundancy before summarizing themes
+
+GO and other hierarchical resources often return related terms. Use `pairwise_termsim()` and `simplify()`, or `bayes_enrich()` when joint term–gene coverage is the target, before turning a long table into a short list of themes. Keep the original object and the reduction parameters so each retained term can be traced back to the full result.
+
+## Follow the evidence to genes and networks
+
+Use `core_enrichment`, `geneID`, or `geneInCategory()` to identify the genes behind a term. Compare these genes with fold changes, expression patterns, PPI context, and independent knowledge. A term name is a label for an annotation set, not a mechanistic conclusion.
+
+## Choose the next view
+
+- Use a dot or bar plot for ranked term summaries.
+- Use `gseaplot2()` or `hplot()` to inspect a GSEA signal along the ranking.
+- Use `cnetplot()` for shared genes among a small set of terms.
+- Use `emapplot()` or semantic similarity to organize overlapping terms.
+- Use `compareCluster` plots when the question is about differences among groups.
+
+Continue to [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation) only after these checks are complete. For a report that preserves the analysis record, see [reproducible reporting](reproducible-report.qmd#reproducible-report).
+
+## Common interpretation errors
+
+- Treating an adjusted p-value as an effect size.
+- Treating a term name as a causal mechanism.
+- Comparing results made with different universes without noting the difference.
+- Interpreting a readable symbol table as if it changed the statistical test.
+- Reporting only the top terms without the database, release, identifier type, and parameters.

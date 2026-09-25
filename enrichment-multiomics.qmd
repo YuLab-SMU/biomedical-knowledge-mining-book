@@ -1,0 +1,269 @@
+# Multi-omics enrichment integration {#sec-enrichment-multiomics}
+
+This chapter covers the integration layer between molecular measurements and enrichment backends. It separates feature-level aggregation, identifier harmonization, directional conflict handling, pathway-level late fusion, and contribution tracing so that the provenance of a combined result remains inspectable.
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+source("_common.R")
+```
+
+## Multi-omics Early Integration
+
+With the rapid development of sequencing technologies, it is very common to perform functional analysis on multi-omics data (e.g., Transcriptomics + Proteomics). A naive approach is to perform enrichment analysis on each omics separately and then intersect the enriched pathways. However, this late-integration strategy completely ignores the fact that different omics might provide weak but consistent signals for the same pathway, which would be filtered out by strict thresholds in single-omics analysis.
+
+To solve this, `enrichit` introduces an **Early Integration** pipeline. The core philosophy is simple: **Integrate first, enrich later. Decouple the integration layer from the enrichment layer.**
+
+### 1. Statistical Aggregation (`aggregate_omics`)
+
+Instead of finding the intersection of pathways, we aggregate the evidence at the feature level. `aggregate_omics()` takes multi-source statistics (e.g., p-values or signed scores) and merges them into a unified evidence score. For p-values, it supports classic methods like `fisher` or `stouffer`, and internally converts them to a monotonically increasing score suitable for ranking. It also supports **Brown's method** for correlation-aware p-value aggregation and `weighted_mean` for signed statistics with explicit layer weights.
+
+```{r}
+#| eval: false
+library(enrichit)
+
+# Create mock p-values for RNA and Protein data across 1000 genes
+set.seed(123)
+omics_gene_ids <- paste0("Gene", 1:1000)
+
+rna_pvals <- runif(1000, 0, 1)
+names(rna_pvals) <- omics_gene_ids
+
+prot_pvals <- runif(1000, 0, 1)
+names(prot_pvals) <- omics_gene_ids
+
+# Inject consistent but weak signals into the first 20 genes (pathway of interest)
+rna_pvals[1:20] <- runif(20, 0.01, 0.08)
+prot_pvals[1:20] <- runif(20, 0.01, 0.08)
+
+# Aggregate p-values from RNA and Protein data using Fisher's method
+agg_fisher_res <- aggregate_omics(
+    x = list(RNA = rna_pvals, PROT = prot_pvals),
+    method = "fisher",
+    input = "pvalue",
+    feature_type = "gene"
+)
+
+# Look at the top aggregated scores
+head(sort(agg_fisher_res$score, decreasing = TRUE))
+```
+
+### 1a. Correlation-aware Aggregation with Brown's Method
+
+Fisher's method is simple and powerful, but it silently assumes that the evidences are independent. Real multi-omics layers are often correlated: RNA and protein do not live on separate planets. If you pretend they are independent, you are inviting double counting.
+
+Brown's method fixes this by adjusting the degrees of freedom of Fisher's statistic using an empirical or user-supplied covariance structure. In `enrichit`, this is exposed directly through `aggregate_omics(method = "brown")`.
+
+```{r}
+#| eval: false
+set.seed(123)
+omics_pmat <- cbind(RNA = rna_pvals[1:80], PROT = prot_pvals[1:80])
+rownames(omics_pmat) <- omics_gene_ids[1:80]
+
+cov_mat <- matrix(
+  c(4, 1.2,
+    1.2, 4),
+  nrow = 2
+)
+
+agg_brown_res <- aggregate_omics(
+  x = omics_pmat,
+  method = "brown",
+  input = "pvalue",
+  cov_matrix = cov_mat
+)
+
+head(sort(agg_brown_res$score, decreasing = TRUE))
+```
+
+### 2. ID Harmonization (`harmonize_ids`)
+
+Proteomics data often use UniProt IDs or protein groups, while your pathway annotations are usually gene-based. Directly feeding protein-level data to gene set enrichment will cause a huge ID mismatch.
+
+`harmonize_ids()` acts as a dedicated ID mapping layer. It maps the protein-level aggregated results to the gene-level, and handles many-to-one mappings gracefully using folding strategies like `min_p` or `max_abs`.
+
+```{r}
+#| eval: false
+# Suppose our proteomics data used UniProt IDs (e.g., Q9Y6N7)
+# and we need to map them back to standard Gene Symbols
+id_mapping_df <- data.frame(
+    source_id = c("P12345", "P12346", "Q9Y6N7"),
+    target_id = c("Gene1", "Gene1", "Gene2") # P12345 and P12346 both map to Gene1
+)
+
+# For demonstration, we create a mock protein-level aggregated result
+protein_agg_res <- aggregate_omics(
+    x = list(PROT = prot_pvals[1:3]),
+    method = "fisher",
+    input = "pvalue",
+    feature_type = "protein"
+)
+names(protein_agg_res$score) <- c("P12345", "P12346", "Q9Y6N7")
+protein_agg_res$feature_id <- c("P12345", "P12346", "Q9Y6N7")
+
+# Map and collapse protein-level features to gene-level
+harmonized_res <- harmonize_ids(
+    x = protein_agg_res, # Assuming this is an aggregated result from proteomics
+    mapping = id_mapping_df,
+    from = "protein",
+    to = "gene",
+    collapse = "min_p" # If multiple proteins map to one gene, take the most significant one
+)
+```
+
+### 3. Handling Directional Conflicts (`conflict_policy`)
+
+When integrating signed statistics across omics (e.g., transcriptomics and proteomics), you often encounter conflicting directions—a gene might be significantly up-regulated in RNA but down-regulated in Protein.
+
+Instead of naively averaging them out to zero, `aggregate_omics()` introduces a `conflict_policy` parameter when `input = "signed_score"`. You can choose `"strict"` to completely drop conflicting features, or `"penalty"` to halve their aggregated scores. This actively filters out biological noise and reduces false positives before enrichment.
+
+```{r}
+#| eval: false
+# Example with conflicting directions between RNA and PROT
+rna_signed <- -log10(rna_pvals) * rep(c(1, -1), length.out = length(rna_pvals))
+prot_signed <- -log10(prot_pvals) * rep(c(1, 1, -1, -1), length.out = length(prot_pvals))
+names(rna_signed) <- omics_gene_ids
+names(prot_signed) <- omics_gene_ids
+
+agg_strict <- aggregate_omics(
+    x = list(RNA = rna_signed, PROT = prot_signed),
+    input = "signed_score",
+    method = "mean",
+    conflict_policy = "strict" # Drops conflicting genes automatically
+)
+```
+
+### 4. Distribution to Enrichment Backends
+
+Once the multi-omics data is aggregated and harmonized, you obtain a unified object containing a ranking `score`.
+
+For **GSEA** or **NSEA**, you can directly extract the sorted score vector and feed it to the engine:
+
+```{r}
+#| eval: false
+omics_pathways <- list(TargetPathway = omics_gene_ids[1:20])
+
+geneList <- sort(agg_fisher_res$score, decreasing = TRUE)
+
+gsea_res <- gsea(
+    geneList = geneList,
+    gene_sets = omics_pathways
+)
+```
+
+For **ORA**, which requires discrete gene lists, `enrichit` provides an adapter function `select_features_for_ora()`. It takes the aggregated object and a cutoff, and returns the selected `gene` list and background `universe`, perfectly bridging the gap between continuous multi-omics scores and traditional hypergeometric tests.
+
+```{r}
+#| eval: false
+# Define a mock pathway containing the 20 genes we injected signal into
+selected_ora_inputs <- select_features_for_ora(
+    x = agg_fisher_res, 
+    cutoff = 0.05, 
+    by = "pvalue"
+)
+
+# Only genes with significant aggregated evidence will be selected
+early_ora_res <- ora(
+    gene = selected_ora_inputs$gene,
+    universe = selected_ora_inputs$universe,
+    gene_sets = omics_pathways
+)
+```
+
+By decoupling ID mapping, statistical integration, and pathway enrichment, `enrichit` provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.
+
+These workflow helpers are also available from `clusterProfiler`, which means the aggregated result can be sent directly to high-level functions such as `enrichGO()`, `gseGO()`, or `nseGO()` without changing the underlying multi-omics logic.
+
+### 5. Late Fusion at the Pathway Level
+
+Early fusion is elegant when your features align cleanly. But sometimes that assumption collapses immediately: transcriptomics might have a background of 20,000 genes, proteomics might only detect 4,000 proteins, and region-based omics may not even live in gene space before annotation. In these cases, forcing everything into one feature matrix is a great way to manufacture missing values and mapping noise.
+
+This is where **Late Fusion** comes in. Each omics is enriched independently using its own background and preferred backend; then `aggregate_enrichment()` merges the pathway-level p-values across results. The mathematics is the same family as feature-level aggregation, but the biology is much cleaner because each layer is allowed to speak in its native space first.
+
+```{r}
+#| eval: false
+late_fusion_pathways <- list(
+  SharedPath = omics_gene_ids[1:8],
+  RNAPath = omics_gene_ids[9:16],
+  ProtPath = omics_gene_ids[17:24]
+)
+
+rna_sig <- c(omics_gene_ids[1:6], omics_gene_ids[9:13])
+prot_sig <- c(omics_gene_ids[c(1:4, 7:8)], omics_gene_ids[17:21])
+
+rna_ora_res <- ora(
+  gene = rna_sig,
+  universe = omics_gene_ids,
+  gene_sets = late_fusion_pathways
+)
+
+prot_ora_res <- ora(
+  gene = prot_sig,
+  universe = omics_gene_ids[c(1:60)],
+  gene_sets = late_fusion_pathways
+)
+
+late_fusion_res <- aggregate_enrichment(
+  res_list = list(RNA = rna_ora_res, PROT = prot_ora_res),
+  method = "brown"
+)
+
+as.data.frame(late_fusion_res)[, c("ID", "pvalue", "p.adjust", "Count")]
+```
+
+### 6. Contribution Tracing
+
+After running a multi-omics integration, you may want to know whether a significant pathway was driven by the transcriptome, the proteome, or their combination. `enrichit` provides tools to trace the contribution back to the original omics data.
+
+First, you can classify the pattern of each pathway by comparing the merged results with single-omics results:
+
+```{r}
+#| eval: false
+# Run ORA for individual omics
+rna_ora_res <- ora(
+    gene = omics_gene_ids[rna_pvals < 0.05],
+    universe = omics_gene_ids,
+    gene_sets = omics_pathways
+)
+prot_ora_res <- ora(
+    gene = omics_gene_ids[prot_pvals < 0.05],
+    universe = omics_gene_ids,
+    gene_sets = omics_pathways
+)
+
+# Classify contribution patterns
+classified_ora_res <- classify_omics_pattern(
+    merged_res = early_ora_res,
+    single_res = list(RNA = rna_ora_res, PROT = prot_ora_res),
+    p_cutoff = 0.05
+)
+
+head(as.data.frame(classified_ora_res)[, c("ID", "pvalue", "Omics_Pattern")])
+```
+
+The `Omics_Pattern` column will label the pathway as `Shared`, `RNA-Specific`, `PROT-Specific`, or `Enhanced (1+1>2)`.
+
+Then, you can extract the gene-level contribution for a specific pathway to see the original statistics of the core enrichment genes:
+
+```{r}
+#| eval: false
+# Get original multi-omics statistics for genes in the pathway
+contribution_df <- get_omics_contribution(
+    res = classified_ora_res, 
+    agg = agg_fisher_res, 
+    pathway_id = "TargetPathway"
+)
+
+head(contribution_df, 3)
+```
+
+This data frame is extremely useful for downstream visualization, such as drawing multi-omics heatmaps for the core enriched genes.
+
+
+## Next steps
+
+- For the statistical foundations used by each backend, see [ORA and GSEA](enrichment-foundations.qmd#sec-enrichment-foundations).
+- For genomic regions that must first be mapped to genes, see [ChIPseeker](chipseeker-enrichment.qmd#chipseeker-enrichment).
+- For result-object organization and interpretation, continue to [evidence integration](03-evidence-integration.qmd) and [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation).
+- For multi-omics contribution figures, see [specialized visualization](enrichplot-specialized.qmd#sec-visualization-specialized).
+
+## References {-}

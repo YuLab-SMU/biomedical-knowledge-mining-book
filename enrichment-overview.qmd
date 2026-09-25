@@ -1,0 +1,63 @@
+
+
+# Enrichment Analysis {#enrichment-overview}
+
+
+```{r}
+#| label: load-packages
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
+
+## Terminology
+
+### Gene sets and pathway
+
+A gene set is an unordered collection of genes that are functionally related. A pathway can be interpreted as a gene set by ignoring functional relationships among genes.
+
+### Gene Ontology (GO)
+
+
+[Gene Ontology](http://www.geneontology.org/) defines concepts/classes used to describe gene function, and relationships between these concepts. It classifies functions along three aspects:
+
++ MF: Molecular Function
+  - molecular activities of gene products
++ CC: Cellular Component
+  - where gene products are active
++ BP: Biological Process
+  - pathways and larger processes made up of the activities of multiple gene products
+
+GO terms are organized in a directed acyclic graph, where edges between terms represent parent-child relationship.
+
+
+### Kyoto Encyclopedia of Genes and Genomes (KEGG)
+
+[KEGG](https://www.genome.jp/kegg/) is a collection of manually drawn pathway maps representing molecular interaction and reaction networks. These pathways cover a wide range of biochemical processes that can be divided into [7 broad categories](https://www.genome.jp/kegg/pathway.html): 
+
+1. Metabolism
+2. Genetic information processing
+3. Environmental information processing
+4. Cellular processes
+5. Organismal systems
+6. Human diseases
+7. Drug development.
+
+<!-- https://pathview.uncc.edu/data/khier.tsv -->
+
+### Other gene sets
+
+GO and KEGG are the most frequently used for functional analysis. They are typically the first choice because of their long-standing curation and availability for a wide range of species.
+
+
+Other gene sets include but are not limited to Disease Ontology ([DO](http://disease-ontology.org/)), [wikiPathways](https://www.wikipathways.org) and the Molecular Signatures Database ([MSigDb](http://software.broadinstitute.org/gsea/msigdb)). Disease Gene Network ([DisGeNET](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/)) used to be supported through `r Biocpkg("DOSE")` as well, but that support was [removed](disease-enrichment.qmd#dose-dgn-ora) when DisGeNET changed its licence.
+
+In the current `clusterProfiler` ecosystem, classical ORA and GSEA are now complemented by enrichit-backed topology-aware and multi-omics workflows. The algorithm engine lives in `enrichit`, while `clusterProfiler` provides high-level interfaces such as `nseGO()`, `mnseGO()`, `nseKEGG()`, and `mnseKEGG()` for biological interpretation.
+
+## Next steps
+
+- For the statistical choice, continue to [ORA and GSEA](enrichment-foundations.qmd#ora-vs-gsea).
+- For knowledge-source selection, see [Connect biological knowledge](02-knowledge-sources.qmd).
+

@@ -7,12 +7,11 @@
 
 library(emojifont)
 
-badge_version <- function(pkg, color="green") {
+badge_version <- function(pkg, color = "green") {
     v <- packageVersion(pkg)
     url <- paste0("https://github.com/YuLab-SMU/", pkg)
     badger::badge_custom(pkg, v, color, url)
 }
-
 ```
 
 ```{r}
@@ -24,10 +23,78 @@ badge_version <- function(pkg, color="green") {
 source("_common.R")
 ```
 
+# Introduction {-}
 
+Biomedical knowledge mining is not a single test and it is not a collection of unrelated R packages. It is a workflow that turns molecular evidence into organized, inspectable biological knowledge:
 
-# `r emoji("book")` Introduction {-}
+```text
+experiment → identifiers and evidence → enrichment → knowledge sources
+          → evidence integration → figures → biological interpretation
+```
 
+This book documents that workflow as a toolkit. The packages remain visible because they provide the implementation, but the main navigation follows the decisions a researcher makes rather than the history of package development.
+
+## The toolkit at a glance {-}
+
+The system has six cooperating layers:
+
+1. **Prepare the evidence** — gene vectors, ranked lists, backgrounds, identifiers, and custom annotations.
+2. **Choose an analysis engine** — ORA, GSEA, comparison, network-aware, weighted, or multi-omics enrichment.
+3. **Connect biological knowledge** — GO, KEGG, Reactome, disease, MeSH, pathway collections, and user-defined gene sets.
+4. **Organize the evidence** — result objects, semantic similarity, redundancy reduction, representative terms, and PPI networks.
+5. **Communicate the result** — summary plots, gene–term networks, GSEA views, pathway views, and comparative figures.
+6. **Interpret and report** — evidence-guided biological interpretation, reproducible reports, and optional AI assistance.
+
+The common objects passed between these layers are deliberately simple: a vector of identifiers, a named numeric ranking, a `TERM2GENE` table, a GSON knowledge object, or an enrichment result object.
+
+## Start with the route that matches your question {-}
+
+| If you have… | Start with… | The question it answers |
+|---|---|---|
+| A differential-gene list | [A complete first workflow](first-workflow.qmd) | How do I run and inspect a first ORA/GSEA analysis? |
+| A list but are unsure how to prepare it | [The data contract](data-contract.qmd) | Which IDs, ranking, background, and annotation format are required? |
+| Several possible analysis designs | [Choose a route](choose-a-route.qmd) | Should I use ORA, GSEA, `compareCluster`, network, or custom enrichment? |
+| Several biological databases | [GSON knowledge packaging](gson.qmd) | How can I combine knowledge sources without changing the statistical engine? |
+| An existing enrichment result | [Organize and integrate evidence](03-evidence-integration.qmd) | How do I reduce redundancy, compare terms, and find supporting genes? |
+| A figure or report to make | [Visualize and communicate results](04-visualization.qmd) | Which plot answers which biological question? |
+| A package or function name | [Package and capability map](capability-map.qmd) | Where does this function fit in the system? |
+
+## The first complete workflow {-}
+
+A useful first pass is deliberately short:
+
+```text
+prepare IDs and universe
+        ↓
+choose ORA or GSEA
+        ↓
+connect GO, KEGG, or another knowledge source
+        ↓
+inspect the result object
+        ↓
+plot the strongest themes
+        ↓
+check evidence before writing a biological conclusion
+```
+
+The [first workflow chapter](first-workflow.qmd) uses stable demonstration data and links each step to the deeper chapters. It is the recommended entry point for readers who want to get a result before learning every available method.
+
+## Package roles in the system {-}
+
+| Role in the workflow | Main packages or modules | What the reader gets |
+|---|---|---|
+| High-level workflow and knowledge-aware entry points | `clusterProfiler` | Consistent functions and result objects |
+| Statistical enrichment engine | `enrichit` | ORA, GSEA, network-aware, weighted, and multi-omics methods |
+| Knowledge representation and exchange | `gson` | Versioned, metadata-aware knowledge objects and combined knowledge bases |
+| Specialized knowledge connectors | `DOSE`, `ReactomePA`, `meshes` | Disease, Reactome, and MeSH analysis |
+| Semantic similarity | `GOSemSim`, `DOSE`, `meshes` | Similarity among terms, genes, and gene clusters |
+| Result visualization | `enrichplot` | Reusable plots for ORA, GSEA, comparison, and networks |
+| Genomic-coordinate entry point | `ChIPseeker` | Peak annotation and genomic coordination enrichment |
+| Optional interpretation layer | `interpret()` and supported model providers | Evidence synthesis and narrative drafting, with explicit uncertainty |
+
+The packages are therefore modules in one tool system. A user can enter through a package-specific function, but should still be able to follow the same path from input to result, figure, and interpretation.
+
+## Version badges {-}
 
 `r badge_version("clusterProfiler")`
 `r badge_version("DOSE")`
@@ -36,78 +103,33 @@ source("_common.R")
 `r badge_version("meshes")`
 `r badge_version("ReactomePA")`
 
+## Book structure {-}
 
+- **Part 0 — Start here:** data contract, first workflow, and route selection.
+- **Part 1 — Choose the analysis engine:** ORA, GSEA, comparison, network-aware, weighted, and multi-omics enrichment.
+- **Part 2 — Connect biological knowledge:** GSON, GO, KEGG, Reactome, disease, MeSH, pathway collections, and custom annotations.
+- **Part 3 — Organize and integrate evidence:** result objects, semantic similarity, term selection, and PPI networks.
+- **Part 4 — Visualize and communicate:** summary plots, networks, GSEA views, comparisons, and publication-ready figures.
+- **Part 5 — Interpret and report:** evidence-guided interpretation and optional AI-assisted reporting.
+- **Part 6 — Recipes and reference:** task-oriented workflows, troubleshooting, capability maps, and reference material.
 
-hello
+## Citation {-}
 
-```{r}
-#| label: summary-diagram
-#| echo: false
-#| eval: false
-knitr::include_graphics("figures/clusterProfiler-diagram.png")
-```
-
-<!--
-In recent years, high-throughput experimental techniques such as
-microarray, RNA-Seq, and mass spectrometry can detect cellular
-molecules at the systems level. These kinds of analyses generate huge
-quantities of data, which need to be given a biological
-interpretation. A commonly used approach is clustering in the gene
-dimension for grouping different genes based on their similarities[@yu2010].
-
-To search for shared functions among genes, a common approach is to
-incorporate biological knowledge, such as Gene Ontology (GO) and
-Kyoto Encyclopedia of Genes and Genomes (KEGG), to identify
-predominant biological themes in a collection of genes.
-
-After clustering analysis, researchers not only want to determine
-whether there is a common theme in a particular gene cluster, but also
-to compare the biological themes among gene clusters. The manual process
-of selecting interesting clusters followed by enrichment analysis on each
-selected cluster is slow and tedious. To bridge this gap, we designed
-[clusterProfiler](https://www.bioconductor.org/packages/clusterProfiler)[@yu2012] for comparing and visualizing functional
-profiles among gene clusters.
-
--->
-
-## `r emoji("dart")` Motivation {-}
-
-The book is meant as a guide for mining biological knowledge to elucidate or interpret molecular mechanisms using a suite of R packages, including `r Biocpkg("ChIPseeker")`, `r Biocpkg("clusterProfiler")`, `r Biocpkg("DOSE")`, `r Biocpkg("enrichplot")`, `r Biocpkg("GOSemSim")`, `r Biocpkg("meshes")` and `r Biocpkg("ReactomePA")`. Hence, if you are starting to read this book, we assume you have a working knowledge of how to use R.
-
-## `r emoji("memo")` Citation {-}
-
-If you use the software suite in published research, please cite the most appropriate paper(s) from this list:
+If you use this software suite in published research, cite the papers most relevant to the methods and packages used:
 
 1. __G Yu__<sup>\*</sup>. [Background bias in functional enrichment analysis: Insights from clusterProfiler](https://doi.org/10.59717/j.xinn-life.2025.100181). __*The Innovation Life*__. 2026, 4(1):100181.
 2. __G Yu__<sup>\*</sup>. [Thirteen years of clusterProfiler](https://doi.org/10.1016/j.xinn.2024.100722). __*The Innovation*__. 2024, 5(6):100722.
-3. S Xu<sup>#</sup>, E Hu<sup>#</sup>, Y Cai<sup>#</sup>, Z Xie<sup>#</sup>, X Luo<sup>#</sup>, L Zhan, W Tang, Q Wang, B Liu, R Wang, W Xie, T Wu, L Xie, __G Yu__<sup>\*</sup>. [Using clusterProfiler to characterise Multi-Omics Data](https://www.nature.com/articles/s41596-024-01020-z). __*Nature Protocols*__. 2024, 19(11):3292-3320. 
-4. Q Wang<sup>#</sup>, M Li<sup>#</sup>, T Wu, L Zhan, L Li, M Chen, W Xie, Z Xie, E Hu, S Xu, __G Yu__<sup>\*</sup>. [Exploring epigenomic datasets by ChIPseeker](https://doi.org/10.1002/cpz1.585). __*Current Protocols*__, 2022, 2(10): e585. 
-5. T Wu<sup>#</sup>, E Hu<sup>#</sup>, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo<sup>\*</sup>, **G Yu**<sup>\*</sup>. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. **_The Innovation_**. 2021, 2(3):100141.
-doi: [10.1016/j.xinn.2021.100141](https://doi.org/10.1016/j.xinn.2021.100141)
-6. __G Yu__^\*^. Gene Ontology Semantic Similarity Analysis Using GOSemSim. In: Kidder B. (eds) Stem Cell Transcriptional Networks. __*Methods in Molecular Biology*__. 2020, 2117:207-215. Humana, New York, NY.
-doi: [10.1007/978-1-0716-0301-7_11](https://doi.org/10.1007/978-1-0716-0301-7_11)
-7. __G Yu__^\*^. Using meshes for MeSH term enrichment and semantic analyses. __*Bioinformatics*__. 2018, 34(21):3766–3767.
-doi: [10.1093/bioinformatics/bty410](https://doi.org/10.1093/bioinformatics/bty410)
-8. __G Yu__, QY He^\*^. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. __*Molecular BioSystems*__. 2016, 12(2):477-479.
-doi: [10.1039/C5MB00663E](https://doi.org/10.1039/C5MB00663E)
-9. __G Yu__^\*^, LG Wang, and QY He^\*^. ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization. __*Bioinformatics*__. 2015, 31(14):2382-2383.
-doi: [10.1093/bioinformatics/btv145](https://doi.org/10.1093/bioinformatics/btv145)
-10. __G Yu__^\*^, LG Wang, GR Yan, QY He^\*^. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. __*Bioinformatics*__. 2015, 31(4):608-609.
-doi: [10.1093/bioinformatics/btu684](https://doi.org/10.1093/bioinformatics/btu684)
-11. __G Yu__, LG Wang, Y Han and QY He^\*^. clusterProfiler: an R package for comparing biological themes among gene clusters. __*OMICS: A Journal of Integrative Biology*__. 2012, 16(5):284-287.
-doi: [10.1089/omi.2011.0118](https://doi.org/10.1089/omi.2011.0118)
-12. __G Yu__, F Li, Y Qin, X Bo^\*^, Y Wu, S Wang^\*^. GOSemSim: an R package for measuring semantic similarity among GO terms and gene products. __*Bioinformatics*__. 2010, 26(7):976-978.
-doi: [10.1093/bioinformatics/btq064](https://doi.org/10.1093/bioinformatics/btq064)
+3. S Xu<sup>#</sup>, E Hu<sup>#</sup>, Y Cai<sup>#</sup>, Z Xie<sup>#</sup>, X Luo<sup>#</sup>, L Zhan, W Tang, Q Wang, B Liu, R Wang, W Xie, T Wu, L Xie, __G Yu__<sup>\*</sup>. [Using clusterProfiler to characterise Multi-Omics Data](https://www.nature.com/articles/s41596-024-01020-z). __*Nature Protocols*__. 2024, 19(11):3292–3320.
+4. Q Wang<sup>#</sup>, M Li<sup>#</sup>, T Wu, L Zhan, L Li, M Chen, W Xie, Z Xie, E Hu, S Xu, __G Yu__<sup>\*</sup>. [Exploring epigenomic datasets by ChIPseeker](https://doi.org/10.1002/cpz1.585). __*Current Protocols*__. 2022, 2(10):e585.
+5. T Wu<sup>#</sup>, E Hu<sup>#</sup>, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan, X Fu, S Liu, X Bo<sup>\*</sup>, **G Yu**<sup>\*</sup>. clusterProfiler 4.0: A universal enrichment tool for interpreting omics data. **_The Innovation_**. 2021, 2(3):100141. [doi:10.1016/j.xinn.2021.100141](https://doi.org/10.1016/j.xinn.2021.100141)
+6. __G Yu__<sup>\*</sup>. Gene Ontology Semantic Similarity Analysis Using GOSemSim. In: Kidder B. (eds) Stem Cell Transcriptional Networks. __*Methods in Molecular Biology*__. 2020, 2117:207–215.
+7. __G Yu__<sup>\*</sup>. Using meshes for MeSH term enrichment and semantic analyses. __*Bioinformatics*__. 2018, 34(21):3766–3767. [doi:10.1093/bioinformatics/bty410](https://doi.org/10.1093/bioinformatics/bty410)
+8. __G Yu__, QY He<sup>\*</sup>. ReactomePA: an R/Bioconductor package for reactome pathway analysis and visualization. __*Molecular BioSystems*__. 2016, 12(2):477–479. [doi:10.1039/C5MB00663E](https://doi.org/10.1039/C5MB00663E)
+9. __G Yu__<sup>\*</sup>, LG Wang, and QY He<sup>\*</sup>. ChIPseeker: an R/Bioconductor package for ChIP peak annotation, comparison and visualization. __*Bioinformatics*__. 2015, 31(14):2382–2383. [doi:10.1093/bioinformatics/btv145](https://doi.org/10.1093/bioinformatics/btv145)
+10. __G Yu__<sup>\*</sup>, LG Wang, GR Yan, QY He<sup>\*</sup>. DOSE: an R/Bioconductor package for Disease Ontology Semantic and Enrichment analysis. __*Bioinformatics*__. 2015, 31(4):608–609. [doi:10.1093/bioinformatics/btu684](https://doi.org/10.1093/bioinformatics/btu684)
+11. __G Yu__, LG Wang, Y Han and QY He<sup>\*</sup>. clusterProfiler: an R package for comparing biological themes among gene clusters. __*OMICS: A Journal of Integrative Biology*__. 2012, 16(5):284–287. [doi:10.1089/omi.2011.0118](https://doi.org/10.1089/omi.2011.0118)
+12. __G Yu__, F Li, Y Qin, X Bo<sup>\*</sup>, Y Wu, S Wang<sup>\*</sup>. GOSemSim: an R package for measuring semantic similarity among GO terms and gene products. __*Bioinformatics*__. 2010, 26(7):976–978. [doi:10.1093/bioinformatics/btq064](https://doi.org/10.1093/bioinformatics/btq064)
 
+## Contributing {-}
 
-
-## `r emoji("books")` Book structure {-}
-
-+ Part 1 (Semantic similarity analysis) describes `r Biocpkg("GOSemSim")`, `r Biocpkg("DOSE")` and `r Biocpkg("meshes")` packages for measuring semantic similarity of genes or gene products based on Gene Ontology, Disease Ontology and Medical Subject Headings.
-+ Part 2 (Enrichment analysis) introduces over-reprensentation analysis and gene set enrichment analysis using `r Biocpkg("clusterProfiler")` (supports GO, KEGG, MSigDb, WikiPathway, and many others via universal interface), `r Biocpkg("DOSE")` (DO, Disease-Gene Network, Network of Cancer Genes), `r Biocpkg("meshes")` (MeSH), and `r Biocpkg("ReactomePA")` (Reactome pathway). Functional enrichment analysis of Genomic coordination is supported via `r Biocpkg("ChIPseeker")` and comparison among multiple conditions is also supported by `r Biocpkg("clusterProfiler")`. We implemented a number of visualization methods in the `r Biocpkg("enrichplot")` package to help users to interpret their results. 
-+ Part 3 (Miscellaneous topics) describes useful utilities including translating gene IDs and manipulating enrichment results.
-
-## `r emoji("sparkling_heart")` Want to help? {-}
-
-
-The book’s source code is hosted on GitHub, at <https://github.com/YuLab-SMU/biomedical-knowledge-mining-book>. Any feedback on the book is very welcome. Feel free to [open an issue](https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new) on GitHub or send me a pull request if you notice typos or other issues (I'm not a native English speaker ;) ).
+The source code is hosted at <https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/>. Feedback, bug reports, examples, and improvements to the workflow are welcome through issues and pull requests.

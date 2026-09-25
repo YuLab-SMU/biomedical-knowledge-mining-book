@@ -167,6 +167,12 @@ jobs:
         run: |
           quarto render
           
+      - name: Validate navigation and source/generated links
+        run: |
+          python3 scripts/check_navigation.py
+          python3 scripts/check_links.py
+          git diff --check
+
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v3

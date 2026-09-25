@@ -1,0 +1,209 @@
+# Package and capability map {#part-6-capability-map}
+
+This page is a navigation map for the biomedical knowledge-mining stack used in
+this book. It is organized four ways: **by task**, **by analytical layer**, **by
+package**, and **by typical input/output**. The links point to the existing
+chapters and anchors so that this page can serve as a cross-reference when it is
+added to the book navigation.
+
+::: {.callout-note}
+This map separates **statistical computation**, **knowledge-base access**,
+**result handling**, **visualization**, and **optional language-model
+interpretation**. The layers are complementary: an interpretation report does
+not replace an enrichment test, and a plot does not recreate the information
+that was lost before an enrichment result object was constructed.
+:::
+
+## 1. Index by task
+
+Use this index when the starting point is a biological question or an analysis
+artifact rather than a package name.
+
+| Task | Start here | Main capability | Typical next step |
+|---|---|---|---|
+| Run a first complete analysis | [`first-workflow.qmd`](first-workflow.qmd#first-workflow) | Build a local universe, run GO ORA and GSEA, and retain the result objects for plotting | Replace the demonstration inputs with an experiment-specific data contract |
+| Validate the input contract | [`data-contract.qmd`](data-contract.qmd#data-contract) | Separate gene vectors, ranked lists, universes, term-to-gene mappings, and result classes | Choose ORA, GSEA, comparison, or custom enrichment |
+| Choose an analysis route | [`choose-a-route.qmd`](choose-a-route.qmd#choose-a-route) | Match the evidence shape to the null question, function, and result class | Connect a biological knowledge source |
+| Prepare identifiers and backgrounds | [`identifier-utilities.qmd`](identifier-utilities.qmd#useful-utilities) | Convert identifiers with `bitr()`/`bitr_kegg()`, make IDs character-valued, define the universe, and make output readable with `setReadable()` | Run a domain-specific or universal enrichment workflow |
+| Measure similarity between GO terms, genes, or clusters | [`go-semantic-similarity.qmd`](go-semantic-similarity.qmd#GOSemSim) | Build `GOSemSim` semantic data and calculate term-, gene-, or cluster-level similarity | Cluster functionally similar entities or simplify redundant enrichment terms |
+| Measure disease-term similarity | [`do-semantic-similarity.qmd`](do-semantic-similarity.qmd#DOSE-semantic-similarity) | Compare Disease Ontology terms, genes, and gene clusters | Continue to [`disease-enrichment.qmd`](disease-enrichment.qmd#dose-enrichment) for disease enrichment |
+| Measure MeSH similarity | [`mesh-semantic-similarity.qmd`](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity) | Prepare a species-specific `MeSHDb` and compare MeSH terms or genes | Continue to [`mesh-enrichment.qmd`](mesh-enrichment.qmd#meshes-enrichment) |
+| Test a thresholded gene list | [`enrichment-foundations.qmd`](enrichment-foundations.qmd#ora-algorithm) | ORA / one-sided hypergeometric testing against a gene-set collection | Inspect `enrichResult` with `enrichplot` |
+| Test a complete ranked list | [`enrichment-foundations.qmd`](enrichment-foundations.qmd#gsea-algorithm) | GSEA using the direction and magnitude of a ranking | Inspect leading-edge genes and GSEA plots |
+| Account for network topology | [`enrichment-network.qmd`](enrichment-network.qmd#sec-enrichment-network) | NSEA, signed NSEA, multi-layer NSEA, and weighted enrichment through `enrichit` | Use `nseGO()`/`nseKEGG()` or explanation-ready contribution tables |
+| Integrate multiple omics layers | [`enrichment-multiomics.qmd`](enrichment-multiomics.qmd#sec-enrichment-multiomics) | Early feature-level aggregation, ID harmonization, late pathway-level fusion, and contribution tracing | Feed the unified ranking or selected features to enrichment |
+| Analyse GO | [`go-enrichment.qmd`](go-enrichment.qmd#clusterprofiler-go) | `groupGO()`, `enrichGO()`, `gseGO()`, `enricher()`, and GO-aware topology wrappers | Simplify terms, compare groups, or visualize |
+| Analyse KEGG pathways or modules | [`kegg-enrichment.qmd`](kegg-enrichment.qmd#clusterprofiler-kegg) | Online KEGG pathways/modules, local `GSON`, offline databases, and compound analysis | Use `browseKEGG()`, `pathview()`, or `enrichplot` |
+| Analyse Reactome | [`reactome-enrichment.qmd`](reactome-enrichment.qmd#reactomepa) | Reactome ORA (`enrichPathway()`) and GSEA (`gsePathway()`), with `viewPathway()` | Apply general enrichment plots or compare clusters |
+| Analyse Disease Ontology, HPO/MPO, or NCG | [`disease-enrichment.qmd`](disease-enrichment.qmd#dose-enrichment) | Disease and phenotype ORA/GSEA; NCG is supported by `DOSE` | Use `enrichplot` or compare profiles |
+| Analyse MeSH | [`mesh-enrichment.qmd`](mesh-enrichment.qmd#meshes-enrichment) | MeSH ORA and GSEA with selectable annotation source and category | Use general enrichment plots |
+| Analyse a custom or unsupported knowledge base | [`universal-enrichment.qmd`](universal-enrichment.qmd#universal-api) | Supply `TERM2GENE` and optional `TERM2NAME` to `enricher()`/`GSEA()`; parse GMT with `read.gmt()` | Store reusable sets as `GSON` or compare them |
+| Freeze, share, or combine knowledge bases | [`gson.qmd`](gson.qmd#sec-gson), with KEGG examples in [`kegg-enrichment.qmd`](kegg-enrichment.qmd#clusterprofiler-kegg) | Create, serialize, and combine `GSON` objects; use `gsonList` for multiple sources | Run one analysis per source and facet the results |
+| Compare conditions, clusters, or experiments | [`comparecluster-analysis.qmd`](comparecluster-analysis.qmd#clusterprofiler-comparecluster) | Re-run one enrichment function per gene list with `compareCluster()` or its formula interface | Use comparison-aware dot, network, or map plots from [`comparecluster-visualization.qmd`](comparecluster-visualization.qmd#sec-comparecluster-visualization) |
+| Start from genomic coordinates | [`chipseeker-enrichment.qmd`](chipseeker-enrichment.qmd#chipseeker-enrichment) | Annotate peaks/regions and map them to nearest, host, flanking, or `seq2gene()`-linked genes | Pass the resulting gene sets to `clusterProfiler` |
+| Reduce redundancy or select explanatory terms | [`go-enrichment.qmd`](go-enrichment.qmd#clusterprofiler-go) and [`bayesian-term-selection.qmd`](bayesian-term-selection.qmd#sec-bayes-enrich) | `simplify()` uses semantic similarity; `bayes_enrich()` uses joint term-gene coverage | Keep a compact, interpretable term set |
+| Turn results into figures | [`enrichplot.qmd`](enrichplot.qmd#sec-enrichplot), [`summary`](enrichplot-summary.qmd#sec-visualization-summary), [`networks`](enrichplot-networks.qmd#sec-visualization-networks), [`GSEA`](enrichplot-gsea.qmd#sec-visualization-gsea), [`comparison`](enrichplot-comparison.qmd#sec-visualization-comparison), [`specialized`](enrichplot-specialized.qmd#sec-visualization-specialized) | Bar, dot, Manhattan, network, map, heatmap, tree, semantic-space, ridge, and GSEA plots | Export publication or presentation graphics |
+| Retrieve a PPI context | [`ppi.qmd`](ppi.qmd#protein-protein-interaction-network) | Fetch STRING interactions for genes or enriched pathways with `getPPI()` | Visualize with `ggtangle` or provide network evidence to interpretation |
+| Manipulate or import result objects | [`identifier-utilities.qmd`](identifier-utilities.qmd#useful-utilities), [`result-objects.qmd`](result-objects.qmd#clusterProfiler-dplyr), and [`enrichplot-import.qmd`](enrichplot-import.qmd#sec-import-other-tools) | Filter, select, mutate, preserve object classes, or import external result tables | Plot, compare, or interpret canonical objects |
+| Request an optional narrative or annotation | [`interpretation.qmd`](interpretation.qmd#evidence-guided-interpretation) | `interpret()`, `interpret_agent()`, and hierarchical interpretation using an external LLM | Validate every claim against the supplied results before reporting |
+
+## 2. Index by analytical layer
+
+The packages are easier to combine when their responsibilities are viewed as a
+pipeline. A package can appear in more than one layer, but each layer has a
+different contract.
+
+| Layer | Question answered | Principal components | Input contract | Output contract |
+|---|---|---|---|---|
+| **1. Experimental feature and ID layer** | What are the features, and how are they named? | Differential-expression lists, ranked statistics, peak coordinates, `bitr()`, `bitr_kegg()`, `setReadable()` | Character IDs, or genomic ranges plus annotation context; a ranked list must be a named numeric vector sorted in descending order | Harmonized IDs, gene lists, ranked vectors, or genes linked from regions |
+| **2. Knowledge and annotation layer** | What do terms and gene sets mean? | `OrgDb`/GO, KEGG, Reactome, DO/HPO/MPO, MeSH, WikiPathways, MSigDB, custom `TERM2GENE`/`TERM2NAME`, and `GSON` | A knowledge source, organism/key type, and optionally a versioned local copy | Term-to-gene mappings, term names, ontology graphs, `GSON`, `GOSemSimDATA`, or MeSH semantic data |
+| **3. Similarity layer** | How close are terms, genes, or clusters in a knowledge graph? | `GOSemSim`, `DOSE`, `meshes`; Resnik, Lin, Rel, Jiang, Wang, and combination methods such as BMA | Ontology/MeSH terms or IDs plus prepared semantic data | Numeric similarity scores, matrices, and term/group relationships |
+| **4. Enrichment engine layer** | Are selected or ranked features associated with gene sets more than expected? | `enrichit` (ORA, GSEA, NSEA/MNSEA, weighted enrichment, multi-omics aggregation, Bayesian selection) | Thresholded genes plus universe, or a ranked vector; network/layer/weight inputs when requested | Canonical enrichment result objects, p-values/FDR/NES, leading-edge/core genes, contribution tables, and selected terms |
+| **5. Knowledge-base-aware API layer** | Which biological vocabulary should the engine test? | `clusterProfiler`, `DOSE`, `ReactomePA`, `meshes`, and `gson` helpers | Domain-specific IDs and source parameters, or a universal mapping | `enrichResult`, `gseaResult`, `compareClusterResult`, lists of results, or GSON-backed analyses |
+| **6. Genomic-coordinate adapter layer** | Which genes may be regulated by these regions? | `ChIPseeker` and `seq2gene()` | Peaks or genomic regions plus transcript/gene annotation | Peak annotation tables and many-to-many region-to-gene mappings suitable for enrichment |
+| **7. Comparison and result-shaping layer** | How do profiles differ, and which terms should be retained? | `compareCluster()`, `simplify()`, `bayes_enrich()`, dplyr/data-frame interfaces | Gene lists grouped by condition, a result object, or a canonical external table | Comparable multi-group objects, reduced term sets, posterior columns, and filtered objects |
+| **8. Visualization layer** | How can the result be inspected or communicated? | `enrichplot`, `ggplot2`, `ggtangle`, plus `browseKEGG()`, `pathview()`, `viewPathway()` | Canonical enrichment objects with mappings and (for GSEA) ranked lists | Plots, networks, maps, and plot-ready tables |
+| **9. Optional interpretation layer** | What biological narrative or label is supported by the result? | `interpret()`, `interpret_agent()`, `interpret_hierarchical()` plus `aisdk` | One or more canonical result objects, optional context, fold changes, PPI, and an API-backed model | Structured narrative, drivers, mechanisms, confidence, annotation labels, or a report plot; not a replacement for statistics |
+
+A useful mental model is:
+
+```text
+features/regions -> IDs and background -> knowledge mapping ->
+statistical enrichment -> canonical result object -> reduction/comparison ->
+visualization -> optional, validated interpretation
+```
+
+## 3. Index by package or capability
+
+| Package or capability | Primary responsibility | Representative entry points | Does it compute enrichment? | Main hand-off |
+|---|---|---|---|---|
+| **`clusterProfiler`** | User-facing orchestration across biological knowledge bases; ID conversion; universal enrichment; comparison; result methods; high-level network-aware wrappers | `enrichGO()`, `gseGO()`, `enrichKEGG()`, `gseKEGG()`, `enricher()`, `GSEA()`, `compareCluster()`, `bitr()`, `nseGO()`, `nseKEGG()` | Yes, through domain APIs and delegated engines | Produces/consumes canonical enrichment objects; hands them to `enrichplot`, `dplyr`, PPI, or interpretation |
+| **`enrichit`** | Algorithm and result-object engine with minimal dependencies and fast implementations | `ora()`, `gsea()`, `nsea()`, `mnsea()`, weighted enrichment, `aggregate_omics()`, `aggregate_enrichment()`, `harmonize_ids()`, `bayes_enrich()`, `as_enrichResult()` | Yes; it is the computational backbone for classical, topology-aware, weighted, and multi-omics workflows | Returns engine results or canonical objects that `clusterProfiler` and `enrichplot` can use |
+| **`gson`** | Versionable Gene Set Object Notation container and multi-knowledge-base exchange format | `gson()`, `gsonList()`, `write.gson()`, `read.gson()`; ecosystem helpers such as `gson_KEGG()`, `gson_WP()`, `gson_GO()` | No; it stores term/gene/name/metadata mappings | Supplies local or combined gene sets to `enricher()`, `GSEA()`, `nseKEGG()`, or related APIs |
+| **`DOSE`** | Disease- and phenotype-oriented semantic similarity and enrichment; includes NCG workflows and demo data | `doSim()`, `geneSim()`, `clusterSim()`, `enrichDO()`, `gseDO()`, `enrichNCG()`, `gseNCG()` | Yes, for DO/HPO/MPO and NCG; it also provides similarity | Produces disease-aware result objects consumed by `enrichplot`, comparison, or optional interpretation |
+| **`ReactomePA`** | Reactome pathway domain adapter | `enrichPathway()`, `gsePathway()`, `viewPathway()` | Yes, Reactome ORA and GSEA | Produces Reactome result objects for `enrichplot`, comparison, and reporting |
+| **`meshes`** | MeSH annotation, semantic similarity, and enrichment across many species and MeSH categories | `meshdata()`, `meshSim()`, `geneSim()`, `enrichMeSH()`, `gseMeSH()` | Yes, MeSH ORA and GSEA | Produces MeSH semantic data and enrichment objects for `enrichplot` |
+| **`GOSemSim`** | GO semantic data and similarity for terms, genes, and gene clusters | `godata()`, `goSim()`, `mgoSim()`, `geneSim()`, `mgeneSim()`, `clusterSim()`, `mclusterSim()` | No; its main output is semantic similarity (it supports downstream simplification) | Supplies similarity to clustering, redundancy reduction, and interpretation of GO results |
+| **`enrichplot`** | Visualization and import boundary for enrichment objects | `barplot()`, `dotplot()`, `cnetplot()`, `emapplot()`, `heatplot()`, `treeplot()`, `ssplot()`, `gseaplot2()`, `ridgeplot()`, `import_*()` | No; it visualizes or imports results | Consumes canonical objects and produces `ggplot`/network graphics; importers normalize external tables |
+| **`ChIPseeker`** | Genomic-region annotation and region-to-gene mapping before functional analysis | Peak annotation, nearest/host/flanking genes, `seq2gene()` | No; it prepares the gene universe for downstream enrichment | Hands gene IDs or mappings to `clusterProfiler`/`enrichit` |
+| **Optional AI interpretation** | External, evidence-conditioned narrative, annotation, or phenotype labeling after analysis | `interpret()`, `interpret_agent()`, `interpret_hierarchical()` via `aisdk` | No; it does not replace ORA/GSEA/NSEA or alter their p-values | Consumes one or more result objects plus context/optional PPI/fold change and returns a structured report |
+
+### Package boundaries that matter
+
+- `clusterProfiler` is the **knowledge-aware front door**; `enrichit` is the
+  **algorithm engine**. The `nse*()` and `mnse*()` wrappers preserve ontology
+  and pathway semantics while delegating topology-aware computation.
+- `gson` is a **data contract**, not a new statistical test. It is useful when a
+  remote source should be frozen, reused offline, or combined with another
+  knowledge base.
+- `GOSemSim`, `DOSE`, and `meshes` provide semantic similarity in different
+  vocabularies (GO, DO/phenotypes, and MeSH). Similarity can be used before
+  enrichment or after enrichment for term reduction.
+- `enrichplot` expects the mappings carried by `enrichResult`, `gseaResult`, or
+  `compareClusterResult`; a bare table from another program must first be
+  imported or converted. See the [external-result import section](enrichplot-import.qmd#sec-import-other-tools).
+- `ChIPseeker` solves the **region-to-gene** problem. It does not decide which
+  ontology or enrichment test should be applied to the resulting genes.
+- AI interpretation is an **optional, post-analysis consumer**. It needs an
+  API-backed model and should be checked against the input terms, genes, ranked
+  statistics, and any external PPI evidence before use.
+
+## 5. Index by typical input/output
+
+The table below is a compact routing guide. “Output” describes the object that
+should be preserved for the next step, rather than only the printed table.
+
+| Starting input | Typical question | Route | Expected output | Useful cross-link |
+|---|---|---|---|---|
+| Character vector of IDs + character universe | Are selected genes over-represented? | `clusterProfiler::enrichGO()`, `enrichKEGG()`, `DOSE::enrichDO()`, `ReactomePA::enrichPathway()`, `meshes::enrichMeSH()`, or `enricher()` | `enrichResult` with term IDs, descriptions, ratios, p-values, adjusted p-values, and gene mappings | [ORA algorithm](enrichment-foundations.qmd#ora-algorithm) |
+| Named, numeric, decreasing vector | Is a gene set shifted toward one end of the ranking? | `gseGO()`, `gseKEGG()`, `gseDO()`, `gsePathway()`, `GSEA()`, or `gseMeSH()` | `gseaResult` with ES/NES, significance, ranked list, and leading-edge/core genes | [GSEA algorithm](enrichment-foundations.qmd#gsea-algorithm) |
+| Ranked vector + edge list network | Does network topology reinforce enrichment? | `enrichit::nsea()` or `clusterProfiler::nseGO()`/`nseKEGG()` | Network-aware enrichment result with propagated ranking and inferential statistics | [NSEA section](enrichment-network.qmd#sec-enrichment-network) |
+| Named layer-specific vectors + networks + couplings | Which pathways are supported across RNA/protein or other network layers? | `mnsea()` or `mnseGO()`/`mnseKEGG()` | Multi-layer result plus pathway/feature contribution tables and optional subnetwork | [Multi-layer example](enrichment-network.qmd#sec-enrichment-network) |
+| Several p-value or signed-score vectors | Can weak evidence be combined before enrichment? | `aggregate_omics()`; then GSEA/NSEA or `select_features_for_ora()` + ORA | Unified feature ranking, selected ORA genes/universe, or an integrated result | [Multi-omics integration](enrichment-multiomics.qmd#sec-enrichment-multiomics) |
+| Multiple enrichment result objects | Which layer or assay drives a pathway? | `aggregate_enrichment()` and contribution helpers | Pathway-level combined result and source/contribution annotations | [Late fusion](enrichment-multiomics.qmd#sec-enrichment-multiomics) |
+| GO term vectors or gene IDs + `OrgDb` | How similar are functions? | `GOSemSim::godata()` then `goSim()`, `mgoSim()`, `geneSim()`, or `clusterSim()` | Numeric score or similarity matrix; `GOSemSimDATA` stores semantic data | [GO semantic similarity](go-semantic-similarity.qmd#GOSemSim) |
+| DO term vectors or Entrez IDs | How similar are disease associations? | `DOSE::doSim()`, `geneSim()`, or `clusterSim()` | DO similarity score/matrix or gene/cluster similarity | [DO semantic similarity](do-semantic-similarity.qmd#DOSE-semantic-similarity) |
+| MeSH IDs or Entrez IDs + `MeSHDb` | How similar are biomedical concepts? | `meshes::meshdata()` then `meshSim()`/`geneSim()` | MeSH semantic data and similarity scores/matrices | [MeSH semantic similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity) |
+| `TERM2GENE` plus optional `TERM2NAME` | Can a custom annotation be tested? | `enricher()` for ORA or `GSEA()` for a ranking | Canonical enrichment result with custom term IDs/names | [Universal enrichment](universal-enrichment.qmd#universal-api) |
+| GMT file | Can an external gene-set library be used directly? | `read.gmt()` or `read.gmt.wp()` then `enricher()`/`GSEA()` | Tidy term-to-gene table and canonical result | [GMT utilities](identifier-utilities.qmd#read-gmt) |
+| `GSON` object or serialized `.gson` file | Can knowledge-base data be frozen and reused? | `read.gson()` then `enricher()`/`GSEA()`; use `gsonList()` for several sources | Versionable `GSON` or a list of per-source enrichment results | [GSON workflow](gson.qmd#sec-gson) |
+| Named list of gene vectors | Which functions differ among clusters/conditions? | `compareCluster(geneCluster = ..., fun = ...)` | `compareClusterResult` retaining cluster labels and per-group enrichment | [Biological theme comparison](comparecluster-analysis.qmd#clusterprofiler-comparecluster) |
+| One gene-per-row table with grouping columns | Can a formula describe a factorial comparison? | `compareCluster(gene ~ group + condition, data = ..., fun = ...)` | Formula-based `compareClusterResult` | [Formula interface](comparecluster-analysis.qmd#clusterprofiler-comparecluster) |
+| Peak/region file plus genome annotation | Which genes may be regulated by the regions? | `ChIPseeker` annotation and `seq2gene()` | Annotated regions plus many-to-many gene mappings | [Genomic coordination](chipseeker-enrichment.qmd#chipseeker-enrichment) |
+| `enrichResult` with redundant GO terms | Which terms summarize distinct functions? | `pairwise_termsim()` + `simplify()`; similarity supplied by `GOSemSim` | Reduced enrichment object preserving the selected representative terms | [GO term reduction](go-enrichment.qmd#clusterprofiler-go) |
+| `enrichResult` with overlapping candidate terms | Which terms jointly explain observed genes? | `bayes_enrich()` then `bayes_summary()` | Enrichment object with posterior, coverage, rank, and active-term columns | [Bayesian selection](bayesian-term-selection.qmd#sec-bayes-enrich) |
+| Any canonical enrichment object | How should terms and genes be shown? | `enrichplot` (`dotplot`, `barplot`, `cnetplot`, `emapplot`, `treeplot`, `gseaplot2`, etc.) | `ggplot` objects, networks, maps, and plot-ready tables | [Visualization](enrichplot.qmd#sec-enrichplot) |
+| External result table | Can an output from another tool be plotted here? | `import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()`, `import_fgsea()`, `as_enrichResult()`, or `as_gseaResult()` | Canonical `enrichResult`/`gseaResult` with enough mappings for plotting | [Importing results](enrichplot-import.qmd#sec-import-other-tools) |
+| Gene list or enrichment object | What interactions connect the genes or terms? | `clusterProfiler::getPPI()` and `ggtangle` | STRING-backed edge/node object and network plot | [PPI workflow](ppi.qmd#protein-protein-interaction-network) |
+| Enrichment result(s), optional context and fold changes | What mechanism, cell type, or phenotype is supported? | Optional `interpret()`/`interpret_agent()` through `aisdk` | Structured narrative, drivers, evidence, confidence, and possibly an inferred network | [AI interpretation](interpretation.qmd#evidence-guided-interpretation) |
+
+## 4. Reference routes
+
+Use these pages for the details that do not belong in a task table:
+
+| Need | Maintained reference |
+|---|---|
+| Result classes, identifier contracts, and dispatch | [Data contract](data-contract.qmd#data-contract) and [result-object manipulation](result-objects.qmd#clusterProfiler-dplyr) |
+| ORA, GSEA, NSEA, and multi-omics methods | [Enrichment foundations](enrichment-foundations.qmd#sec-enrichment-foundations), [network-aware enrichment](enrichment-network.qmd#sec-enrichment-network), and [multi-omics integration](enrichment-multiomics.qmd#sec-enrichment-multiomics) |
+| GSON schema, serialization, metadata, and `gsonList` | [GSON chapter](gson.qmd#sec-gson) |
+| Semantic data and similarity methods | [GOSemSim](go-semantic-similarity.qmd#GOSemSim), [DO similarity](do-semantic-similarity.qmd#DOSE-semantic-similarity), and [MeSH similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity) |
+| AI validation and claim checking | [How to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment), [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation), and [reproducible reporting](reproducible-report.qmd#reproducible-report) |
+| Version, citation, and provenance record | [Reference appendix](appendix.qmd) |
+
+These pages are the maintained reference surface; the capability map routes readers to them without duplicating package-specific API documentation.
+## 6. Minimal routing recipes
+
+### A thresholded list
+
+```text
+IDs -> check/convert IDs -> choose universe -> ORA -> simplify or Bayesian selection
+    -> enrichplot -> optional PPI or AI interpretation
+```
+
+Start with [ID utilities](identifier-utilities.qmd#useful-utilities), choose the relevant
+[enrichment API](enrichment-overview.qmd#enrichment-overview), and preserve the
+result object for [visualization](enrichplot.qmd#sec-enrichplot).
+
+### A ranked list
+
+```text
+named numeric ranking -> verify direction -> GSEA -> leading edge -> GSEA plots
+    -> optional network-aware or AI interpretation
+```
+
+The ranking requirements are summarized in the [FAQ](troubleshooting.qmd#sec-genelist),
+while the statistical choice is covered in [GSEA](enrichment-foundations.qmd#gsea-algorithm).
+
+### A custom or non-model annotation
+
+```text
+custom annotation/GMT/GOA/eggNOG -> TERM2GENE (+ TERM2NAME) or GSON
+    -> enricher/GSEA -> compareCluster/enrichplot
+```
+
+See [universal enrichment](universal-enrichment.qmd#universal-api),
+[non-model annotation notes](leading-edge-nonmodel.qmd), and the
+[GSON section](gson.qmd#sec-gson).
+
+### Genomic regions
+
+```text
+peaks/regions -> ChIPseeker annotation or seq2gene() -> gene IDs
+    -> domain-specific or universal enrichment -> visualization
+```
+
+The region-to-gene adapter is [ChIPseeker](chipseeker-enrichment.qmd#chipseeker-enrichment);
+the downstream package choice belongs to the enrichment question, not to the
+peak caller.
+
+### Optional AI interpretation
+
+```text
+validated result object(s) + explicit context + optional fold changes/PPI
+    -> interpret()/interpret_agent() -> structured draft -> human evidence check
+```
+
+The model sees only the supplied evidence and selected terms. Check every named
+gene and pathway against the input object, distinguish association from causal
+claims, and record model/provider settings when the report is used outside
+exploration. See [AI-assisted interpretation](interpretation.qmd#evidence-guided-interpretation).

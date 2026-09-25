@@ -1,0 +1,12 @@
+# Recipes and reference {-}
+
+Use this part when you already know the analysis context and want a short route, a troubleshooting answer, or a package/function lookup.
+
+- [Task recipes](recipes.qmd#task-recipes): RNA-seq, no-DEG GSEA, single-cell markers, protein IDs, genomic regions, multi-omics, and non-model organisms.
+- [Leading-edge and non-model organism details](leading-edge-nonmodel.qmd#recipes)
+- [Frequently asked questions and troubleshooting](troubleshooting.qmd#faq)
+- [Package and capability map](capability-map.qmd#part-6-capability-map)
+- [Glossary, function index, citations, and versions](glossary-api-index.qmd#glossary-api-index)
+- [Reference appendix](appendix.qmd)
+
+The recipes show how to move from a common input to the next decision. The engine, knowledge, evidence, visualization, and interpretation parts explain why that route is appropriate.

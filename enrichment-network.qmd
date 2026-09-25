@@ -1,0 +1,239 @@
+# Network-aware and weighted enrichment {#sec-enrichment-network}
+
+This chapter extends classical enrichment when interaction topology, propagation, or gene-level detection weights are part of the evidence model. It is separate from ordinary PPI visualization: the network enters the statistical ranking or weighting step before enrichment is tested.
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+source("_common.R")
+```
+
+## Network-based Set Enrichment Analysis (NSEA)
+
+Traditional enrichment methods treat pathways as independent "bags of genes," completely ignoring the biological interactions between them. If you only look at the overlap, you are wasting a massive amount of network topological information.
+
+Some previous methods (like *EnrichNet*) attempted to solve this by calculating network distances. However, they suffered from a fatal flaw: they only provided a relative score without rigorous p-values, and calculating empirical p-values via network permutation was excruciatingly slow. Life is too short to wait for permutations.
+
+To break this bottleneck, we introduced **Network-based Set Enrichment Analysis (NSEA)**, a true Network-based GSEA. 
+
+Our core philosophy is to leverage existing strengths seamlessly:
+
+1. **Propagation**: We take your input gene scores and diffuse them across a biological network using a Random Walk with Restart (RWR). To squeeze out every drop of performance, the RWR is powered by `RcppEigen` sparse matrix multiplication in C++. Even networks with hundreds of thousands of edges converge in a flash.
+2. **Enrichment**: After diffusion, every node in the network receives a new "propagation score" containing global topological context. We take this fully ranked list and feed it directly into our extreme-speed multilevel GSEA engine.
+
+One RWR diffusion + one GSEA test. You get not only network-aware scores but also rigorous p-values and FDRs, with blazing speed.
+
+```{r}
+#| eval: false
+library(clusterProfiler)
+
+# 1. Fetch the full background PPI network for Human (taxID 9606)
+# Default output is "data.frame" (edge list), which nsea() natively supports
+net <- get_ppi_network(9606)
+
+# 2. Run NSEA
+# (Assuming 'stats' is a named numeric vector of non-negative evidence scores)
+nsea_result <- nsea(
+    geneList = stats,
+    network = net,
+    gene_sets = pathways
+)
+```
+
+### Direction-aware Propagation (Signed Mode)
+
+Historically, RWR mathematically only accepts non-negative energy. This means you could only pass absolute statistics (like `-log10(p)`), and the result would only tell you if a pathway was "hit", but not whether it was up-regulated or down-regulated.
+
+To solve this, `enrichit` introduces a dual-track propagation architecture (`mode = "signed"`). When you pass signed statistics (like `-log10(p) * sign(logFC)`), the algorithm automatically splits the input into up-regulated and down-regulated vectors. It runs two independent RWRs on the same network, and then subtracts the two diffused energy vectors to reconstruct a fully signed, network-aware score vector. This seamlessly bridges bidirectional network diffusion with dual-tail GSEA.
+
+```{r}
+#| eval: false
+# Using signed statistics (e.g., -log10(p) * sign(logFC))
+res_signed <- nsea(
+    geneList = signed_stats, 
+    network = net, 
+    gene_sets = pathways, 
+    mode = "signed"
+)
+```
+
+### Multi-layer Network-based Enrichment (MNSEA)
+
+Single-layer propagation is already useful, but real multi-omics systems are rarely confined to one graph. Transcriptomics, proteomics, and phosphoproteomics often live on related yet non-identical network layers. Forcing everything into a single collapsed graph throws away layer-specific topology before the analysis even begins.
+
+To address this, `enrichit` introduces **multi-layer NSEA** through `mnsea()`. The algorithm builds a supra-graph from layer-specific networks plus explicit inter-layer couplings, performs Random Walk with Restart on the combined topology, and then collapses layer-wise diffusion scores into a unified ranked vector for GSEA. In other words, it is still "propagate first, enrich later", but now the propagation itself respects the multi-layer structure.
+
+```{r}
+#| eval: false
+# Small multi-layer example with RNA and Protein layers
+networks <- list(
+  RNA = data.frame(
+    from = c("Gene1", "Gene2", "Gene3"),
+    to = c("Gene2", "Gene3", "Gene4"),
+    weight = c(1, 1, 1)
+  ),
+  PROT = data.frame(
+    from = c("Gene1", "Gene3", "Gene4"),
+    to = c("Gene3", "Gene4", "Gene1"),
+    weight = c(1, 1, 1)
+  )
+)
+
+couplings <- data.frame(
+  from_layer = c("RNA", "RNA", "RNA"),
+  from_id = c("Gene1", "Gene3", "Gene4"),
+  to_layer = c("PROT", "PROT", "PROT"),
+  to_id = c("Gene1", "Gene3", "Gene4"),
+  weight = c(1, 1, 1)
+)
+
+seed_list <- list(
+  RNA = c(Gene1 = 1.5, Gene2 = 0.8, Gene4 = -0.9),
+  PROT = c(Gene1 = 0.5, Gene3 = 1.2, Gene4 = -0.4)
+)
+
+ml_gene_sets <- list(
+  SignalPath = c("Gene1", "Gene2", "Gene3"),
+  DownPath = c("Gene4")
+)
+
+mnsea_res <- mnsea(
+  seed_list = seed_list,
+  networks = networks,
+  couplings = couplings,
+  gene_sets = ml_gene_sets,
+  mode = "signed",
+  collapse = "weighted_mean",
+  layer_weights = c(RNA = 1, PROT = 1.5),
+  minGSSize = 1,
+  maxGSSize = 10,
+  method = "sample",
+  nPerm = 30,
+  verbose = FALSE
+)
+```
+
+The same topology-aware engine can now be accessed from `clusterProfiler` using knowledge-base-aware wrappers. For example, the following high-level workflow reuses a single shared example object and performs GO- and KEGG-aware network enrichment without manually constructing the annotation backend.
+
+```{r}
+#| eval: false
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+demo <- clusterprofiler_enrichit_demo()
+
+go_nse <- nseGO(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP",
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+
+kegg_nse <- nseKEGG(
+  geneList = demo$geneList_evidence,
+  network = demo$network,
+  organism = demo$kegg_gson,
+  minGSSize = 5,
+  maxGSSize = 500,
+  threshold = 1e-6,
+  maxIter = 50,
+  verbose = FALSE,
+  pvalueCutoff = 1,
+  method = "sample",
+  nPerm = 30
+)
+```
+
+### Explanation-ready Outputs for Multi-layer Results
+
+Once you start doing topology-aware enrichment, the next question is obvious: *which layer actually drove the hit?* Instead of baking plotting logic into the engine, `enrichit` prepares explanation-ready tables that downstream packages such as `enrichplot` can consume directly.
+
+The `mnseaResult` object stores precomputed pathway-level and feature-level contribution caches, and also supports extracting a pathway-specific explanation subnetwork.
+
+```{r}
+#| eval: false
+# Pathway-level contribution table
+pathway_tbl <- get_mnsea_contribution(
+  mnsea_res,
+  level = "pathway"
+)
+
+# Feature-level contribution table for one pathway
+feature_tbl <- get_mnsea_contribution(
+  mnsea_res,
+  pathway_id = pathway_tbl$ID[1],
+  level = "feature"
+)
+
+# Extract an explanation-ready subnetwork
+subnet <- extract_mnsea_subnetwork(
+  mnsea_res,
+  pathway_id = pathway_tbl$ID[1]
+)
+```
+
+## Weighted Enrichment Analysis {#weighted-enrichment}
+
+Have you ever noticed a weird phenomenon? No matter what odd phenotype you study, the enriched pathways always seem to feature the same "usual suspects"—like the ribosome, spliceosome, or broad immune responses.
+
+This is driven by a systematic bias. In real biological networks, genes are not created equal. Hub genes participate in numerous functions and are easily perturbed. If you don't account for this, traditional ORA will be easily fooled by these highly active Hub genes, yielding false-positive significance for broad pathways.
+
+To correct this, `enrichit` introduces **Weighted Enrichment Analysis**, supporting both ORA and GSEA.
+
+### Weighted ORA: De-biasing with Wallenius Distribution
+
+How do we correct the bias in ORA? We bring in the **Wallenius' noncentral hypergeometric distribution**. 
+
+By passing a `weight` vector (e.g., network centrality), the model calculates an **Odds ratio** for each pathway. If a pathway is full of high-weight core genes, the model applies a penalty to the p-value. The false significance driven by Hub genes is brought back to reality, allowing truly specific pathways to stand out.
+
+*Note: In the early days of RNA-seq, `goseq` used gene length as a weight to correct ORA. However, in the era of 3' poly-A sequencing and 10x single-cell, length bias is mostly obsolete. Our implementation is universal—your weights are dictated by your scientific question, not hardcoded to gene length.*
+
+### Weighted GSEA: Fusing Weights with Statistics
+
+For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.
+
+```{r}
+#| eval: false
+library(igraph)
+
+# Fetch network as an igraph object to calculate topological weights
+net_ig <- get_ppi_network(9606, output = "igraph")
+
+# Calculate PageRank centrality as weights
+pr_weights <- page_rank(net_ig)$vector
+
+# Run Weighted ORA
+res_wora <- ora(gene = de_genes, 
+                gene_sets = pathways, 
+                universe = all_genes, 
+                weight = pr_weights)
+
+# Run Weighted GSEA
+res_wgsea <- gsea(geneList = stats, 
+                  gene_sets = pathways, 
+                  weight = pr_weights)
+```
+
+The beauty of weighted enrichment lies in its **infinite possibilities**. Your `weight` doesn't have to be network centrality. It can be a **tissue specificity score**, an evolutionary **conservation score**, or a **multi-omics confidence score**. If you have prior knowledge that "these genes are more important", simply pass them to the `weight` parameter and let `enrichit` handle the rest.
+
+## Bayesian term selection
+
+Bayesian term selection is documented as a dedicated evidence-integration capability in [Bayesian term selection](bayesian-term-selection.qmd#sec-bayes-enrich). The algorithm backend can be used after ORA, but term selection is not itself a network-enrichment test.
+
+
+## Next steps
+
+- Use [multi-omics integration](enrichment-multiomics.qmd#sec-enrichment-multiomics) when evidence comes from multiple molecular layers.
+- Use [PPI and evidence networks](ppi.qmd) when the network is being inspected or interpreted rather than used as the enrichment model.
+- For term redundancy and representative selection, see [semantic similarity and Bayesian term selection](03-evidence-integration.qmd).
+- For network-aware result graphics, use [gene–term and term–term networks](enrichplot-networks.qmd#sec-visualization-networks).
+
+## References {-}

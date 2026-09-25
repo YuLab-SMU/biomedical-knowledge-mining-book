@@ -1,0 +1,57 @@
+# Glossary, function index, and citations {#glossary-api-index}
+
+Use this page when the question is “what does this term mean?”, “which function owns this step?”, or “what should I cite and record?”. The task chapters remain the authoritative source for method details and runnable examples.
+
+## Core terms
+
+| Term | Meaning in this book |
+|---|---|
+| **Gene vector** | A character vector of selected identifiers used by ORA. It is not a ranked statistic. |
+| **Ranked list** | A named numeric vector containing the statistic used by GSEA; its names are feature IDs and its order/sign carry direction. |
+| **Universe** | The features that could have entered the selected ORA list under the study’s detection and filtering process. |
+| **ORA** | A test for over-representation of a selected set under a defined universe. |
+| **GSEA** | A test for accumulation of a gene set toward one end of a complete ranking. |
+| **`TERM2GENE`** | A two-column term-to-gene mapping for custom enrichment. |
+| **`TERM2NAME`** | An optional mapping from term IDs to readable term names. |
+| **`enrichResult`** | The standard result object for ordinary enrichment and ORA workflows. |
+| **`gseaResult`** | The standard result object for GSEA workflows, including enrichment direction and leading-edge information. |
+| **`compareClusterResult`** | A result object containing comparable enrichment results for multiple groups. |
+| **Leading edge / core enrichment** | The genes contributing most directly to a GSEA signal. |
+| **GSON** | A versionable knowledge-resource container; it stores gene sets and metadata, not a new statistical test. |
+| **NES** | Normalized enrichment score; interpret its sign together with the ranking direction and the gene-set context. |
+| **Semantic similarity** | A similarity measure between terms, genes, or gene clusters based on ontology or annotation structure. |
+
+## Function index by task
+
+| Task | Main functions | Output or next step |
+|---|---|---|
+| Prepare identifiers | `bitr()`, `bitr_kegg()`, `select()`, `read.gmt()` | Mapped IDs or custom `TERM2GENE`; inspect mapping loss. |
+| Build GO mappings | `buildGOmap()` | Direct plus ancestor GO annotations for custom enrichment. |
+| Run ORA | `enrichGO()`, `enrichKEGG()`, `enrichPathway()`, `enrichDO()`, `enricher()` | `enrichResult`; continue to result inspection and plots. |
+| Run GSEA | `gseGO()`, `gseKEGG()`, `gsePathway()`, `gseDO()`, `GSEA()` | `gseaResult`; inspect NES, core enrichment, and ranking direction. |
+| Compare groups | `compareCluster()` | `compareClusterResult`; compare clusters with profile plots. |
+| Use network/weighted methods | `nseGO()`, `nseKEGG()`, `weighted_enrich()`, network helpers | Network-aware or weighted result objects; record the extra evidence layer. |
+| Integrate multi-omics | `aggregate_omics()` and related `enrichit` helpers | Aggregated pathway evidence with layer contribution information. |
+| Package knowledge | `gson()`, `gson_GO()`, `gson_KEGG()`, `gson_WP()`, `gsonList()` | Portable or combined GSON resources. |
+| Freeze knowledge | `write.gson()`, `read.gson()` | A local resource copy with source and version metadata. |
+| Organize terms | `pairwise_termsim()`, `simplify()`, `bayes_enrich()` | Reduced or selected term sets with traceable criteria. |
+| Inspect result objects | `as.data.frame()`, `geneInCategory()`, `setReadable()` | Exportable tables or readable display copies; retain the original object. |
+| Visualize results | `dotplot()`, `barplot()`, `cnetplot()`, `emapplot()`, `treeplot()`, `gseaplot2()`, `hplot()` | Summary, network, semantic, or GSEA figures. |
+| Interpret evidence | `interpret()`, `interpret_agent()`, `interpret_hierarchical()` | Structured draft reports; validate claims against the input evidence. |
+| Preserve the record | `saveRDS()`, `sessionInfo()`, `BiocManager::version()` | Reproducible objects, software context, and provenance. |
+
+See the [capability map](capability-map.qmd#part-6-capability-map) for package-layer ownership and the [first workflow](first-workflow.qmd#first-workflow) for a complete route through several of these functions.
+
+## Citation and version record
+
+For a published or shared analysis, record:
+
+- the input file or accession and preprocessing rule;
+- identifier namespace, mapping summary, selected list, ranked list, and universe;
+- organism, annotation package, database or GSON source, release, and access date;
+- the enrichment function, method parameters, correction method, and term filters;
+- the complete result object, exported tables, figures, and figure-generation code;
+- package versions, R version, operating system, source commit, and lockfile or environment specification;
+- the relevant method papers and knowledge-resource citations.
+
+The book bibliography is `references.bib`. Use `citation("clusterProfiler")`, `citation("enrichplot")`, or the relevant package citation for package-specific references. The [reproducible report](reproducible-report.qmd#reproducible-report) gives a compact record template; the [reference appendix](appendix.qmd) provides maintained routes without duplicating this index.

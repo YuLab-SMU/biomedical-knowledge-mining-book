@@ -15,3 +15,5 @@ biomedicalKnowledge_files
 *.html
 *.rmarkdown
 book-issues.md
+site_libs/
+hplot-review/

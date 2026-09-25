@@ -1,0 +1,3 @@
+# Start here: from data to a first result {-}
+
+This part introduces the data contract, the shortest complete workflow, and the decision points that determine which route through the toolkit is appropriate.

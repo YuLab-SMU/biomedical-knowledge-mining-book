@@ -1,0 +1,329 @@
+# GO semantic similarity analysis {#GOSemSim}
+
+| Aspect | GO semantic similarity |
+|---|---|
+| **Questions** | How similar are GO terms, genes, or gene clusters under the GO graph and annotations for a selected species? |
+| **Input** | GO IDs, gene IDs, gene clusters, an `OrgDb`, and `GOSemSimDATA` prepared with `godata()`. |
+| **Methods** | Information-content, graph-based, and topology-based measures such as Resnik, Lin, Jiang, Wang, and TCSS. |
+| **Output** | Similarity scores, matrices, and gene-cluster or term-cluster summaries. |
+| **Main limitations** | Results depend on the GO release, species-specific annotation coverage, ontology branch, and the `godata()` settings. Similarity does not establish shared mechanism. |
+
+Use this chapter after a GO result has been checked; for the shared method overview, see [semantic similarity](semantic-similarity.qmd#semantic-similarity-overview).
+
+
+```{r}
+#| label: load-packages
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+loadNamespace("Rcpp")
+```
+
+
+`r Biocpkg("GOSemSim")` implemented all methods described in [Chapter 1](semantic-similarity.qmd#semantic-similarity-overview), including four IC-based methods (Resnik, Lin, Rel, Jiang), one graph-based method (Wang), and the topology-based TCSS method [see @sec-tcss].
+
+## Semantic data {#semantic-data}
+
+To measure semantic similarity, we need to prepare GO annotations including GO structure (i.e. GO term relationships) and gene to GO mapping. For IC-based methods, information of GO term is species specific. We need to calculate `IC` for all GO terms of a species before we measure semantic similarity.
+
+
+`r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene similarity. It internally uses the `r Biocpkg("GO.db")` package to obtain GO structure and `OrgDb` for gene to GO mapping. 
+
+
+```{r godata}
+library(AnnotationDbi)
+library(GOSemSim)
+hsGO <- godata(annoDb = 'org.Hs.eg.db', ont="MF")
+```
+
+User can set `computeIC=FALSE` if they only want to use Wang's method.
+
+
+## Supported organisms {#gosemsim-supported-organisms}
+
+`r Biocpkg("GOSemSim")` supports all organisms that have an `OrgDb` object available.
+
+Bioconductor have already provided `OrgDb` for [about 20 species](http://bioconductor.org/packages/release/BiocViews.html#___OrgDb).
+
+We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
+
+```{r eval=FALSE}
+#| label: query-orgdb
+library(AnnotationHub)
+hub <- AnnotationHub()
+q <- query(hub, "Cricetulus")
+id <- q$ah_id[length(q)]
+Cgriseus <- hub[[id]]
+```
+
+If an organism is not supported by `r Biocpkg("AnnotationHub")`, user can use the `r Biocpkg("AnnotationForge")` package to build `OrgDb` manually.
+
+Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSim")` via `godata()` function described previously.
+
+
+## GO semantic similarity measurement {#go-semantic-similarity}
+
+The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
+
+
+```{r gosemsim-gosim}
+goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Jiang")
+goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Wang")
+go1 = c("GO:0004022","GO:0004024","GO:0004174")
+go2 = c("GO:0009055","GO:0005515")
+mgoSim(go1, go2, semData=hsGO, measure="Wang", combine=NULL)
+mgoSim(go1, go2, semData=hsGO, measure="Wang", combine="BMA")
+```
+
+## TCSS: Topology-based Clustering Semantic Similarity {#sec-tcss}
+
+The TCSS (Topology-based Clustering Semantic Similarity) method, proposed by Jain and Bader [@jain_improved_2010], takes a fundamentally different approach from traditional IC-based or graph-based methods. Instead of computing similarity directly on the full GO DAG, TCSS first partitions the GO graph into **topological clusters** (sub-graphs) based on the topological information content (ICT) of each term, then computes a two-level semantic similarity within and across these clusters.
+
+### Motivation — the unbalanced GO DAG
+
+The GO DAG is highly imbalanced: some branches have deep, richly detailed paths (e.g. "intracellular" has depth 7 in yeast CC ontology) while others are shallow (e.g. "extracellular" has depth 0). Traditional IC-based methods like Resnik cannot differentiate between term pairs that share the same common ancestor but reside in different parts of the DAG—for instance, two proteins both annotated under "cytoplasm" will get the same Resnik score regardless of whether they localise to the nucleus or mitochondria. Lin and Jiang partially address this but tend to overestimate similarity for terms higher in the ontology.
+
+TCSS addresses these issues by clustering GO terms into sub-graphs of functionally related concepts (analogous to a GO slim, but learned from the topology rather than manually curated), and scoring terms higher when they belong to the same sub-graph. This effectively normalises the graph depth before computing similarity.
+
+### How TCSS works
+
+The algorithm proceeds in two phases: topology-based clustering, followed by two-level semantic similarity computation.
+
+**Phase 1: Topology-based clustering**
+
+1. **Compute ICT**: For each GO term $t$, the Topological Information Content is $ICT(t) = -\log_{10}(|N(t)| / |O|)$, where $|N(t)|$ is the number of offspring terms of $t$ (including itself) and $|O|$ is the total number of GO terms in the species. More specific terms (closer to leaves) have higher ICT values.
+
+2. **Select sub-graph roots (meta-terms)**: Terms with ICT below a `cutoff` threshold are designated as *meta-terms*—the roots of topological clusters. Terms above the cutoff are considered "leaves" assigned to the nearest meta-term ancestor.
+
+3. **Merge close clusters**: If a parent-child pair among meta-terms has ICT values within 20% of each other (ratio ≤ 1.2), the child cluster is merged into the parent. This prevents redundant clusters that represent nearly the same level of topological specificity.
+
+4. **Build clusters**: Each meta-term forms a cluster containing itself, plus those offspring terms that no *deeper* meta-term has already claimed. Because GO is a DAG, a term with more than one meta-term ancestor is not forced into a single cluster—it belongs to every applicable one. In practice roughly 70% of human BP terms sit in more than one cluster, so the clusters overlap rather than partitioning the graph.
+
+**Phase 2: Two-level semantic similarity**
+
+5. **Compute ICA**: Within each cluster, the Information Content Adjusted score normalises each term by the cluster's maximum IC: $ICA(t) = IC(t) / \max\{IC(t') : t' \in cluster\}$. A cluster with a single member has no internal spread, which would make its ICA identically 1 no matter how general the term is; such clusters are instead normalised by the global maximum IC, so a very general term does not receive a maximally specific score.
+
+6. **Measure similarity**: For two GO terms, TCSS finds all their common ancestors, looks up the ICA value of each ancestor (using the ancestor's own cluster), and returns the maximum ICA among them: $sim(t_1, t_2) = \max\{ICA(a) : a \in ancestors(t_1) \cap ancestors(t_2)\}$. This is equivalent to Resnik's max-of-common-ancestors approach, but using cluster-normalised IC instead of raw IC.
+
+### Basic usage
+
+TCSS is enabled by setting `processTCSS = TRUE` in `godata()`. The `cutoff` parameter controls the granularity of clustering:
+
+```{r gosemsim-tcss-basic}
+hsGO_tcss <- godata(annoDb = 'org.Hs.eg.db', ont = "BP", processTCSS = TRUE)
+
+# GO term similarity using TCSS: the more specific the shared ancestor, the higher the score
+goSim("GO:0006954", "GO:0006952", semData = hsGO_tcss, measure = "TCSS") # inflammatory vs defense response
+goSim("GO:0006954", "GO:0006955", semData = hsGO_tcss, measure = "TCSS") # inflammatory vs immune response
+goSim("GO:0006954", "GO:0006412", semData = hsGO_tcss, measure = "TCSS") # inflammatory response vs translation
+
+# Gene similarity using TCSS (geneSim() also returns the GO terms it used)
+GOSemSim::geneSim("835", "5261", semData = hsGO_tcss, measure = "TCSS", combine = "BMA")$geneSim
+
+# Multiple gene similarity
+mgeneSim(genes = c("835", "5261", "241", "994"),
+         semData = hsGO_tcss, measure = "TCSS", verbose = FALSE)
+```
+
+When `cutoff = NULL` (the default), empirical default values are used: `3.5` for BP and MF, `3.2` for CC. A smaller cutoff produces fewer, larger clusters (coarser granularity); a larger cutoff produces more, smaller clusters (finer granularity).
+
+### Optimising the cutoff with `tcss_cutoff()`
+
+The default cutoff works reasonably well, but for a specific species or research context, you can use `tcss_cutoff()` to find the optimal cutoff by leveraging known protein-protein interaction (PPI) data. The idea is simple: known interacting proteins should be functionally similar (positive set), while random protein pairs should not (negative set). The function searches for the cutoff that best separates these two sets — maximising both AUC and F1-score.
+
+`tcss_cutoff()` requires a `ppidata` data.frame with three columns: two protein IDs (character) and a logical label (`TRUE` for known interactions, `FALSE` for non-interactions). Here is an example using STRING data:
+
+```{r eval=FALSE}
+#| label: tcss-cutoff-example
+library(org.Hs.eg.db)
+library(STRINGdb)
+
+# Get PPI data from STRING
+string_db <- STRINGdb$new(version = "11.0", species = 9606,
+                           score_threshold = 700)
+string_proteins <- string_db$get_proteins()
+ppi <- string_db$get_interactions(string_proteins$protein_external_id)
+
+# Clean up STRING IDs
+ppi$from <- vapply(ppi$from, function(e) 
+                   strsplit(e, "9606.")[[1]][2], character(1))
+ppi$to <- vapply(ppi$to, function(e) 
+                 strsplit(e, "9606.")[[1]][2], character(1))
+
+# Construct positive and negative sets
+s_len <- 100
+pos_1 <- sample(nrow(ppi), s_len, replace = TRUE)
+pos_2 <- sample(nrow(ppi), s_len, replace = TRUE)
+pos_3 <- sample(nrow(ppi), s_len, replace = TRUE)
+
+ppidata <- data.frame(
+    pro1 = c(ppi$from[pos_1], ppi$from[pos_2]),
+    pro2 = c(ppi$to[pos_1], ppi$to[pos_3]),
+    label = c(rep(TRUE, s_len), rep(FALSE, s_len)),
+    stringsAsFactors = FALSE
+)
+
+# Determine optimal cutoff
+cutoff <- tcss_cutoff(
+    OrgDb = org.Hs.eg.db,
+    keytype = "ENSEMBLPROT",
+    ont = "BP",
+    combine_method = "max",
+    ppidata = ppidata
+)
+
+cutoff
+
+# Use the optimised cutoff
+hsGO_opt <- godata(
+    annoDb = org.Hs.eg.db,
+    keytype = "ENSEMBLPROT",
+    ont = "BP",
+    processTCSS = TRUE,
+    cutoff = cutoff
+)
+```
+
+The `combine_method` parameter in `tcss_cutoff()` specifies how multiple GO term similarities are combined for gene-level comparison. Options include `"max"`, `"BMA"`, `"avg"`, `"rcmax"`, and `"rcmax.avg"`.
+
+### Notes
+
+- TCSS requires `computeIC = TRUE`, which is automatically enforced when `processTCSS = TRUE`.
+- The `tcss_cutoff()` function depends on the `ROCR` package for AUC/F1-score calculation.
+- TCSS currently supports GO (BP, MF, CC), DO, MPO, and HPO ontologies.
+- For species without PPI data, using the default cutoff values is a reasonable starting point.
+
+
+## Gene semantic similarity measurement {#gene-go-semantic-similarity}
+
+On the basis of semantic similarity between GO terms, [GOSemSim](https://www.bioconductor.org/packages/GOSemSim) can
+also compute semantic similarity among sets of GO terms, gene products, and gene clusters.
+
+Suppose we have gene $g_1$ annotated by GO terms sets $GO_{1}=\{go_{11},go_{12} \cdots go_{1m}\}$
+and $g_2$ annotated by $GO_{2}=\{go_{21},go_{22} \cdots go_{2n}\}$, `r Biocpkg("GOSemSim")` implemented four combining methods, including __*max*__, __*avg*__, __*rcmax*__, and __*BMA*__, to aggregate semantic similarity scores of multiple GO terms (see also @sec-combine-methods). The similarities
+among gene products and gene clusters which are annotated by multiple GO
+terms are also calculated by these combining methods.
+
+
+`r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
+
+```{r gosemsim-genesim}
+GOSemSim::geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
+mgeneSim(genes=c("835", "5261","241", "994"),
+         semData=hsGO, measure="Wang",verbose=FALSE)
+mgeneSim(genes=c("835", "5261","241", "994"),
+       semData=hsGO, measure="Rel",verbose=FALSE)
+```
+
+By default, `godata` function use `ENTREZID` as keytype, and the input ID type is `ENTREZID`. User can use other ID types such as `ENSEMBL`, `UNIPROT`, `REFSEQ`, `ACCNUM`, `SYMBOL` _et al_.
+
+Here as an example, we use `SYMBOL` as `keytype` and calculate semantic similarities among several genes by using their gene symbol as input.
+
+```{r gosemsim-mgeneSim}
+hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE) 
+genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
+mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
+```
+
+Users can also use [`clusterProfiler::bitr`](identifier-utilities.qmd#bitr) to translate biological IDs.
+
+## Gene cluster semantic similarity measurement {#gene-cluster-go-semantic-similarity}
+
+
+`r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
+
+
+```{r echo=FALSE}
+#| label: clusterSim-aliases
+clusterSim <- GOSemSim::clusterSim
+mclusterSim <- GOSemSim::mclusterSim
+```
+
+
+```{r gosemsim-clusterSim}
+gs1 <- c("835", "5261","241", "994", "514", "533")
+gs2 <- c("578","582", "400", "409", "411")
+clusterSim(gs1, gs2, semData=hsGO, measure="Wang", combine="BMA")
+
+library(org.Hs.eg.db)
+x <- org.Hs.egGO
+hsEG <- mappedkeys(x)
+set.seed <- 123
+clusters <- list(a=sample(hsEG, 20), b=sample(hsEG, 20), c=sample(hsEG, 20))
+mclusterSim(clusters, semData=hsGO, measure="Wang", combine="BMA")
+```
+
+
+## Cross-species gene similarity calculation {#cross-species-gosemsim}
+
+While `GOSemSim` primarily focuses on semantic similarity within a single species, researchers often need to calculate GO semantic similarity for orthologous gene pairs between different species. This is particularly relevant for comparative genomics studies between well-annotated species like human and mouse.
+
+### Current limitations and workarounds
+
+By default, `godata()` function only accepts a single `OrgDb` object, meaning it supports semantic similarity calculation within one species. However, there are several approaches to address cross-species similarity calculation:
+
+1. **Graph-based methods**: Use Wang's method (graph-based) with `mgoSim()` function by manually providing GO term sets for genes from different species
+2. **Manual GO term mapping**: Extract GO annotations for orthologous genes and use `mgoSim()` directly
+3. **Future development**: A potential `merge()` function for combining `GOSemSimDATA` objects from multiple species
+
+```{r eval=FALSE}
+#| label: cross-species-sim
+# Example workflow for cross-species similarity using mgoSim
+# Extract GO terms for human gene using clusterProfiler
+library(clusterProfiler)
+human_go_terms <- bitr("human_gene_id", fromType = "ENTREZID", 
+                       toType = "GO", OrgDb = org.Hs.eg.db)$GO
+
+# Extract GO terms for mouse ortholog  
+mouse_go_terms <- bitr("mouse_gene_id", fromType = "ENTREZID",
+                       toType = "GO", OrgDb = org.Mm.eg.db)$GO
+
+# Calculate similarity using Wang's method (graph-based)
+similarity <- mgoSim(human_go_terms, mouse_go_terms, 
+                    semData=hsGO, measure="Wang", combine="BMA")
+```
+
+For species not supported by Bioconductor `OrgDb` packages, users can:
+- Use `AnnotationHub` to query and retrieve organism-specific annotations
+- Build custom `OrgDb` objects using `AnnotationForge::makeOrgPackage()` or `makeOrgPackageFromNCBI()`
+- Perform manual GO annotation followed by semantic similarity calculation
+
+## Applications in functional genomics {#gosemsim-applications}
+
+`GOSemSim` has been widely applied in various research domains, with over 200 citations. One particularly valuable application is in prioritizing genes for experimental validation from large sets of differentially expressed genes.
+
+### Functional similarity for target prioritization
+
+When faced with numerous differentially expressed genes, researchers can use GO semantic similarity to identify functionally related "hub" genes that may serve as better candidates for experimental validation. The approach involves:
+
+1. Calculating pairwise semantic similarity among all differentially expressed genes
+2. Constructing a similarity network where edges represent functional relationships
+3. Identifying genes with high betweenness centrality as potential key regulators
+
+### Case study: FMNL1 interactome analysis
+
+In a collaboration with Technische Universität München, we used GO semantic similarity to analyze proteins identified through Co-IP and LC-MS/MS experiments targeting FMNL1 in hematopoietic cells. The workflow was:
+
+1. **Similarity metric definition**: Functional similarity was defined as the geometric mean of molecular function and cellular component GO semantic similarities
+2. **Network construction**: Created a similarity network of all co-purified proteins
+3. **Hub identification**: Identified AHNAK1, SIPA1, and FLII as central nodes in the network
+4. **Experimental validation**: Validated the novel interaction between FMNL1 and AHNAK1, leading to discovery of FMNL1's role in calcium-dependent membrane plasticity
+
+This approach successfully identified previously unreported protein interactions that were subsequently validated experimentally, demonstrating the power of GO semantic similarity in guiding biological discovery.
+
+### Implementation considerations
+
+When using semantic similarity for target prioritization:
+- Combine multiple GO aspects (MF, BP, CC) for comprehensive functional assessment
+- Consider both direct interactions and functional relationships
+- Use appropriate similarity measures based on biological context
+- Validate computational predictions with experimental evidence
+
+## Next steps
+
+- For GO enrichment objects, return to [GO enrichment](go-enrichment.qmd#clusterprofiler-go).
+- For representative-term selection, compare [simplify and Bayesian selection](bayesian-term-selection.qmd#sec-bayes-enrich).
+
+## References {-}
