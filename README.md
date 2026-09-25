@@ -52,7 +52,7 @@ make book
 
 Use `make fresh` when cached computations need to be refreshed. The first workflow reads the committed `datasets/de_table.tsv`; regenerate it with `Rscript scripts/make_airway_de_table.R` when the documented airway/DESeq2 source needs to be refreshed.
 
-For the tested R/Bioconductor snapshot, data provenance, network boundaries, and validation commands, see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). The repository runs fast source checks in `validate-book.yml`; the existing publish workflow performs the complete R/Quarto render and then repeats the navigation/link checks before deployment.
+For the rolling R/Bioconductor compatibility policy, current validation versions, data provenance, network boundaries, and validation commands, see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). The repository follows current release updates and revalidates the book rather than maintaining a permanent lockfile. The repository runs fast source checks in `validate-book.yml`; the existing publish workflow performs the complete R/Quarto render and then repeats the navigation/link checks before deployment.
 
 ## Live interpretation examples
 

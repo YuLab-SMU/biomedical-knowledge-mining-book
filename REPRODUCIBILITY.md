@@ -1,6 +1,6 @@
-# Reproducible build environment
+# Reproducible and rolling build environment
 
-The book is tested as a Quarto book with R and Bioconductor. The following versions are the local validation snapshot used for the current source tree:
+The book follows the current R/Bioconductor and package releases rather than freezing one permanent environment. The versions below are the local validation baseline for the current source tree; they are provenance for this validation pass, not a compatibility ceiling or a lockfile.
 
 | Component | Tested version |
 |---|---|
@@ -17,7 +17,7 @@ The book is tested as a Quarto book with R and Bioconductor. The following versi
 | `DESeq2` | 1.52.0 |
 | `org.Hs.eg.db` | 3.23.1 |
 
-These versions describe a tested snapshot, not a claim that every future release is interchangeable. For a release build, record the output of:
+When R, Bioconductor, or a core package release changes, update the dependencies in the build environment, rerun the full book and validation checks, regenerate `de_table.tsv` only if the documented airway/DESeq2 source or design changes, and refresh this table with the new `sessionInfo()` output. For a release build, record:
 
 ```r
 sessionInfo()
