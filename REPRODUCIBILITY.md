@@ -15,6 +15,7 @@ The book follows the current R/Bioconductor and package releases rather than fre
 | `meshes` | 1.39.1 |
 | `airway` | 1.32.0 |
 | `DESeq2` | 1.52.0 |
+| `fgsea` | 1.38.0 |
 | `org.Hs.eg.db` | 3.23.1 |
 
 When R, Bioconductor, or a core package release changes, update the dependencies in the build environment, rerun the full book and validation checks, regenerate `de_table.tsv` only if the documented airway/DESeq2 source or design changes, and refresh this table with the new `sessionInfo()` output. For a release build, record:

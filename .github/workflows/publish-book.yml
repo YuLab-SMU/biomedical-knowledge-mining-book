@@ -95,6 +95,7 @@ jobs:
             "org.Mm.eg.db",
             "MeSHDbi",
             "biomaRt",
+            "fgsea",
             "pathview"
           ), ask = FALSE, update = FALSE)'
 
