@@ -101,7 +101,7 @@ jobs:
 
       - name: Verify required Bioconductor packages
         run: |
-          Rscript -e 'BiocManager::install(c("org.Hs.eg.db", "fgsea"), ask = FALSE, update = FALSE, force = TRUE)'
+          Rscript -e 'BiocManager::install(c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"), ask = FALSE, update = FALSE, force = TRUE)'
           Rscript -e 'required <- c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing Bioconductor packages: ", paste(missing, collapse = ", "))'
 
       - name: Install foundational YuLab packages
