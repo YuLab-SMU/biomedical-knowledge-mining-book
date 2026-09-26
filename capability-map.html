@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>40&nbsp; Package and capability map – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./glossary-api-index.html" rel="next">
+<link href="./troubleshooting.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd0503e23dce65854c81c5baaade3bdf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-recipes-reference.html">Recipes and reference</a></li><li class="breadcrumb-item"><a href="./capability-map.html"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here: from data to a first result</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Choose the analysis engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connect biological knowledge</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organize and integrate evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualize and communicate results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret and report biological evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recipes and reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#index-by-task" id="toc-index-by-task" class="nav-link active" data-scroll-target="#index-by-task"><span class="header-section-number">40.1</span> 1. Index by task</a></li>
+  <li><a href="#index-by-analytical-layer" id="toc-index-by-analytical-layer" class="nav-link" data-scroll-target="#index-by-analytical-layer"><span class="header-section-number">40.2</span> 2. Index by analytical layer</a></li>
+  <li><a href="#index-by-package-or-capability" id="toc-index-by-package-or-capability" class="nav-link" data-scroll-target="#index-by-package-or-capability"><span class="header-section-number">40.3</span> 3. Index by package or capability</a>
+  <ul class="collapse">
+  <li><a href="#package-boundaries-that-matter" id="toc-package-boundaries-that-matter" class="nav-link" data-scroll-target="#package-boundaries-that-matter"><span class="header-section-number">40.3.1</span> Package boundaries that matter</a></li>
+  </ul></li>
+  <li><a href="#index-by-typical-inputoutput" id="toc-index-by-typical-inputoutput" class="nav-link" data-scroll-target="#index-by-typical-inputoutput"><span class="header-section-number">40.4</span> 5. Index by typical input/output</a></li>
+  <li><a href="#reference-routes" id="toc-reference-routes" class="nav-link" data-scroll-target="#reference-routes"><span class="header-section-number">40.5</span> 4. Reference routes</a>
+  <ul class="collapse">
+  <li><a href="#a-thresholded-list" id="toc-a-thresholded-list" class="nav-link" data-scroll-target="#a-thresholded-list"><span class="header-section-number">40.5.1</span> A thresholded list</a></li>
+  <li><a href="#a-ranked-list" id="toc-a-ranked-list" class="nav-link" data-scroll-target="#a-ranked-list"><span class="header-section-number">40.5.2</span> A ranked list</a></li>
+  <li><a href="#a-custom-or-non-model-annotation" id="toc-a-custom-or-non-model-annotation" class="nav-link" data-scroll-target="#a-custom-or-non-model-annotation"><span class="header-section-number">40.5.3</span> A custom or non-model annotation</a></li>
+  <li><a href="#genomic-regions" id="toc-genomic-regions" class="nav-link" data-scroll-target="#genomic-regions"><span class="header-section-number">40.5.4</span> Genomic regions</a></li>
+  <li><a href="#optional-ai-interpretation" id="toc-optional-ai-interpretation" class="nav-link" data-scroll-target="#optional-ai-interpretation"><span class="header-section-number">40.5.5</span> Optional AI interpretation</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/capability-map.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-recipes-reference.html">Recipes and reference</a></li><li class="breadcrumb-item"><a href="./capability-map.html"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="part-6-capability-map" class="quarto-section-identifier"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page is a navigation map for the biomedical knowledge-mining stack used in this book. It is organized four ways: <strong>by task</strong>, <strong>by analytical layer</strong>, <strong>by package</strong>, and <strong>by typical input/output</strong>. The links point to the existing chapters and anchors so that this page can serve as a cross-reference when it is added to the book navigation.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>This map separates <strong>statistical computation</strong>, <strong>knowledge-base access</strong>, <strong>result handling</strong>, <strong>visualization</strong>, and <strong>optional language-model interpretation</strong>. The layers are complementary: an interpretation report does not replace an enrichment test, and a plot does not recreate the information that was lost before an enrichment result object was constructed.</p>
+</div>
+</div>
+</div>
+<section id="index-by-task" class="level2" data-number="40.1">
+<h2 data-number="40.1" class="anchored" data-anchor-id="index-by-task"><span class="header-section-number">40.1</span> 1. Index by task</h2>
+<p>Use this index when the starting point is a biological question or an analysis artifact rather than a package name.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>Start here</th>
+<th>Main capability</th>
+<th>Typical next step</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Run a first complete analysis</td>
+<td><a href="./first-workflow.html#first-workflow"><code>first-workflow.qmd</code></a></td>
+<td>Build a local universe, run GO ORA and GSEA, and retain the result objects for plotting</td>
+<td>Replace the demonstration inputs with an experiment-specific data contract</td>
+</tr>
+<tr class="even">
+<td>Validate the input contract</td>
+<td><a href="./data-contract.html#data-contract"><code>data-contract.qmd</code></a></td>
+<td>Separate gene vectors, ranked lists, universes, term-to-gene mappings, and result classes</td>
+<td>Choose ORA, GSEA, comparison, or custom enrichment</td>
+</tr>
+<tr class="odd">
+<td>Choose an analysis route</td>
+<td><a href="./choose-a-route.html#choose-a-route"><code>choose-a-route.qmd</code></a></td>
+<td>Match the evidence shape to the null question, function, and result class</td>
+<td>Connect a biological knowledge source</td>
+</tr>
+<tr class="even">
+<td>Prepare identifiers and backgrounds</td>
+<td><a href="./identifier-utilities.html#useful-utilities"><code>identifier-utilities.qmd</code></a></td>
+<td>Convert identifiers with <code>bitr()</code>/<code>bitr_kegg()</code>, make IDs character-valued, define the universe, and make output readable with <code>setReadable()</code></td>
+<td>Run a domain-specific or universal enrichment workflow</td>
+</tr>
+<tr class="odd">
+<td>Measure similarity between GO terms, genes, or clusters</td>
+<td><a href="./go-semantic-similarity.html#GOSemSim"><code>go-semantic-similarity.qmd</code></a></td>
+<td>Build <code>GOSemSim</code> semantic data and calculate term-, gene-, or cluster-level similarity</td>
+<td>Cluster functionally similar entities or simplify redundant enrichment terms</td>
+</tr>
+<tr class="even">
+<td>Measure disease-term similarity</td>
+<td><a href="./do-semantic-similarity.html#DOSE-semantic-similarity"><code>do-semantic-similarity.qmd</code></a></td>
+<td>Compare Disease Ontology terms, genes, and gene clusters</td>
+<td>Continue to <a href="./disease-enrichment.html#dose-enrichment"><code>disease-enrichment.qmd</code></a> for disease enrichment</td>
+</tr>
+<tr class="odd">
+<td>Measure MeSH similarity</td>
+<td><a href="./mesh-semantic-similarity.html#sec-meshes-semantic-similarity"><code>mesh-semantic-similarity.qmd</code></a></td>
+<td>Prepare a species-specific <code>MeSHDb</code> and compare MeSH terms or genes</td>
+<td>Continue to <a href="./mesh-enrichment.html#meshes-enrichment"><code>mesh-enrichment.qmd</code></a></td>
+</tr>
+<tr class="even">
+<td>Test a thresholded gene list</td>
+<td><a href="./enrichment-foundations.html#ora-algorithm"><code>enrichment-foundations.qmd</code></a></td>
+<td>ORA / one-sided hypergeometric testing against a gene-set collection</td>
+<td>Inspect <code>enrichResult</code> with <code>enrichplot</code></td>
+</tr>
+<tr class="odd">
+<td>Test a complete ranked list</td>
+<td><a href="./enrichment-foundations.html#gsea-algorithm"><code>enrichment-foundations.qmd</code></a></td>
+<td>GSEA using the direction and magnitude of a ranking</td>
+<td>Inspect leading-edge genes and GSEA plots</td>
+</tr>
+<tr class="even">
+<td>Account for network topology</td>
+<td><a href="./enrichment-network.html#sec-enrichment-network"><code>enrichment-network.qmd</code></a></td>
+<td>NSEA, signed NSEA, multi-layer NSEA, and weighted enrichment through <code>enrichit</code></td>
+<td>Use <code>nseGO()</code>/<code>nseKEGG()</code> or explanation-ready contribution tables</td>
+</tr>
+<tr class="odd">
+<td>Integrate multiple omics layers</td>
+<td><a href="./enrichment-multiomics.html#sec-enrichment-multiomics"><code>enrichment-multiomics.qmd</code></a></td>
+<td>Early feature-level aggregation, ID harmonization, late pathway-level fusion, and contribution tracing</td>
+<td>Feed the unified ranking or selected features to enrichment</td>
+</tr>
+<tr class="even">
+<td>Analyse GO</td>
+<td><a href="./go-enrichment.html#clusterprofiler-go"><code>go-enrichment.qmd</code></a></td>
+<td><code>groupGO()</code>, <code>enrichGO()</code>, <code>gseGO()</code>, <code>enricher()</code>, and GO-aware topology wrappers</td>
+<td>Simplify terms, compare groups, or visualize</td>
+</tr>
+<tr class="odd">
+<td>Analyse KEGG pathways or modules</td>
+<td><a href="./kegg-enrichment.html#clusterprofiler-kegg"><code>kegg-enrichment.qmd</code></a></td>
+<td>Online KEGG pathways/modules, local <code>GSON</code>, offline databases, and compound analysis</td>
+<td>Use <code>browseKEGG()</code>, <code>pathview()</code>, or <code>enrichplot</code></td>
+</tr>
+<tr class="even">
+<td>Analyse Reactome</td>
+<td><a href="./reactome-enrichment.html#reactomepa"><code>reactome-enrichment.qmd</code></a></td>
+<td>Reactome ORA (<code>enrichPathway()</code>) and GSEA (<code>gsePathway()</code>), with <code>viewPathway()</code></td>
+<td>Apply general enrichment plots or compare clusters</td>
+</tr>
+<tr class="odd">
+<td>Analyse Disease Ontology, HPO/MPO, or NCG</td>
+<td><a href="./disease-enrichment.html#dose-enrichment"><code>disease-enrichment.qmd</code></a></td>
+<td>Disease and phenotype ORA/GSEA; NCG is supported by <code>DOSE</code></td>
+<td>Use <code>enrichplot</code> or compare profiles</td>
+</tr>
+<tr class="even">
+<td>Analyse MeSH</td>
+<td><a href="./mesh-enrichment.html#meshes-enrichment"><code>mesh-enrichment.qmd</code></a></td>
+<td>MeSH ORA and GSEA with selectable annotation source and category</td>
+<td>Use general enrichment plots</td>
+</tr>
+<tr class="odd">
+<td>Analyse a custom or unsupported knowledge base</td>
+<td><a href="./universal-enrichment.html#universal-api"><code>universal-enrichment.qmd</code></a></td>
+<td>Supply <code>TERM2GENE</code> and optional <code>TERM2NAME</code> to <code>enricher()</code>/<code>GSEA()</code>; parse GMT with <code>read.gmt()</code></td>
+<td>Store reusable sets as <code>GSON</code> or compare them</td>
+</tr>
+<tr class="even">
+<td>Freeze, share, or combine knowledge bases</td>
+<td><a href="./gson.html#sec-gson"><code>gson.qmd</code></a>, with KEGG examples in <a href="./kegg-enrichment.html#clusterprofiler-kegg"><code>kegg-enrichment.qmd</code></a></td>
+<td>Create, serialize, and combine <code>GSON</code> objects; use <code>gsonList</code> for multiple sources</td>
+<td>Run one analysis per source and facet the results</td>
+</tr>
+<tr class="odd">
+<td>Compare conditions, clusters, or experiments</td>
+<td><a href="./comparecluster-analysis.html#clusterprofiler-comparecluster"><code>comparecluster-analysis.qmd</code></a></td>
+<td>Re-run one enrichment function per gene list with <code>compareCluster()</code> or its formula interface</td>
+<td>Use comparison-aware dot, network, or map plots from <a href="./comparecluster-visualization.html#sec-comparecluster-visualization"><code>comparecluster-visualization.qmd</code></a></td>
+</tr>
+<tr class="even">
+<td>Start from genomic coordinates</td>
+<td><a href="./chipseeker-enrichment.html#chipseeker-enrichment"><code>chipseeker-enrichment.qmd</code></a></td>
+<td>Annotate peaks/regions and map them to nearest, host, flanking, or <code>seq2gene()</code>-linked genes</td>
+<td>Pass the resulting gene sets to <code>clusterProfiler</code></td>
+</tr>
+<tr class="odd">
+<td>Reduce redundancy or select explanatory terms</td>
+<td><a href="./go-enrichment.html#clusterprofiler-go"><code>go-enrichment.qmd</code></a> and <a href="./bayesian-term-selection.html#sec-bayes-enrich"><code>bayesian-term-selection.qmd</code></a></td>
+<td><code>simplify()</code> uses semantic similarity; <code>bayes_enrich()</code> uses joint term-gene coverage</td>
+<td>Keep a compact, interpretable term set</td>
+</tr>
+<tr class="even">
+<td>Turn results into figures</td>
+<td><a href="./enrichplot.html#sec-enrichplot"><code>enrichplot.qmd</code></a>, <a href="./enrichplot-summary.html#sec-visualization-summary"><code>summary</code></a>, <a href="./enrichplot-networks.html#sec-visualization-networks"><code>networks</code></a>, <a href="./enrichplot-gsea.html#sec-visualization-gsea"><code>GSEA</code></a>, <a href="./enrichplot-comparison.html#sec-visualization-comparison"><code>comparison</code></a>, <a href="./enrichplot-specialized.html#sec-visualization-specialized"><code>specialized</code></a></td>
+<td>Bar, dot, Manhattan, network, map, heatmap, tree, semantic-space, ridge, and GSEA plots</td>
+<td>Export publication or presentation graphics</td>
+</tr>
+<tr class="odd">
+<td>Retrieve a PPI context</td>
+<td><a href="./ppi.html#protein-protein-interaction-network"><code>ppi.qmd</code></a></td>
+<td>Fetch STRING interactions for genes or enriched pathways with <code>getPPI()</code></td>
+<td>Visualize with <code>ggtangle</code> or provide network evidence to interpretation</td>
+</tr>
+<tr class="even">
+<td>Manipulate or import result objects</td>
+<td><a href="./identifier-utilities.html#useful-utilities"><code>identifier-utilities.qmd</code></a>, <a href="./result-objects.html#clusterProfiler-dplyr"><code>result-objects.qmd</code></a>, and <a href="./enrichplot-import.html#sec-import-other-tools"><code>enrichplot-import.qmd</code></a></td>
+<td>Filter, select, mutate, preserve object classes, or import external result tables</td>
+<td>Plot, compare, or interpret canonical objects</td>
+</tr>
+<tr class="odd">
+<td>Request an optional narrative or annotation</td>
+<td><a href="./interpretation.html#evidence-guided-interpretation"><code>interpretation.qmd</code></a></td>
+<td><code>interpret()</code>, <code>interpret_agent()</code>, and hierarchical interpretation using an external LLM</td>
+<td>Validate every claim against the supplied results before reporting</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="index-by-analytical-layer" class="level2" data-number="40.2">
+<h2 data-number="40.2" class="anchored" data-anchor-id="index-by-analytical-layer"><span class="header-section-number">40.2</span> 2. Index by analytical layer</h2>
+<p>The packages are easier to combine when their responsibilities are viewed as a pipeline. A package can appear in more than one layer, but each layer has a different contract.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Layer</th>
+<th>Question answered</th>
+<th>Principal components</th>
+<th>Input contract</th>
+<th>Output contract</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1. Experimental feature and ID layer</strong></td>
+<td>What are the features, and how are they named?</td>
+<td>Differential-expression lists, ranked statistics, peak coordinates, <code>bitr()</code>, <code>bitr_kegg()</code>, <code>setReadable()</code></td>
+<td>Character IDs, or genomic ranges plus annotation context; a ranked list must be a named numeric vector sorted in descending order</td>
+<td>Harmonized IDs, gene lists, ranked vectors, or genes linked from regions</td>
+</tr>
+<tr class="even">
+<td><strong>2. Knowledge and annotation layer</strong></td>
+<td>What do terms and gene sets mean?</td>
+<td><code>OrgDb</code>/GO, KEGG, Reactome, DO/HPO/MPO, MeSH, WikiPathways, MSigDB, custom <code>TERM2GENE</code>/<code>TERM2NAME</code>, and <code>GSON</code></td>
+<td>A knowledge source, organism/key type, and optionally a versioned local copy</td>
+<td>Term-to-gene mappings, term names, ontology graphs, <code>GSON</code>, <code>GOSemSimDATA</code>, or MeSH semantic data</td>
+</tr>
+<tr class="odd">
+<td><strong>3. Similarity layer</strong></td>
+<td>How close are terms, genes, or clusters in a knowledge graph?</td>
+<td><code>GOSemSim</code>, <code>DOSE</code>, <code>meshes</code>; Resnik, Lin, Rel, Jiang, Wang, and combination methods such as BMA</td>
+<td>Ontology/MeSH terms or IDs plus prepared semantic data</td>
+<td>Numeric similarity scores, matrices, and term/group relationships</td>
+</tr>
+<tr class="even">
+<td><strong>4. Enrichment engine layer</strong></td>
+<td>Are selected or ranked features associated with gene sets more than expected?</td>
+<td><code>enrichit</code> (ORA, GSEA, NSEA/MNSEA, weighted enrichment, multi-omics aggregation, Bayesian selection)</td>
+<td>Thresholded genes plus universe, or a ranked vector; network/layer/weight inputs when requested</td>
+<td>Canonical enrichment result objects, p-values/FDR/NES, leading-edge/core genes, contribution tables, and selected terms</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Knowledge-base-aware API layer</strong></td>
+<td>Which biological vocabulary should the engine test?</td>
+<td><code>clusterProfiler</code>, <code>DOSE</code>, <code>ReactomePA</code>, <code>meshes</code>, and <code>gson</code> helpers</td>
+<td>Domain-specific IDs and source parameters, or a universal mapping</td>
+<td><code>enrichResult</code>, <code>gseaResult</code>, <code>compareClusterResult</code>, lists of results, or GSON-backed analyses</td>
+</tr>
+<tr class="even">
+<td><strong>6. Genomic-coordinate adapter layer</strong></td>
+<td>Which genes may be regulated by these regions?</td>
+<td><code>ChIPseeker</code> and <code>seq2gene()</code></td>
+<td>Peaks or genomic regions plus transcript/gene annotation</td>
+<td>Peak annotation tables and many-to-many region-to-gene mappings suitable for enrichment</td>
+</tr>
+<tr class="odd">
+<td><strong>7. Comparison and result-shaping layer</strong></td>
+<td>How do profiles differ, and which terms should be retained?</td>
+<td><code>compareCluster()</code>, <code>simplify()</code>, <code>bayes_enrich()</code>, dplyr/data-frame interfaces</td>
+<td>Gene lists grouped by condition, a result object, or a canonical external table</td>
+<td>Comparable multi-group objects, reduced term sets, posterior columns, and filtered objects</td>
+</tr>
+<tr class="even">
+<td><strong>8. Visualization layer</strong></td>
+<td>How can the result be inspected or communicated?</td>
+<td><code>enrichplot</code>, <code>ggplot2</code>, <code>ggtangle</code>, plus <code>browseKEGG()</code>, <code>pathview()</code>, <code>viewPathway()</code></td>
+<td>Canonical enrichment objects with mappings and (for GSEA) ranked lists</td>
+<td>Plots, networks, maps, and plot-ready tables</td>
+</tr>
+<tr class="odd">
+<td><strong>9. Optional interpretation layer</strong></td>
+<td>What biological narrative or label is supported by the result?</td>
+<td><code>interpret()</code>, <code>interpret_agent()</code>, <code>interpret_hierarchical()</code> plus <code>aisdk</code></td>
+<td>One or more canonical result objects, optional context, fold changes, PPI, and an API-backed model</td>
+<td>Structured narrative, drivers, mechanisms, confidence, annotation labels, or a report plot; not a replacement for statistics</td>
+</tr>
+</tbody>
+</table>
+<p>A useful mental model is:</p>
+<pre class="text"><code>features/regions -&gt; IDs and background -&gt; knowledge mapping -&gt;
+statistical enrichment -&gt; canonical result object -&gt; reduction/comparison -&gt;
+visualization -&gt; optional, validated interpretation</code></pre>
+</section>
+<section id="index-by-package-or-capability" class="level2" data-number="40.3">
+<h2 data-number="40.3" class="anchored" data-anchor-id="index-by-package-or-capability"><span class="header-section-number">40.3</span> 3. Index by package or capability</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package or capability</th>
+<th>Primary responsibility</th>
+<th>Representative entry points</th>
+<th>Does it compute enrichment?</th>
+<th>Main hand-off</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>clusterProfiler</code></strong></td>
+<td>User-facing orchestration across biological knowledge bases; ID conversion; universal enrichment; comparison; result methods; high-level network-aware wrappers</td>
+<td><code>enrichGO()</code>, <code>gseGO()</code>, <code>enrichKEGG()</code>, <code>gseKEGG()</code>, <code>enricher()</code>, <code>GSEA()</code>, <code>compareCluster()</code>, <code>bitr()</code>, <code>nseGO()</code>, <code>nseKEGG()</code></td>
+<td>Yes, through domain APIs and delegated engines</td>
+<td>Produces/consumes canonical enrichment objects; hands them to <code>enrichplot</code>, <code>dplyr</code>, PPI, or interpretation</td>
+</tr>
+<tr class="even">
+<td><strong><code>enrichit</code></strong></td>
+<td>Algorithm and result-object engine with minimal dependencies and fast implementations</td>
+<td><code>ora()</code>, <code>gsea()</code>, <code>nsea()</code>, <code>mnsea()</code>, weighted enrichment, <code>aggregate_omics()</code>, <code>aggregate_enrichment()</code>, <code>harmonize_ids()</code>, <code>bayes_enrich()</code>, <code>as_enrichResult()</code></td>
+<td>Yes; it is the computational backbone for classical, topology-aware, weighted, and multi-omics workflows</td>
+<td>Returns engine results or canonical objects that <code>clusterProfiler</code> and <code>enrichplot</code> can use</td>
+</tr>
+<tr class="odd">
+<td><strong><code>gson</code></strong></td>
+<td>Versionable Gene Set Object Notation container and multi-knowledge-base exchange format</td>
+<td><code>gson()</code>, <code>gsonList()</code>, <code>write.gson()</code>, <code>read.gson()</code>; ecosystem helpers such as <code>gson_KEGG()</code>, <code>gson_WP()</code>, <code>gson_GO()</code></td>
+<td>No; it stores term/gene/name/metadata mappings</td>
+<td>Supplies local or combined gene sets to <code>enricher()</code>, <code>GSEA()</code>, <code>nseKEGG()</code>, or related APIs</td>
+</tr>
+<tr class="even">
+<td><strong><code>DOSE</code></strong></td>
+<td>Disease- and phenotype-oriented semantic similarity and enrichment; includes NCG workflows and demo data</td>
+<td><code>doSim()</code>, <code>geneSim()</code>, <code>clusterSim()</code>, <code>enrichDO()</code>, <code>gseDO()</code>, <code>enrichNCG()</code>, <code>gseNCG()</code></td>
+<td>Yes, for DO/HPO/MPO and NCG; it also provides similarity</td>
+<td>Produces disease-aware result objects consumed by <code>enrichplot</code>, comparison, or optional interpretation</td>
+</tr>
+<tr class="odd">
+<td><strong><code>ReactomePA</code></strong></td>
+<td>Reactome pathway domain adapter</td>
+<td><code>enrichPathway()</code>, <code>gsePathway()</code>, <code>viewPathway()</code></td>
+<td>Yes, Reactome ORA and GSEA</td>
+<td>Produces Reactome result objects for <code>enrichplot</code>, comparison, and reporting</td>
+</tr>
+<tr class="even">
+<td><strong><code>meshes</code></strong></td>
+<td>MeSH annotation, semantic similarity, and enrichment across many species and MeSH categories</td>
+<td><code>meshdata()</code>, <code>meshSim()</code>, <code>geneSim()</code>, <code>enrichMeSH()</code>, <code>gseMeSH()</code></td>
+<td>Yes, MeSH ORA and GSEA</td>
+<td>Produces MeSH semantic data and enrichment objects for <code>enrichplot</code></td>
+</tr>
+<tr class="odd">
+<td><strong><code>GOSemSim</code></strong></td>
+<td>GO semantic data and similarity for terms, genes, and gene clusters</td>
+<td><code>godata()</code>, <code>goSim()</code>, <code>mgoSim()</code>, <code>geneSim()</code>, <code>mgeneSim()</code>, <code>clusterSim()</code>, <code>mclusterSim()</code></td>
+<td>No; its main output is semantic similarity (it supports downstream simplification)</td>
+<td>Supplies similarity to clustering, redundancy reduction, and interpretation of GO results</td>
+</tr>
+<tr class="even">
+<td><strong><code>enrichplot</code></strong></td>
+<td>Visualization and import boundary for enrichment objects</td>
+<td><code>barplot()</code>, <code>dotplot()</code>, <code>cnetplot()</code>, <code>emapplot()</code>, <code>heatplot()</code>, <code>treeplot()</code>, <code>ssplot()</code>, <code>gseaplot2()</code>, <code>ridgeplot()</code>, <code>import_*()</code></td>
+<td>No; it visualizes or imports results</td>
+<td>Consumes canonical objects and produces <code>ggplot</code>/network graphics; importers normalize external tables</td>
+</tr>
+<tr class="odd">
+<td><strong><code>ChIPseeker</code></strong></td>
+<td>Genomic-region annotation and region-to-gene mapping before functional analysis</td>
+<td>Peak annotation, nearest/host/flanking genes, <code>seq2gene()</code></td>
+<td>No; it prepares the gene universe for downstream enrichment</td>
+<td>Hands gene IDs or mappings to <code>clusterProfiler</code>/<code>enrichit</code></td>
+</tr>
+<tr class="even">
+<td><strong>Optional AI interpretation</strong></td>
+<td>External, evidence-conditioned narrative, annotation, or phenotype labeling after analysis</td>
+<td><code>interpret()</code>, <code>interpret_agent()</code>, <code>interpret_hierarchical()</code> via <code>aisdk</code></td>
+<td>No; it does not replace ORA/GSEA/NSEA or alter their p-values</td>
+<td>Consumes one or more result objects plus context/optional PPI/fold change and returns a structured report</td>
+</tr>
+</tbody>
+</table>
+<section id="package-boundaries-that-matter" class="level3" data-number="40.3.1">
+<h3 data-number="40.3.1" class="anchored" data-anchor-id="package-boundaries-that-matter"><span class="header-section-number">40.3.1</span> Package boundaries that matter</h3>
+<ul>
+<li><code>clusterProfiler</code> is the <strong>knowledge-aware front door</strong>; <code>enrichit</code> is the <strong>algorithm engine</strong>. The <code>nse*()</code> and <code>mnse*()</code> wrappers preserve ontology and pathway semantics while delegating topology-aware computation.</li>
+<li><code>gson</code> is a <strong>data contract</strong>, not a new statistical test. It is useful when a remote source should be frozen, reused offline, or combined with another knowledge base.</li>
+<li><code>GOSemSim</code>, <code>DOSE</code>, and <code>meshes</code> provide semantic similarity in different vocabularies (GO, DO/phenotypes, and MeSH). Similarity can be used before enrichment or after enrichment for term reduction.</li>
+<li><code>enrichplot</code> expects the mappings carried by <code>enrichResult</code>, <code>gseaResult</code>, or <code>compareClusterResult</code>; a bare table from another program must first be imported or converted. See the <a href="./enrichplot-import.html#sec-import-other-tools">external-result import section</a>.</li>
+<li><code>ChIPseeker</code> solves the <strong>region-to-gene</strong> problem. It does not decide which ontology or enrichment test should be applied to the resulting genes.</li>
+<li>AI interpretation is an <strong>optional, post-analysis consumer</strong>. It needs an API-backed model and should be checked against the input terms, genes, ranked statistics, and any external PPI evidence before use.</li>
+</ul>
+</section>
+</section>
+<section id="index-by-typical-inputoutput" class="level2" data-number="40.4">
+<h2 data-number="40.4" class="anchored" data-anchor-id="index-by-typical-inputoutput"><span class="header-section-number">40.4</span> 5. Index by typical input/output</h2>
+<p>The table below is a compact routing guide. “Output” describes the object that should be preserved for the next step, rather than only the printed table.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Starting input</th>
+<th>Typical question</th>
+<th>Route</th>
+<th>Expected output</th>
+<th>Useful cross-link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Character vector of IDs + character universe</td>
+<td>Are selected genes over-represented?</td>
+<td><code>clusterProfiler::enrichGO()</code>, <code>enrichKEGG()</code>, <code>DOSE::enrichDO()</code>, <code>ReactomePA::enrichPathway()</code>, <code>meshes::enrichMeSH()</code>, or <code>enricher()</code></td>
+<td><code>enrichResult</code> with term IDs, descriptions, ratios, p-values, adjusted p-values, and gene mappings</td>
+<td><a href="./enrichment-foundations.html#ora-algorithm">ORA algorithm</a></td>
+</tr>
+<tr class="even">
+<td>Named, numeric, decreasing vector</td>
+<td>Is a gene set shifted toward one end of the ranking?</td>
+<td><code>gseGO()</code>, <code>gseKEGG()</code>, <code>gseDO()</code>, <code>gsePathway()</code>, <code>GSEA()</code>, or <code>gseMeSH()</code></td>
+<td><code>gseaResult</code> with ES/NES, significance, ranked list, and leading-edge/core genes</td>
+<td><a href="./enrichment-foundations.html#gsea-algorithm">GSEA algorithm</a></td>
+</tr>
+<tr class="odd">
+<td>Ranked vector + edge list network</td>
+<td>Does network topology reinforce enrichment?</td>
+<td><code>enrichit::nsea()</code> or <code>clusterProfiler::nseGO()</code>/<code>nseKEGG()</code></td>
+<td>Network-aware enrichment result with propagated ranking and inferential statistics</td>
+<td><a href="./enrichment-network.html#sec-enrichment-network">NSEA section</a></td>
+</tr>
+<tr class="even">
+<td>Named layer-specific vectors + networks + couplings</td>
+<td>Which pathways are supported across RNA/protein or other network layers?</td>
+<td><code>mnsea()</code> or <code>mnseGO()</code>/<code>mnseKEGG()</code></td>
+<td>Multi-layer result plus pathway/feature contribution tables and optional subnetwork</td>
+<td><a href="./enrichment-network.html#sec-enrichment-network">Multi-layer example</a></td>
+</tr>
+<tr class="odd">
+<td>Several p-value or signed-score vectors</td>
+<td>Can weak evidence be combined before enrichment?</td>
+<td><code>aggregate_omics()</code>; then GSEA/NSEA or <code>select_features_for_ora()</code> + ORA</td>
+<td>Unified feature ranking, selected ORA genes/universe, or an integrated result</td>
+<td><a href="./enrichment-multiomics.html#sec-enrichment-multiomics">Multi-omics integration</a></td>
+</tr>
+<tr class="even">
+<td>Multiple enrichment result objects</td>
+<td>Which layer or assay drives a pathway?</td>
+<td><code>aggregate_enrichment()</code> and contribution helpers</td>
+<td>Pathway-level combined result and source/contribution annotations</td>
+<td><a href="./enrichment-multiomics.html#sec-enrichment-multiomics">Late fusion</a></td>
+</tr>
+<tr class="odd">
+<td>GO term vectors or gene IDs + <code>OrgDb</code></td>
+<td>How similar are functions?</td>
+<td><code>GOSemSim::godata()</code> then <code>goSim()</code>, <code>mgoSim()</code>, <code>geneSim()</code>, or <code>clusterSim()</code></td>
+<td>Numeric score or similarity matrix; <code>GOSemSimDATA</code> stores semantic data</td>
+<td><a href="./go-semantic-similarity.html#GOSemSim">GO semantic similarity</a></td>
+</tr>
+<tr class="even">
+<td>DO term vectors or Entrez IDs</td>
+<td>How similar are disease associations?</td>
+<td><code>DOSE::doSim()</code>, <code>geneSim()</code>, or <code>clusterSim()</code></td>
+<td>DO similarity score/matrix or gene/cluster similarity</td>
+<td><a href="./do-semantic-similarity.html#DOSE-semantic-similarity">DO semantic similarity</a></td>
+</tr>
+<tr class="odd">
+<td>MeSH IDs or Entrez IDs + <code>MeSHDb</code></td>
+<td>How similar are biomedical concepts?</td>
+<td><code>meshes::meshdata()</code> then <code>meshSim()</code>/<code>geneSim()</code></td>
+<td>MeSH semantic data and similarity scores/matrices</td>
+<td><a href="./mesh-semantic-similarity.html#sec-meshes-semantic-similarity">MeSH semantic similarity</a></td>
+</tr>
+<tr class="even">
+<td><code>TERM2GENE</code> plus optional <code>TERM2NAME</code></td>
+<td>Can a custom annotation be tested?</td>
+<td><code>enricher()</code> for ORA or <code>GSEA()</code> for a ranking</td>
+<td>Canonical enrichment result with custom term IDs/names</td>
+<td><a href="./universal-enrichment.html#universal-api">Universal enrichment</a></td>
+</tr>
+<tr class="odd">
+<td>GMT file</td>
+<td>Can an external gene-set library be used directly?</td>
+<td><code>read.gmt()</code> or <code>read.gmt.wp()</code> then <code>enricher()</code>/<code>GSEA()</code></td>
+<td>Tidy term-to-gene table and canonical result</td>
+<td><a href="./identifier-utilities.html#read-gmt">GMT utilities</a></td>
+</tr>
+<tr class="even">
+<td><code>GSON</code> object or serialized <code>.gson</code> file</td>
+<td>Can knowledge-base data be frozen and reused?</td>
+<td><code>read.gson()</code> then <code>enricher()</code>/<code>GSEA()</code>; use <code>gsonList()</code> for several sources</td>
+<td>Versionable <code>GSON</code> or a list of per-source enrichment results</td>
+<td><a href="./gson.html#sec-gson">GSON workflow</a></td>
+</tr>
+<tr class="odd">
+<td>Named list of gene vectors</td>
+<td>Which functions differ among clusters/conditions?</td>
+<td><code>compareCluster(geneCluster = ..., fun = ...)</code></td>
+<td><code>compareClusterResult</code> retaining cluster labels and per-group enrichment</td>
+<td><a href="./comparecluster-analysis.html#clusterprofiler-comparecluster">Biological theme comparison</a></td>
+</tr>
+<tr class="even">
+<td>One gene-per-row table with grouping columns</td>
+<td>Can a formula describe a factorial comparison?</td>
+<td><code>compareCluster(gene ~ group + condition, data = ..., fun = ...)</code></td>
+<td>Formula-based <code>compareClusterResult</code></td>
+<td><a href="./comparecluster-analysis.html#clusterprofiler-comparecluster">Formula interface</a></td>
+</tr>
+<tr class="odd">
+<td>Peak/region file plus genome annotation</td>
+<td>Which genes may be regulated by the regions?</td>
+<td><code>ChIPseeker</code> annotation and <code>seq2gene()</code></td>
+<td>Annotated regions plus many-to-many gene mappings</td>
+<td><a href="./chipseeker-enrichment.html#chipseeker-enrichment">Genomic coordination</a></td>
+</tr>
+<tr class="even">
+<td><code>enrichResult</code> with redundant GO terms</td>
+<td>Which terms summarize distinct functions?</td>
+<td><code>pairwise_termsim()</code> + <code>simplify()</code>; similarity supplied by <code>GOSemSim</code></td>
+<td>Reduced enrichment object preserving the selected representative terms</td>
+<td><a href="./go-enrichment.html#clusterprofiler-go">GO term reduction</a></td>
+</tr>
+<tr class="odd">
+<td><code>enrichResult</code> with overlapping candidate terms</td>
+<td>Which terms jointly explain observed genes?</td>
+<td><code>bayes_enrich()</code> then <code>bayes_summary()</code></td>
+<td>Enrichment object with posterior, coverage, rank, and active-term columns</td>
+<td><a href="./bayesian-term-selection.html#sec-bayes-enrich">Bayesian selection</a></td>
+</tr>
+<tr class="even">
+<td>Any canonical enrichment object</td>
+<td>How should terms and genes be shown?</td>
+<td><code>enrichplot</code> (<code>dotplot</code>, <code>barplot</code>, <code>cnetplot</code>, <code>emapplot</code>, <code>treeplot</code>, <code>gseaplot2</code>, etc.)</td>
+<td><code>ggplot</code> objects, networks, maps, and plot-ready tables</td>
+<td><a href="./enrichplot.html#sec-enrichplot">Visualization</a></td>
+</tr>
+<tr class="odd">
+<td>External result table</td>
+<td>Can an output from another tool be plotted here?</td>
+<td><code>import_enrichr()</code>, <code>import_gprofiler2()</code>, <code>import_webgestalt()</code>, <code>import_fgsea()</code>, <code>as_enrichResult()</code>, or <code>as_gseaResult()</code></td>
+<td>Canonical <code>enrichResult</code>/<code>gseaResult</code> with enough mappings for plotting</td>
+<td><a href="./enrichplot-import.html#sec-import-other-tools">Importing results</a></td>
+</tr>
+<tr class="even">
+<td>Gene list or enrichment object</td>
+<td>What interactions connect the genes or terms?</td>
+<td><code>clusterProfiler::getPPI()</code> and <code>ggtangle</code></td>
+<td>STRING-backed edge/node object and network plot</td>
+<td><a href="./ppi.html#protein-protein-interaction-network">PPI workflow</a></td>
+</tr>
+<tr class="odd">
+<td>Enrichment result(s), optional context and fold changes</td>
+<td>What mechanism, cell type, or phenotype is supported?</td>
+<td>Optional <code>interpret()</code>/<code>interpret_agent()</code> through <code>aisdk</code></td>
+<td>Structured narrative, drivers, evidence, confidence, and possibly an inferred network</td>
+<td><a href="./interpretation.html#evidence-guided-interpretation">AI interpretation</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reference-routes" class="level2" data-number="40.5">
+<h2 data-number="40.5" class="anchored" data-anchor-id="reference-routes"><span class="header-section-number">40.5</span> 4. Reference routes</h2>
+<p>Use these pages for the details that do not belong in a task table:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Need</th>
+<th>Maintained reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Result classes, identifier contracts, and dispatch</td>
+<td><a href="./data-contract.html#data-contract">Data contract</a> and <a href="./result-objects.html#clusterProfiler-dplyr">result-object manipulation</a></td>
+</tr>
+<tr class="even">
+<td>ORA, GSEA, NSEA, and multi-omics methods</td>
+<td><a href="./enrichment-foundations.html#sec-enrichment-foundations">Enrichment foundations</a>, <a href="./enrichment-network.html#sec-enrichment-network">network-aware enrichment</a>, and <a href="./enrichment-multiomics.html#sec-enrichment-multiomics">multi-omics integration</a></td>
+</tr>
+<tr class="odd">
+<td>GSON schema, serialization, metadata, and <code>gsonList</code></td>
+<td><a href="./gson.html#sec-gson">GSON chapter</a></td>
+</tr>
+<tr class="even">
+<td>Semantic data and similarity methods</td>
+<td><a href="./go-semantic-similarity.html#GOSemSim">GOSemSim</a>, <a href="./do-semantic-similarity.html#DOSE-semantic-similarity">DO similarity</a>, and <a href="./mesh-semantic-similarity.html#sec-meshes-semantic-similarity">MeSH similarity</a></td>
+</tr>
+<tr class="odd">
+<td>AI validation and claim checking</td>
+<td><a href="./interpretation-reading.html#how-to-read-enrichment">How to read an enrichment result</a>, <a href="./interpretation.html#evidence-guided-interpretation">evidence-guided interpretation</a>, and <a href="./reproducible-report.html#reproducible-report">reproducible reporting</a></td>
+</tr>
+<tr class="even">
+<td>Version, citation, and provenance record</td>
+<td><a href="./appendix.html">Reference appendix</a></td>
+</tr>
+</tbody>
+</table>
+<p>These pages are the maintained reference surface; the capability map routes readers to them without duplicating package-specific API documentation. ## 6. Minimal routing recipes</p>
+<section id="a-thresholded-list" class="level3" data-number="40.5.1">
+<h3 data-number="40.5.1" class="anchored" data-anchor-id="a-thresholded-list"><span class="header-section-number">40.5.1</span> A thresholded list</h3>
+<pre class="text"><code>IDs -&gt; check/convert IDs -&gt; choose universe -&gt; ORA -&gt; simplify or Bayesian selection
+    -&gt; enrichplot -&gt; optional PPI or AI interpretation</code></pre>
+<p>Start with <a href="./identifier-utilities.html#useful-utilities">ID utilities</a>, choose the relevant <a href="./enrichment-overview.html#enrichment-overview">enrichment API</a>, and preserve the result object for <a href="./enrichplot.html#sec-enrichplot">visualization</a>.</p>
+</section>
+<section id="a-ranked-list" class="level3" data-number="40.5.2">
+<h3 data-number="40.5.2" class="anchored" data-anchor-id="a-ranked-list"><span class="header-section-number">40.5.2</span> A ranked list</h3>
+<pre class="text"><code>named numeric ranking -&gt; verify direction -&gt; GSEA -&gt; leading edge -&gt; GSEA plots
+    -&gt; optional network-aware or AI interpretation</code></pre>
+<p>The ranking requirements are summarized in the <a href="./troubleshooting.html#sec-genelist">FAQ</a>, while the statistical choice is covered in <a href="./enrichment-foundations.html#gsea-algorithm">GSEA</a>.</p>
+</section>
+<section id="a-custom-or-non-model-annotation" class="level3" data-number="40.5.3">
+<h3 data-number="40.5.3" class="anchored" data-anchor-id="a-custom-or-non-model-annotation"><span class="header-section-number">40.5.3</span> A custom or non-model annotation</h3>
+<pre class="text"><code>custom annotation/GMT/GOA/eggNOG -&gt; TERM2GENE (+ TERM2NAME) or GSON
+    -&gt; enricher/GSEA -&gt; compareCluster/enrichplot</code></pre>
+<p>See <a href="./universal-enrichment.html#universal-api">universal enrichment</a>, <a href="./leading-edge-nonmodel.html">non-model annotation notes</a>, and the <a href="./gson.html#sec-gson">GSON section</a>.</p>
+</section>
+<section id="genomic-regions" class="level3" data-number="40.5.4">
+<h3 data-number="40.5.4" class="anchored" data-anchor-id="genomic-regions"><span class="header-section-number">40.5.4</span> Genomic regions</h3>
+<pre class="text"><code>peaks/regions -&gt; ChIPseeker annotation or seq2gene() -&gt; gene IDs
+    -&gt; domain-specific or universal enrichment -&gt; visualization</code></pre>
+<p>The region-to-gene adapter is <a href="./chipseeker-enrichment.html#chipseeker-enrichment">ChIPseeker</a>; the downstream package choice belongs to the enrichment question, not to the peak caller.</p>
+</section>
+<section id="optional-ai-interpretation" class="level3" data-number="40.5.5">
+<h3 data-number="40.5.5" class="anchored" data-anchor-id="optional-ai-interpretation"><span class="header-section-number">40.5.5</span> Optional AI interpretation</h3>
+<pre class="text"><code>validated result object(s) + explicit context + optional fold changes/PPI
+    -&gt; interpret()/interpret_agent() -&gt; structured draft -&gt; human evidence check</code></pre>
+<p>The model sees only the supplied evidence and selected terms. Check every named gene and pathway against the input object, distinguish association from causal claims, and record model/provider settings when the report is used outside exploration. See <a href="./interpretation.html#evidence-guided-interpretation">AI-assisted interpretation</a>.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./troubleshooting.html" class="pagination-link" aria-label="Frequently asked questions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./glossary-api-index.html" class="pagination-link" aria-label="Glossary, function index, and citations">
+        <span class="nav-page-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/capability-map.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

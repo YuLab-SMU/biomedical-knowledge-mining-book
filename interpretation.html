@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>35&nbsp; Evidence-guided biological interpretation – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./reproducible-report.html" rel="next">
+<link href="./interpretation-reading.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd0503e23dce65854c81c5baaade3bdf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-interpretation.html">Interpret and report biological evidence</a></li><li class="breadcrumb-item"><a href="./interpretation.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here: from data to a first result</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Choose the analysis engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connect biological knowledge</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organize and integrate evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualize and communicate results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret and report biological evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recipes and reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-interpret-function" id="toc-the-interpret-function" class="nav-link active" data-scroll-target="#the-interpret-function"><span class="header-section-number">35.1</span> The <code>interpret</code> function</a>
+  <ul class="collapse">
+  <li><a href="#tasks-and-inputs" id="toc-tasks-and-inputs" class="nav-link" data-scroll-target="#tasks-and-inputs"><span class="header-section-number">35.1.1</span> Tasks and Inputs</a></li>
+  <li><a href="#cell-type-annotation" id="toc-cell-type-annotation" class="nav-link" data-scroll-target="#cell-type-annotation"><span class="header-section-number">35.1.2</span> Cell Type Annotation</a></li>
+  </ul></li>
+  <li><a href="#extended-evidence-inputs" id="toc-extended-evidence-inputs" class="nav-link" data-scroll-target="#extended-evidence-inputs"><span class="header-section-number">35.2</span> Extended evidence inputs</a></li>
+  <li><a href="#ppi-and-expression-evidence" id="toc-ppi-and-expression-evidence" class="nav-link" data-scroll-target="#ppi-and-expression-evidence"><span class="header-section-number">35.3</span> PPI and expression evidence</a></li>
+  <li><a href="#prior-labels-and-hierarchical-inputs" id="toc-prior-labels-and-hierarchical-inputs" class="nav-link" data-scroll-target="#prior-labels-and-hierarchical-inputs"><span class="header-section-number">35.4</span> Prior labels and hierarchical inputs</a></li>
+  <li><a href="#when-enrichment-returns-no-terms" id="toc-when-enrichment-returns-no-terms" class="nav-link" data-scroll-target="#when-enrichment-returns-no-terms"><span class="header-section-number">35.5</span> When enrichment returns no terms</a></li>
+  <li><a href="#visualization-of-interpretation-objects" id="toc-visualization-of-interpretation-objects" class="nav-link" data-scroll-target="#visualization-of-interpretation-objects"><span class="header-section-number">35.6</span> Visualization of interpretation objects</a></li>
+  <li><a href="#operational-checks" id="toc-operational-checks" class="nav-link" data-scroll-target="#operational-checks"><span class="header-section-number">35.7</span> Operational checks</a>
+  <ul class="collapse">
+  <li><a href="#choosing-a-model-and-switching-provider" id="toc-choosing-a-model-and-switching-provider" class="nav-link" data-scroll-target="#choosing-a-model-and-switching-provider"><span class="header-section-number">35.7.1</span> Choosing a Model and Switching Provider</a></li>
+  <li><a href="#multi-model-and-consensus-workflows" id="toc-multi-model-and-consensus-workflows" class="nav-link" data-scroll-target="#multi-model-and-consensus-workflows"><span class="header-section-number">35.7.2</span> Multi-Model and Consensus Workflows</a></li>
+  <li><a href="#practical-guidance-and-pitfalls" id="toc-practical-guidance-and-pitfalls" class="nav-link" data-scroll-target="#practical-guidance-and-pitfalls"><span class="header-section-number">35.7.3</span> Practical Guidance and Pitfalls</a></li>
+  </ul></li>
+  <li><a href="#worked-example-from-enrichment-to-a-report" id="toc-worked-example-from-enrichment-to-a-report" class="nav-link" data-scroll-target="#worked-example-from-enrichment-to-a-report"><span class="header-section-number">35.8</span> Worked Example: From Enrichment to a Report</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">35.9</span> Next steps</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/interpretation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./05-interpretation.html">Interpret and report biological evidence</a></li><li class="breadcrumb-item"><a href="./interpretation.html"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="evidence-guided-interpretation" class="quarto-section-identifier"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Statistical enrichment results are evidence to inspect, not biological conclusions by themselves. This chapter describes how to move from enriched terms, core genes, networks, expression trends, and prior knowledge to a transparent interpretation. AI assistance is presented as an optional evidence-synthesis layer after those checks, not as a replacement for the enrichment analysis or literature review.</p>
+<p><a id="ai-assisted-biological-interpretation"></a></p>
+<p>Enrichment results identify terms and genes associated with the input, but they do not by themselves establish a mechanism. Interpretation therefore starts with the result object, core genes, background, database provenance, and any supporting expression or network evidence.</p>
+<section id="the-interpret-function" class="level2" data-number="35.1">
+<h2 data-number="35.1" class="anchored" data-anchor-id="the-interpret-function"><span class="header-section-number">35.1</span> The <code>interpret</code> function</h2>
+<p><code>interpret()</code> accepts <code>enrichResult</code>, <code>gseaResult</code>, or <code>compareClusterResult</code> objects and asks an LLM to organize the supplied evidence into a structured report. The report is a draft for evidence review, not a replacement for the enrichment test or literature validation.</p>
+<p>The function requires an API key for a provider supported by <code>aisdk</code>. If <code>model</code> is not supplied, it uses the current model from <code>aisdk::get_model()</code> / <code>aisdk::set_model()</code>; an explicit <code>model</code> argument overrides that default for one call. The examples below use DeepSeek through <code>DEEPSEEK_API_KEY</code>, but other <code>aisdk</code> providers can be used.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aisdk)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Credentials come from the environment; a local .env file works too</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">".env"</span>) <span class="sc">&amp;&amp;</span> <span class="fu">requireNamespace</span>(<span class="st">"dotenv"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    dotenv<span class="sc">::</span><span class="fu">load_dot_env</span>()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a session-wide default model. Any provider supported by aisdk works here;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># in CI the key is supplied as the DEEPSEEK_API_KEY repository secret.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">set_model</span>(<span class="st">"deepseek:deepseek-v4-flash"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the current default model</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">get_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "deepseek:deepseek-v4-flash"</code></pre>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DOSE)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># A self-contained enrichment result: `edo` is built offline from the demo gene</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># list shipped with DOSE, so the example depends neither on a previous chapter</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># (`edo` is defined in the enrichplot chapter) nor on a network service.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package =</span> <span class="st">"DOSE"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>de <span class="ot">&lt;-</span> <span class="fu">names</span>(geneList)[<span class="fu">abs</span>(geneList) <span class="sc">&gt;</span> <span class="fl">1.5</span>]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>edo <span class="ot">&lt;-</span> <span class="fu">enrichDO</span>(de)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic usage</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 'edo' is your enrichment result object</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret</span>(edo)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interpret_failed</span>(res)) {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"interpret() returned no report -- check the API key and quota:</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>         res<span class="sc">$</span>overview)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">render_interpretation_blocks</span>(res), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Interpretation — cluster Default</strong> <span class="interpretation-confidence">(Not returned)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Overview:</strong>
+</p>
+<p>
+The enrichment results reveal a dual biological signature: a prominent cell cycle/mitotic module (marked by high fold change of FOXM1, MYBL2, CDC20, CCNB2, TOP2A, CENPA, CDCA8, MCM10, KIF23, CENPE, MELK, NDC80, NCAPH) and an inflammatory/immune module (S100A8, S100A9, MMP1, BCL2A1, MARCO). Disease enrichment is dominated by epithelial cancers (stomach, breast, esophageal, bladder, female reproductive) and immune/vascular conditions (myocarditis, cardiomyopathy, scleroderma, rheumatic disease, viral infectious disease), with additional terms for type 2 diabetes and Meier-Gorlin syndrome (pre-replication complex genes).
+</p>
+<p>
+<strong>Regulatory drivers:</strong>
+</p>
+<ul>
+<li>
+Among the top marker genes, FOXM1 (2305) and MYBL2 (4605) are transcription factors known to drive G2/M cell cycle gene expression. Their high fold change suggests they are master regulators of the proliferative module, potentially activating targets such as CDC20 (991), CCNB2 (9133), TOP2A (7153), and CENPA (8318). Additionally, the Meier-Gorlin syndrome genes (ORC1, CDC6, CDT1, MCM5, ORC6) indicate a role for replication licensing factors, possibly upstream of the proliferative signature.
+</li>
+</ul>
+<p>
+<strong>Key mechanisms:</strong>
+</p>
+<p>
+Two major themes emerge: (1) Cell cycle and mitosis: enrichment in cancers (stomach, breast, esophageal, bladder, female reproductive) and Meier-Gorlin syndrome, combined with marker genes for mitotic spindle (NDC80, KIF23, CENPE), centromere (CENPA), chromosomal passenger complex (CDCA8), DNA replication (MCM10), and mitotic checkpoint (CDC20, CCNB2, TOP2A, MYBL2, FOXM1). (2) Inflammation and tissue remodeling: enriched in myocarditis, cardiomyopathy, scleroderma, rheumatic disease, and viral infectious disease, with marker genes S100A8, S100A9, MMP1, BCL2A1, MARCO. A third minor theme is metabolic, indicated by type 2 diabetes mellitus enrichment.
+</p>
+<p>
+<strong>Crosstalk and interactions:</strong>
+</p>
+<p>
+The co-occurrence of cell cycle and inflammatory signatures suggests potential crosstalk. S100A8/A9 alarmins can promote proliferation and activate MMPs, linking inflammation to tissue remodeling and cancer progression. FOXM1 and MYBL2 may coordinate with inflammatory pathways through NF-κB (not directly measured), but the data only supports co-enrichment. The shared genes across multiple cancer and immune terms (e.g., 4312/MMP1, 6280/S100A9, 6279/S100A8) indicate a common molecular axis.
+</p>
+<p>
+<strong>Hypothesis:</strong>
+</p>
+<p>
+The experimental context (likely a tumor or proliferative tissue with inflammatory infiltrate) is driven by a coordinated upregulation of FOXM1/MYBL2-dependent cell cycle genes and S100A8/A9/MMP1-mediated inflammation. This dual program leads to a disease landscape enriched for epithelial cancers and immune-mediated conditions. Targeting the FOXM1/MYBL2 axis or the S100A8/A9 inflammatory module may disrupt this synergistic pathology.
+</p>
+<p>
+<strong>Narrative draft:</strong>
+</p>
+<p>
+We analyzed enrichment of disease terms and marker genes. The top marker genes are predominantly cell cycle regulators, including FOXM1, MYBL2, CDC20, CCNB2, TOP2A, CENPA, CDCA8, MCM10, KIF23, CENPE, MELK, NDC80, and NCAPH, alongside inflammatory mediators S100A8, S100A9, MMP1, BCL2A1, and MARCO. Enrichment terms are dominated by cancers (stomach, breast, esophageal, bladder, female reproductive) and immune/vascular diseases (myocarditis, cardiomyopathy, scleroderma, rheumatic disease, viral infectious disease), with additional type 2 diabetes and Meier-Gorlin syndrome. This suggests a dual biological process: a proliferative, mitotic program likely driven by FOXM1 and MYBL2, and an inflammatory tissue-remodeling program involving S100A8/A9 and MMP1. The overlap of these programs in multiple cancer and autoimmune terms points to a synergistic role in disease pathogenesis.
+</p>
+<p>
+<strong>Network evidence:</strong>
+</p>
+<p>
+The refined network highlights two modules: (1) a transcriptional cell cycle module where FOXM1 and MYBL2 activate key mitotic genes (CDC20, CCNB2, TOP2A) and kinetochore components (NDC80, CENPE, CENPA, CDCA8, KIF23) form a structural module for chromosome segregation; (2) an inflammatory module where S100A8/S100A9 heterodimer activates MMP1, promoting tissue remodeling. These modules are supported by co-enrichment in proliferative cancers and inflammatory diseases.
+</p>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Interpretation Result
+
+### Cluster: Default
+
+### 1. Overview
+The enrichment results reveal a dual biological signature: a prominent cell cycle/mitotic module (marked by high fold change of FOXM1, MYBL2, CDC20, CCNB2, TOP2A, CENPA, CDCA8, MCM10, KIF23, CENPE, MELK, NDC80, NCAPH) and an inflammatory/immune module (S100A8, S100A9, MMP1, BCL2A1, MARCO). Disease enrichment is dominated by epithelial cancers (stomach, breast, esophageal, bladder, female reproductive) and immune/vascular conditions (myocarditis, cardiomyopathy, scleroderma, rheumatic disease, viral infectious disease), with additional terms for type 2 diabetes and Meier-Gorlin syndrome (pre-replication complex genes). 
+
+### 2. Regulatory Drivers
+Among the top marker genes, FOXM1 (2305) and MYBL2 (4605) are transcription factors known to drive G2/M cell cycle gene expression. Their high fold change suggests they are master regulators of the proliferative module, potentially activating targets such as CDC20 (991), CCNB2 (9133), TOP2A (7153), and CENPA (8318). Additionally, the Meier-Gorlin syndrome genes (ORC1, CDC6, CDT1, MCM5, ORC6) indicate a role for replication licensing factors, possibly upstream of the proliferative signature. 
+
+### 3. Key Mechanisms
+Two major themes emerge: (1) Cell cycle and mitosis: enrichment in cancers (stomach, breast, esophageal, bladder, female reproductive) and Meier-Gorlin syndrome, combined with marker genes for mitotic spindle (NDC80, KIF23, CENPE), centromere (CENPA), chromosomal passenger complex (CDCA8), DNA replication (MCM10), and mitotic checkpoint (CDC20, CCNB2, TOP2A, MYBL2, FOXM1). (2) Inflammation and tissue remodeling: enriched in myocarditis, cardiomyopathy, scleroderma, rheumatic disease, and viral infectious disease, with marker genes S100A8, S100A9, MMP1, BCL2A1, MARCO. A third minor theme is metabolic, indicated by type 2 diabetes mellitus enrichment. 
+
+### 4. Crosstalk &amp; Interactions
+The co-occurrence of cell cycle and inflammatory signatures suggests potential crosstalk. S100A8/A9 alarmins can promote proliferation and activate MMPs, linking inflammation to tissue remodeling and cancer progression. FOXM1 and MYBL2 may coordinate with inflammatory pathways through NF-κB (not directly measured), but the data only supports co-enrichment. The shared genes across multiple cancer and immune terms (e.g., 4312/MMP1, 6280/S100A9, 6279/S100A8) indicate a common molecular axis. 
+
+### 5. Hypothesis
+The experimental context (likely a tumor or proliferative tissue with inflammatory infiltrate) is driven by a coordinated upregulation of FOXM1/MYBL2-dependent cell cycle genes and S100A8/A9/MMP1-mediated inflammation. This dual program leads to a disease landscape enriched for epithelial cancers and immune-mediated conditions. Targeting the FOXM1/MYBL2 axis or the S100A8/A9 inflammatory module may disrupt this synergistic pathology. 
+
+### 6. Narrative Draft
+We analyzed enrichment of disease terms and marker genes. The top marker genes are predominantly cell cycle regulators, including FOXM1, MYBL2, CDC20, CCNB2, TOP2A, CENPA, CDCA8, MCM10, KIF23, CENPE, MELK, NDC80, and NCAPH, alongside inflammatory mediators S100A8, S100A9, MMP1, BCL2A1, and MARCO. Enrichment terms are dominated by cancers (stomach, breast, esophageal, bladder, female reproductive) and immune/vascular diseases (myocarditis, cardiomyopathy, scleroderma, rheumatic disease, viral infectious disease), with additional type 2 diabetes and Meier-Gorlin syndrome. This suggests a dual biological process: a proliferative, mitotic program likely driven by FOXM1 and MYBL2, and an inflammatory tissue-remodeling program involving S100A8/A9 and MMP1. The overlap of these programs in multiple cancer and autoimmune terms points to a synergistic role in disease pathogenesis. 
+
+### 7. Refined Regulatory Network
+Key Interactions:
+  FOXM1 -- CDC20 (activation) - FOXM1 is a known transcriptional activator of CDC20; both are top marker genes in this dataset.
+  FOXM1 -- CCNB2 (activation) - FOXM1 regulates G2/M genes including CCNB2; both are highly upregulated.
+  FOXM1 -- TOP2A (activation) - FOXM1 drives TOP2A expression; both are top marker genes.
+  MYBL2 -- CCNB2 (activation) - MYBL2 is a known regulator of G2/M genes like CCNB2; both are top marker genes.
+  MYBL2 -- TOP2A (activation) - MYBL2 activates TOP2A; both are top marker genes.
+  S100A8 -- S100A9 (binding) - S100A8 and S100A9 form a heterodimer (calprotectin), and both are top marker genes.
+  S100A9 -- MMP1 (activation) - S100A9 can induce MMP1 expression; both are top marker genes and linked to inflammation/tissue remodeling.
+  NDC80 -- CENPE (binding) - NDC80 and CENPE are both kinetochore proteins and top marker genes, suggesting a physical interaction in the kinetochore.
+
+**Network Evidence:**
+The refined network highlights two modules: (1) a transcriptional cell cycle module where FOXM1 and MYBL2 activate key mitotic genes (CDC20, CCNB2, TOP2A) and kinetochore components (NDC80, CENPE, CENPA, CDCA8, KIF23) form a structural module for chromosome segregation; (2) an inflammatory module where S100A8/S100A9 heterodimer activates MMP1, promoting tissue remodeling. These modules are supported by co-enrichment in proliferative cancers and inflammatory diseases. 
+</code></pre>
+</details>
+</div>
+</details>
+<section id="tasks-and-inputs" class="level3" data-number="35.1.1">
+<h3 data-number="35.1.1" class="anchored" data-anchor-id="tasks-and-inputs"><span class="header-section-number">35.1.1</span> Tasks and Inputs</h3>
+<p><code>interpret()</code> supports three tasks:</p>
+<ul>
+<li><strong><code>task = "interpretation"</code></strong>: organize enrichment evidence into a biological narrative;</li>
+<li><strong><code>task = "annotation"</code></strong>: combine marker genes and enrichment terms for cell-type annotation;</li>
+<li><strong><code>task = "phenotyping"</code></strong>: propose a state or phenotype label for a group.</li>
+</ul>
+<p>The input can be one result object, a list of compatible objects, or a <code>compareCluster</code> result processed by cluster. For example, <code>list(go_res, kegg_res)</code> combines compatible knowledge sources, while a <code>compareCluster</code> result returns one report per cluster. The returned fields are structured so that reports can be checked, compared, and rendered consistently.</p>
+<p>For single-cell data, the marker table can come from <code>Seurat::FindAllMarkers()</code> or another marker-calling method. Keep the cluster and gene columns, use the same identifier namespace in the marker and CellMarker tables, and pass the grouped markers through <code>compareCluster()</code> before annotation. The executable example below uses the repository-local CellMarker table so that it does not depend on a separate count matrix or a pasted annotation report. A complete Seurat marker workflow is available in the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#assigning-cell-type-identity-to-clusters">pbmc3k tutorial</a>.</p>
+</section>
+<section id="cell-type-annotation" class="level3" data-number="35.1.2">
+<h3 data-number="35.1.2" class="anchored" data-anchor-id="cell-type-annotation"><span class="header-section-number">35.1.2</span> Cell Type Annotation</h3>
+<p>The cell-type example reads the local <code>datasets/Cell_marker_Human.xlsx</code> marker table, builds four marker profiles, runs <code>compareCluster()</code> with <code>enricher()</code>, and passes the result to <code>interpret(task = "annotation")</code> when <code>DEEPSEEK_API_KEY</code> is available.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>cell_marker_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"datasets"</span>, <span class="st">"Cell_marker_Human.xlsx"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(cell_marker_path)) {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"The cell-marker dataset is missing: "</span>, cell_marker_path)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>cell_marker <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(cell_marker_path)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>TERM2GENE_cell <span class="ot">&lt;-</span> cell_marker <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">cell_name =</span> .data[[<span class="st">"Cell name"</span>]],</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">marker =</span> <span class="fu">toupper</span>(.data[[<span class="st">"Marker"</span>]])</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(cell_name), <span class="sc">!</span><span class="fu">is.na</span>(marker),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">nzchar</span>(cell_name), <span class="fu">nzchar</span>(marker)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>()</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># A compact marker panel keeps the example transparent and the prompt small.</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>marker_sets <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">T_cell =</span> <span class="fu">c</span>(<span class="st">"CD3D"</span>, <span class="st">"CD3E"</span>, <span class="st">"TRBC1"</span>, <span class="st">"IL7R"</span>, <span class="st">"LTB"</span>, <span class="st">"MAL"</span>, <span class="st">"CCR7"</span>, <span class="st">"LST1"</span>),</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">B_cell =</span> <span class="fu">c</span>(<span class="st">"CD79A"</span>, <span class="st">"MS4A1"</span>, <span class="st">"CD37"</span>, <span class="st">"CD79B"</span>, <span class="st">"HLA-DRA"</span>, <span class="st">"CD74"</span>, <span class="st">"BANK1"</span>),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Monocyte =</span> <span class="fu">c</span>(<span class="st">"LYZ"</span>, <span class="st">"S100A8"</span>, <span class="st">"S100A9"</span>, <span class="st">"CTSS"</span>, <span class="st">"FCN1"</span>, <span class="st">"LGALS3"</span>, <span class="st">"TYROBP"</span>, <span class="st">"LST1"</span>),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">NK_cell =</span> <span class="fu">c</span>(<span class="st">"NKG7"</span>, <span class="st">"GNLY"</span>, <span class="st">"PRF1"</span>, <span class="st">"GZMB"</span>, <span class="st">"KLRD1"</span>, <span class="st">"FCGR3A"</span>, <span class="st">"XCL1"</span>, <span class="st">"XCL2"</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>marker_table <span class="ot">&lt;-</span> <span class="fu">do.call</span>(</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    rbind,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(<span class="fu">names</span>(marker_sets), <span class="cf">function</span>(cluster) {</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">data.frame</span>(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>            <span class="at">cluster =</span> cluster,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>            <span class="at">gene =</span> marker_sets[[cluster]],</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>cell_marker_enrichment <span class="ot">&lt;-</span> <span class="fu">compareCluster</span>(</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    gene <span class="sc">~</span> cluster,</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> marker_table,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> enricher,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">TERM2GENE =</span> TERM2GENE_cell,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">qvalueCutoff =</span> <span class="dv">1</span>,</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">minGSSize =</span> <span class="dv">2</span>,</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxGSSize =</span> <span class="dv">500</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>annotation_reports <span class="ot">&lt;-</span> <span class="fu">interpret</span>(</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    cell_marker_enrichment,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> <span class="st">"annotation"</span>,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">context =</span> <span class="fu">paste</span>(</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Human single-cell marker panels. Each cluster is a compact set of"</span>,</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>        <span class="st">"top marker genes and was tested against the local CellMarker database."</span>,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Use the enrichment terms as supporting evidence, but prefer markers"</span>,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>        <span class="st">"that distinguish closely related cell types. Return a concise label"</span>,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>        <span class="st">"and explain which supplied markers and cell-marker terms support it."</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_pathways =</span> <span class="dv">12</span>,</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_tokens =</span> <span class="dv">4096</span>,</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">temperature =</span> <span class="fl">0.1</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">inherits</span>(annotation_reports, <span class="st">"interpretation"</span>)) {</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    annotation_reports <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Default =</span> annotation_reports)</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.list</span>(annotation_reports) <span class="sc">||</span> <span class="fu">length</span>(annotation_reports) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"DeepSeek returned no cell-type annotation reports."</span>)</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (report <span class="cf">in</span> annotation_reports) {</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">annotation_failed</span>(report)) {</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stop</span>(</span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>            <span class="st">"DeepSeek cell-type annotation failed for cluster "</span>,</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(report<span class="sc">$</span>cluster)) report<span class="sc">$</span>cluster <span class="cf">else</span> <span class="st">"(unknown)"</span>,</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>            <span class="st">": "</span>,</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(report<span class="sc">$</span>overview)) report<span class="sc">$</span>overview <span class="cf">else</span> <span class="st">"no diagnostic returned"</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The result below is generated from the live object returned by DeepSeek. It is rendered as an HTML block, not Markdown headings: the preview is readable in the chapter, while the raw <code>print()</code> output remains available in a collapsed section without entering the book’s table of contents.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">render_interpretation_blocks</span>(annotation_reports), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Cluster B_cell: Cell type: Follicular B cell</strong> <span class="interpretation-confidence">(Medium)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Cell type:</strong>
+</p>
+<p>
+Follicular B cell
+</p>
+<p>
+<strong>Confidence:</strong>
+</p>
+<p>
+Medium
+</p>
+<p>
+<strong>Reasoning:</strong>
+</p>
+<p>
+The cluster expresses canonical B-cell markers CD79A, CD79B, MS4A1, CD37, and MHC class II genes HLA-DRA and CD74. The Follicular B cell term has the highest marker coverage (5/7: CD79B/BANK1/CD79A/CD74/MS4A1, p.adjust 1.03e-10) and includes BANK1 and CD79B, which are absent from the Mature B cell and Naive B cell terms. Mature B cell (CD79A/CD37/HLA-DRA/CD74) and Naive B cell (CD79A/CD37/CD74/MS4A1) are also enriched, but the presence of BANK1 and CD79B favors a follicular B-cell phenotype. Monocyte/phagocyte and plasma cell terms are less supported because the cluster has BCR components CD79A/CD79B and MS4A1 rather than monocyte or plasma-cell-specific markers.
+</p>
+<p>
+<strong>Supporting markers/pathways:</strong>
+</p>
+<ul>
+<li>
+CD79A
+</li>
+<li>
+MS4A1
+</li>
+<li>
+CD37
+</li>
+<li>
+CD79B
+</li>
+<li>
+HLA-DRA
+</li>
+<li>
+CD74
+</li>
+<li>
+BANK1
+</li>
+<li>
+Follicular B cell enrichment (CD79B/BANK1/CD79A/CD74/MS4A1)
+</li>
+</ul>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Cell Type Annotation
+
+### Cluster: B_cell
+
+**Cell Type:** Follicular B cell
+**Confidence:** Medium
+
+**Reasoning:**
+ The cluster expresses canonical B-cell markers CD79A, CD79B, MS4A1, CD37, and MHC class II genes HLA-DRA and CD74. The Follicular B cell term has the highest marker coverage (5/7: CD79B/BANK1/CD79A/CD74/MS4A1, p.adjust 1.03e-10) and includes BANK1 and CD79B, which are absent from the Mature B cell and Naive B cell terms. Mature B cell (CD79A/CD37/HLA-DRA/CD74) and Naive B cell (CD79A/CD37/CD74/MS4A1) are also enriched, but the presence of BANK1 and CD79B favors a follicular B-cell phenotype. Monocyte/phagocyte and plasma cell terms are less supported because the cluster has BCR components CD79A/CD79B and MS4A1 rather than monocyte or plasma-cell-specific markers. 
+
+**Supporting Markers/Pathways:**
+- CD79A
+- MS4A1
+- CD37
+- CD79B
+- HLA-DRA
+- CD74
+- BANK1
+- Follicular B cell enrichment (CD79B/BANK1/CD79A/CD74/MS4A1) 
+</code></pre>
+</details>
+</div>
+</details>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Cluster Monocyte: Cell type: Classical monocyte</strong> <span class="interpretation-confidence">(High)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Cell type:</strong>
+</p>
+<p>
+Classical monocyte
+</p>
+<p>
+<strong>Confidence:</strong>
+</p>
+<p>
+High
+</p>
+<p>
+<strong>Reasoning:</strong>
+</p>
+<p>
+Top enriched terms include Myeloid cell (7/8: TYROBP/LYZ/LST1/S100A8/CTSS/S100A9/FCN1), Macrophage (7/8: LGALS3/TYROBP/LYZ/S100A8/CTSS/S100A9/FCN1), and Classical monocyte (4/8: LYZ/S100A8/S100A9/FCN1). Although Macrophage shares many genes, the marker set lacks canonical macrophage markers (CD68, CD163, MRC1) and instead contains FCN1, S100A8, S100A9, and LYZ, which are characteristic of classical monocytes. Dendritic cell terms (cDC2b, DC3, CD1C+_B DC) are excluded by absence of CD1C, FCER1A, and CLEC10A. Neutrophil is excluded by presence of FCN1 and absence of FCGR3B/CSF3R. Therefore, the specific monocyte term Classical monocyte best fits the markers and enrichment.
+</p>
+<p>
+<strong>Supporting markers/pathways:</strong>
+</p>
+<ul>
+<li>
+LYZ
+</li>
+<li>
+S100A8
+</li>
+<li>
+S100A9
+</li>
+<li>
+CTSS
+</li>
+<li>
+FCN1
+</li>
+<li>
+LGALS3
+</li>
+<li>
+TYROBP
+</li>
+<li>
+LST1
+</li>
+</ul>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Cell Type Annotation
+
+### Cluster: Monocyte
+
+**Cell Type:** Classical monocyte
+**Confidence:** High
+
+**Reasoning:**
+ Top enriched terms include Myeloid cell (7/8: TYROBP/LYZ/LST1/S100A8/CTSS/S100A9/FCN1), Macrophage (7/8: LGALS3/TYROBP/LYZ/S100A8/CTSS/S100A9/FCN1), and Classical monocyte (4/8: LYZ/S100A8/S100A9/FCN1). Although Macrophage shares many genes, the marker set lacks canonical macrophage markers (CD68, CD163, MRC1) and instead contains FCN1, S100A8, S100A9, and LYZ, which are characteristic of classical monocytes. Dendritic cell terms (cDC2b, DC3, CD1C+_B DC) are excluded by absence of CD1C, FCER1A, and CLEC10A. Neutrophil is excluded by presence of FCN1 and absence of FCGR3B/CSF3R. Therefore, the specific monocyte term Classical monocyte best fits the markers and enrichment. 
+
+**Supporting Markers/Pathways:**
+- LYZ
+- S100A8
+- S100A9
+- CTSS
+- FCN1
+- LGALS3
+- TYROBP
+- LST1 
+</code></pre>
+</details>
+</div>
+</details>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Cluster NK_cell: Cell type: Natural killer cell</strong> <span class="interpretation-confidence">(High)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Cell type:</strong>
+</p>
+<p>
+Natural killer cell
+</p>
+<p>
+<strong>Confidence:</strong>
+</p>
+<p>
+High
+</p>
+<p>
+<strong>Reasoning:</strong>
+</p>
+<p>
+Top enriched term is Natural killer cell with GeneRatio 8/8 and p.adjust=1.027882e-12, containing all top markers: FCGR3A, XCL1, GNLY, NKG7, PRF1, GZMB, XCL2, KLRD1. Although Cytotoxic cell, CD8+ T cell, cytotoxic T, and NKT terms share cytotoxic genes (GNLY, NKG7, PRF1, GZMB, KLRD1), the NK cell term uniquely includes all eight markers, and NK-associated markers FCGR3A (CD16), KLRD1 (CD94), XCL1, and XCL2 are present. The input lacks TCR/CD3 markers that would support CD8+ T, cytotoxic T, or NKT cells, so the shared cytotoxic signature is attributed to NK cytotoxic function.
+</p>
+<p>
+<strong>Supporting markers/pathways:</strong>
+</p>
+<ul>
+<li>
+NKG7
+</li>
+<li>
+GNLY
+</li>
+<li>
+PRF1
+</li>
+<li>
+GZMB
+</li>
+<li>
+KLRD1
+</li>
+<li>
+FCGR3A
+</li>
+<li>
+XCL1
+</li>
+<li>
+XCL2
+</li>
+</ul>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Cell Type Annotation
+
+### Cluster: NK_cell
+
+**Cell Type:** Natural killer cell
+**Confidence:** High
+
+**Reasoning:**
+ Top enriched term is Natural killer cell with GeneRatio 8/8 and p.adjust=1.027882e-12, containing all top markers: FCGR3A, XCL1, GNLY, NKG7, PRF1, GZMB, XCL2, KLRD1. Although Cytotoxic cell, CD8+ T cell, cytotoxic T, and NKT terms share cytotoxic genes (GNLY, NKG7, PRF1, GZMB, KLRD1), the NK cell term uniquely includes all eight markers, and NK-associated markers FCGR3A (CD16), KLRD1 (CD94), XCL1, and XCL2 are present. The input lacks TCR/CD3 markers that would support CD8+ T, cytotoxic T, or NKT cells, so the shared cytotoxic signature is attributed to NK cytotoxic function. 
+
+**Supporting Markers/Pathways:**
+- NKG7
+- GNLY
+- PRF1
+- GZMB
+- KLRD1
+- FCGR3A
+- XCL1
+- XCL2 
+</code></pre>
+</details>
+</div>
+</details>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Cluster T_cell: Cell type: Naive CD8+ T cell</strong> <span class="interpretation-confidence">(Medium)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Cell type:</strong>
+</p>
+<p>
+Naive CD8+ T cell
+</p>
+<p>
+<strong>Confidence:</strong>
+</p>
+<p>
+Medium
+</p>
+<p>
+<strong>Reasoning:</strong>
+</p>
+<p>
+The cluster expresses T cell markers CD3D, CD3E, and TRBC1, confirming T cell lineage. Enrichment terms include Memory CD8+ T cell, Naive CD8+ T cell, and general T cell. The presence of CCR7, IL7R, LTB, and MAL supports a naive T cell state. The Naive CD8+ T cell term shows 6/8 marker overlap (IL7R/LTB/CD3D/MAL/CCR7/CD3E), higher than Memory CD8+ T cell (5/8) and naive CD4 terms (4-5/8). The additional MAL marker, present in Naive CD8+ T cell but absent from Memory CD8+ T cell, favors a naive phenotype. No CD4 or CD8A/B markers are provided, so CD8 specificity is inferred from the higher overlap with the Naive CD8+ T cell term; confidence is Medium due to lack of definitive CD8 markers.
+</p>
+<p>
+<strong>Supporting markers/pathways:</strong>
+</p>
+<ul>
+<li>
+CD3D
+</li>
+<li>
+CD3E
+</li>
+<li>
+TRBC1
+</li>
+<li>
+IL7R
+</li>
+<li>
+LTB
+</li>
+<li>
+MAL
+</li>
+<li>
+CCR7
+</li>
+</ul>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Cell Type Annotation
+
+### Cluster: T_cell
+
+**Cell Type:** Naive CD8+ T cell
+**Confidence:** Medium
+
+**Reasoning:**
+ The cluster expresses T cell markers CD3D, CD3E, and TRBC1, confirming T cell lineage. Enrichment terms include Memory CD8+ T cell, Naive CD8+ T cell, and general T cell. The presence of CCR7, IL7R, LTB, and MAL supports a naive T cell state. The Naive CD8+ T cell term shows 6/8 marker overlap (IL7R/LTB/CD3D/MAL/CCR7/CD3E), higher than Memory CD8+ T cell (5/8) and naive CD4 terms (4-5/8). The additional MAL marker, present in Naive CD8+ T cell but absent from Memory CD8+ T cell, favors a naive phenotype. No CD4 or CD8A/B markers are provided, so CD8 specificity is inferred from the higher overlap with the Naive CD8+ T cell term; confidence is Medium due to lack of definitive CD8 markers. 
+
+**Supporting Markers/Pathways:**
+- CD3D
+- CD3E
+- TRBC1
+- IL7R
+- LTB
+- MAL
+- CCR7 
+</code></pre>
+</details>
+</div>
+</details>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>When the book is rendered without <code>DEEPSEEK_API_KEY</code>, the two chunks above are skipped and the rest of the chapter still renders. When the key is present, a render performs a real DeepSeek call; keep the cache enabled for ordinary builds and clear <code>interpretation_cache/</code> deliberately when a fresh report is wanted.</p>
+</div>
+</div>
+</div>
+<!-- The previous pasted annotation report was removed; the live DeepSeek output above is the maintained example. -->
+</section>
+</section>
+<section id="extended-evidence-inputs" class="level2" data-number="35.2">
+<h2 data-number="35.2" class="anchored" data-anchor-id="extended-evidence-inputs"><span class="header-section-number">35.2</span> Extended evidence inputs</h2>
+<p><code>interpret_agent()</code> applies three sequential stages to an interpretation request:</p>
+<ol type="1">
+<li><strong>Term curation</strong> selects and organizes the supplied enrichment terms in the stated biological context; it does not rerun the enrichment test.</li>
+<li><strong>Evidence inspection</strong> combines the result object with optional gene-level changes and interaction data to identify genes or modules that support each term.</li>
+<li><strong>Narrative drafting</strong> writes the checked inputs into the structured interpretation fields used by the report and plotting methods.</li>
+</ol>
+<p>The implementation refers to these stages as <strong>Cleaner</strong>, <strong>Detective</strong>, and <strong>Storyteller</strong>. They are components of one shared-model pipeline, not separate statistical analyses. The stages share one evidence bundle, and their output remains a model-generated draft that should be checked against the original result object.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>context <span class="ot">&lt;-</span> <span class="st">"scRNA-seq analysis of CD8+ T cells in tumor microenvironment, comparing exhausted and naive states."</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret_agent</span>(edo, <span class="at">context =</span> context)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ppi-and-expression-evidence" class="level2" data-number="35.3">
+<h2 data-number="35.3" class="anchored" data-anchor-id="ppi-and-expression-evidence"><span class="header-section-number">35.3</span> PPI and expression evidence</h2>
+<p>Set <code>add_ppi = TRUE</code> to request protein interactions from STRING. Pass a named <code>gene_fold_change</code> vector to retain expression direction in the interpretation. These inputs add network and expression evidence; they do not establish pathway activity or causality.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare a named vector of fold changes</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>gene_list <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"CD8A"</span> <span class="ot">=</span> <span class="fl">2.5</span>, <span class="st">"PDCD1"</span> <span class="ot">=</span> <span class="fl">1.8</span>, <span class="st">"GZMB"</span> <span class="ot">=</span> <span class="fl">3.2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    edo,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">task =</span> <span class="st">"interpretation"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">add_ppi =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_fold_change =</span> gene_list</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="prior-labels-and-hierarchical-inputs" class="level2" data-number="35.4">
+<h2 data-number="35.4" class="anchored" data-anchor-id="prior-labels-and-hierarchical-inputs"><span class="header-section-number">35.4</span> Prior labels and hierarchical inputs</h2>
+<p>For cell-type annotation, <code>prior</code> supplies an existing label for comparison. The returned annotation can agree with, refine, or disagree with that label; inspect the markers and enrichment terms before accepting a change.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>my_priors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Cluster1"</span> <span class="ot">=</span> <span class="st">"T cells"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret</span>(edo, <span class="at">prior =</span> my_priors, <span class="at">task =</span> <span class="st">"annotation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>interpret_hierarchical()</code> accepts major- and minor-cluster enrichment objects together with a mapping. It constrains each minor-cluster interpretation to the supplied major-cluster context; the mapping itself must be checked against the experimental design.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cluster_mapping <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SubCluster1_1"</span> <span class="ot">=</span> <span class="st">"MajorCluster1"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SubCluster1_2"</span> <span class="ot">=</span> <span class="st">"MajorCluster1"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SubCluster2_1"</span> <span class="ot">=</span> <span class="st">"MajorCluster2"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>res_hier <span class="ot">&lt;-</span> <span class="fu">interpret_hierarchical</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_minor =</span> enrich_minor,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_major =</span> enrich_major,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> cluster_mapping</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="when-enrichment-returns-no-terms" class="level2" data-number="35.5">
+<h2 data-number="35.5" class="anchored" data-anchor-id="when-enrichment-returns-no-terms"><span class="header-section-number">35.5</span> When enrichment returns no terms</h2>
+<p>When a result has no enriched terms, <code>interpret_agent()</code> can be given the input genes and optional PPI data. The implementation warns that no significant pathways were found, passes the raw genes to the Detective and Storyteller stages, and marks the returned object with <code>data_source = "gene_list_only"</code>. The output should therefore be reported as a gene-based hypothesis; its confidence is taken from the returned object rather than assigned a fixed value.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret_agent</span>(tough_genes, <span class="at">add_ppi =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="visualization-of-interpretation-objects" class="level2" data-number="35.6">
+<h2 data-number="35.6" class="anchored" data-anchor-id="visualization-of-interpretation-objects"><span class="header-section-number">35.6</span> Visualization of interpretation objects</h2>
+<p>The <code>plot()</code> method displays relationships stored in an interpretation object. When the returned object contains them, the plot can distinguish key drivers, activation or inhibition labels, and physical interactions. These labels are model outputs and require review against the supplied expression and interaction evidence.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The complete hand-off is:</p>
+<pre class="text"><code>enrichment result → optional fold-change/PPI/prior evidence
+                  → interpretation object → report or plot</code></pre>
+<p>The final report and plot are views of the interpretation object. They do not constitute a second enrichment test, and interaction edges remain external supporting evidence.</p>
+</section>
+<section id="operational-checks" class="level2" data-number="35.7">
+<h2 data-number="35.7" class="anchored" data-anchor-id="operational-checks"><span class="header-section-number">35.7</span> Operational checks</h2>
+<p><code>context</code> should identify the experiment, biological setting, contrast direction, and any relevant cell-type or tissue resolution. <code>interpret()</code> cannot infer these details from pathway names alone.</p>
+<p>A weak context names only the assay:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>context <span class="ot">&lt;-</span> <span class="st">"scRNA-seq of T cells"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A strong context answers six questions in one or two sentences:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Question</th>
+<th style="text-align: left;">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Species and tissue</td>
+<td style="text-align: left;">human breast tumour, bulk tissue</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Disease / biological setting</td>
+<td style="text-align: left;">breast carcinoma, tumour grade</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Experimental design</td>
+<td style="text-align: left;">200 samples from the MAINZ cohort</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Contrast tested, and its direction</td>
+<td style="text-align: left;">grade III vs.&nbsp;grade I; positive values are higher in grade III</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cell type / composition</td>
+<td style="text-align: left;">bulk tissue, no cell-type resolution</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hypothesis under test</td>
+<td style="text-align: left;">progression involves loss of epithelial differentiation and ECM remodelling</td>
+</tr>
+</tbody>
+</table>
+<p>Written out, that is still only a few lines:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>context <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Human breast-cancer transcriptome (MAINZ cohort, bulk tumour tissue, 200"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"samples). Genes are ranked by the log2 ratio of geometric-mean expression in"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"grade III versus grade I tumours, so positive values are higher in the"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"higher-grade tumours. No cell-type resolution is available. Hypothesis:"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"progression from grade I to grade III involves loss of epithelial"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"differentiation and increased extracellular-matrix remodelling."</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Two rules of thumb follow. First, state the <strong>direction of the contrast</strong> – “A vs.&nbsp;B” without saying which side is up is a common way to get a report with the regulation backwards. Second, <strong>do not put the answer in the context</strong>: if you write “we expect apoptosis to be suppressed”, the model will often agree with you regardless of the data. Describe the design, not the conclusion you are hoping for. (If your data are from single cells, add the cell type or the compartment the cluster belongs to; for bulk tissue, saying that no cell-type resolution exists is more useful than omitting the point.)</p>
+<section id="choosing-a-model-and-switching-provider" class="level3" data-number="35.7.1">
+<h3 data-number="35.7.1" class="anchored" data-anchor-id="choosing-a-model-and-switching-provider"><span class="header-section-number">35.7.1</span> Choosing a Model and Switching Provider</h3>
+<p>Model selection is delegated to <code>aisdk</code>. <code>interpret()</code> itself has no model registry and no provider logic: when <code>model</code> is left at its default (<code>NULL</code>) it uses whatever <code>aisdk</code> currently considers the default, and <code>model = "provider:model"</code> overrides that default for a single call.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aisdk)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Session-wide default, used by every interpret() call that omits `model`</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set_model</span>(<span class="st">"deepseek:deepseek-v4-flash"</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_model</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Calls that omit <code>model</code> use the session-wide setting selected with <code>set_model()</code>. Pass <code>model</code> for a one-off provider or model.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">interpret</span>(edo, <span class="at">model =</span> <span class="st">"openai:gpt-4o"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Credentials follow the same rule. <code>aisdk</code> reads each provider’s key from an environment variable: <code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code> and <code>GEMINI_API_KEY</code> for the three providers bundled with <code>aisdk</code>, and the corresponding variable for the adapters in <code>aisdk.providers</code> (for example <code>DEEPSEEK_API_KEY</code>, which is what this chapter uses). Put the key in a project <code>.Renviron</code> or export it in the shell; <code>interpret()</code> never takes a key argument. If you never call <code>set_model()</code>, <code>aisdk</code> falls back to its built-in default, <code>openai:gpt-4o</code> – which is why the examples you may have seen elsewhere appear to use GPT-4o by default.</p>
+<p><code>aisdk</code> ships a catalogue of the providers and models it knows about:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list_models</span>()            <span class="co"># every provider and model aisdk knows about</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list_models</span>(<span class="st">"openai"</span>)    <span class="co"># just one provider</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Model choice affects latency, cost, context capacity, and output variability. Fix the model when comparing reports, because different models can produce different summaries from the same input.</p>
+</section>
+<section id="multi-model-and-consensus-workflows" class="level3" data-number="35.7.2">
+<h3 data-number="35.7.2" class="anchored" data-anchor-id="multi-model-and-consensus-workflows"><span class="header-section-number">35.7.2</span> Multi-Model and Consensus Workflows</h3>
+<p>There is <strong>no built-in consensus or ensemble mode</strong> in <code>interpret()</code> or <code>interpret_agent()</code>. A call goes to exactly one model. <code>interpret_agent()</code> is a multi-<em>agent</em> pipeline, not a multi-<em>model</em> one: its three agents share a single model.</p>
+<p>What you <em>can</em> do today is run the same input through several models and compare the reports yourself. Because <code>model =</code> is a per-call argument, this needs no extra machinery:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>res_deepseek <span class="ot">&lt;-</span> <span class="fu">interpret</span>(edo, <span class="at">model =</span> <span class="st">"deepseek:deepseek-v4-flash"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>res_gpt      <span class="ot">&lt;-</span> <span class="fu">interpret</span>(edo, <span class="at">model =</span> <span class="st">"openai:gpt-4o"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each call is a separate, billable request, and the two reports will not be identical even for the same model (see below). A pragmatic middle ground is to use one model to write the report and a second, independent call only to <em>criticise</em> it: ask a different model whether every gene and pathway named in the narrative is actually present in the input table. That is a manual workflow, but it catches the most common failure mode – plausible-sounding genes that were never in the data. For provider failover, <code>aisdk</code> provides <code>generate_text_fallback()</code> for its own generation calls, but <code>interpret()</code> does not expose a fallback argument.</p>
+</section>
+<section id="practical-guidance-and-pitfalls" class="level3" data-number="35.7.3">
+<h3 data-number="35.7.3" class="anchored" data-anchor-id="practical-guidance-and-pitfalls"><span class="header-section-number">35.7.3</span> Practical Guidance and Pitfalls</h3>
+<p><strong>Non-determinism.</strong> <code>interpret()</code> samples at <code>temperature = 0.3</code> by default, so two calls with identical input will differ in wording and occasionally in emphasis. This is expected, not a bug. It has a direct consequence for reproducible builds: Quarto’s chunk cache (<code>cache: true</code>) is what keeps the published page stable – the LLM call runs once and its output is reused on later renders. Clear the cache and you will get a different report. If you need the exact same text in two places, cache the object and reuse it.</p>
+<p><strong>Unsupported entities.</strong> The model is instructed to ground claims in the supplied table, but it can still produce incorrect output. Before quoting a report, check that every gene named in the narrative appears in the <code>geneID</code> (or, for GSEA, <code>core_enrichment</code>) column and every pathway named appears in <code>Description</code>. If <code>add_ppi = TRUE</code>, identify the cited edges as STRING evidence, not measurements from the experiment.</p>
+<p><strong><code>n_pathways</code>.</strong> Only the top <code>n_pathways</code> terms (default 20) are sent to the model, ordered by adjusted p-value (<code>p.adjust</code>, falling back to <code>pvalue</code>). Raising it gives the model more to work with but dilutes the signal and enlarges the prompt; lowering it forces a tighter focus. For a <code>compareClusterResult</code>, <code>interpret()</code> splits the result by cluster and returns one report per cluster, so the number of calls – and the cost – scales with the number of clusters, not with <code>n_pathways</code>.</p>
+<p><strong><code>max_tokens</code>.</strong> The default is 8192. Reasoning models spend part of that budget deliberating before they emit the JSON, and if they run out, the reply is truncated and cannot be parsed; the symptom is a warning mentioning <code>finish_reason: length</code> and a placeholder report. If you hit it, raise <code>max_tokens</code> (the diagnostic suggests 16384 or more) or switch to a model that does not reason before answering.</p>
+<p><strong>Seeing the cost.</strong> <code>interpret()</code> returns only the parsed report; token usage is not part of the returned object. Run with <code>verbose = TRUE</code> to print the raw response and the prompt/completion/total token counts – the practical way to watch spend while you tune <code>n_pathways</code> and <code>max_tokens</code>.</p>
+<p><strong><code>add_ppi</code>.</strong> Setting <code>add_ppi = TRUE</code> queries STRING for the genes in the top terms and injects the edge list into the prompt, which lets the model identify functional modules from individual genes. It requires network access, adds latency, and is a second failure point; the query is wrapped so that a STRING outage degrades to “no network evidence” instead of an error. Leave it at its default (<code>FALSE</code>) unless module-level reasoning is what you need.</p>
+<p><strong><code>gene_fold_change</code>.</strong> Passing a named numeric vector of log fold changes adds the direction of regulation to the prompt. Note the limitation: the helper intersects your vector with the genes in the result’s <code>geneID</code> column, and a <code>gseaResult</code> table has no <code>geneID</code> column (it carries <code>core_enrichment</code> instead). So <code>gene_fold_change</code> is used for over-representation results (<code>enrichResult</code>, <code>compareClusterResult</code>) and silently ignored for GSEA results – which is harmless, because a GSEA result already encodes direction in the sign of its enrichment score.</p>
+<p><strong>Ranking.</strong> For over-representation results the terms are ordered by <code>p.adjust</code>; for GSEA the direction the model sees is the sign of <code>NES</code>. If your GSEA ranked list was built so that positive means “up in the condition of interest”, say so in <code>context</code> – otherwise the model has to guess the orientation.</p>
+<p>Treat the output as an unverified draft. Check every gene and pathway named in the narrative against the input table; then assess whether each mechanistic statement has supporting evidence.</p>
+</section>
+</section>
+<section id="worked-example-from-enrichment-to-a-report" class="level2" data-number="35.8">
+<h2 data-number="35.8" class="anchored" data-anchor-id="worked-example-from-enrichment-to-a-report"><span class="header-section-number">35.8</span> Worked Example: From Enrichment to a Report</h2>
+<p>This example builds a GSEA result offline from the <code>geneList</code> shipped with <code>DOSE</code>, passes a defined <code>context</code> to <code>interpret()</code>, and renders the returned report. The <code>interpret_agent()</code> example above is disabled because it makes multiple model calls.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package =</span> <span class="st">"DOSE"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A real enrichment result, computed offline: GSEA over GO cellular components.</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># geneList is the DOSE demo list -- log2 ratios of grade III vs. grade I tumours</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># from the MAINZ breast-cancer cohort.</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>gse <span class="ot">&lt;-</span> <span class="fu">gseGO</span>(</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneList      =</span> geneList,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">keyType       =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ont           =</span> <span class="st">"CC"</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">minGSSize     =</span> <span class="dv">15</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxGSSize     =</span> <span class="dv">100</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">eps           =</span> <span class="dv">0</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">pvalueCutoff  =</span> <span class="fl">0.05</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># A context that names the species, tissue, design, contrast and hypothesis.</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>context <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Human breast-cancer transcriptome (MAINZ cohort, bulk tumour tissue)."</span>,</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Genes are ranked by the log2 ratio of geometric-mean expression in grade"</span>,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"III versus grade I tumours, so positive values are higher in the"</span>,</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"higher-grade tumours. Hypothesis: progression from grade I to grade III"</span>,</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"involves loss of epithelial differentiation and increased"</span>,</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"extracellular-matrix remodelling."</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>report <span class="ot">&lt;-</span> <span class="fu">interpret</span>(gse, <span class="at">context =</span> context, <span class="at">n_pathways =</span> <span class="dv">15</span>)</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">interpret_failed</span>(report)) {</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"interpret() returned no report -- check the API key and quota:</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>         report<span class="sc">$</span>overview)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">render_interpretation_blocks</span>(report), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<details class="interpretation-report" open="">
+<summary>
+<strong>Interpretation — cluster Default</strong> <span class="interpretation-confidence">(Not returned)</span>
+</summary>
+<div style="border: 1px solid #dee2e6; border-radius: .4rem; padding: 1rem; margin: .75rem 0 1rem 0;">
+<p>
+<strong>Overview:</strong>
+</p>
+<p>
+Enrichment analysis of grade III versus grade I breast tumors reveals a reciprocal pattern: extracellular matrix (ECM) architectural components are coordinately downregulated, while cell division and genome maintenance modules are upregulated. Specifically, negative normalized enrichment scores (NES) are observed for interstitial matrix (GO:0005614), solid phase of interstitial matrix (GO:0140151), non-collagenous component of interstitial matrix (GO:0140149), gel phase of interstitial matrix (GO:0140150), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), complex of collagen trimers (GO:0098644), and collagen trimer (GO:0005581). Positive NES are seen for spindle midzone (GO:0051233), spindle microtubule (GO:0005876), outer kinetochore (GO:0000940), replication fork (GO:0005657), proteasome complex (GO:0000502), and immunoglobulin complex (GO:0019814). This suggests that progression to grade III involves loss of tissue architecture and increased proliferative activity.
+</p>
+<p>
+<strong>Regulatory drivers:</strong>
+</p>
+<ul>
+<li>
+No upstream regulator or transcription factor enrichment terms were provided in the dataset. The results are limited to cellular component GO terms, so specific master regulators cannot be nominated from these data alone. The positive enrichment of spindle midzone (GO:0051233), spindle microtubule (GO:0005876), and outer kinetochore (GO:0000940) implies active mitotic machinery, but the transcription factors driving this program are not identifiable here.
+</li>
+</ul>
+<p>
+<strong>Key mechanisms:</strong>
+</p>
+<p>
+The enriched terms group into three major themes: (1) Loss of ECM architecture: downregulation of interstitial matrix components (GO:0005614, GO:0140151, GO:0140149, GO:0140150), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), and collagen trimers (GO:0098644, GO:0005581). (2) Increased mitotic and chromosomal segregation machinery: upregulation of spindle midzone (GO:0051233), spindle microtubule (GO:0005876), and outer kinetochore (GO:0000940). (3) Genome maintenance, protein degradation, and immune response: upregulation of replication fork (GO:0005657), proteasome complex (GO:0000502), and immunoglobulin complex (GO:0019814).
+</p>
+<p>
+<strong>Crosstalk and interactions:</strong>
+</p>
+<p>
+The data show an inverse relationship between ECM structural components and mitotic/genome maintenance modules. Loss of basement membrane (GO:0005604) and interstitial matrix (GO:0005614, GO:0140151) may reduce cell adhesion and tissue integrity, while upregulation of spindle midzone (GO:0051233) and spindle microtubule (GO:0005876) supports chromosome segregation during proliferation. The proteasome complex (GO:0000502) could regulate cell cycle proteins, and the replication fork (GO:0005657) indicates active DNA replication. The immunoglobulin complex (GO:0019814) suggests immune cell infiltration, but direct interactions among these modules are not demonstrated by enrichment results alone.
+</p>
+<p>
+<strong>Hypothesis:</strong>
+</p>
+<p>
+Grade III breast tumors are characterized by downregulation of ECM structural components (interstitial matrix, basement membrane, collagen trimers, elastic fibers) and upregulation of proliferation and genome maintenance machinery (spindle, kinetochore, replication fork), consistent with loss of epithelial differentiation and increased proliferative capacity. The original hypothesis of increased ECM remodelling is only partially supported: the dominant signal is loss of ECM structural components rather than increased remodelling per se, as no upregulation of ECM remodelling enzymes is observed in these terms.
+</p>
+<p>
+<strong>Narrative draft:</strong>
+</p>
+<p>
+In the MAINZ cohort, comparing grade III to grade I breast tumors, we find a coordinated downregulation of extracellular matrix architectural components, including interstitial matrix (GO:0005614), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), and collagen trimers (GO:0098644, GO:0005581). Conversely, genes associated with mitotic spindle function (spindle midzone GO:0051233, spindle microtubule GO:0005876), kinetochore assembly (outer kinetochore GO:0000940), DNA replication (replication fork GO:0005657), proteasomal degradation (proteasome complex GO:0000502), and immunoglobulin complexes (GO:0019814) are enriched in higher-grade tumors. These findings suggest that progression from grade I to grade III involves loss of tissue architecture and epithelial differentiation, accompanied by increased proliferative and genome maintenance activities. The data do not support a broad upregulation of ECM remodelling enzymes; rather, they indicate a loss of structural ECM components.
+</p>
+<p>
+<strong>Network evidence:</strong>
+</p>
+<p>
+No protein-protein interaction (PPI) data were provided. The enrichment results define functional modules based on co-enriched cellular components: an ECM architecture module (interstitial matrix, basement membrane, collagen trimers, elastic fiber, microfibril) that is coordinately downregulated in grade III, and a mitotic/genome maintenance module (spindle midzone, spindle microtubule, outer kinetochore, replication fork) that is coordinately upregulated. A proteasome module (GO:0000502) and immunoglobulin complex (GO:0019814) are also upregulated. These modules represent co-enriched components, but specific physical interactions cannot be inferred without PPI data.
+</p>
+<details>
+<summary>
+Raw object print
+</summary>
+<pre><code>## Interpretation Result
+
+### Cluster: Default
+
+### 1. Overview
+Enrichment analysis of grade III versus grade I breast tumors reveals a reciprocal pattern: extracellular matrix (ECM) architectural components are coordinately downregulated, while cell division and genome maintenance modules are upregulated. Specifically, negative normalized enrichment scores (NES) are observed for interstitial matrix (GO:0005614), solid phase of interstitial matrix (GO:0140151), non-collagenous component of interstitial matrix (GO:0140149), gel phase of interstitial matrix (GO:0140150), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), complex of collagen trimers (GO:0098644), and collagen trimer (GO:0005581). Positive NES are seen for spindle midzone (GO:0051233), spindle microtubule (GO:0005876), outer kinetochore (GO:0000940), replication fork (GO:0005657), proteasome complex (GO:0000502), and immunoglobulin complex (GO:0019814). This suggests that progression to grade III involves loss of tissue architecture and increased proliferative activity. 
+
+### 2. Regulatory Drivers
+No upstream regulator or transcription factor enrichment terms were provided in the dataset. The results are limited to cellular component GO terms, so specific master regulators cannot be nominated from these data alone. The positive enrichment of spindle midzone (GO:0051233), spindle microtubule (GO:0005876), and outer kinetochore (GO:0000940) implies active mitotic machinery, but the transcription factors driving this program are not identifiable here. 
+
+### 3. Key Mechanisms
+The enriched terms group into three major themes: (1) Loss of ECM architecture: downregulation of interstitial matrix components (GO:0005614, GO:0140151, GO:0140149, GO:0140150), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), and collagen trimers (GO:0098644, GO:0005581). (2) Increased mitotic and chromosomal segregation machinery: upregulation of spindle midzone (GO:0051233), spindle microtubule (GO:0005876), and outer kinetochore (GO:0000940). (3) Genome maintenance, protein degradation, and immune response: upregulation of replication fork (GO:0005657), proteasome complex (GO:0000502), and immunoglobulin complex (GO:0019814). 
+
+### 4. Crosstalk &amp; Interactions
+The data show an inverse relationship between ECM structural components and mitotic/genome maintenance modules. Loss of basement membrane (GO:0005604) and interstitial matrix (GO:0005614, GO:0140151) may reduce cell adhesion and tissue integrity, while upregulation of spindle midzone (GO:0051233) and spindle microtubule (GO:0005876) supports chromosome segregation during proliferation. The proteasome complex (GO:0000502) could regulate cell cycle proteins, and the replication fork (GO:0005657) indicates active DNA replication. The immunoglobulin complex (GO:0019814) suggests immune cell infiltration, but direct interactions among these modules are not demonstrated by enrichment results alone. 
+
+### 5. Hypothesis
+Grade III breast tumors are characterized by downregulation of ECM structural components (interstitial matrix, basement membrane, collagen trimers, elastic fibers) and upregulation of proliferation and genome maintenance machinery (spindle, kinetochore, replication fork), consistent with loss of epithelial differentiation and increased proliferative capacity. The original hypothesis of increased ECM remodelling is only partially supported: the dominant signal is loss of ECM structural components rather than increased remodelling per se, as no upregulation of ECM remodelling enzymes is observed in these terms. 
+
+### 6. Narrative Draft
+In the MAINZ cohort, comparing grade III to grade I breast tumors, we find a coordinated downregulation of extracellular matrix architectural components, including interstitial matrix (GO:0005614), basement membrane (GO:0005604), elastic fiber (GO:0071953), microfibril (GO:0001527), and collagen trimers (GO:0098644, GO:0005581). Conversely, genes associated with mitotic spindle function (spindle midzone GO:0051233, spindle microtubule GO:0005876), kinetochore assembly (outer kinetochore GO:0000940), DNA replication (replication fork GO:0005657), proteasomal degradation (proteasome complex GO:0000502), and immunoglobulin complexes (GO:0019814) are enriched in higher-grade tumors. These findings suggest that progression from grade I to grade III involves loss of tissue architecture and epithelial differentiation, accompanied by increased proliferative and genome maintenance activities. The data do not support a broad upregulation of ECM remodelling enzymes; rather, they indicate a loss of structural ECM components. 
+</code></pre>
+</details>
+</div>
+</details>
+<p>The printed report follows the schema described at the top of this chapter. Read it in this order:</p>
+<ol type="1">
+<li><strong>1. Overview</strong> – the model’s one-paragraph summary. If it is vague, the <code>context</code> was probably too vague.</li>
+<li><strong>2. Regulatory Drivers</strong> and <strong>3. Key Mechanisms</strong> – the “who” and the “how”. Check every named gene against your input table.</li>
+<li><strong>5. Hypothesis</strong> – the “so what”. This is the part worth arguing with.</li>
+<li><strong>6. Narrative Draft</strong> – a paragraph written for a Results or Discussion section. It is a draft: edit it, do not paste it.</li>
+<li><strong>7. Refined Regulatory Network</strong> – populated only when the model can support edges; <code>plot(report)</code> draws the same network with <code>ggtangle</code> when it is available.</li>
+</ol>
+</section>
+<section id="next-steps" class="level2" data-number="35.9">
+<h2 data-number="35.9" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">35.9</span> Next steps</h2>
+<ul>
+<li>For the preceding evidence objects, see <a href="./03-evidence-integration.html">evidence integration</a>.</li>
+<li>For a reproducible hand-off, record the analysis in the <a href="./appendix.html">reference appendix</a>.</li>
+<li>Keep optional AI assistance after statistical checking and external evidence review.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./interpretation-reading.html" class="pagination-link" aria-label="How to read an enrichment result">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./reproducible-report.html" class="pagination-link" aria-label="From analysis to a reproducible report">
+        <span class="nav-page-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/interpretation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

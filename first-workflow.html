@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>1&nbsp; The first complete workflow: ORA, GSEA, and plots – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./data-contract.html" rel="next">
+<link href="./00-start-here.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd0503e23dce65854c81c5baaade3bdf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-start-here.html">Start here: from data to a first result</a></li><li class="breadcrumb-item"><a href="./first-workflow.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here: from data to a first result</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Choose the analysis engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connect biological knowledge</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organize and integrate evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualize and communicate results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret and report biological evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recipes and reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#load-local-packages-and-inspect-the-input" id="toc-load-local-packages-and-inspect-the-input" class="nav-link active" data-scroll-target="#load-local-packages-and-inspect-the-input"><span class="header-section-number">1.1</span> 1. Load local packages and inspect the input</a></li>
+  <li><a href="#define-the-universe-selected-genes-and-ranking" id="toc-define-the-universe-selected-genes-and-ranking" class="nav-link" data-scroll-target="#define-the-universe-selected-genes-and-ranking"><span class="header-section-number">1.2</span> 2. Define the universe, selected genes, and ranking</a></li>
+  <li><a href="#run-over-representation-analysis" id="toc-run-over-representation-analysis" class="nav-link" data-scroll-target="#run-over-representation-analysis"><span class="header-section-number">1.3</span> 3. Run over-representation analysis</a></li>
+  <li><a href="#visualize-the-ora-result" id="toc-visualize-the-ora-result" class="nav-link" data-scroll-target="#visualize-the-ora-result"><span class="header-section-number">1.4</span> 4. Visualize the ORA result</a></li>
+  <li><a href="#run-gsea-on-the-complete-ranking" id="toc-run-gsea-on-the-complete-ranking" class="nav-link" data-scroll-target="#run-gsea-on-the-complete-ranking"><span class="header-section-number">1.5</span> 5. Run GSEA on the complete ranking</a></li>
+  <li><a href="#visualize-the-gsea-result" id="toc-visualize-the-gsea-result" class="nav-link" data-scroll-target="#visualize-the-gsea-result"><span class="header-section-number">1.6</span> 6. Visualize the GSEA result</a></li>
+  <li><a href="#compare-the-two-questions-and-save-results" id="toc-compare-the-two-questions-and-save-results" class="nav-link" data-scroll-target="#compare-the-two-questions-and-save-results"><span class="header-section-number">1.7</span> 7. Compare the two questions and save results</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">1.8</span> Next steps</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/first-workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-start-here.html">Start here: from data to a first result</a></li><li class="breadcrumb-item"><a href="./first-workflow.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="first-workflow" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This chapter starts from the committed <code>datasets/de_table.tsv</code> file derived from the Bioconductor <code>airway</code> example with DESeq2. The table contains Ensembl IDs, differential-expression statistics, and adjusted p-values for dexamethasone-treated versus untreated airway smooth-muscle samples. The table is local at render time; the regeneration script and package provenance are documented in <code>datasets/readme.md</code>.</p>
+<p>The example answers two related questions about the same contrast:</p>
+<ul>
+<li><strong>ORA:</strong> among genes selected by an explicit adjusted-p-value and fold-change rule, which biological-process terms are over-represented?</li>
+<li><strong>GSEA:</strong> across the complete DESeq2 Wald-statistic ranking, which terms are shifted toward the top or bottom?</li>
+</ul>
+<p>The thresholds are teaching choices. In a real analysis, replace them with rules defined before inspecting enrichment results.</p>
+<section id="load-local-packages-and-inspect-the-input" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="load-local-packages-and-inspect-the-input"><span class="header-section-number">1.1</span> 1. Load local packages and inspect the input</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichplot)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>de_table <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datasets/de_table.tsv"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">check.names =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">identical</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">names</span>(de_table),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"gene_id"</span>, <span class="st">"baseMean"</span>, <span class="st">"log2FoldChange"</span>, <span class="st">"lfcSE"</span>, <span class="st">"stat"</span>, <span class="st">"pvalue"</span>, <span class="st">"padj"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">anyDuplicated</span>(de_table<span class="sc">$</span>gene_id)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(de_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          gene_id    baseMean log2FoldChange     lfcSE       stat       pvalue
+1 ENSG00000000003 708.6021697    -0.38125389 0.1006544 -3.7877507 0.0001520173
+2 ENSG00000000005   0.0000000             NA        NA         NA           NA
+3 ENSG00000000419 520.2979006     0.20681272 0.1122187  1.8429438 0.0653372101
+4 ENSG00000000457 237.1630368     0.03792059 0.1434447  0.2643568 0.7915049630
+5 ENSG00000000460  57.9326331    -0.08816770 0.2871420 -0.3070526 0.7588033355
+6 ENSG00000000938   0.3180984    -1.37823397 3.4998753 -0.3937952 0.6937322727
+         padj
+1 0.002383075
+2          NA
+3 0.358663455
+4 0.996318548
+5 0.996318548
+6 0.996318548</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(de_table[, <span class="fu">c</span>(<span class="st">"baseMean"</span>, <span class="st">"log2FoldChange"</span>, <span class="st">"stat"</span>, <span class="st">"padj"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    baseMean         log2FoldChange           stat                padj       
+ Min.   :     0.00   Min.   :-5.325905   Min.   :-19.41608   Min.   :0.0000  
+ 1st Qu.:     0.00   1st Qu.:-0.463691   1st Qu.: -0.56367   1st Qu.:0.6952  
+ Median :     0.11   Median :-0.014700   Median : -0.03119   Median :0.9963  
+ Mean   :   336.15   Mean   :-0.008159   Mean   :  0.05032   Mean   :0.7853  
+ 3rd Qu.:    10.28   3rd Qu.: 0.381747   3rd Qu.:  0.48069   3rd Qu.:0.9963  
+ Max.   :325662.66   Max.   : 9.505972   Max.   : 24.85609   Max.   :0.9999  
+                     NAs    :30208       NAs    :30208       NAs    :30208   </code></pre>
+</div>
+</div>
+<p>The table uses Ensembl gene IDs and the <code>stat</code> column supplies a signed ranking. Keep both facts visible in an analysis script. An identifier can be syntactically valid and still be incompatible with the selected annotation database.</p>
+</section>
+<section id="define-the-universe-selected-genes-and-ranking" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="define-the-universe-selected-genes-and-ranking"><span class="header-section-number">1.2</span> 2. Define the universe, selected genes, and ranking</h2>
+<p>The ORA universe starts with genes having a finite DESeq2 statistic and is then restricted to Ensembl IDs present in <code>org.Hs.eg.db</code>. The selected list applies a fixed <code>padj</code> and absolute log2 fold-change rule. GSEA uses the complete finite, mapped statistic ranking, including genes that do not pass the ORA threshold.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>eligible <span class="ot">&lt;-</span> <span class="fu">is.finite</span>(de_table<span class="sc">$</span>stat)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>candidate_universe <span class="ot">&lt;-</span> de_table<span class="sc">$</span>gene_id[eligible]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>annotation_keys <span class="ot">&lt;-</span> AnnotationDbi<span class="sc">::</span><span class="fu">keys</span>(org.Hs.eg.db, <span class="at">keytype =</span> <span class="st">"ENSEMBL"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>eligible <span class="ot">&lt;-</span> eligible <span class="sc">&amp;</span> de_table<span class="sc">$</span>gene_id <span class="sc">%in%</span> annotation_keys</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>universe <span class="ot">&lt;-</span> de_table<span class="sc">$</span>gene_id[eligible]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>selected <span class="ot">&lt;-</span> de_table<span class="sc">$</span>gene_id[</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    eligible <span class="sc">&amp;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(de_table<span class="sc">$</span>padj) <span class="sc">&amp;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        de_table<span class="sc">$</span>padj <span class="sc">&lt;</span> <span class="fl">0.05</span> <span class="sc">&amp;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">abs</span>(de_table<span class="sc">$</span>log2FoldChange) <span class="sc">&gt;=</span> <span class="dv">1</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>ranking <span class="ot">&lt;-</span> de_table<span class="sc">$</span>stat[eligible]</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ranking) <span class="ot">&lt;-</span> de_table<span class="sc">$</span>gene_id[eligible]</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>ranking <span class="ot">&lt;-</span> <span class="fu">sort</span>(ranking, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Rows in input table:"</span>, <span class="fu">nrow</span>(de_table), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows in input table: 63677 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Genes eligible for testing:"</span>, <span class="fu">length</span>(candidate_universe), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Genes eligible for testing: 33469 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Genes mapped to org.Hs.eg.db:"</span>, <span class="fu">length</span>(universe), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Genes mapped to org.Hs.eg.db: 22599 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unmapped eligible genes:"</span>, <span class="fu">length</span>(<span class="fu">setdiff</span>(candidate_universe, universe)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unmapped eligible genes: 10870 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Selected genes for ORA:"</span>, <span class="fu">length</span>(selected), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Selected genes for ORA: 885 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Selected genes in universe:"</span>, <span class="fu">all</span>(selected <span class="sc">%in%</span> universe), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Selected genes in universe: TRUE </code></pre>
+</div>
+</div>
+<p><code>universe</code>, <code>selected</code>, and <code>ranking</code> use the same Ensembl namespace after filtering against the keys available in <code>org.Hs.eg.db</code>. The unmapped count is reported rather than silently treated as biological absence. In a real experiment, construct the candidate universe from genes that were measurable and eligible for selection, then record the annotation coverage.</p>
+</section>
+<section id="run-over-representation-analysis" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="run-over-representation-analysis"><span class="header-section-number">1.3</span> 3. Run over-representation analysis</h2>
+<p><code>enrichGO()</code> tests Gene Ontology terms using the selected vector. <code>ont = "BP"</code> restricts this example to biological process terms; use <code>"MF"</code>, <code>"CC"</code>, or <code>"ALL"</code> when that choice matches the question. The permissive <code>pvalueCutoff = 1</code> and <code>qvalueCutoff = 1</code> settings keep the complete result object for teaching and plotting; apply a pre-specified reporting threshold when interpreting a real study.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ora <span class="ot">&lt;-</span> <span class="fu">enrichGO</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene          =</span> selected,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe      =</span> universe,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">keyType       =</span> <span class="st">"ENSEMBL"</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ont           =</span> <span class="st">"BP"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff  =</span> <span class="dv">1</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">qvalueCutoff  =</span> <span class="dv">1</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize     =</span> <span class="dv">10</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize     =</span> <span class="dv">500</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">readable      =</span> <span class="cn">FALSE</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>ora</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#
+# over-representation test
+#
+#...@organism    Homo sapiens 
+#...@ontology    BP 
+#...@keytype     ENTREZID 
+#...@gene    chr [1:897] "8837" "5166" "340273" "5244" "8913" "8735" "8522" "9265" ...
+#...pvalues adjusted by 'BH' with cutoff &lt; 1
+#...4276 enriched terms found
+'data.frame':   4276 obs. of  13 variables:
+ $ ID            : chr  "GO:0003013" "GO:0001525" "GO:0007411" "GO:0030198" ...
+ $ Description   : chr  "circulatory system process" "angiogenesis" "axon guidance" "extracellular matrix organization" ...
+ $ GeneRatio     : chr  "56/772" "55/772" "28/772" "35/772" ...
+ $ BgRatio       : chr  "486/15282" "487/15282" "169/15282" "246/15282" ...
+ $ RichFactor    : num  0.115 0.113 0.166 0.142 0.165 ...
+ $ FoldEnrichment: num  2.28 2.24 3.28 2.82 3.26 ...
+ $ oddsRatio     : num  2.56 2.5 3.84 3.22 3.81 ...
+ $ zScore        : num  6.62 6.39 6.87 6.62 6.84 ...
+ $ pvalue        : num  6.25e-09 1.74e-08 2.55e-08 2.78e-08 2.91e-08 ...
+ $ p.adjust      : num  2.09e-05 2.09e-05 2.09e-05 2.09e-05 2.09e-05 ...
+ $ qvalue        : num  1.8e-05 1.8e-05 1.8e-05 1.8e-05 1.8e-05 ...
+ $ geneID        : chr  "ENSG00000198947/ENSG00000105711/ENSG00000049759/ENSG00000104321/ENSG00000132170/ENSG00000128165/ENSG00000103257"| __truncated__ "ENSG00000107338/ENSG00000154734/ENSG00000039537/ENSG00000021645/ENSG00000148848/ENSG00000132170/ENSG00000128165"| __truncated__ "ENSG00000105711/ENSG00000021645/ENSG00000074527/ENSG00000108231/ENSG00000118257/ENSG00000149256/ENSG00000107731"| __truncated__ "ENSG00000154734/ENSG00000215018/ENSG00000178031/ENSG00000132170/ENSG00000187498/ENSG00000162493/ENSG00000074527"| __truncated__ ...
+ $ Count         : int  56 55 28 35 28 35 35 52 47 43 ...
+#...Citation</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(ora))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID                          Description GeneRatio   BgRatio
+GO:0003013 GO:0003013           circulatory system process    56/772 486/15282
+GO:0001525 GO:0001525                         angiogenesis    55/772 487/15282
+GO:0007411 GO:0007411                        axon guidance    28/772 169/15282
+GO:0030198 GO:0030198    extracellular matrix organization    35/772 246/15282
+GO:0097485 GO:0097485           neuron projection guidance    28/772 170/15282
+GO:0043062 GO:0043062 extracellular structure organization    35/772 247/15282
+           RichFactor FoldEnrichment oddsRatio   zScore       pvalue
+GO:0003013  0.1152263       2.280944  2.560998 6.619528 6.250970e-09
+GO:0001525  0.1129363       2.235613  2.499774 6.392052 1.735764e-08
+GO:0007411  0.1656805       3.279701  3.835240 6.873797 2.553542e-08
+GO:0030198  0.1422764       2.816410  3.218280 6.624697 2.778551e-08
+GO:0097485  0.1647059       3.260408  3.807966 6.835987 2.913354e-08
+GO:0043062  0.1417004       2.805007  3.202875 6.596697 3.084790e-08
+               p.adjust       qvalue
+GO:0003013 2.090662e-05 1.798103e-05
+GO:0001525 2.090662e-05 1.798103e-05
+GO:0007411 2.090662e-05 1.798103e-05
+GO:0030198 2.090662e-05 1.798103e-05
+GO:0097485 2.090662e-05 1.798103e-05
+GO:0043062 2.090662e-05 1.798103e-05
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    geneID
+GO:0003013 ENSG00000198947/ENSG00000105711/ENSG00000049759/ENSG00000104321/ENSG00000132170/ENSG00000128165/ENSG00000103257/ENSG00000134294/ENSG00000138074/ENSG00000155962/ENSG00000145362/ENSG00000092969/ENSG00000180914/ENSG00000145244/ENSG00000174697/ENSG00000136546/ENSG00000126016/ENSG00000177674/ENSG00000165995/ENSG00000107562/ENSG00000112715/ENSG00000184408/ENSG00000170624/ENSG00000057294/ENSG00000069431/ENSG00000122679/ENSG00000170214/ENSG00000112837/ENSG00000100739/ENSG00000174437/ENSG00000166825/ENSG00000117152/ENSG00000176387/ENSG00000159167/ENSG00000150594/ENSG00000119139/ENSG00000129682/ENSG00000132326/ENSG00000131979/ENSG00000175538/ENSG00000006283/ENSG00000154864/ENSG00000183044/ENSG00000073756/ENSG00000163485/ENSG00000131389/ENSG00000023909/ENSG00000185052/ENSG00000153904/ENSG00000171385/ENSG00000168398/ENSG00000135744/ENSG00000017483/ENSG00000152779/ENSG00000196517/ENSG00000160460
+GO:0001525                 ENSG00000107338/ENSG00000154734/ENSG00000039537/ENSG00000021645/ENSG00000148848/ENSG00000132170/ENSG00000128165/ENSG00000187498/ENSG00000143878/ENSG00000118257/ENSG00000137801/ENSG00000107731/ENSG00000126785/ENSG00000025708/ENSG00000092969/ENSG00000174697/ENSG00000136999/ENSG00000124440/ENSG00000126016/ENSG00000130066/ENSG00000189058/ENSG00000163513/ENSG00000112715/ENSG00000161381/ENSG00000178878/ENSG00000214274/ENSG00000144810/ENSG00000145632/ENSG00000113578/ENSG00000169031/ENSG00000100292/ENSG00000135821/ENSG00000165891/ENSG00000164619/ENSG00000166825/ENSG00000179388/ENSG00000133216/ENSG00000123358/ENSG00000066468/ENSG00000140105/ENSG00000170989/ENSG00000145423/ENSG00000117461/ENSG00000169855/ENSG00000173083/ENSG00000168811/ENSG00000128917/ENSG00000140545/ENSG00000073756/ENSG00000012048/ENSG00000182580/ENSG00000102760/ENSG00000153904/ENSG00000070193/ENSG00000143494
+GO:0007411                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ENSG00000105711/ENSG00000021645/ENSG00000074527/ENSG00000108231/ENSG00000118257/ENSG00000149256/ENSG00000107731/ENSG00000196155/ENSG00000100784/ENSG00000055163/ENSG00000107562/ENSG00000168621/ENSG00000160145/ENSG00000112715/ENSG00000137872/ENSG00000145242/ENSG00000149633/ENSG00000221866/ENSG00000125848/ENSG00000169750/ENSG00000133216/ENSG00000116106/ENSG00000162614/ENSG00000169855/ENSG00000128602/ENSG00000182580/ENSG00000075213/ENSG00000106123
+GO:0030198                                                                                                                                                                                                                                                                                                                                                 ENSG00000154734/ENSG00000215018/ENSG00000178031/ENSG00000132170/ENSG00000187498/ENSG00000162493/ENSG00000074527/ENSG00000092969/ENSG00000136999/ENSG00000168646/ENSG00000196569/ENSG00000137673/ENSG00000144810/ENSG00000164171/ENSG00000196739/ENSG00000169031/ENSG00000003402/ENSG00000143196/ENSG00000060718/ENSG00000081052/ENSG00000133110/ENSG00000171819/ENSG00000108821/ENSG00000116962/ENSG00000173083/ENSG00000100767/ENSG00000138316/ENSG00000046653/ENSG00000206561/ENSG00000102760/ENSG00000135744/ENSG00000102996/ENSG00000166670/ENSG00000114270/ENSG00000154736
+GO:0097485                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ENSG00000105711/ENSG00000021645/ENSG00000074527/ENSG00000108231/ENSG00000118257/ENSG00000149256/ENSG00000107731/ENSG00000196155/ENSG00000100784/ENSG00000055163/ENSG00000107562/ENSG00000168621/ENSG00000160145/ENSG00000112715/ENSG00000137872/ENSG00000145242/ENSG00000149633/ENSG00000221866/ENSG00000125848/ENSG00000169750/ENSG00000133216/ENSG00000116106/ENSG00000162614/ENSG00000169855/ENSG00000128602/ENSG00000182580/ENSG00000075213/ENSG00000106123
+GO:0043062                                                                                                                                                                                                                                                                                                                                                 ENSG00000154734/ENSG00000215018/ENSG00000178031/ENSG00000132170/ENSG00000187498/ENSG00000162493/ENSG00000074527/ENSG00000092969/ENSG00000136999/ENSG00000168646/ENSG00000196569/ENSG00000137673/ENSG00000144810/ENSG00000164171/ENSG00000196739/ENSG00000169031/ENSG00000003402/ENSG00000143196/ENSG00000060718/ENSG00000081052/ENSG00000133110/ENSG00000171819/ENSG00000108821/ENSG00000116962/ENSG00000173083/ENSG00000100767/ENSG00000138316/ENSG00000046653/ENSG00000206561/ENSG00000102760/ENSG00000135744/ENSG00000102996/ENSG00000166670/ENSG00000114270/ENSG00000154736
+           Count
+GO:0003013    56
+GO:0001525    55
+GO:0007411    28
+GO:0030198    35
+GO:0097485    28
+GO:0043062    35</code></pre>
+</div>
+</div>
+<p>The output is an <code>enrichResult</code>. Its <code>@result</code> slot can be converted to a data frame, but retain <code>ora</code> itself: the object carries the gene-to-term information needed by downstream plots.</p>
+<p><code>enrichGO()</code> accepts the Ensembl input but uses the OrgDb mapping internally; the returned object records the internal key type as <code>ENTREZID</code>. Readable symbols can be added for inspection without changing the test:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ora_readable <span class="ot">&lt;-</span> <span class="fu">setReadable</span>(ora, <span class="at">OrgDb =</span> org.Hs.eg.db, <span class="at">keyType =</span> <span class="st">"ENTREZID"</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(ora_readable)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Description"</span>, <span class="st">"GeneRatio"</span>, <span class="st">"p.adjust"</span>, <span class="st">"geneID"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID                          Description GeneRatio
+GO:0003013 GO:0003013           circulatory system process    56/772
+GO:0001525 GO:0001525                         angiogenesis    55/772
+GO:0007411 GO:0007411                        axon guidance    28/772
+GO:0030198 GO:0030198    extracellular matrix organization    35/772
+GO:0097485 GO:0097485           neuron projection guidance    28/772
+GO:0043062 GO:0043062 extracellular structure organization    35/772
+               p.adjust
+GO:0003013 2.090662e-05
+GO:0001525 2.090662e-05
+GO:0007411 2.090662e-05
+GO:0030198 2.090662e-05
+GO:0097485 2.090662e-05
+GO:0043062 2.090662e-05
+                                                                                                                                                                            geneID
+GO:0003013 NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA
+GO:0001525    NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA
+GO:0007411                                                                                     NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA
+GO:0030198                                                                NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA
+GO:0097485                                                                                     NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA
+GO:0043062                                                                NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA/NA</code></pre>
+</div>
+</div>
+</section>
+<section id="visualize-the-ora-result" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="visualize-the-ora-result"><span class="header-section-number">1.4</span> 4. Visualize the ORA result</h2>
+<p>A dot plot is a compact first view. Dot size is the number of selected genes in a term, and colour represents the adjusted significance used by the plotting method. A network plot is useful for seeing shared genes among a small number of terms.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p_ora_dot <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(ora, <span class="at">showCategory =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"ORA: selected genes and biological processes"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>p_ora_dot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="first-workflow_files/figure-html/first-workflow-ora-plots-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p_ora_network <span class="ot">&lt;-</span> <span class="fu">cnetplot</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  ora,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">showCategory =</span> <span class="dv">3</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">foldChange =</span> ranking,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">categorySize =</span> <span class="st">"pvalue"</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: None of the names in `foldChange` match the genes of this result, so
+the item nodes will be drawn grey. `foldChange` has to be named with the same
+gene IDs as the enrichment result, e.g. 8837, 5166, 340273.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>p_ora_network</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="first-workflow_files/figure-html/first-workflow-ora-network-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>cnetplot()</code> is intentionally limited to three terms here. Showing every term usually produces a dense graph that is harder to read than the dot plot.</p>
+</section>
+<section id="run-gsea-on-the-complete-ranking" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="run-gsea-on-the-complete-ranking"><span class="header-section-number">1.5</span> 5. Run GSEA on the complete ranking</h2>
+<p>GSEA does not use <code>selected</code> as its input. It uses the complete named <code>ranking</code>, so genes below the ORA threshold still contribute. The <code>minGSSize</code> and <code>maxGSSize</code> settings keep this first local example reasonably quick while excluding extremely small or very broad terms. Setting cutoffs to <code>1</code> retains the tested terms so that the plotting example remains informative even when few terms meet a conventional significance threshold.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>gsea <span class="ot">&lt;-</span> <span class="fu">gseGO</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList      =</span> ranking,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">OrgDb         =</span> org.Hs.eg.db,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">keyType       =</span> <span class="st">"ENSEMBL"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ont           =</span> <span class="st">"BP"</span>,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize     =</span> <span class="dv">100</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize     =</span> <span class="dv">300</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">pAdjustMethod =</span> <span class="st">"BH"</span>,</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff  =</span> <span class="dv">1</span>,</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">eps           =</span> <span class="dv">0</span>,</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose       =</span> <span class="cn">FALSE</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>gsea</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#
+# Gene Set Enrichment Analysis
+#
+#...@organism    Homo sapiens 
+#...@setType     BP 
+#...@keytype     ENSEMBL 
+#...@geneList    Named num [1:22599] 24.9 24.7 24.3 24.2 23.7 ...
+ - attr(*, "names")= chr [1:22599] "ENSG00000152583" "ENSG00000165995" "ENSG00000120129" "ENSG00000101347" ...
+#...nPerm    1000 
+#...pvalues adjusted by 'BH' with cutoff &lt; 1
+#...854 enriched terms found
+'data.frame':   854 obs. of  12 variables:
+ $ ID             : chr  "GO:0044272" "GO:0001764" "GO:0007266" "GO:0008360" ...
+ $ Description    : chr  "sulfur compound biosynthetic process" "neuron migration" "Rho protein signal transduction" "regulation of cell shape" ...
+ $ setSize        : int  111 103 131 117 180 139 141 247 112 222 ...
+ $ enrichmentScore: num  0.548 -0.52 0.533 0.534 0.508 ...
+ $ NES            : num  1.74 -1.73 1.72 1.71 1.71 ...
+ $ pvalue         : num  2.31e-04 7.05e-05 5.27e-05 5.05e-04 7.55e-05 ...
+ $ p.adjust       : num  0.01235 0.00921 0.009 0.01874 0.00921 ...
+ $ qvalue         : num  0.00243 0.00181 0.00177 0.00369 0.00181 ...
+ $ rank           : int  3477 2768 3077 1863 2798 1915 2765 3486 2494 2581 ...
+ $ leading_edge   : chr  "tags=35%, list=15%, signal=30%" "tags=32%, list=12%, signal=28%" "tags=36%, list=14%, signal=31%" "tags=24%, list=8%, signal=22%" ...
+ $ core_enrichment: chr  "ENSG00000154930/ENSG00000151726/ENSG00000099998/ENSG00000160200/ENSG00000023909/ENSG00000128309/ENSG00000165996"| __truncated__ "ENSG00000099250/ENSG00000165323/ENSG00000136848/ENSG00000173406/ENSG00000189056/ENSG00000075275/ENSG00000171943"| __truncated__ "ENSG00000162493/ENSG00000172403/ENSG00000163171/ENSG00000134318/ENSG00000137962/ENSG00000132155/ENSG00000164050"| __truncated__ "ENSG00000139132/ENSG00000162493/ENSG00000163171/ENSG00000186575/ENSG00000164050/ENSG00000206190/ENSG00000071127"| __truncated__ ...
+ $ log2err        : num  0.519 0.538 0.557 0.477 0.538 ...
+#...Citation</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(gsea))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID                           Description setSize
+GO:0044272 GO:0044272  sulfur compound biosynthetic process     111
+GO:0001764 GO:0001764                      neuron migration     103
+GO:0007266 GO:0007266       Rho protein signal transduction     131
+GO:0008360 GO:0008360              regulation of cell shape     117
+GO:0010810 GO:0010810 regulation of cell-substrate adhesion     180
+GO:0090596 GO:0090596           sensory organ morphogenesis     139
+           enrichmentScore       NES       pvalue    p.adjust      qvalue rank
+GO:0044272       0.5479396  1.742013 2.313734e-04 0.012349553 0.002429672 3477
+GO:0001764      -0.5199957 -1.734625 7.052150e-05 0.009207581 0.001811515 2768
+GO:0007266       0.5330403  1.715300 5.269053e-05 0.008999543 0.001770585 3077
+GO:0008360       0.5339027  1.712340 5.046989e-04 0.018739690 0.003686878 1863
+GO:0010810       0.5079134  1.710410 7.547198e-05 0.009207581 0.001811515 2798
+GO:0090596      -0.4830453 -1.708138 1.480924e-04 0.010539242 0.002073508 1915
+                             leading_edge
+GO:0044272 tags=35%, list=15%, signal=30%
+GO:0001764 tags=32%, list=12%, signal=28%
+GO:0007266 tags=36%, list=14%, signal=31%
+GO:0008360  tags=24%, list=8%, signal=22%
+GO:0010810 tags=32%, list=12%, signal=28%
+GO:0090596  tags=27%, list=8%, signal=25%
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           core_enrichment
+GO:0044272                                                                                                                                                                                                                                                                                                                 ENSG00000154930/ENSG00000151726/ENSG00000099998/ENSG00000160200/ENSG00000023909/ENSG00000128309/ENSG00000165996/ENSG00000066322/ENSG00000182551/ENSG00000117479/ENSG00000206527/ENSG00000038274/ENSG00000004799/ENSG00000103150/ENSG00000135917/ENSG00000106688/ENSG00000150768/ENSG00000012660/ENSG00000100714/ENSG00000116761/ENSG00000105607/ENSG00000076555/ENSG00000129596/ENSG00000198682/ENSG00000168291/ENSG00000168906/ENSG00000068120/ENSG00000131069/ENSG00000146085/ENSG00000119689/ENSG00000007933/ENSG00000063854/ENSG00000010932/ENSG00000131473/ENSG00000125779/ENSG00000170522/ENSG00000099810/ENSG00000169710/ENSG00000075239
+GO:0001764                                                                                                                                                                                                                                                                                                                                                                                                                 ENSG00000099250/ENSG00000165323/ENSG00000136848/ENSG00000173406/ENSG00000189056/ENSG00000075275/ENSG00000171943/ENSG00000138182/ENSG00000138443/ENSG00000162631/ENSG00000067141/ENSG00000081189/ENSG00000196576/ENSG00000054282/ENSG00000173376/ENSG00000108175/ENSG00000112137/ENSG00000112139/ENSG00000131584/ENSG00000148219/ENSG00000070808/ENSG00000080824/ENSG00000131711/ENSG00000110492/ENSG00000112715/ENSG00000129682/ENSG00000075213/ENSG00000168542/ENSG00000167552/ENSG00000152580/ENSG00000116584/ENSG00000106484/ENSG00000107562
+GO:0007266                                                                                                                                                                                 ENSG00000162493/ENSG00000172403/ENSG00000163171/ENSG00000134318/ENSG00000137962/ENSG00000132155/ENSG00000164050/ENSG00000143878/ENSG00000107104/ENSG00000214944/ENSG00000067900/ENSG00000065320/ENSG00000073712/ENSG00000017797/ENSG00000110906/ENSG00000173706/ENSG00000151491/ENSG00000170776/ENSG00000198121/ENSG00000141522/ENSG00000143322/ENSG00000133121/ENSG00000136238/ENSG00000188906/ENSG00000146535/ENSG00000172757/ENSG00000147251/ENSG00000196914/ENSG00000158985/ENSG00000076928/ENSG00000175220/ENSG00000119326/ENSG00000109079/ENSG00000005884/ENSG00000102606/ENSG00000131037/ENSG00000197256/ENSG00000039523/ENSG00000123159/ENSG00000111348/ENSG00000104880/ENSG00000140945/ENSG00000144891/ENSG00000158769/ENSG00000067560/ENSG00000177105/ENSG00000181104
+GO:0008360                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ENSG00000139132/ENSG00000162493/ENSG00000163171/ENSG00000186575/ENSG00000164050/ENSG00000206190/ENSG00000071127/ENSG00000073712/ENSG00000169750/ENSG00000133026/ENSG00000151491/ENSG00000120899/ENSG00000198121/ENSG00000112276/ENSG00000162458/ENSG00000167657/ENSG00000157827/ENSG00000008853/ENSG00000197702/ENSG00000136238/ENSG00000135046/ENSG00000172757/ENSG00000158985/ENSG00000140416/ENSG00000167193/ENSG00000122545/ENSG00000138771/ENSG00000100345
+GO:0010810 ENSG00000162493/ENSG00000168309/ENSG00000046653/ENSG00000173517/ENSG00000179820/ENSG00000134318/ENSG00000111859/ENSG00000139567/ENSG00000186575/ENSG00000035403/ENSG00000079691/ENSG00000189058/ENSG00000107104/ENSG00000206560/ENSG00000174804/ENSG00000165996/ENSG00000213853/ENSG00000152377/ENSG00000067900/ENSG00000137801/ENSG00000147459/ENSG00000073712/ENSG00000126458/ENSG00000169750/ENSG00000130402/ENSG00000137076/ENSG00000108861/ENSG00000184009/ENSG00000120899/ENSG00000096968/ENSG00000167657/ENSG00000173083/ENSG00000136238/ENSG00000196924/ENSG00000172757/ENSG00000184371/ENSG00000104332/ENSG00000110880/ENSG00000119185/ENSG00000149177/ENSG00000057294/ENSG00000167193/ENSG00000173402/ENSG00000132669/ENSG00000111846/ENSG00000152818/ENSG00000112679/ENSG00000169499/ENSG00000102606/ENSG00000051382/ENSG00000127603/ENSG00000197122/ENSG00000074054/ENSG00000117228/ENSG00000140945/ENSG00000106366/ENSG00000109743/ENSG00000006210
+GO:0090596                                                                                                                                                                                                                                                                                                                                                 ENSG00000198707/ENSG00000134376/ENSG00000138443/ENSG00000154096/ENSG00000073711/ENSG00000100625/ENSG00000119608/ENSG00000198719/ENSG00000128272/ENSG00000196591/ENSG00000003137/ENSG00000146555/ENSG00000188501/ENSG00000114251/ENSG00000151617/ENSG00000137203/ENSG00000095397/ENSG00000135111/ENSG00000177732/ENSG00000187634/ENSG00000066468/ENSG00000112320/ENSG00000110400/ENSG00000106571/ENSG00000117122/ENSG00000164920/ENSG00000137273/ENSG00000178764/ENSG00000130635/ENSG00000113140/ENSG00000112715/ENSG00000125398/ENSG00000184254/ENSG00000133216/ENSG00000112837/ENSG00000105989/ENSG00000124766
+             log2err
+GO:0044272 0.5188481
+GO:0001764 0.5384341
+GO:0007266 0.5573322
+GO:0008360 0.4772708
+GO:0010810 0.5384341
+GO:0090596 0.5188481</code></pre>
+</div>
+</div>
+<p>The result is a <code>gseaResult</code>. Its <code>NES</code> and <code>enrichmentScore</code> describe direction and magnitude relative to the ranked list; the adjusted p-value controls for testing many terms. Inspect both effect direction and statistical evidence rather than sorting only by a single column.</p>
+</section>
+<section id="visualize-the-gsea-result" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="visualize-the-gsea-result"><span class="header-section-number">1.6</span> 6. Visualize the GSEA result</h2>
+<p>The dot plot gives a profile-level overview. <code>gseaplot2()</code> shows the running enrichment score, the locations of genes in the selected set, and the ranked statistic for one term.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>p_gsea_dot <span class="ot">&lt;-</span> <span class="fu">dotplot</span>(gsea, <span class="at">showCategory =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"GSEA: biological processes across the full ranking"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>p_gsea_dot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="first-workflow_files/figure-html/first-workflow-gsea-dotplot-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(<span class="fu">as.data.frame</span>(gsea)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gseaplot2</span>(gsea, <span class="at">geneSetID =</span> <span class="dv">1</span>, <span class="at">title =</span> gsea<span class="sc">$</span>Description[<span class="dv">1</span>])</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="first-workflow_files/figure-html/first-workflow-gsea-curve-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The x-axis of a GSEA curve is the position in the ranked list, not a gene identifier. A term enriched at the top has a positive direction for this signed ranking; a term enriched at the bottom has a negative direction.</p>
+</section>
+<section id="compare-the-two-questions-and-save-results" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="compare-the-two-questions-and-save-results"><span class="header-section-number">1.7</span> 7. Compare the two questions and save results</h2>
+<p>ORA and GSEA can both be useful, but they are not duplicate tests. ORA asks whether a thresholded set has more members of a term than expected under the universe. GSEA asks whether term members accumulate toward one end of the complete ranking. Report which input and background were used for each result.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># These files are optional outputs; the result objects remain the analysis record.</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(de_table, <span class="st">"de-table-used.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(<span class="fu">as.data.frame</span>(ora_readable), <span class="st">"ora-go-bp-results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(<span class="fu">as.data.frame</span>(gsea), <span class="st">"gsea-go-bp-results.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">input =</span> de_table,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">universe =</span> universe,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">selected =</span> selected,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">ranking =</span> ranking,</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">ora =</span> ora,</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">gsea =</span> gsea</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"enrichment-objects.rds"</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For a short report, start with the two dot plots and one GSEA curve. For a detailed report, include the ID type, universe construction, threshold, ontology, package versions, and the complete result tables.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Offline boundary.</strong> This chapter uses data shipped with R/Bioconductor packages. <code>org.Hs.eg.db</code> is a local annotation package, and the example does not query KEGG, Enrichr, g:Profiler, or another remote service. A real study should record the annotation package version because local annotations change over time.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="next-steps" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">1.8</span> Next steps</h2>
+<ul>
+<li>For input and universe details, see <a href="./data-contract.html">the data contract</a>.</li>
+<li>For alternative designs, use <a href="./choose-a-route.html">Choose a route</a>.</li>
+<li>For deeper plotting and interpretation, continue to <a href="./enrichplot.html#sec-enrichplot">visualization</a> and <a href="./interpretation.html#evidence-guided-interpretation">evidence-guided interpretation</a>.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./00-start-here.html" class="pagination-link" aria-label="Start here: from data to a first result">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Start here: from data to a first result</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./data-contract.html" class="pagination-link" aria-label="Data contracts for enrichment analysis">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/first-workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
