@@ -1,8 +1,8 @@
 # Biomedical Knowledge Mining Toolkit
 
-This repository contains the source code and content for the book **Biomedical Knowledge Mining using GOSemSim and clusterProfiler**, authored by Guangchuang Yu.
+Source files and supporting code for **Biomedical Knowledge Mining using GOSemSim and clusterProfiler**, a book by Guangchuang Yu.
 
-The book documents a coordinated toolkit for turning omics evidence into interpretable biological knowledge. It is organized around the analysis workflow rather than around a list of packages:
+The chapters follow a complete analysis workflow:
 
 ```text
 input evidence → analysis engine → biological knowledge
@@ -10,26 +10,26 @@ input evidence → analysis engine → biological knowledge
               → biological interpretation → reproducible report
 ```
 
-## What the toolkit covers
+## Topics covered
 
 - **Data contract**: identifiers, ranked lists, background universes, custom annotations, and common result objects.
 - **Enrichment engines**: Over-Representation Analysis (ORA), Gene Set Enrichment Analysis (GSEA), comparison, network-aware, weighted, and multi-omics methods.
 - **Knowledge sources**: Gene Ontology, KEGG, Reactome, Disease Ontology, MeSH, MSigDB, WikiPathways, CellMarker, and user-defined gene sets.
-- **GSON knowledge packaging**: standardized, metadata-aware knowledge objects that allow multiple knowledge bases to be combined without changing the enrichment engine.
+- **GSON**: gene-set collections with identifiers, species, versions, and source metadata. Different knowledge bases can be used without changing the enrichment engine.
 - **Evidence integration**: semantic similarity, term redundancy reduction, representative term selection, PPI networks, and contribution tracing.
 - **Visualization and interpretation**: reusable plots, comparative profiles, evidence-guided biological interpretation, and optional AI-assisted reporting.
 
-The main implementation modules are `clusterProfiler`, `enrichit`, `gson`, `GOSemSim`, `DOSE`, `ReactomePA`, `meshes`, `enrichplot`, and `ChIPseeker`. They are presented as cooperating layers of one system, not as unrelated package chapters.
+The main packages used throughout the book are `clusterProfiler`, `enrichit`, `gson`, `GOSemSim`, `DOSE`, `ReactomePA`, `meshes`, `enrichplot`, and `ChIPseeker`.
 
 ## Read online
 
-The compiled and up-to-date version of the book is available at:
+Read the rendered book at:
 
 <https://yulab-smu.top/biomedical-knowledge-mining-book/>
 
 ## Read the source book
 
-Start with the [book reorganization proposal](book-reorganization-proposal.md) for the information architecture, then use the following entry points:
+To browse the source, start with the [book reorganization proposal](book-reorganization-proposal.md). The main entry points are:
 
 1. `first-workflow.qmd` for a complete minimal analysis;
 2. `data-contract.qmd` for input preparation and result objects;
@@ -50,21 +50,21 @@ The book is built with [Quarto](https://quarto.org/) and R:
 make book
 ```
 
-Use `make fresh` when cached computations need to be refreshed. The first workflow reads the committed `datasets/de_table.tsv`; regenerate it with `Rscript scripts/make_airway_de_table.R` when the documented airway/DESeq2 source needs to be refreshed.
+`make fresh` reruns cached computations. The first workflow reads the committed `datasets/de_table.tsv`; regenerate it with `Rscript scripts/make_airway_de_table.R` when the documented airway/DESeq2 data need to be refreshed.
 
-For the rolling R/Bioconductor compatibility policy, current validation versions, data provenance, network boundaries, and validation commands, see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md). The repository follows current release updates and revalidates the book rather than maintaining a permanent lockfile. The repository runs fast source checks in `validate-book.yml`; the existing publish workflow performs the complete R/Quarto render and then repeats the navigation/link checks before deployment.
+See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) for compatibility policy, validation versions, data provenance, network boundaries, and validation commands. `validate-book.yml` runs fast source checks; the publish workflow renders the book and checks navigation and links before deployment.
 
 ## Live interpretation examples
 
-The cell-type annotation example in `interpretation.qmd` is a real workflow: it reads the local CellMarker spreadsheet, constructs marker profiles, runs `compareCluster()`/`enricher()`, and calls DeepSeek through `aisdk::set_model("deepseek:deepseek-v4-flash")`. The chunk loads `.env` locally when available, never prints the key, and skips only the LLM-dependent chunks when `DEEPSEEK_API_KEY` is absent. Clear `interpretation_cache/` when a fresh report is intentionally required.
+The cell-type annotation example in `interpretation.qmd` reads the local CellMarker spreadsheet, constructs marker profiles, runs `compareCluster()`/`enricher()`, and calls DeepSeek through `aisdk::set_model("deepseek:deepseek-v4-flash")`. It loads `.env` when available and skips only the LLM-dependent chunks when `DEEPSEEK_API_KEY` is absent. Remove `interpretation_cache/` to generate a fresh report.
 
-The generated `docs/` site and `*_cache/` / `*_files/` directories are build artifacts and are ignored by Git. Source data remain under `datasets/`, figures under `figures/`, and reusable R helpers remain at the project root because Quarto chapters refer to them by relative path.
+The generated `docs/` site and `*_cache/` / `*_files/` directories are ignored by Git. Keep source data under `datasets/`, figures under `figures/`, and shared R helpers at the project root because Quarto chapters use these relative paths.
 
-The source chapters now use task-oriented filenames. After each Quarto build, `scripts/write_legacy_redirects.py` creates redirects for the previous numeric and package-oriented HTML URLs, so existing links remain usable.
+Chapter files use task-oriented names. `scripts/write_legacy_redirects.py` creates redirects for older numeric and package-oriented HTML URLs so existing links continue to work.
 
 ## Archive policy
 
-All 50 current `.qmd` files are referenced by `_quarto.yml`; no unused source chapter was found in this pass, so no chapter was moved to `_archive/`. A future legacy chapter should be moved there only after removing it from the navigation and adding a redirect or migration note for its public anchors.
+Only move a legacy chapter to `_archive/` after removing it from the navigation and adding a redirect or migration note for its public anchors.
 
 ## Contributing
 
