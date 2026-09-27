@@ -258,7 +258,7 @@ The `showTop` parameter can be used to limit the number of genes displayed in th
 
 The `treeplot()` function performs hierarchical clustering of enriched terms. It relies on the pairwise similarities of the enriched terms calculated by the `pairwise_termsim()` function, which by default uses Jaccard's similarity index (JC). Users can also use semantic similarity values when supported (*e.g.*, [GO](go-semantic-similarity.qmd#GOSemSim), [DO](do-semantic-similarity.qmd#DOSE-semantic-similarity), and [MeSH](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity)).
 
-The default agglomeration method in `treeplot()` is `ward.D`, and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*; see also the documentation of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specified by the `nCluster` parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability.
+The default agglomeration method in `treeplot()` is `ward.D`, and users can specify other methods via the `cluster_method` parameter (*e.g.*, 'average', 'complete', 'median', 'centroid', *etc.*; see also the documentation of the `hclust()` function). The `treeplot()` function will cut the tree into several subtrees (specified by the `nCluster` parameter, default is 5) and label subtrees using high-frequency words. This reduces the complexity of the enriched result and improves user interpretation ability. Branches that are not assigned to a displayed cluster remain visible in a neutral grey, rather than disappearing into the background.
 
 For fine-grained control over text appearance, the `fontsize_tiplab` and `fontsize_cladelab` parameters allow users to adjust the font size of tip (leaf) labels and clade labels respectively. For example, `fontsize_tiplab = 8, fontsize_cladelab = 10` will set tip labels to 8pt and clade labels to 10pt.
 
@@ -331,7 +331,7 @@ Like `treeplot()`, `ssplot()` requires `pairwise_termsim()` to be run first. It 
 ssplot(edox2, nCluster=5) + ggtitle("ssplot (nCluster=5)")
 ```
 
-`ssplot()` is particularly useful for visualizing the overall semantic landscape of enrichment results and identifying distinct functional modules in a continuous space.
+`ssplot()` is particularly useful for visualizing the overall semantic landscape of enrichment results and identifying distinct functional modules in a continuous space. The `min_edge` and `size_edge` arguments control the similarity threshold and rendered edge width inherited from `emapplot()`. They affect the network overlay, not the similarity matrix or the MDS coordinates. The optional `edge_filter`, `top_k`, and `target_density` arguments can also be passed through when the displayed network is dense.
 
 
 ## Enrichment Map
@@ -387,6 +387,40 @@ The `simplify()` function removes redundant GO terms based on semantic similarit
 
 The `emapplot` function supports results obtained from hypergeometric test and gene set enrichment analysis. 
 The `size_category` parameter can be used to resize nodes and the `layout` parameter can adjust the layout, as demonstrated in @fig-Enrichment.
+
+### Controlling dense enrichment maps
+
+The default `edge_filter = "threshold"` keeps the historical behavior: an edge is
+shown when its pairwise similarity is at least `min_edge`. This is a display
+choice only; it does not change the enrichment result or the term-similarity
+matrix. For a dense map, `edge_filter = "top_k"` keeps the strongest `top_k`
+neighbors for each term, while `edge_filter = "adaptive"` keeps approximately
+the requested proportion of unique term pairs through `target_density`.
+
+Before choosing a filter, the exported `emapplot_edge_density()` helper can
+summarize how many pairs would be retained:
+
+```{r}
+edge_diagnostic <- emapplot_edge_density(
+    edox2@termsim,
+    min_edge = 0.2,
+    edge_filter = "threshold"
+)
+edge_diagnostic[, c("n_terms", "retained_pairs", "density", "suggestion")]
+```
+
+The same controls can then be used in the plot. The threshold path remains the
+recommended default when the graph is not overcrowded:
+
+```{r}
+#| eval: false
+emapplot(edox2, edge_filter = "top_k", top_k = 2, min_edge = 0.2)
+emapplot(edox2, edge_filter = "adaptive", target_density = 0.08, min_edge = 0.2)
+```
+
+Use these filters to improve readability, not to imply that weakly connected
+terms are biologically absent. Keep the filter settings with the exported
+figure so that the displayed network remains auditable.
 
 
 
