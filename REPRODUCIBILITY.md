@@ -12,7 +12,7 @@ The book follows the current R/Bioconductor and package releases rather than fre
 | `GOSemSim` | 2.39.3 |
 | `DOSE` | 4.7.3 |
 | `ReactomePA` | 1.99.2 |
-| `meshes` | 1.39.1 |
+| `meshes` | 1.39.3 |
 | `airway` | 1.32.0 |
 | `DESeq2` | 1.52.0 |
 | `fgsea` | 1.38.0 |
@@ -32,6 +32,8 @@ Rscript scripts/make_airway_de_table.R
 ```
 
 The generated table is committed so ordinary book rendering does not require the `airway` package or a DESeq2 rerun. If the source package or analysis design changes, regenerate the table, review its schema and row count, and update `datasets/readme.md`.
+
+The committed MeSH caches were regenerated with `meshes` 1.39.3 from the human AnnotationHub record `AH122129` (MeSH v011, 2026). The package now bundles the NLM descriptor-name map needed because current MeSHDb records expose gene/MeSH mappings but no `MESHTERM` column. Update the package data and the three cache files together when the annual NLM descriptor release changes.
 
 ## Local validation
 
