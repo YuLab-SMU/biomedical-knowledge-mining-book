@@ -350,7 +350,7 @@ The inference requires that the gene-set IDs really are GO terms (`GO:0008150`, 
 
 It is common to receive a message saying "No gene set have size > 10 ... return NULL" or finding no significant terms.
 
-1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. Remember that filtering is based on the overlap with your provided input, not the raw database annotation size (see [Size filtering is overlap-based, not annotation-based](#size-filtering-is-overlap-based-not-annotation-based)). A term whose full annotation has 3 000 genes may still pass if only 200 of those genes were measured in your experiment. If no term passes both cutoffs, enlarge the window with, for example, `minGSSize = 5, maxGSSize = 5000`, or set `maxGSSize = Inf` to disable the upper cap entirely.
+1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. Remember that filtering is based on the overlap with your provided input, not the raw database annotation size (see [Tuning `minGSSize` and `maxGSSize`](#sec-tune-gene-set-size) and the overlap-rule callout above). A term whose full annotation has 3 000 genes may still pass if only 200 of those genes were measured in your experiment. If no term passes both cutoffs, enlarge the window with, for example, `minGSSize = 5, maxGSSize = 5000`, or set `maxGSSize = Inf` to disable the upper cap entirely.
 
 ### Tuning `minGSSize` and `maxGSSize` {#sec-tune-gene-set-size}
 
