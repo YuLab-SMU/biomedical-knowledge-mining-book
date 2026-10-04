@@ -62,7 +62,7 @@ The `ont` parameter can be "HDO" (Human Disease Ontology), "HPO" (Human Phenotyp
 
 The `universe` sets the background gene universe for testing. If users do not explicitly set this parameter, `enrichDO()` will set the universe to all human genes that have DO annotation.
 
-The `minGSSize` (and `maxGSSize`) indicates that only those DO terms that have more than `minGSSize` (and less than `maxGSSize`) annotated genes will be tested.
+The `minGSSize` (and `maxGSSize`) indicate that only those DO terms whose overlap with the provided `universe` (or with all annotated genes when no universe is set) has size in `[minGSSize, maxGSSize]` are tested. In other words, the bounds refer to the effective size after intersection with your experiment's measured genes, not to the raw annotation size of the term in HDO/HPO/MPO. Full guidance and recommended starting values by scenario are in the GO enrichment chapter at [Tuning `minGSSize` and `maxGSSize`](go-enrichment.qmd#sec-tune-gene-set-size); to disable the upper cap, set `maxGSSize = Inf`.
 
 The `readable` is a logical parameter that indicates whether the entrezgene IDs will be mapped to gene symbols or not, see also @sec-setReadable.
 

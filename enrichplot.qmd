@@ -55,7 +55,7 @@ Old links to figures landed on this page. The aliases below keep those URLs mean
 - <a id="fig-ridgeplot"></a> **`#fig-ridgeplot`** → [GSEA views](enrichplot-gsea.qmd#fig-ridgeplot)
 - <a id="fig-gseaplot"></a> **`#fig-gseaplot`** → [GSEA views](enrichplot-gsea.qmd#fig-gseaplot)
 - <a id="fig-gseaplot2"></a> **`#fig-gseaplot2`** → [GSEA views](enrichplot-gsea.qmd#fig-gseaplot2)
-- <a id="fig-pmcplot"></a> **`#fig-pmcplot`** → [Specialized views](enrichplot-specialized.qmd#pubmed-trend-of-enriched-terms)
+- <a id="fig-pmcplot"></a> **`#fig-pmcplot`** → [Specialized views](enrichplot-specialized.qmd#fig-pmcplot)
 - <a id="fig-volplot"></a> **`#fig-volplot`** → [Specialized views](enrichplot-specialized.qmd#fig-volplot)
 - <a id="fig-hplot"></a> **`#fig-hplot`** → [Specialized views](enrichplot-specialized.qmd#fig-hplot)
 - <a id="fig-goplot"></a> **`#fig-goplot`** → [Specialized views](enrichplot-specialized.qmd#fig-goplot)

@@ -161,6 +161,19 @@ ego3 <- gseGO(geneList     = geneList,
 
 The format of input data, `geneList`, is documented in the @sec-id-convert. Beware that only gene sets with size in `[minGSSize, maxGSSize]` will be tested.
 
+::: {.callout-note title="Size filtering is overlap-based, not annotation-based" icon="lightbulb"}
+`minGSSize` and `maxGSSize` operate on the **overlap** of each gene set with the genes you actually provide (the candidate vector for ORA, or the named `geneList` for GSEA), not on the raw, full annotation size stored in the ontology database. The code therefore does roughly:
+
+```r
+gene_sets <- lapply(gene_sets, intersect, names(geneList)) # or universe for ORA
+idx <- get_geneSet_index(gene_sets, minGSSize, maxGSSize)
+```
+
+This is important for broad libraries such as MSigDB Hallmark collections, Reactome, or the upper HDO Slim. A database gene set annotated with 3 000 genes is **not** rejected just because 3 000 > `maxGSSize = 500`; it is kept if its overlap with your 12 000 measured genes has, say, 480 members. The only terms genuinely dropped are (a) very small overlaps (below `minGSSize`, which usually means the term has too few observed members for Fisher's exact test or the weighted Kolmogorov-Smirnov statistic to be reliable) and (b) extremely broad overlaps (above `maxGSSize`, which usually correspond to root-level, biologically uninformative nodes that inflate the multiple-testing burden without adding insight).
+
+See also [Tuning `minGSSize` and `maxGSSize`](#sec-tune-gene-set-size).
+:::
+
 ## Topology-aware GO enrichment
 
 In classical GO enrichment, genes are treated as independent members of a gene set. When a biological network is available, `clusterProfiler` can now call the `enrichit` engine through the high-level wrappers `nseGO()` and `mnseGO()`. The former performs single-network enrichment, while the latter extends the same idea to a multi-layer setting.
@@ -337,7 +350,24 @@ The inference requires that the gene-set IDs really are GO terms (`GO:0008150`, 
 
 It is common to receive a message saying "No gene set have size > 10 ... return NULL" or finding no significant terms.
 
-1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. If your background annotations for a specific term have fewer than 10 genes or more than 500, they are excluded. You can adjust these parameters.
+1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. Remember that filtering is based on the overlap with your provided input, not the raw database annotation size (see [Size filtering is overlap-based, not annotation-based](#size-filtering-is-overlap-based-not-annotation-based)). A term whose full annotation has 3 000 genes may still pass if only 200 of those genes were measured in your experiment. If no term passes both cutoffs, enlarge the window with, for example, `minGSSize = 5, maxGSSize = 5000`, or set `maxGSSize = Inf` to disable the upper cap entirely.
+
+### Tuning `minGSSize` and `maxGSSize` {#sec-tune-gene-set-size}
+
+The default `maxGSSize = 500` is a conservative first-pass safety net, not a hard recommendation. It was chosen to avoid root-level GO/HDO nodes and extremely broad Hallmark-style gene sets overwhelming the multiple-testing correction in a typical short list of a few hundred differentially expressed genes. It also used to cap raw annotation sizes in older code paths, but that restriction no longer applies: size filtering now happens **after** intersecting with your measured genes.
+
+The table below is a pragmatic starting point. Always verify the term list after the first run and adjust the window to the characteristic scale of your annotation library and input list.
+
+| Scenario                                                | Suggested `minGSSize` | Suggested `maxGSSize` |
+|---------------------------------------------------------|----------------------:|----------------------:|
+| Standard GO BP or HDO term-level analysis on ~200 DEGs  | 5–10                  | 500 (default)         |
+| GO Slim, DO Slim or broad candidates / Reactome         | 10–20                 | 2000–5000             |
+| Custom GMT, MSigDB Hallmark / C2, or user-defined sets  | 10                    | `Inf` (disable cap)   |
+| You want to see everything and filter the result later  | 1                     | `Inf`                 |
+
+Setting `maxGSSize = Inf` is safe and supported: `get_geneSet_index()` treats `NA` or `NULL` as `Inf` as well. If after running with wide bounds you see obviously uninformative root terms such as `biological_process` or broad "positive regulation of …" nodes, filter them out afterwards with `dplyr::filter()` or re-run with a narrower window rather than using a tight global default that may hide relevant biology.
+
+For reproducibility, document the values you chose together with the annotation release and package versions; the [Appendix reproducibility record](appendix.qmd#reproducibility-record) lists this explicitly.
 2.  **Universe**: If you provide a custom `universe` (background gene list), ensure it is large enough. A small universe can make it statistically difficult to find enrichment.
 3.  **P-value Adjustment**: `clusterProfiler` uses multiple testing correction (e.g., BH) by default. Some web tools might use raw p-values or different thresholds, leading to more (but potentially false positive) results. `clusterProfiler` tends to be more conservative and reliable.
 

@@ -146,7 +146,13 @@ p_ora_network
 
 ## 5. Run GSEA on the complete ranking
 
-GSEA does not use `selected` as its input. It uses the complete named `ranking`, so genes below the ORA threshold still contribute. The `minGSSize` and `maxGSSize` settings keep this first local example reasonably quick while excluding extremely small or very broad terms. Setting cutoffs to `1` retains the tested terms so that the plotting example remains informative even when few terms meet a conventional significance threshold.
+GSEA does not use `selected` as its input. It uses the complete named `ranking`, so genes below the ORA threshold still contribute. The `minGSSize` and `maxGSSize` settings keep this first local example reasonably quick while excluding extremely small or very broad terms.
+
+::: {.callout-note title="Size filter is on the overlap, not the raw gene set" icon="lightbulb"}
+`minGSSize` and `maxGSSize` constrain the size of each gene set **after** intersecting with the genes present in your ranking (`names(geneList)`). A database gene set with 3 000 annotated members is therefore not dropped just because 3 000 > `maxGSSize = 500`; it is retained if only 400 of its members appear in the ranked list. Full rationale and tuning tables are in [Tuning `minGSSize` and `maxGSSize`](go-enrichment.qmd#sec-tune-gene-set-size).
+:::
+
+Setting cutoffs to `1` retains the tested terms so that the plotting example remains informative even when few terms meet a conventional significance threshold.
 
 ```{r}
 #| label: first-workflow-gsea
