@@ -6,7 +6,7 @@ The book follows the current R/Bioconductor and package releases rather than fre
 |---|---|
 | R | 4.6.1 |
 | Bioconductor | 3.23 |
-| `clusterProfiler` | 4.21.2 |
+| `clusterProfiler` | 4.21.3 |
 | `enrichit` | 0.2.5 |
 | `enrichplot` | 1.99.6 |
 | `GOSemSim` | 2.39.3 |

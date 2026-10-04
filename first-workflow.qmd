@@ -104,13 +104,13 @@ head(as.data.frame(ora))
 
 The output is an `enrichResult`. Its `@result` slot can be converted to a data frame, but retain `ora` itself: the object carries the gene-to-term information needed by downstream plots.
 
-`enrichGO()` accepts the Ensembl input but uses the OrgDb mapping internally; the returned object records the internal key type as `ENTREZID`. Readable symbols can be added for inspection without changing the test:
+`enrichGO()` accepts the Ensembl input but uses an Entrez-backed annotation internally when that is memory-efficient; the returned object preserves the original input key type (`ENSEMBL`). Readable symbols can be added for inspection without changing the test. Let `setReadable()` use the key type recorded on the result object:
 
 ```{r}
 #| label: first-workflow-readable-ora
 #| message: false
 
-ora_readable <- setReadable(ora, OrgDb = org.Hs.eg.db, keyType = "ENTREZID")
+ora_readable <- setReadable(ora, OrgDb = org.Hs.eg.db)
 head(as.data.frame(ora_readable)[, c("ID", "Description", "GeneRatio", "p.adjust", "geneID")])
 ```
 
