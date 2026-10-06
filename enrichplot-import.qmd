@@ -296,7 +296,7 @@ Tools that do not have a dedicated importer (*e.g.* DAVID, or in-house scripts) 
 | `Description` | no | term name (defaults to `ID`) |
 | `pvalue` | yes | raw p-value |
 | `p.adjust` | no | adjusted p-value (computed with `pAdjustMethod` if absent) |
-| `qvalue` | no | q-value (estimated if absent) |
+| `qvalue` | no | Storey-style q-value estimated if absent; estimation failure leaves `NA` |
 | `geneID` | no | overlap genes, separated by `/` |
 | `Count` | no | number of overlap genes |
 | `GeneRatio` | no | `k/n`: overlap size / query size |
@@ -333,7 +333,8 @@ head(
 dotplot(x_ct, showCategory = 10) + ggtitle("custom table")
 ```
 
-For GSEA-type results (with ranked statistics), use `as_gseaResult()` instead, passing the ranked vector via the `geneList` parameter:
+If `gene` and a complete `geneSets`/`universe` description are supplied, the constructor can derive statistics such as `RichFactor`, `FoldEnrichment`, and `zScore` when they are absent. It also validates numeric p-values; values outside `[0, 1]` are warned about and clamped, rather than silently treated as valid. For GSEA, missing `rank`, `leading_edge`, or `core_enrichment` details can be recomputed when the ranked `geneList` and complete `geneSets` are supplied. If only `core_enrichment` is available, the constructor can build a plotting object, but running-score plots are only approximate because the full gene sets are unavailable.
+
 
 ```{r}
 #| label: import-as-gsearesult

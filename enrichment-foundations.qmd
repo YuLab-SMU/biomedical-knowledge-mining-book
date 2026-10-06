@@ -61,7 +61,7 @@ There are three key elements of the GSEA method:
 * Estimation of Significance Level of _ES_.
   + The _p_-value of the _ES_ is calculated using a permutation test. Specifically, we permute the gene labels of the gene list _L_ and recompute the _ES_ of the gene set for the permutated data, which generates a null distribution for the _ES_. The _p_-value of the observed _ES_ is then calculated relative to this null distribution.
 * Adjustment for Multiple Hypothesis Testing.
-  + When the entire gene sets are evaluated, the estimated significance level is adjusted to account for multiple hypothesis testing and also _q_-values are calculated for FDR control.
+  + When the entire gene sets are evaluated, the estimated significance level is adjusted to account for multiple hypothesis testing. `p.adjust` is the multiple-testing-adjusted p-value used for reporting; a Storey `qvalue` may also be estimated, but it can remain `NA` when q-value estimation fails.
 
 We implemented the GSEA algorithm proposed by Subramanian [@subramanian_gene_2005]. `enrichit` offers a fast C++ implementation of GSEA. The default method (`method = "multilevel"`) uses an adaptive multi-level splitting Monte Carlo approach (derived from `fgsea` [@korotkevich_fast_2019]) to estimate low p-values efficiently with high accuracy. 
 
@@ -86,6 +86,10 @@ gsea_result <- gsea(
   method = "multilevel"
 )
 ```
+
+::: {.callout-note}
+For `enrichit` 0.2.6 and later, the fixed and adaptive permutation paths (`method = "sample"` or `"permute"`) use a null denominator conditioned on the sign of the observed ES, following the main `fgsea` convention for the default two-sided (`scoreType = "std"`) calculation. Earlier versions used all permutations in the denominator while counting only same-direction extremes, which can make these empirical p-values too small. Record the package version and method when reproducing older analyses. The fixed and adaptive paths currently use the two-sided ES calculation even if `scoreType = "pos"` or `"neg"` is supplied; use the multilevel engine for those score types. The default `method = "multilevel"` uses its own adaptive null calculation.
+:::
 
 ### Leading edge analysis and core enriched genes
 

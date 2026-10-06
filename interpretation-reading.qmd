@@ -27,7 +27,7 @@ A small p-value cannot correct an incorrect identifier namespace or an unsuitabl
 
 For ORA, inspect `Count`, `GeneRatio`, `BgRatio`, `pvalue`, and `p.adjust` together. A term with a small adjusted p-value but a small overlap may be sensitive to the background and annotation coverage.
 
-For GSEA, inspect `ES` or `NES`, `p.adjust`, `setSize`, and the `core_enrichment` or leading-edge genes. A positive NES indicates accumulation toward the top of the supplied ranking; it does not by itself establish activation or causality.
+For GSEA, inspect `ES` or `NES`, `p.adjust`, optional `qvalue`, `setSize`, and the `core_enrichment` or leading-edge genes. `qvalue` is a separate Storey-style estimate and may be `NA` when estimation fails. A positive NES indicates accumulation toward the top of the supplied ranking; it does not by itself establish activation or causality.
 
 For comparisons, inspect the cluster label, term identity, effect measure, and adjusted significance together. A term appearing in only one group may reflect biology, input size, annotation coverage, or differences in the tested background.
 

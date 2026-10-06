@@ -46,8 +46,14 @@ x = enrichDO(de)
 
 ```{r}
 #| label: filter-example
-filter(x, p.adjust < .05, qvalue < 0.2)
+filter(x, p.adjust < .05)
 ```
+
+`p.adjust` is the multiple-testing-adjusted p-value and is the most robust
+column for a primary reporting filter. A `qvalue` column, when present, is a
+separate Storey-style estimate and may contain `NA` if q-value estimation
+fails; filtering on `qvalue` therefore needs an explicit policy for missing
+values rather than assuming that every row has a usable q-value.
 
 ## arrange
 ```{r}

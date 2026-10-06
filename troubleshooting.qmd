@@ -38,6 +38,36 @@ names(geneList) = as.character(d[,1])
 geneList = sort(geneList, decreasing = TRUE)
 ```
 
+The ranking must also be finite. Check for `NA`, `NaN`, or `Inf` before calling
+GSEA; `enrichit` stops rather than assigning a meaningful rank to a non-finite
+statistic:
+
+```{r}
+#| eval: false
+stopifnot(is.numeric(geneList), !is.null(names(geneList)))
+stopifnot(all(is.finite(geneList)))
+```
+
+### Inspecting pathways with `NA` multilevel p-values
+
+Some multilevel GSEA pathways can have `NA` p-values when the relevant null
+side is too unbalanced for the estimate. `gsea_gson()` excludes these rows by
+default. Set `reportNA = TRUE` when the goal is to inspect the complete tested
+set rather than only pathways with reportable p-values; retain the `NA` values
+as an estimation status, not as evidence of non-significance. Using
+`pvalueCutoff = 1` is a convenient way to inspect all retained rows.
+
+```{r}
+#| eval: false
+all_tested <- gsea_gson(
+  geneList = geneList,
+  gson = gson,
+  reportNA = TRUE,
+  pvalueCutoff = 1
+)
+sum(is.na(all_tested@result$pvalue))
+```
+
 
 
 

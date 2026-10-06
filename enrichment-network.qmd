@@ -18,9 +18,9 @@ To break this bottleneck, we introduced **Network-based Set Enrichment Analysis 
 Our core philosophy is to leverage existing strengths seamlessly:
 
 1. **Propagation**: We take your input gene scores and diffuse them across a biological network using a Random Walk with Restart (RWR). To squeeze out every drop of performance, the RWR is powered by `RcppEigen` sparse matrix multiplication in C++. Even networks with hundreds of thousands of edges converge in a flash.
-2. **Enrichment**: After diffusion, every node in the network receives a new "propagation score" containing global topological context. We take this fully ranked list and feed it directly into our extreme-speed multilevel GSEA engine.
+2. **Enrichment**: After diffusion, every node in the network receives a network-aware score. The default NSEA significance route (`significance = "whole_pipeline"`) builds its null by permuting the input labels, re-running the RWR, and recomputing the enrichment score for each permutation. This keeps the network diffusion inside the null model instead of treating the smoothed scores as exchangeable ordinary GSEA statistics.
 
-One RWR diffusion + one GSEA test. You get not only network-aware scores but also rigorous p-values and FDRs, with blazing speed.
+The practical consequence is that NSEA is not simply “one diffusion followed by one ordinary GSEA test”: the observed score is produced by one diffusion, while the default p-values and NES are calibrated from repeated whole-pipeline null runs. `significance = "internal"` is retained as a legacy alternative that applies the internal GSEA permutation step to already diffused scores; it should not be interpreted as the same null model.
 
 ```{r}
 #| eval: false
