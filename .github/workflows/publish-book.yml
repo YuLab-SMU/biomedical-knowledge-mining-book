@@ -57,6 +57,12 @@ jobs:
         run: |
           Rscript -e 'install.packages("pak", repos = "https://r-lib.github.io/p/pak/stable/")'
 
+      # ggforce is suggested by enrichplot >= 1.99.8: emapplot() and ssplot()
+      # draw group outlines with the concave hull from ggforce when it is
+      # installed and fall back to ggplot2::stat_ellipse() otherwise. Installing
+      # it here lets the book demonstrate the concave hull rendering.
+      # Keep comments out of the Rscript string below; an apostrophe inside the
+      # single-quoted shell argument truncates the script.
       - name: Install CRAN dependencies
         run: |
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
@@ -78,10 +84,6 @@ jobs:
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
-            # suggested by enrichplot >= 1.99.8: emapplot()/ssplot() group
-            # outlines use ggforce's concave hull when it is installed, and
-            # fall back to ggplot2::stat_ellipse() otherwise. Installing it
-            # here lets the book demonstrate the ggforce-backed rendering.
             "cran::ggforce"
           ))'
 
