@@ -78,7 +78,11 @@ jobs:
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
-            "cran::ggHoriPlot"
+            # suggested by enrichplot >= 1.99.8: emapplot()/ssplot() group
+            # outlines use ggforce's concave hull when it is installed, and
+            # fall back to ggplot2::stat_ellipse() otherwise. Installing it
+            # here lets the book demonstrate the ggforce-backed rendering.
+            "cran::ggforce"
           ))'
 
       - name: Install Bioconductor dependencies (release)

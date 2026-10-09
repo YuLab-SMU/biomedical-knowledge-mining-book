@@ -422,6 +422,12 @@ Use these filters to improve readability, not to imply that weakly connected
 terms are biologically absent. Keep the filter settings with the exported
 figure so that the displayed network remains auditable.
 
+`top_k` only has an effect when `edge_filter = "top_k"`, and `target_density`
+only when `edge_filter = "adaptive"`. Passing a non-default value for the
+argument the active filter does not use now warns instead of being dropped
+silently, so a call such as `emapplot(edox2, edge_filter = "threshold", top_k = 2)`
+will flag that `top_k` is being ignored rather than appearing to work.
+
 
 
 ```{r}
@@ -450,25 +456,40 @@ The `node_label` parameter controls how the labels were displayed. The enriched 
 
 The `node_label_size` parameter allows users to adjust the font size of node labels in the enrichment map. This is particularly useful when dealing with many overlapping terms or when labels need to be more readable. For example, `node_label_size = 3` will increase the label size compared to the default.
 
-If `node_label="group"`, the `emapplot` function will cluster the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If `node_label="all"`, then the enriched terms and group names will be displayed simultaneously.
+If `node_label="group"`, the `emapplot` function will cluster the enriched terms into different groups and only group names (determined by wordcloud) will be displayed. If `node_label="all"`, then the enriched terms and group names will be displayed simultaneously. A fourth combination, `node_label="category_grouped"`, draws the group outline but keeps labeling individual categories instead of the group names — useful when the groups themselves are informative but a wordcloud-derived group name would be less precise than the term descriptions. The full set of combinations is:
+
+| `node_label` | group outline | group labels | category labels |
+|---|---|---|---|
+| `"none"` | no | no | no |
+| `"category"` (default) | no | no | yes |
+| `"category_grouped"` | yes | no | yes |
+| `"group"` | yes | yes | no |
+| `"all"` | yes | yes | yes |
+
+Grouping no longer requires the `ggforce` package: when `ggforce` is not installed, the group outline falls back to `ggplot2::stat_ellipse()` and produces the same `"category_grouped"` / `"group"` / `"all"` behavior, just with a plainer ellipse instead of `ggforce`'s concave hull. Installing `ggforce` only changes how the outline is drawn, not whether grouping works.
+
+Older code may still pass the boolean `group = TRUE` / `group = FALSE` argument. It still works but now emits a deprecation warning; replace `group = TRUE` with `node_label = "category_grouped"` and `group = FALSE` with `node_label = "none"`.
 
 
 ```{r}
 #| label: fig-Enrichment-node-label  
 #| fig-width: 16
-#| fig-height: 21
+#| fig-height: 28
 #| fig-scap: |
 #|   `emapplot` with enriched terms clustering.
 #| fig-cap: |
 #|   **`emapplot` with enriched terms clustering.**
-#|   `node_label="group"` (A) and 
-#|   `node_label="all"` (B).
-p5 <- emapplot(edo, node_label = "group")
-p6 <- emapplot(edo, node_label = "all")
+#|   `node_label="category_grouped"` (A), `node_label="group"` (B), and 
+#|   `node_label="all"` (C).
+p5 <- emapplot(edo, node_label = "category_grouped")
+p6 <- emapplot(edo, node_label = "group")
+p7 <- emapplot(edo, node_label = "all")
 
-plot_list(p5, p6, 
+plot_list(p5, p6, p7,
         ncol=1, tag_levels = 'A')
 ```
+
+Panel A keeps every category label while only outlining the groups; panel B replaces the category labels with group names; panel C shows both. If the `ggforce` package is installed, the outlines in this figure are drawn as `ggforce`'s concave hulls; otherwise they fall back to `ggplot2::stat_ellipse()`, as described above.
 
 
 
