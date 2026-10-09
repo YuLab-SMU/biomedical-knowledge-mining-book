@@ -180,7 +180,7 @@ As highlighted in a Nature Methods study (@wadi_impact_2016), DAVID has a very l
 
 ## GSON knowledge packaging {#sec-gson-enrichment}
 
-The generalized enrichment interface is now documented in the dedicated [GSON chapter](gson.qmd). That chapter treats GSON as the knowledge representation and exchange layer: it explains how to create or download `GSON` objects, combine resources with `gsonList()`, freeze resources for reproducibility, and pass them to the enrichment and visualization layers.
+The generalized enrichment interface is now documented in the dedicated [GSON chapter](gson.qmd). That chapter treats GSON as the knowledge representation and exchange layer: it explains how to create or download `GSON` objects, subset and validate them, freeze resources for reproducibility, combine sources either in parallel with `gsonList()` or into one merged table with `gson_union()`, resolve gene sets to their source pages with `gson_url()`, and pass them to the enrichment and visualization layers.
 
 This chapter focuses on the remaining external databases and result-import workflows. Use GSON when the goal is to make a knowledge resource reusable, versioned, shareable, or combinable with other resources; use the external-resource sections below when the goal is to compare or import a result from a third-party service.
 

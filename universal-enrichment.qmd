@@ -25,7 +25,7 @@ The `r Biocpkg("clusterProfiler")` package provides `enricher()` function for hy
 | **Questions** | How can enrichment be tested for an unsupported organism, ontology, pathway collection, or identifier namespace? |
 | **Input** | A selected gene vector or named ranked vector plus `TERM2GENE` and optional `TERM2NAME`; specify an experiment-appropriate universe. |
 | **Methods** | ORA via `enricher()` and GSEA via `GSEA()` using user-supplied gene sets from GMT, GOA, UniProt, CellMarker, or project annotations. |
-| **Main functions** | `enricher()`, `GSEA()`, `read.gmt()`, `buildGOmap()`, `gson()`, `gsonList()`. |
+| **Main functions** | `enricher()`, `GSEA()`, `read.gmt()`, `buildGOmap()`, `gson()`, `gsonList()`, `gson_union()`, `validate_gson()`. |
 | **Output** | Standard `enrichResult` / `gseaResult` objects for comparison, simplification, and plotting. |
 | **Main limitations** | The user owns ID consistency, annotation completeness, term naming, universe choice, and provenance; these shape the tested gene sets and interpretation. |
 

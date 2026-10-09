@@ -32,8 +32,11 @@ Use this page when the question is “what does this term mean?”, “which fun
 | Compare groups | `compareCluster()` | `compareClusterResult`; compare clusters with profile plots. |
 | Use network/weighted methods | `nseGO()`, `nseKEGG()`, `weighted_enrich()`, network helpers | Network-aware or weighted result objects; record the extra evidence layer. |
 | Integrate multi-omics | `aggregate_omics()` and related `enrichit` helpers | Aggregated pathway evidence with layer contribution information. |
-| Package knowledge | `gson()`, `gson_GO()`, `gson_KEGG()`, `gson_WP()`, `gsonList()` | Portable or combined GSON resources. |
-| Freeze knowledge | `write.gson()`, `read.gson()` | A local resource copy with source and version metadata. |
+| Package knowledge | `gson()`, `gson_GO()`, `gson_KEGG()`, `gson_WP()`, `read.gmt.wp()` | Portable GSON resources that carry source, species, and identifier metadata. |
+| Inspect or subset a resource | `length()`, `names()`, `as.data.frame()`, `x[[i]]`, `x[i]`, `validate_gson()` | A smaller collection with the three mapping tables kept consistent; a report of what the object claims. |
+| Freeze knowledge | `write.gson()`, `read.gson()`, `write.gmt()` | A local copy that reads back identical, or a GMT file for exchange. |
+| Combine knowledge bases | `gsonList()`, `gson_union()` | One result per named source, or one merged membership table. |
+| Trace a gene set to its source | `gson_url()`, `browseGS()` | The web address declared by the object's `urlpattern`. |
 | Organize terms | `pairwise_termsim()`, `simplify()`, `bayes_enrich()` | Reduced or selected term sets with traceable criteria. |
 | Inspect result objects | `as.data.frame()`, `geneInCategory()`, `setReadable()` | Exportable tables or readable display copies; retain the original object. |
 | Visualize results | `dotplot()`, `barplot()`, `cnetplot()`, `emapplot()`, `treeplot()`, `gseaplot2()`, `hplot()` | Summary, network, semantic, or GSEA figures. |

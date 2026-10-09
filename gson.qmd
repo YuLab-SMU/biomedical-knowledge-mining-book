@@ -8,6 +8,8 @@
 #| cache: false
 
 source("_common.R")
+suppressMessages(library(gson))
+suppressMessages(library(clusterProfiler))
 ```
 
 A functional enrichment workflow has two different jobs:
@@ -26,12 +28,12 @@ functions, and machines.
 
 | Aspect | GSON knowledge layer |
 |---|---|
-| **Questions** | How can gene-set knowledge be represented, versioned, shared, combined, and passed to enrichment interfaces? |
-| **Input** | Term/gene mappings plus metadata such as names, species, identifier type, source, and release/version. |
-| **Methods** | Knowledge packaging, exchange, serialization, named multi-resource collections, and integration with ORA/GSEA; GSON is not a statistical test. |
-| **Main functions** | `gson_KEGG()`, `gson_WP()`, `gson_GO()`, `gson()`, `write.gson()`, `read.gson()`, `gsonList()`, `enricher()`. |
-| **Output** | Portable `GSON` objects/files and named `gsonList` collections for generalized enrichment. |
-| **Main limitations** | Converter availability and metadata arguments vary by package version; verify API and retain provenance. Combined resources remain biologically distinct. |
+| **Questions** | How can gene-set knowledge be represented, versioned, shared, subset, validated, combined, and passed to enrichment interfaces? |
+| **Input** | Term-to-gene mappings plus metadata: gene set names, species, gene identifier type, gene set ID domain, source, release, and access date. |
+| **Methods** | Knowledge packaging, inspection, subsetting, serialization to `.gson` and GMT, merging or paralleling several resources, and integration with ORA/GSEA. GSON is not a statistical test. |
+| **Main functions** | `gson()`, `gson_GO()`, `gson_KEGG()`, `gson_WP()`, `read.gmt()`, `read.gmt.wp()`, `write.gson()`, `read.gson()`, `write.gmt()`, `x[i]`, `gsonList()`, `gson_union()`, `validate_gson()`, `gson_url()`, `browseGS()`. |
+| **Output** | A `GSON` object, a `.gson` or GMT file, a `GSONList` of parallel resources, or one enrichment result per source. |
+| **Main limitations** | GSON stores and moves knowledge. It does not convert identifiers, does not compute ontology structure, and cannot resolve two sources that use the same gene set ID for different gene sets. |
 
 ## What GSON represents
 
@@ -54,223 +56,452 @@ methods still determine how evidence is evaluated. GSON determines the
 knowledge that is evaluated.
 :::
 
+An object of the class holds three mapping tables and nine metadata slots. The
+tables are the knowledge; the slots say what the tables mean.
+
+| Component | Columns | What it records |
+|---|---|---|
+| `gsid2gene` | `gsid`, `gene` | Gene set membership. The only required table. |
+| `gsid2name` | `gsid`, `name` | Human-readable name of each gene set. |
+| `gene2name` | `gene`, `name` | Symbol or display name of each gene. |
+
+| Slot | Records |
+|---|---|
+| `gsname` | Name of the collection, for example `GO`, `KEGG`, `WikiPathways`. |
+| `species` | Organism the genes belong to. |
+| `keytype` | Identifier domain of the **genes**, for example `ENTREZID`, `SYMBOL`. |
+| `gsidtype` | Identifier domain of the **gene set IDs**, for example `GO`, `KEGG`, `REAC`, `WP`. |
+| `version` | Release of the resource. |
+| `accessed_date` | Date the resource was obtained. |
+| `urlpattern` | Template that turns a gene set ID into the web address of that gene set. |
+| `schema_version` | Version of the `.gson` file format, as declared by the producer. |
+| `info` | Free-text note for the producer's own use. |
+
+`keytype` and `gsidtype` describe two different namespaces. A collection of KEGG
+pathways whose members are Entrez gene IDs has `gsidtype = "KEGG"` and
+`keytype = "ENTREZID"`. Keeping them apart means a consumer does not have to
+infer which namespace the gene set IDs come from.
+
 ## Obtaining a GSON object
 
-`clusterProfiler` and related packages expose helper functions whose names
-usually start with `gson_`. The available helpers depend on the installed
-package versions. R's completion facilities and package help are the safest
-way to discover the current set of helpers.
+`clusterProfiler` and related packages expose helper functions whose names start
+with `gson_`. The helpers do not share one argument convention, so a script that
+passes arguments by name needs the right ones. `gson_GO()` reads a local organism
+package; the other two download their source, so their result should be frozen
+once, as described under [Writing and reading a collection](#gson-writing).
 
-The following helpers are used in the existing knowledge-mining workflows:
-
-- `gson_KEGG()` downloads KEGG pathway and module data for an organism;
-- `gson_WP()` obtains WikiPathways data;
-- `gson_GO()` obtains Gene Ontology data from an `OrgDb` and ontology choice;
-- `gson::gson()` can be used to construct a GSON object from user-provided
-  tables.
-
-For example, a KEGG knowledge resource can be downloaded and frozen locally:
+| Helper | Example call | Argument conventions |
+|---|---|---|
+| `gson_GO()` | `gson_GO(OrgDb = "org.Hs.eg.db", keytype = "ENTREZID", ont = "BP")` | `OrgDb` is an object or the name of an organism package; `keytype` and `ont` default to `"ENTREZID"` and `"BP"` |
+| `gson_KEGG()` | `gson_KEGG(species = "hsa")` | The gene argument is `keyType`, with a capital `T`; `KEGG_Type = "KEGG"` selects pathway membership |
+| `gson_WP()` | `gson_WP(organism = "Homo sapiens")` | The argument is `organism`, not `species`, and takes the Latin name |
 
 ```{r}
-#| label: gson-kegg-local
+#| label: gson-download
 #| eval: false
 
 library(gson)
 library(clusterProfiler)
 
-# Download KEGG data for human.
 kk_gson <- gson_KEGG(species = "hsa")
-
-# Write the GSON object to a portable file.
-write.gson(kk_gson, file = "kegg_hsa.gson")
-
-# Read the same knowledge resource back on another machine.
-kk_gson <- read.gson("kegg_hsa.gson")
+wp_gson <- gson_WP(organism = "Homo sapiens")
+go_gson <- gson_GO(OrgDb = "org.Hs.eg.db", keytype = "ENTREZID", ont = "BP")
 ```
 
-The download step may require network access, but the analysis step does not
-have to repeat that download once the GSON file has been transferred to the
-analysis machine. This is particularly useful on compute servers with limited
-network access and in projects that need to preserve the knowledge release used
-for a publication.
+A collection that is already on disk is the offline route, and the `gson`
+installation ships one so that this chapter can run without a network. The
+WikiPathways GMT parser `read.gmt.wp()` returns a `GSON` when asked for one.
 
-## The relationship with `enricher()` and `GSEA()`
+```{r}
+#| label: gson-read-wp
+wpfile <- system.file(
+  "extdata",
+  "wikipathways-20220310-gmt-Homo_sapiens.gmt",
+  package = "gson"
+)
+wp <- read.gmt.wp(wpfile, output = "GSON")
+wp
+```
 
-A GSON object is consumed by the enrichment layer. The existing generalized
-enrichment interface passes a GSON object, or a collection of GSON objects, to
-`enricher()` through the `gson` argument:
+The parser filled in what the file stated and what the format declares: the
+source, the organism, the release, the gene set ID domain `WP`, and a
+`urlpattern` that resolves a `WP` identifier to its WikiPathways page.
+
+The same file parsed by the generic reader is the long `term`/`gene` table that
+`enricher()` accepts as `TERM2GENE`, which is the difference between the two
+representations: a data frame carries the membership and nothing else.
+
+```{r}
+#| label: gson-read-plain
+head(read.gmt(wpfile))
+```
+
+## Constructing a collection from your own tables
+
+`gson()` builds an object from user-supplied data frames. The arguments are the
+three tables named above, not `TERM2GENE` and `TERM2NAME`. Each table is read by
+position: the first two columns become `gsid` and `gene`, `gsid` and `name`, or
+`gene` and `name`, so the names you use in your own data frame do not matter and
+any further columns are dropped.
+
+```{r}
+#| label: custom-gson
+
+gsid2gene <- data.frame(
+  term = c("GS1", "GS1", "GS1", "GS2", "GS2"),
+  gene = c("10196", "7157", "3689", "7157", "5728")
+)
+gsid2name <- data.frame(
+  term = c("GS1", "GS2"),
+  name = c("apoptosis signalling", "ribosomal proteins")
+)
+gene2name <- data.frame(
+  gene = c("10196", "7157", "3689", "5728"),
+  symbol = c("BAX", "TP53", "MDM2", "NPM1")
+)
+
+custom <- gson(
+  gsid2gene = gsid2gene,
+  gsid2name = gsid2name,
+  gene2name = gene2name,
+  species = "Homo sapiens",
+  gsname = "Project-curated",
+  version = "2026-10",
+  accessed_date = "2026-10-08",
+  keytype = "ENTREZID",
+  gsidtype = "GS"
+)
+custom
+```
+
+Identifiers are stored as character. A producer that passes a factor gets
+character columns in the result, which matters because a factor carries the
+levels it no longer uses: a grouping step over such a column yields one empty
+gene set per unused level, and the phantom sets then show up in `length()`,
+`names()`, and every file the object is written to. A double column is stored by
+its digits, formatted without scientific notation, so one million is
+`"1000000"` rather than `"1e+06"`.
+
+::: {.callout-tip}
+Use a plain annotation table for a one-off exploratory test; promote it to a
+versioned GSON object when it will be shared, reused, combined with other
+resources, or cited in a report.
+:::
+
+## Inspecting and subsetting a collection
+
+A `GSON` behaves like a container of gene sets. `length()` counts gene sets,
+`names()` lists their IDs in the order the collection holds them, `x[[i]]`
+returns the genes of one gene set, and `as.data.frame()` gives the full
+membership table with the names joined in.
+
+```{r}
+#| label: gson-inspect
+length(wp)
+head(names(wp))
+wp[["WP4685"]][1:5]
+head(as.data.frame(custom))
+```
+
+`x[i]` returns a smaller `GSON`. Taking a subset used to mean filtering
+`gsid2gene` by hand and keeping `gsid2name` and `gene2name` in step with it,
+which is easy to get wrong in exactly the direction a validator reports: a
+`gene2name` row for a gene that is no longer a member of any kept gene set. The
+subset method prunes all three tables together and carries the metadata over.
+
+```{r}
+#| label: gson-subset
+by_name <- wp[c("WP4685", "WP5043", "WP179")]
+by_position <- wp[1:3]
+by_logical <- wp[names(wp) %in% c("WP4685", "WP2840")]
+length(by_name)
+names(by_position)
+length(by_logical)
+by_name@urlpattern
+```
+
+Gene set IDs, positions, and logical vectors all select, and `x[]` returns `x`.
+An ID the object does not hold, or an index out of bounds, is an error that names
+what is missing. `x[, j]` is also an error, since a `GSON` has no second
+dimension.
+
+## Checking an object
+
+Two checks answer two different questions.
+
+The class enforces its structural contract when an object is created, so a table
+that is not a data frame, lacks the documented columns, or holds identifiers that
+are not character is refused rather than stored.
+
+```{r}
+#| label: gson-validity
+tryCatch(
+  methods::new("GSON", gsid2gene = data.frame(gsid = 1, gene = 2)),
+  error = conditionMessage
+)
+```
+
+`validate_gson()` then asks about the content, and reports instead of refusing,
+because an object that breaks a content rule still has to be constructible so
+that it can be inspected. Duplicated identifiers, missing cross-references among
+the three tables, empty tables, a `keytype` or `gsidtype` left at a placeholder
+such as `UNKNOWN`, a `gsidtype` that the object's own gene set IDs contradict,
+and a `schema_version` this package cannot read are all reported.
+
+```{r}
+#| label: gson-validate
+
+defective <- gson(
+  gsid2gene = data.frame(
+    gsid = c("GO:1", "GO:1", "GO:2"),
+    gene = c("1", "2", NA)
+  ),
+  gsid2name = data.frame(gsid = "GO:1", name = "one"),
+  gene2name = data.frame(gene = "99", name = "dangling"),
+  keytype = "UNKNOWN",
+  gsidtype = "KEGG"
+)
+validate_gson(defective, error = FALSE)
+validate_gson(wp)
+```
+
+There is deliberately no dictionary of accepted `keytype` or `gsidtype` values.
+`MicrobiomeProfiler`, for example, writes `kegg_orthology`, `eggNOG_OG`, `taxid`,
+and `hmdb_id` as `keytype`, none of which is a `keytypes()` value of any
+Bioconductor annotation package, so a list held by `gson` would reject the
+collections the ecosystem itself produces. What the package can verify is an
+object against itself, so only a prefix the identifiers actually carry is
+compared. Nothing is rewritten: a value the object declares is reported as it
+stands, because the reader that knows what a file says is not the one that
+decides what the producer meant.
+
+## Writing and reading a collection {#gson-writing}
+
+`write.gson()` stores a collection as JSON and `read.gson()` reads it back. The
+round trip is exact, so a frozen file can be treated as the object it was written
+from. The JSON keys the memberships by gene set ID and carries the names and the
+metadata beside them; it is plain JSON, so a collection can also be read by tools
+outside R.
+
+```{r}
+#| label: gson-roundtrip
+#| cache: false
+
+f <- tempfile(fileext = ".gson")
+write.gson(custom, file = f)
+identical(read.gson(f), custom)
+writeLines(readLines(f))
+```
+
+GMT is the interoperable format: `read.gmt()` parses it and `write.gmt()`
+produces it from a collection. The GMT form keeps the membership and the gene
+set name and drops the rest of the metadata, so a `.gmt` file is for exchange
+and a `.gson` file is for the versioned copy. `write.gmt()` also sorts the gene
+sets alphabetically, so the three selected below are written in a different
+order from the one the collection held them in; a ranked or curated order
+survives only in the `.gson` file.
+
+```{r}
+#| label: gmt-roundtrip
+gmt_file <- tempfile(fileext = ".gmt")
+write.gmt(by_name, file = gmt_file)
+writeLines(substr(readLines(gmt_file), 1, 60))
+dim(read.gmt(gmt_file))
+```
+
+Memberships that carry no gene set ID or no gene are skipped when a collection is
+written, with a warning that says how many were omitted, and `write.gmt()` falls
+back to the gene set ID when `gsid2name` holds no usable name for a set. A `NA`
+that reached a file would come back as a gene genuinely named `NA` and be handed
+on to the enrichment routines.
+
+A `.gson` file is written by other programs as often as by this one, so
+`read.gson()` names the file and the shape it found instead of passing on what
+the JSON parser happened to notice. A file whose memberships are not keyed by
+gene set ID, whose tables hold a string where an array belongs, or that cannot be
+parsed at all is an error that says which file and which member; a local path
+that does not exist is caught before the parser is asked.
+
+## Locating the source database
+
+`urlpattern` is a claim that each gene set ID resolves to a web page.
+`gson_url()` builds those URLs and `browseGS()` opens one in a browser, which is
+the step that turns a row of an enrichment table back into evidence to read.
+
+```{r}
+#| label: gson-urls
+gson_url(wp)[1:2]
+gson_url(wp, c("WP100", "WP106"))
+```
+
+```{r}
+#| label: gson-browse
+#| eval: false
+
+browseGS(wp, "WP4685")
+```
+
+The URL comes only from what the object declares. `gson` ships no table of other
+databases' websites, so a producer that wants its gene sets browsable has to name
+the pattern; `ReactomePA::gson_Reactome()` currently passes `urlpattern = NULL`.
+An object that declares none gets a vector of `NA` from `gson_url()` and an error
+from `browseGS()`.
+
+```{r}
+#| label: gson-no-urlpattern
+#| warning: true
+
+gson_url(custom)[1]
+```
+
+This is also where `gsidtype` earns its place. A consumer that knows the domain
+of the identifiers can choose the right resource and the right pattern, whereas
+one that does not has to infer the domain from the shape of the IDs, which is a
+guess about someone else's data.
+
+## Combining collections
+
+Two operations answer two different questions, and choosing between them is a
+design decision rather than a stylistic one.
+
+`gsonList()` keeps the resources **separate** and names them, so one input is
+tested against each knowledge base and the sources stay distinguishable in the
+result.
+
+```{r}
+#| label: gson-list
+gsons <- gsonList(wikipathways = wp, project = custom)
+names(gsons)
+class(gsons[1])
+```
+
+The component names come from the `gsname` slot of each object, not from the
+argument labels of the call, so `gsonList(wikipathways = wp)` is still
+`"WikiPathways"`. Set `gsname` when the identity of a resource must survive into
+the result table. Subsetting keeps the `GSONList` class, so `gsons[1]` still
+prints as a list of collections.
+
+`gson_union()` merges several collections into **one** membership table, which is
+what an analysis needs when a single test should see all the annotations at once,
+for example GO, KEGG, and REAC as one `enricher()` input.
+
+```{r}
+#| label: gson-union-same-source
+half <- gson_union(wp[1:50], wp[51:100])
+length(half)
+half@gsname
+```
+
+Two objects that name the same source are the same collection, so a gene set that
+both of them carry is joined into one set holding every gene either gives it. Two
+files of one download therefore merge rather than collide.
+
+A gene set ID that two *different* sources both use is refused, because the
+merged table would say that one ID names two sets of genes, and every result read
+from it would be quietly wrong.
+
+```{r}
+#| label: gson-union-conflict
+left <- gson(
+  gsid2gene = data.frame(gsid = c("X1", "X2"), gene = c("1", "2")),
+  gsid2name = data.frame(gsid = c("X1", "X2"), name = c("set one", "set two")),
+  gsname = "SourceA",
+  gsidtype = "X"
+)
+right <- gson(
+  gsid2gene = data.frame(gsid = c("X1", "X3"), gene = c("7", "8")),
+  gsid2name = data.frame(gsid = c("X1", "X3"), name = c("other one", "set three")),
+  gsname = "SourceB",
+  gsidtype = "X"
+)
+tryCatch(gson_union(left, right), error = conditionMessage)
+```
+
+`.conflict` decides how a collision is resolved. `"prefix"` qualifies every ID
+with the source it comes from, `"rename"` qualifies only the colliding ones and
+leaves IDs that already begin with their source alone, and the `gsid2name` rows
+follow the IDs they describe.
+
+```{r}
+#| label: gson-union-prefix
+merged <- gson_union(left, right, .conflict = "prefix")
+names(merged)
+merged@gsname
+```
+
+The metadata merges by what the merged object can still honestly say. `species`,
+`keytype`, and `schema_version` have to agree, because one membership table cannot
+mean two organisms, two identifier types, or two file schemas. `gsname`,
+`gsidtype`, `version`, `accessed_date`, and `info` are joined with `" + "` when
+the sources name themselves differently. `urlpattern` is kept only when every
+object declares the same one and no ID moved, since a pattern that resolves part
+of the collection to the wrong page is worse than no pattern.
+
+## Passing a collection to the engines
+
+The enrichment layer consumes a `GSON` through the `gson` argument of `enricher()`
+and `GSEA()`, which takes the place of `TERM2GENE`. Over representation analysis
+tests a thresholded gene vector against the collections.
 
 ```{r}
 #| label: gson-enricher
-#| eval: false
+#| message: false
 
-library(gson)
-library(clusterProfiler)
+gene <- unique(c(wp[["WP4685"]][1:25], wp[["WP5043"]]))
+ora <- enricher(
+  gene = gene,
+  gson = wp,
+  minGSSize = 5,
+  maxGSSize = 500,
+  pvalueCutoff = 0.05
+)
+head(as.data.frame(ora)[, c("ID", "Description", "Count", "pvalue")])
+```
+
+For the ranked-list case the separation is the same: the ranking is the
+statistical input and the `GSON` object supplies the gene sets it is tested
+against.
+
+```{r}
+#| label: gson-gsea
+#| message: false
+#| warning: false
 
 data(geneList, package = "DOSE")
-gene <- names(geneList)[abs(geneList) > 2]
-
-kk_gson <- gson_KEGG(species = "hsa")
-
-# The GSON object supplies the terms and gene membership tested by enricher().
-res <- enricher(gene = gene, gson = kk_gson)
+gsea <- GSEA(
+  geneList = geneList,
+  gson = wp,
+  minGSSize = 10,
+  maxGSSize = 500,
+  eps = 0,
+  pvalueCutoff = 0.05,
+  seed = 123
+)
+head(as.data.frame(gsea)[, c("ID", "Description", "setSize", "NES", "pvalue")])
 ```
 
-The same conceptual separation applies to GSEA: a ranked gene list is the
-statistical input, while the GSON object supplies the gene sets against which
-the ranking is tested. The existing KEGG workflow documents that a GSON object
-or a saved GSON file can be used by `enricher()` and `GSEA()` through the
-`gson` interface (or by parsing the resource in the installed version).
-
-Because the exact generalized `GSEA()` argument names can vary with the
-installed `clusterProfiler`/`gson` versions, this chapter does not hard-code an
-unverified call signature. Check the local help before running a generalized
-GSEA workflow:
+Passed a `gsonList`, `enricher()` returns one result per source, keyed by the
+names of the list, and the table or figure can be faceted by knowledge base. The
+KEGG-specific wrappers take the same objects through `organism`.
 
 ```{r}
-#| label: gson-gsea-api-check
+#| label: gson-wrappers
 #| eval: false
 
-library(gson)
-library(clusterProfiler)
-
-?GSEA
-?gson::gson
-
-# The installed version documents how to pass a GSON object or file to GSEA.
-# Do not replace this with an unverified TERM2GENE or gson argument without
-# checking the help for the versions used in the analysis.
-```
-
-For a KEGG-specific workflow, the existing API also supports passing a local
-GSON object to the KEGG wrappers:
-
-```{r}
-#| label: gson-kegg-wrappers
-#| eval: false
-
-# `kk_gson` is created with gson_KEGG() above, or read from a saved file.
 kk <- enrichKEGG(gene = gene, organism = kk_gson)
 kk2 <- gseKEGG(geneList = geneList, organism = kk_gson)
+res_multi <- enricher(gene = gene, gson = gsons)
 ```
+
+The engine layer reads the same container directly: `enrichit` provides
+`ora_gson()`, `gsea_gson()`, `nsea_gson()`, and `mnsea_gson()`. `GOSemSim`
+accepts a `GSON` of GO annotations as the `annoDb` of `godata()` from version
+2.39.3, so a frozen collection can enter the semantic-similarity layer as well as
+the enrichment layer.
 
 The wrapper form and the generalized form serve the same reproducibility goal:
 the analysis uses a local, explicit knowledge resource instead of silently
 retrieving a changing online database during every run.
-
-## Combining knowledge bases with `gsonList`
-
-Many biological questions are not well served by one database. GO may provide
-broad functional coverage, KEGG may provide pathway and module structure, and
-WikiPathways may contain a complementary collection of curated pathways. A
-`gsonList` combines named GSON objects so that the same input can be evaluated
-against several knowledge bases in one generalized enrichment workflow.
-
-The following example is the multi-resource pattern documented in the existing
-chapter. The exact download requirements depend on the current releases of the
-individual resources:
-
-```{r}
-#| label: gson-list
-#| eval: false
-
-library(gson)
-library(clusterProfiler)
-
-# Prepare or download the individual knowledge resources.
-kegg_gson <- gson_KEGG(species = "hsa")
-wp_gson <- gson_WP(species = "Homo sapiens")
-go_gson <- gson_GO(
-    OrgDb = org.Hs.eg.db,
-    keyType = "ENTREZID",
-    ont = "BP"
-)
-
-# Keep stable names so that the output can be traced back to its source.
-gsons <- gsonList(
-    kegg = kegg_gson,
-    wp = wp_gson,
-    go = go_gson
-)
-
-data(geneList, package = "DOSE")
-gene <- names(geneList)[abs(geneList) > 2]
-
-# Run one generalized enrichment request across the named resources.
-res <- enricher(gene = gene, gson = gsons)
-```
-
-When `enricher()` receives a `gsonList`, the result is organized by the named
-input resources. Each component corresponds to one knowledge base and can be
-accessed by name or by position. Naming the resources explicitly is preferable
-to relying on numeric positions because it makes reports and later audits
-readable.
-
-The results can also be visualized together. `enrichplot` provides
-`autofacet()` for faceting a multi-resource result by knowledge base:
-
-```{r}
-#| label: gson-list-plot
-#| eval: false
-
-library(enrichplot)
-
-dotplot(res) + autofacet()
-```
-
-A combined display is useful for comparison, but it does not make the
-knowledge bases interchangeable. A GO term, a KEGG pathway, and a WikiPathways
-pathway may differ in granularity, annotation coverage, update schedule, and
-biological interpretation. The database identity should remain visible in the
-result and in the figure.
-
-## Custom knowledge bases
-
-The main benefit of a generalized knowledge layer is that the same workflow can
-also use annotations that are not shipped as a standard organism database.
-Examples include:
-
-- a custom annotation generated for a non-model organism;
-- a project-specific collection of marker genes;
-- a locally curated pathway catalogue;
-- a versioned export from an external resource; and
-- a reduced or specialised ontology used for a particular experiment.
-
-The `gson::gson()` constructor is the documented entry point for manually
-creating a GSON object from user data. The exact constructor arguments should
-be checked against the installed package because the accepted metadata fields
-are part of the package API and may evolve:
-
-```{r}
-#| label: custom-gson
-#| eval: false
-
-library(gson)
-
-# Build TERM2GENE and (optionally) TERM2NAME tables from the project resource.
-# term2gene <- data.frame(term = ..., gene = ...)
-# term2name <- data.frame(term = ..., name = ...)
-
-# The constructor is intentionally shown as a checked API boundary. Consult
-# ?gson::gson for the current argument names and required metadata fields.
-# custom_gson <- gson::gson(
-#     TERM2GENE = term2gene,
-#     TERM2NAME = term2name,
-#     ...
-# )
-```
-
-If the current `gson::gson()` interface is not suitable for a particular
-custom table, the same annotations can still be used through the standard
-`TERM2GENE`/`TERM2NAME` interface of `enricher()` or `GSEA()`. In that case,
-record the source, identifier type, organism, filtering rules, and release in
-the analysis metadata even though the table is not yet packaged as GSON.
-
-A useful rule is:
-
-> Use a plain annotation table for a one-off exploratory test; promote it to a
-> versioned GSON object when it will be shared, reused, combined with other
-> resources, or cited in a report.
 
 ## Versioning, metadata, and reproducibility
 
@@ -279,54 +510,72 @@ reproducible enrichment result therefore requires more than the R script and
 p-value cutoff. At minimum, preserve:
 
 - the GSON file or an immutable copy of the source tables;
-- the resource name and release or download date;
-- species and identifier type;
-- the source URL or package that produced the resource;
+- the resource name (`gsname`) and the release (`version`) or download date;
+- the species;
+- `keytype` for the genes and `gsidtype` for the gene set IDs;
+- the source URL or the package that produced the resource, and `urlpattern` when
+  the gene sets should be browsable;
+- `schema_version` as the producer wrote it;
 - any filtering, ID conversion, or deduplication applied to the annotation;
 - the `clusterProfiler`, `gson`, and related package versions;
 - the analysis method, background universe, thresholds, and random seeds where
   applicable; and
-- the names used in a `gsonList` when multiple resources are combined.
+- the names of a `gsonList` when several resources were tested in parallel, or the
+  merge policy when `gson_union()` joined them.
 
-The simplest local-freezing workflow is to write the GSON object once and read
-it during analysis:
+The object carries most of this itself, which is the point of the format: a
+`.gson` file that states its source, organism, release, and identifier domains
+does not depend on the notebook that produced it to explain what it is. Run
+`validate_gson()` on a resource received from elsewhere before analyzing it, and
+keep the report with the analysis record.
+
+The simplest local-freezing workflow is to write the GSON object once and read it
+during analysis:
 
 ```{r}
 #| label: gson-reproducible-freeze
 #| eval: false
 
-library(gson)
-
-# On a machine with access to the remote resource:
 kk_gson <- gson_KEGG(species = "hsa")
 write.gson(kk_gson, file = "knowledge/kegg_hsa.gson")
 
-# On the analysis server or in a later rerun:
 kk_gson <- read.gson("knowledge/kegg_hsa.gson")
 ```
 
-For larger projects, keep the GSON files under version control or an archival
+For larger projects, keep the GSON files under version control or in an archival
 storage system alongside a small manifest. The manifest should state which file
-was used for which analysis and should not rely only on a mutable database URL.
-If the project uses `gsonList`, save every component and the list of names, not
-only the final enrichment table.
+was used for which analysis and should not rely only on a mutable database URL. If
+the project uses `gsonList`, save every component and the list of names, not only
+the final enrichment table.
+
+One thing the format does not preserve is the row order of `gsid2gene` when a
+collection is not already grouped by gene set ID, because a `.gson` file keys the
+memberships by `gsid` and reading one regroups the table. The gene sets, and the
+order of the genes within each set, survive; the interleaving of the rows does
+not. Files written before `gsidtype` existed read it back as `NULL`, and a file
+that carries it still opens in older releases of the package, which ignore the
+unknown key.
 
 ## Where GSON fits in the toolchain
 
 GSON makes the boundaries between the layers explicit:
 
 ```text
-custom or remote knowledge source
-                ↓
-       GSON object / GSON file
-                ↓
-       gsonList (optional)
-                ↓
-  enricher() / GSEA() / package wrappers
-                ↓
- enrichment result objects and plots
-                ↓
-  interpretation and reproducible report
+   custom table, GMT file, or remote knowledge source
+                          |
+        gson() / read.gmt() / read.gmt.wp() / gson_*() helpers
+                          |
+                GSON object  ---  validate_gson()
+                          |
+            +-------------+-------------+
+            |                           |
+   gsonList (parallel)         gson_union (merged)
+            |                           |
+   enricher() / GSEA() /  ora_gson() / gsea_gson() / godata()
+            |                           |
+   enrichment results           gson_url() / browseGS()
+            |                           |
+   plots and interpretation      manual evidence check
 ```
 
 This architecture has three practical consequences:
@@ -334,7 +583,8 @@ This architecture has three practical consequences:
 1. **The analysis engine can be reused.** The same ORA or GSEA logic can work
    across multiple knowledge resources.
 2. **The knowledge resource can be frozen.** A saved GSON file separates a
-   publication or pipeline run from future changes in an online database.
+   publication or pipeline run from future changes in an online database, and
+   reads back as the object it was written from.
 3. **The resource can be shared.** A custom annotation can be distributed as a
    named, documented object rather than as an unexplained pair of data frames.
 
@@ -346,16 +596,27 @@ workflow without pretending that they are the same biological evidence.
 ## Summary
 
 - `gson` defines the `GSON` class for portable gene-set knowledge and metadata.
-- Helper functions such as `gson_KEGG()`, `gson_WP()`, and `gson_GO()` create
-  resource-specific GSON objects.
-- `write.gson()` and `read.gson()` support local freezing and offline reuse.
-- `gsonList()` combines named knowledge bases for generalized enrichment.
-- `enricher()` consumes a GSON object or `gsonList` through the generalized
-  knowledge interface; GSEA uses the same separation between ranked evidence
-  and gene-set knowledge, with the exact installed-version call documented by
-  `GSEA` help.
-- `gson::gson()` provides the entry point for custom knowledge resources, but
-  its constructor arguments should be checked in the installed version.
+  Three mapping tables hold the knowledge; the metadata slots say what the
+  identifiers, organism, release, and source mean.
+- `gson_KEGG(species = )`, `gson_WP(organism = )`, and
+  `gson_GO(OrgDb = , keytype = , ont = )` create resource-specific objects, and
+  `read.gmt.wp(file, output = "GSON")` creates one from a file already on disk.
+- `gson()` builds an object from `gsid2gene`, `gsid2name`, and `gene2name`, taking
+  each table by position and storing every identifier as character.
+- `length()`, `names()`, `as.data.frame()`, `x[[i]]`, and `x[i]` inspect and
+  subset a collection; subsetting prunes the three tables together and keeps the
+  metadata.
+- `validate_gson()` reports what an object holds or claims without carrying it,
+  while the class itself refuses a structurally invalid object at creation.
+- `write.gson()` and `read.gson()` round-trip exactly; `write.gmt()` and
+  `read.gmt()` exchange memberships and names without the metadata.
+- `gson_url()` and `browseGS()` resolve gene sets to the pages of their source
+  database, but only when the object declares a `urlpattern`.
+- `gsonList()` tests one input against several separate resources; `gson_union()`
+  merges several resources into one membership table and refuses an ambiguous
+  gene set ID.
+- `enricher()` and `GSEA()` take these objects through `gson`, the KEGG wrappers
+  through `organism`, and `enrichit` and `GOSemSim` consume the same container.
 - Resource identity, version, metadata, and the saved GSON files are part of a
   reproducible analysis record.
 
@@ -368,6 +629,7 @@ operations.
 
 - To analyze custom or unsupported annotations, see [universal enrichment](universal-enrichment.qmd#universal-api).
 - For knowledge-source examples, see [GO](go-enrichment.qmd#clusterprofiler-go) or [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg).
+- To score the terms a collection holds, see [GO semantic similarity](go-semantic-similarity.qmd#GOSemSim), where `godata()` also accepts a `GSON` of GO annotations.
 - For result visualization, continue to the [visualization map](enrichplot.qmd#sec-enrichplot).
 
 ## References {-}

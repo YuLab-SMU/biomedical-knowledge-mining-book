@@ -38,7 +38,7 @@ artifact rather than a package name.
 | Analyse Disease Ontology, HPO/MPO, or NCG | [`disease-enrichment.qmd`](disease-enrichment.qmd#dose-enrichment) | Disease and phenotype ORA/GSEA; NCG is supported by `DOSE` | Use `enrichplot` or compare profiles |
 | Analyse MeSH | [`mesh-enrichment.qmd`](mesh-enrichment.qmd#meshes-enrichment) | MeSH ORA and GSEA with selectable annotation source and category | Use general enrichment plots |
 | Analyse a custom or unsupported knowledge base | [`universal-enrichment.qmd`](universal-enrichment.qmd#universal-api) | Supply `TERM2GENE` and optional `TERM2NAME` to `enricher()`/`GSEA()`; parse GMT with `read.gmt()` | Store reusable sets as `GSON` or compare them |
-| Freeze, share, or combine knowledge bases | [`gson.qmd`](gson.qmd#sec-gson), with KEGG examples in [`kegg-enrichment.qmd`](kegg-enrichment.qmd#clusterprofiler-kegg) | Create, serialize, and combine `GSON` objects; use `gsonList` for multiple sources | Run one analysis per source and facet the results |
+| Freeze, share, or combine knowledge bases | [`gson.qmd`](gson.qmd#sec-gson), with KEGG examples in [`kegg-enrichment.qmd`](kegg-enrichment.qmd#clusterprofiler-kegg) | Create, subset, validate, and serialize `GSON` objects; `gsonList()` for several sources tested in parallel, `gson_union()` for one merged membership table | Run one analysis per source and facet the results, or test the merged collection once |
 | Compare conditions, clusters, or experiments | [`comparecluster-analysis.qmd`](comparecluster-analysis.qmd#clusterprofiler-comparecluster) | Re-run one enrichment function per gene list with `compareCluster()` or its formula interface | Use comparison-aware dot, network, or map plots from [`comparecluster-visualization.qmd`](comparecluster-visualization.qmd#sec-comparecluster-visualization) |
 | Start from genomic coordinates | [`chipseeker-enrichment.qmd`](chipseeker-enrichment.qmd#chipseeker-enrichment) | Annotate peaks/regions and map them to nearest, host, flanking, or `seq2gene()`-linked genes | Pass the resulting gene sets to `clusterProfiler` |
 | Reduce redundancy or select explanatory terms | [`go-enrichment.qmd`](go-enrichment.qmd#clusterprofiler-go) and [`bayesian-term-selection.qmd`](bayesian-term-selection.qmd#sec-bayes-enrich) | `simplify()` uses semantic similarity; `bayes_enrich()` uses joint term-gene coverage | Keep a compact, interpretable term set |
@@ -79,7 +79,7 @@ visualization -> optional, validated interpretation
 |---|---|---|---|---|
 | **`clusterProfiler`** | User-facing orchestration across biological knowledge bases; ID conversion; universal enrichment; comparison; result methods; high-level network-aware wrappers | `enrichGO()`, `gseGO()`, `enrichKEGG()`, `gseKEGG()`, `enricher()`, `GSEA()`, `compareCluster()`, `bitr()`, `nseGO()`, `nseKEGG()` | Yes, through domain APIs and delegated engines | Produces/consumes canonical enrichment objects; hands them to `enrichplot`, `dplyr`, PPI, or interpretation |
 | **`enrichit`** | Algorithm and result-object engine with minimal dependencies and fast implementations | `ora()`, `gsea()`, `nsea()`, `mnsea()`, weighted enrichment, `aggregate_omics()`, `aggregate_enrichment()`, `harmonize_ids()`, `bayes_enrich()`, `as_enrichResult()` | Yes; it is the computational backbone for classical, topology-aware, weighted, and multi-omics workflows | Returns engine results or canonical objects that `clusterProfiler` and `enrichplot` can use |
-| **`gson`** | Versionable Gene Set Object Notation container and multi-knowledge-base exchange format | `gson()`, `gsonList()`, `write.gson()`, `read.gson()`; ecosystem helpers such as `gson_KEGG()`, `gson_WP()`, `gson_GO()` | No; it stores term/gene/name/metadata mappings | Supplies local or combined gene sets to `enricher()`, `GSEA()`, `nseKEGG()`, or related APIs |
+| **`gson`** | Versionable Gene Set Object Notation container and multi-knowledge-base exchange format | `gson()`, `x[i]`, `write.gson()`, `read.gson()`, `write.gmt()`, `read.gmt()`, `validate_gson()`, `gsonList()`, `gson_union()`, `gson_url()`, `browseGS()`; ecosystem helpers such as `gson_KEGG(species = )`, `gson_WP(organism = )`, `gson_GO(OrgDb, keytype, ont)` | No; it stores term/gene/name/metadata mappings and validates them, but converts nothing | Supplies local, subset, merged, or parallel gene sets to `enricher()`, `GSEA()`, `ora_gson()`, `gsea_gson()`, `nseKEGG()`, or `godata()` |
 | **`DOSE`** | Disease- and phenotype-oriented semantic similarity and enrichment; includes NCG workflows and demo data | `doSim()`, `geneSim()`, `clusterSim()`, `enrichDO()`, `gseDO()`, `enrichNCG()`, `gseNCG()` | Yes, for DO/HPO/MPO and NCG; it also provides similarity | Produces disease-aware result objects consumed by `enrichplot`, comparison, or optional interpretation |
 | **`ReactomePA`** | Reactome pathway domain adapter | `enrichPathway()`, `gsePathway()`, `viewPathway()` | Yes, Reactome ORA and GSEA | Produces Reactome result objects for `enrichplot`, comparison, and reporting |
 | **`meshes`** | MeSH annotation, semantic similarity, and enrichment across many species and MeSH categories | `meshdata()`, `meshSim()`, `geneSim()`, `enrichMeSH()`, `gseMeSH()` | Yes, MeSH ORA and GSEA | Produces MeSH semantic data and enrichment objects for `enrichplot` |
@@ -94,8 +94,13 @@ visualization -> optional, validated interpretation
   **algorithm engine**. The `nse*()` and `mnse*()` wrappers preserve ontology
   and pathway semantics while delegating topology-aware computation.
 - `gson` is a **data contract**, not a new statistical test. It is useful when a
-  remote source should be frozen, reused offline, or combined with another
-  knowledge base.
+  remote source should be frozen, reused offline, subset to the terms of
+  interest, validated, or combined with another knowledge base. Combining has two
+  forms: `gsonList()` keeps the sources separate so one input is tested against
+  each knowledge base, while `gson_union()` merges them into one membership table
+  for a single test. A collection that declares `keytype`, `gsidtype`, `version`,
+  and `urlpattern` can say what its identifiers mean and where its gene sets came
+  from.
 - `GOSemSim`, `DOSE`, and `meshes` provide semantic similarity in different
   vocabularies (GO, DO/phenotypes, and MeSH). Similarity can be used before
   enrichment or after enrichment for term reduction.
@@ -126,7 +131,7 @@ should be preserved for the next step, rather than only the printed table.
 | MeSH IDs or Entrez IDs + `MeSHDb` | How similar are biomedical concepts? | `meshes::meshdata()` then `meshSim()`/`geneSim()` | MeSH semantic data and similarity scores/matrices | [MeSH semantic similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity) |
 | `TERM2GENE` plus optional `TERM2NAME` | Can a custom annotation be tested? | `enricher()` for ORA or `GSEA()` for a ranking | Canonical enrichment result with custom term IDs/names | [Universal enrichment](universal-enrichment.qmd#universal-api) |
 | GMT file | Can an external gene-set library be used directly? | `read.gmt()` or `read.gmt.wp()` then `enricher()`/`GSEA()` | Tidy term-to-gene table and canonical result | [GMT utilities](identifier-utilities.qmd#read-gmt) |
-| `GSON` object or serialized `.gson` file | Can knowledge-base data be frozen and reused? | `read.gson()` then `enricher()`/`GSEA()`; use `gsonList()` for several sources | Versionable `GSON` or a list of per-source enrichment results | [GSON workflow](gson.qmd#sec-gson) |
+| `GSON` object or serialized `.gson` file | Can knowledge-base data be frozen, subset, validated, and reused? | `read.gson()`, optional `validate_gson()` and `x[i]`, then `enricher()`/`GSEA()`; `gsonList()` for several sources or `gson_union()` for one merged table | Versionable `GSON`, or a list of per-source enrichment results | [GSON workflow](gson.qmd#sec-gson) |
 | Named list of gene vectors | Which functions differ among clusters/conditions? | `compareCluster(geneCluster = ..., fun = ...)` | `compareClusterResult` retaining cluster labels and per-group enrichment | [Biological theme comparison](comparecluster-analysis.qmd#clusterprofiler-comparecluster) |
 | One gene-per-row table with grouping columns | Can a formula describe a factorial comparison? | `compareCluster(gene ~ group + condition, data = ..., fun = ...)` | Formula-based `compareClusterResult` | [Formula interface](comparecluster-analysis.qmd#clusterprofiler-comparecluster) |
 | Peak/region file plus genome annotation | Which genes may be regulated by the regions? | `ChIPseeker` annotation and `seq2gene()` | Annotated regions plus many-to-many gene mappings | [Genomic coordination](chipseeker-enrichment.qmd#chipseeker-enrichment) |
@@ -145,7 +150,7 @@ Use these pages for the details that do not belong in a task table:
 |---|---|
 | Result classes, identifier contracts, and dispatch | [Data contract](data-contract.qmd#data-contract) and [result-object manipulation](result-objects.qmd#clusterProfiler-dplyr) |
 | ORA, GSEA, NSEA, and multi-omics methods | [Enrichment foundations](enrichment-foundations.qmd#sec-enrichment-foundations), [network-aware enrichment](enrichment-network.qmd#sec-enrichment-network), and [multi-omics integration](enrichment-multiomics.qmd#sec-enrichment-multiomics) |
-| GSON schema, serialization, metadata, and `gsonList` | [GSON chapter](gson.qmd#sec-gson) |
+| GSON slots and identifier metadata, subsetting, validation, `.gson` and GMT serialization, `gsonList` versus `gson_union`, and `gson_url` | [GSON chapter](gson.qmd#sec-gson) |
 | Semantic data and similarity methods | [GOSemSim](go-semantic-similarity.qmd#GOSemSim), [DO similarity](do-semantic-similarity.qmd#DOSE-semantic-similarity), and [MeSH similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity) |
 | AI validation and claim checking | [How to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment), [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation), and [reproducible reporting](reproducible-report.qmd#reproducible-report) |
 | Version, citation, and provenance record | [Reference appendix](appendix.qmd) |

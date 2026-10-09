@@ -15,7 +15,7 @@ This part treats GO, KEGG, Reactome, disease, MeSH, pathway collections, and cus
 
 ## The shared knowledge contract {-}
 
-Every source should make its term-to-gene mapping, term names, identifier type, organism, release, and filtering rules explicit. A two-column `TERM2GENE` table is enough for an exploratory analysis; a versioned [GSON object](gson.qmd#sec-gson) is preferable when the knowledge will be reused, shared, combined, or cited.
+Every source should make its term-to-gene mapping, term names, gene identifier type, gene set identifier domain, organism, release, and filtering rules explicit. A two-column `TERM2GENE` table is enough for an exploratory analysis; a versioned [GSON object](gson.qmd#sec-gson) is preferable when the knowledge will be reused, shared, combined, or cited, because it carries these declarations as slots rather than leaving them in the notebook that produced it.
 
 The domain chapters use the same pattern:
 
