@@ -74,7 +74,6 @@ jobs:
             "cran::msigdbr",
             "cran::readxl",
             "cran::aplot",
-            "cran::ggfun",
             "cran::ggtext",
             "cran::ggplotify",
             "cran::wget",
@@ -123,6 +122,13 @@ jobs:
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
+            # install ggfun from GitHub (not cran::ggfun): ggtangle depends on
+            # geom_bezier(), added in ggfun 0.2.2 (2026-10-05); a CRAN/RSPM
+            # mirror can still be serving the older 0.2.1 release, which made
+            # cnetplot() fail with "geom_bezier is not an exported object
+            # from namespace:ggfun" even though the CRAN page already shows
+            # 0.2.2. Installing from GitHub keeps it in step with ggtangle.
+            "github::YuLab-SMU/ggfun",
             "github::YuLab-SMU/ggtangle"
           ))'
 
