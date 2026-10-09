@@ -122,6 +122,12 @@ jobs:
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
+            # install gson from GitHub: it was never pinned anywhere in this
+            # workflow, so pak resolved it as a transitive dependency from
+            # CRAN at 0.2.1. gson.qmd's custom-gson chunk calls gson() with
+            # gsidtype=, added in gson 0.2.2 (2026-10-08), so the CRAN 0.2.1
+            # resolution failed with "unused argument (gsidtype = \"GS\")".
+            "github::YuLab-SMU/gson",
             # install ggfun from GitHub (not cran::ggfun): ggtangle depends on
             # geom_bezier(), added in ggfun 0.2.2 (2026-10-05); a CRAN/RSPM
             # mirror can still be serving the older 0.2.1 release, which made
