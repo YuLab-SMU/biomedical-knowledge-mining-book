@@ -109,6 +109,15 @@ jobs:
           Rscript -e 'BiocManager::install(c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"), ask = FALSE, update = FALSE, force = TRUE)'
           Rscript -e 'required <- c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing Bioconductor packages: ", paste(missing, collapse = ", "))'
 
+      # aisdk.providers carries the DeepSeek and other non-bundled adapters;
+      # without it interpret() fails with "Provider not found: deepseek".
+      # gson and ggfun come from GitHub rather than CRAN. gson was never pinned
+      # here, so pak resolved the transitive dependency at CRAN 0.2.1, while the
+      # custom-gson chunk in gson.qmd calls gson() with gsidtype=, added in
+      # 0.2.2. ggtangle needs geom_bezier(), added in ggfun 0.2.2, and a CRAN or
+      # RSPM mirror can keep serving 0.2.1 after a release.
+      # Comments stay out of the Rscript string; an apostrophe there closes the
+      # shell quoting and truncates the script.
       - name: Install foundational YuLab packages
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -116,24 +125,11 @@ jobs:
           Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
             "github::YuLab-SMU/aisdk",
-            # the DeepSeek (and other non-bundled) adapters live here: without it
-            # interpret() fails with "Provider not found: deepseek"
             "github::YuLab-SMU/aisdk.providers",
             "github::YuLab-SMU/GOSemSim",
             "github::YuLab-SMU/tidytree",
             "github::YuLab-SMU/treeio",
-            # install gson from GitHub: it was never pinned anywhere in this
-            # workflow, so pak resolved it as a transitive dependency from
-            # CRAN at 0.2.1. gson.qmd's custom-gson chunk calls gson() with
-            # gsidtype=, added in gson 0.2.2 (2026-10-08), so the CRAN 0.2.1
-            # resolution failed with "unused argument (gsidtype = \"GS\")".
             "github::YuLab-SMU/gson",
-            # install ggfun from GitHub (not cran::ggfun): ggtangle depends on
-            # geom_bezier(), added in ggfun 0.2.2 (2026-10-05); a CRAN/RSPM
-            # mirror can still be serving the older 0.2.1 release, which made
-            # cnetplot() fail with "geom_bezier is not an exported object
-            # from namespace:ggfun" even though the CRAN page already shows
-            # 0.2.2. Installing from GitHub keeps it in step with ggtangle.
             "github::YuLab-SMU/ggfun",
             "github::YuLab-SMU/ggtangle"
           ))'
