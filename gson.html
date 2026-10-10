@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>9&nbsp; GSON: the knowledge representation and exchange layer – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./go-enrichment.html" rel="next">
+<link href="./02-knowledge-sources.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd0503e23dce65854c81c5baaade3bdf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-knowledge-sources.html">Connect biological knowledge</a></li><li class="breadcrumb-item"><a href="./gson.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here: from data to a first result</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Choose the analysis engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connect biological knowledge</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organize and integrate evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualize and communicate results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret and report biological evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recipes and reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#chapter-overview" id="toc-chapter-overview" class="nav-link active" data-scroll-target="#chapter-overview"><span class="header-section-number">9.1</span> Chapter overview</a></li>
+  <li><a href="#what-gson-represents" id="toc-what-gson-represents" class="nav-link" data-scroll-target="#what-gson-represents"><span class="header-section-number">9.2</span> What GSON represents</a></li>
+  <li><a href="#obtaining-a-gson-object" id="toc-obtaining-a-gson-object" class="nav-link" data-scroll-target="#obtaining-a-gson-object"><span class="header-section-number">9.3</span> Obtaining a GSON object</a></li>
+  <li><a href="#constructing-a-collection-from-your-own-tables" id="toc-constructing-a-collection-from-your-own-tables" class="nav-link" data-scroll-target="#constructing-a-collection-from-your-own-tables"><span class="header-section-number">9.4</span> Constructing a collection from your own tables</a></li>
+  <li><a href="#inspecting-and-subsetting-a-collection" id="toc-inspecting-and-subsetting-a-collection" class="nav-link" data-scroll-target="#inspecting-and-subsetting-a-collection"><span class="header-section-number">9.5</span> Inspecting and subsetting a collection</a></li>
+  <li><a href="#checking-an-object" id="toc-checking-an-object" class="nav-link" data-scroll-target="#checking-an-object"><span class="header-section-number">9.6</span> Checking an object</a></li>
+  <li><a href="#gson-writing" id="toc-gson-writing" class="nav-link" data-scroll-target="#gson-writing"><span class="header-section-number">9.7</span> Writing and reading a collection</a></li>
+  <li><a href="#locating-the-source-database" id="toc-locating-the-source-database" class="nav-link" data-scroll-target="#locating-the-source-database"><span class="header-section-number">9.8</span> Locating the source database</a></li>
+  <li><a href="#combining-collections" id="toc-combining-collections" class="nav-link" data-scroll-target="#combining-collections"><span class="header-section-number">9.9</span> Combining collections</a></li>
+  <li><a href="#passing-a-collection-to-the-engines" id="toc-passing-a-collection-to-the-engines" class="nav-link" data-scroll-target="#passing-a-collection-to-the-engines"><span class="header-section-number">9.10</span> Passing a collection to the engines</a></li>
+  <li><a href="#versioning-metadata-and-reproducibility" id="toc-versioning-metadata-and-reproducibility" class="nav-link" data-scroll-target="#versioning-metadata-and-reproducibility"><span class="header-section-number">9.11</span> Versioning, metadata, and reproducibility</a></li>
+  <li><a href="#where-gson-fits-in-the-toolchain" id="toc-where-gson-fits-in-the-toolchain" class="nav-link" data-scroll-target="#where-gson-fits-in-the-toolchain"><span class="header-section-number">9.12</span> Where GSON fits in the toolchain</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">9.13</span> Summary</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">9.14</span> Next steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/gson.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-knowledge-sources.html">Connect biological knowledge</a></li><li class="breadcrumb-item"><a href="./gson.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-gson" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>A functional enrichment workflow has two different jobs:</p>
+<ol type="1">
+<li><strong>the analysis engine</strong> tests whether gene sets are enriched; and</li>
+<li><strong>the knowledge layer</strong> defines which terms, pathways, diseases, or other biological concepts belong to which genes.</li>
+</ol>
+<p>These jobs should not be confused. <code>enricher()</code> and <code>GSEA()</code> provide enrichment interfaces, whereas a gene-set resource provides the biological knowledge that those interfaces test. The <a href="https://bioconductor.org/packages/gson">gson</a> package supplies a standard way to represent that knowledge and to move it between data sources, analysis functions, and machines.</p>
+<section id="chapter-overview" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="chapter-overview"><span class="header-section-number">9.1</span> Chapter overview</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>GSON knowledge layer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Questions</strong></td>
+<td>How can gene-set knowledge be represented, versioned, shared, subset, validated, combined, and passed to enrichment interfaces?</td>
+</tr>
+<tr class="even">
+<td><strong>Input</strong></td>
+<td>Term-to-gene mappings plus metadata: gene set names, species, gene identifier type, gene set ID domain, source, release, and access date.</td>
+</tr>
+<tr class="odd">
+<td><strong>Methods</strong></td>
+<td>Knowledge packaging, inspection, subsetting, serialization to <code>.gson</code> and GMT, merging or paralleling several resources, and integration with ORA/GSEA. GSON is not a statistical test.</td>
+</tr>
+<tr class="even">
+<td><strong>Main functions</strong></td>
+<td><code>gson()</code>, <code>gson_GO()</code>, <code>gson_KEGG()</code>, <code>gson_WP()</code>, <code>read.gmt()</code>, <code>read.gmt.wp()</code>, <code>write.gson()</code>, <code>read.gson()</code>, <code>write.gmt()</code>, <code>x[i]</code>, <code>gsonList()</code>, <code>gson_union()</code>, <code>validate_gson()</code>, <code>gson_url()</code>, <code>browseGS()</code>.</td>
+</tr>
+<tr class="odd">
+<td><strong>Output</strong></td>
+<td>A <code>GSON</code> object, a <code>.gson</code> or GMT file, a <code>GSONList</code> of parallel resources, or one enrichment result per source.</td>
+</tr>
+<tr class="even">
+<td><strong>Main limitations</strong></td>
+<td>GSON stores and moves knowledge. It does not convert identifiers, does not compute ontology structure, and cannot resolve two sources that use the same gene set ID for different gene sets.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-gson-represents" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="what-gson-represents"><span class="header-section-number">9.2</span> What GSON represents</h2>
+<p>GSON means <strong>Gene Set Object Notation</strong>. The <a href="https://bioconductor.org/packages/gson">gson</a> package defines the <code>GSON</code> class for storing gene-set information together with the metadata needed to interpret and reuse it. A GSON object is therefore more than a two-column <code>TERM2GENE</code> table: it is a portable knowledge resource that can retain information about the source, species, identifiers, and the version or release from which the gene sets were obtained.</p>
+<p>This separation is useful in practice. The same enrichment engine can be used with GO, KEGG, WikiPathways, a disease collection, a cell-marker catalogue, or a project-specific annotation table. Only the knowledge object changes; the statistical question and the downstream result workflow can remain the same.</p>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>GSON is a <strong>knowledge representation and exchange layer</strong>, not a new statistical enrichment test. ORA, GSEA, network-aware enrichment, and other methods still determine how evidence is evaluated. GSON determines the knowledge that is evaluated.</p>
+</div>
+</div>
+</div>
+<p>An object of the class holds three mapping tables and nine metadata slots. The tables are the knowledge; the slots say what the tables mean.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Columns</th>
+<th>What it records</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gsid2gene</code></td>
+<td><code>gsid</code>, <code>gene</code></td>
+<td>Gene set membership. The only required table.</td>
+</tr>
+<tr class="even">
+<td><code>gsid2name</code></td>
+<td><code>gsid</code>, <code>name</code></td>
+<td>Human-readable name of each gene set.</td>
+</tr>
+<tr class="odd">
+<td><code>gene2name</code></td>
+<td><code>gene</code>, <code>name</code></td>
+<td>Symbol or display name of each gene.</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Slot</th>
+<th>Records</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gsname</code></td>
+<td>Name of the collection, for example <code>GO</code>, <code>KEGG</code>, <code>WikiPathways</code>.</td>
+</tr>
+<tr class="even">
+<td><code>species</code></td>
+<td>Organism the genes belong to.</td>
+</tr>
+<tr class="odd">
+<td><code>keytype</code></td>
+<td>Identifier domain of the <strong>genes</strong>, for example <code>ENTREZID</code>, <code>SYMBOL</code>.</td>
+</tr>
+<tr class="even">
+<td><code>gsidtype</code></td>
+<td>Identifier domain of the <strong>gene set IDs</strong>, for example <code>GO</code>, <code>KEGG</code>, <code>REAC</code>, <code>WP</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>version</code></td>
+<td>Release of the resource.</td>
+</tr>
+<tr class="even">
+<td><code>accessed_date</code></td>
+<td>Date the resource was obtained.</td>
+</tr>
+<tr class="odd">
+<td><code>urlpattern</code></td>
+<td>Template that turns a gene set ID into the web address of that gene set.</td>
+</tr>
+<tr class="even">
+<td><code>schema_version</code></td>
+<td>Version of the <code>.gson</code> file format, as declared by the producer.</td>
+</tr>
+<tr class="odd">
+<td><code>info</code></td>
+<td>Free-text note for the producer’s own use.</td>
+</tr>
+</tbody>
+</table>
+<p><code>keytype</code> and <code>gsidtype</code> describe two different namespaces. A collection of KEGG pathways whose members are Entrez gene IDs has <code>gsidtype = "KEGG"</code> and <code>keytype = "ENTREZID"</code>. Keeping them apart means a consumer does not have to infer which namespace the gene set IDs come from.</p>
+</section>
+<section id="obtaining-a-gson-object" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="obtaining-a-gson-object"><span class="header-section-number">9.3</span> Obtaining a GSON object</h2>
+<p><code>clusterProfiler</code> and related packages expose helper functions whose names start with <code>gson_</code>. The helpers do not share one argument convention, so a script that passes arguments by name needs the right ones. <code>gson_GO()</code> reads a local organism package; the other two download their source, so their result should be frozen once, as described under <a href="#gson-writing">Writing and reading a collection</a>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Helper</th>
+<th>Example call</th>
+<th>Argument conventions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>gson_GO()</code></td>
+<td><code>gson_GO(OrgDb = "org.Hs.eg.db", keytype = "ENTREZID", ont = "BP")</code></td>
+<td><code>OrgDb</code> is an object or the name of an organism package; <code>keytype</code> and <code>ont</code> default to <code>"ENTREZID"</code> and <code>"BP"</code></td>
+</tr>
+<tr class="even">
+<td><code>gson_KEGG()</code></td>
+<td><code>gson_KEGG(species = "hsa")</code></td>
+<td>The gene argument is <code>keyType</code>, with a capital <code>T</code>; <code>KEGG_Type = "KEGG"</code> selects pathway membership</td>
+</tr>
+<tr class="odd">
+<td><code>gson_WP()</code></td>
+<td><code>gson_WP(organism = "Homo sapiens")</code></td>
+<td>The argument is <code>organism</code>, not <code>species</code>, and takes the Latin name</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gson)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">gson_KEGG</span>(<span class="at">species =</span> <span class="st">"hsa"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>wp_gson <span class="ot">&lt;-</span> <span class="fu">gson_WP</span>(<span class="at">organism =</span> <span class="st">"Homo sapiens"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>go_gson <span class="ot">&lt;-</span> <span class="fu">gson_GO</span>(<span class="at">OrgDb =</span> <span class="st">"org.Hs.eg.db"</span>, <span class="at">keytype =</span> <span class="st">"ENTREZID"</span>, <span class="at">ont =</span> <span class="st">"BP"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A collection that is already on disk is the offline route, and the <code>gson</code> installation ships one so that this chapter can run without a network. The WikiPathways GMT parser <code>read.gmt.wp()</code> returns a <code>GSON</code> when asked for one.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wpfile <span class="ot">&lt;-</span> <span class="fu">system.file</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"extdata"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"wikipathways-20220310-gmt-Homo_sapiens.gmt"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">package =</span> <span class="st">"gson"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>wp <span class="ot">&lt;-</span> <span class="fu">read.gmt.wp</span>(wpfile, <span class="at">output =</span> <span class="st">"GSON"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>wp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&gt;&gt; Gene Set: WikiPathways
+&gt;&gt; 7781 genes annotated by 724 gene sets.
+&gt;&gt; Species: Homo sapiens
+&gt;&gt; Version: WikiPathways_20220310
+&gt;&gt; Gene set ID type: WP</code></pre>
+</div>
+</div>
+<p>The parser filled in what the file stated and what the format declares: the source, the organism, the release, the gene set ID domain <code>WP</code>, and a <code>urlpattern</code> that resolves a <code>WP</code> identifier to its WikiPathways page.</p>
+<p>The same file parsed by the generic reader is the long <code>term</code>/<code>gene</code> table that <code>enricher()</code> accepts as <code>TERM2GENE</code>, which is the difference between the two representations: a data frame carries the membership and nothing else.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">read.gmt</span>(wpfile))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                             term
+1 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+2 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+3 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+4 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+5 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+6 NIPBL role in DNA damage - Cornelia de Lange syndrome%WikiPathways_20220310%WP5119%Homo sapiens
+   gene
+1  9025
+2 25836
+3  9656
+4   545
+5  3014
+6 11335</code></pre>
+</div>
+</div>
+</section>
+<section id="constructing-a-collection-from-your-own-tables" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="constructing-a-collection-from-your-own-tables"><span class="header-section-number">9.4</span> Constructing a collection from your own tables</h2>
+<p><code>gson()</code> builds an object from user-supplied data frames. The arguments are the three tables named above, not <code>TERM2GENE</code> and <code>TERM2NAME</code>. Each table is read by position: the first two columns become <code>gsid</code> and <code>gene</code>, <code>gsid</code> and <code>name</code>, or <code>gene</code> and <code>name</code>, so the names you use in your own data frame do not matter and any further columns are dropped.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>gsid2gene <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="fu">c</span>(<span class="st">"GS1"</span>, <span class="st">"GS1"</span>, <span class="st">"GS1"</span>, <span class="st">"GS2"</span>, <span class="st">"GS2"</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"10196"</span>, <span class="st">"7157"</span>, <span class="st">"3689"</span>, <span class="st">"7157"</span>, <span class="st">"5728"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>gsid2name <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="fu">c</span>(<span class="st">"GS1"</span>, <span class="st">"GS2"</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"apoptosis signalling"</span>, <span class="st">"ribosomal proteins"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>gene2name <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"10196"</span>, <span class="st">"7157"</span>, <span class="st">"3689"</span>, <span class="st">"5728"</span>),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">symbol =</span> <span class="fu">c</span>(<span class="st">"BAX"</span>, <span class="st">"TP53"</span>, <span class="st">"MDM2"</span>, <span class="st">"NPM1"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>custom <span class="ot">&lt;-</span> <span class="fu">gson</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2gene =</span> gsid2gene,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2name =</span> gsid2name,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene2name =</span> gene2name,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">species =</span> <span class="st">"Homo sapiens"</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsname =</span> <span class="st">"Project-curated"</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">"2026-10"</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">accessed_date =</span> <span class="st">"2026-10-08"</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">keytype =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsidtype =</span> <span class="st">"GS"</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>custom</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&gt;&gt; Gene Set: Project-curated
+&gt;&gt; 4 genes annotated by 2 gene sets.
+&gt;&gt; Species: Homo sapiens
+&gt;&gt; Version: 2026-10
+&gt;&gt; Gene set ID type: GS</code></pre>
+</div>
+</div>
+<p>Identifiers are stored as character. A producer that passes a factor gets character columns in the result, which matters because a factor carries the levels it no longer uses: a grouping step over such a column yields one empty gene set per unused level, and the phantom sets then show up in <code>length()</code>, <code>names()</code>, and every file the object is written to. A double column is stored by its digits, formatted without scientific notation, so one million is <code>"1000000"</code> rather than <code>"1e+06"</code>.</p>
+<div class="callout callout-style-simple callout-tip">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Use a plain annotation table for a one-off exploratory test; promote it to a versioned GSON object when it will be shared, reused, combined with other resources, or cited in a report.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="inspecting-and-subsetting-a-collection" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="inspecting-and-subsetting-a-collection"><span class="header-section-number">9.5</span> Inspecting and subsetting a collection</h2>
+<p>A <code>GSON</code> behaves like a container of gene sets. <code>length()</code> counts gene sets, <code>names()</code> lists their IDs in the order the collection holds them, <code>x[[i]]</code> returns the genes of one gene set, and <code>as.data.frame()</code> gives the full membership table with the names joined in.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(wp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 724</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(wp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "WP5119" "WP2840" "WP4685" "WP5043" "WP2889" "WP289" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>wp[[<span class="st">"WP4685"</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "4893" "2353" "1385" "1021" "1019"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(custom))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  gsid                 name  gene gene_name
+1  GS1 apoptosis signalling 10196       BAX
+2  GS1 apoptosis signalling  7157      TP53
+3  GS2   ribosomal proteins  7157      TP53
+4  GS1 apoptosis signalling  3689      MDM2
+5  GS2   ribosomal proteins  5728      NPM1</code></pre>
+</div>
+</div>
+<p><code>x[i]</code> returns a smaller <code>GSON</code>. Taking a subset used to mean filtering <code>gsid2gene</code> by hand and keeping <code>gsid2name</code> and <code>gene2name</code> in step with it, which is easy to get wrong in exactly the direction a validator reports: a <code>gene2name</code> row for a gene that is no longer a member of any kept gene set. The subset method prunes all three tables together and carries the metadata over.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>by_name <span class="ot">&lt;-</span> wp[<span class="fu">c</span>(<span class="st">"WP4685"</span>, <span class="st">"WP5043"</span>, <span class="st">"WP179"</span>)]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>by_position <span class="ot">&lt;-</span> wp[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>by_logical <span class="ot">&lt;-</span> wp[<span class="fu">names</span>(wp) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"WP4685"</span>, <span class="st">"WP2840"</span>)]</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(by_name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(by_position)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "WP5119" "WP2840" "WP4685"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(by_logical)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>by_name<span class="sc">@</span>urlpattern</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "https://www.wikipathways.org/pathways/{gsid}.html"</code></pre>
+</div>
+</div>
+<p>Gene set IDs, positions, and logical vectors all select, and <code>x[]</code> returns <code>x</code>. An ID the object does not hold, or an index out of bounds, is an error that names what is missing. <code>x[, j]</code> is also an error, since a <code>GSON</code> has no second dimension.</p>
+</section>
+<section id="checking-an-object" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="checking-an-object"><span class="header-section-number">9.6</span> Checking an object</h2>
+<p>Two checks answer two different questions.</p>
+<p>The class enforces its structural contract when an object is created, so a table that is not a data frame, lacks the documented columns, or holds identifiers that are not character is refused rather than stored.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  methods<span class="sc">::</span><span class="fu">new</span>(<span class="st">"GSON"</span>, <span class="at">gsid2gene =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="dv">1</span>, <span class="at">gene =</span> <span class="dv">2</span>)),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> conditionMessage</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "invalid class \"GSON\" object: gsid2gene should hold gsid and gene columns of type character"</code></pre>
+</div>
+</div>
+<p><code>validate_gson()</code> then asks about the content, and reports instead of refusing, because an object that breaks a content rule still has to be constructible so that it can be inspected. Duplicated identifiers, missing cross-references among the three tables, empty tables, a <code>keytype</code> or <code>gsidtype</code> left at a placeholder such as <code>UNKNOWN</code>, a <code>gsidtype</code> that the object’s own gene set IDs contradict, and a <code>schema_version</code> this package cannot read are all reported.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>defective <span class="ot">&lt;-</span> <span class="fu">gson</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2gene =</span> <span class="fu">data.frame</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gsid =</span> <span class="fu">c</span>(<span class="st">"GO:1"</span>, <span class="st">"GO:1"</span>, <span class="st">"GO:2"</span>),</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>, <span class="cn">NA</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2name =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="st">"GO:1"</span>, <span class="at">name =</span> <span class="st">"one"</span>),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene2name =</span> <span class="fu">data.frame</span>(<span class="at">gene =</span> <span class="st">"99"</span>, <span class="at">name =</span> <span class="st">"dangling"</span>),</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">keytype =</span> <span class="st">"UNKNOWN"</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsidtype =</span> <span class="st">"KEGG"</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="fu">validate_gson</span>(defective, <span class="at">error =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gsid2gene$gene should not contain missing or empty values"                            
+[2] "gene2name contains gene values not found in gsid2gene"                                
+[3] "keytype 'UNKNOWN' names no identifier type; leave it NULL when the type is not known" 
+[4] "gsidtype 'KEGG' is not the prefix of the gene set IDs, which begin GO -- as in 'GO:1'"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">validate_gson</span>(wp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>There is deliberately no dictionary of accepted <code>keytype</code> or <code>gsidtype</code> values. <code>MicrobiomeProfiler</code>, for example, writes <code>kegg_orthology</code>, <code>eggNOG_OG</code>, <code>taxid</code>, and <code>hmdb_id</code> as <code>keytype</code>, none of which is a <code>keytypes()</code> value of any Bioconductor annotation package, so a list held by <code>gson</code> would reject the collections the ecosystem itself produces. What the package can verify is an object against itself, so only a prefix the identifiers actually carry is compared. Nothing is rewritten: a value the object declares is reported as it stands, because the reader that knows what a file says is not the one that decides what the producer meant.</p>
+</section>
+<section id="gson-writing" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="gson-writing"><span class="header-section-number">9.7</span> Writing and reading a collection</h2>
+<p><code>write.gson()</code> stores a collection as JSON and <code>read.gson()</code> reads it back. The round trip is exact, so a frozen file can be treated as the object it was written from. The JSON keys the memberships by gene set ID and carries the names and the metadata beside them; it is plain JSON, so a collection can also be read by tools outside R.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".gson"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.gson</span>(custom, <span class="at">file =</span> f)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">read.gson</span>(f), custom)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(f))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "gsid2gene": {
+    "GS1": ["10196", "7157", "3689"],
+    "GS2": ["7157", "5728"]
+  },
+  "gsid2name": {
+    "gsid": ["GS1", "GS2"],
+    "name": ["apoptosis signalling", "ribosomal proteins"]
+  },
+  "gene2name": {
+    "gene": ["10196", "7157", "3689", "5728"],
+    "name": ["BAX", "TP53", "MDM2", "NPM1"]
+  },
+  "schema_version": ["1.0"],
+  "species": ["Homo sapiens"],
+  "gsname": ["Project-curated"],
+  "version": ["2026-10"],
+  "accessed_date": ["2026-10-08"],
+  "keytype": ["ENTREZID"],
+  "gsidtype": ["GS"],
+  "urlpattern": null,
+  "info": null
+}</code></pre>
+</div>
+</div>
+<p>GMT is the interoperable format: <code>read.gmt()</code> parses it and <code>write.gmt()</code> produces it from a collection. The GMT form keeps the membership and the gene set name and drops the rest of the metadata, so a <code>.gmt</code> file is for exchange and a <code>.gson</code> file is for the versioned copy. <code>write.gmt()</code> also sorts the gene sets alphabetically, so the three selected below are written in a different order from the one the collection held them in; a ranked or curated order survives only in the <code>.gson</code> file.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>gmt_file <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">".gmt"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.gmt</span>(by_name, <span class="at">file =</span> gmt_file)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">substr</span>(<span class="fu">readLines</span>(gmt_file), <span class="dv">1</span>, <span class="dv">60</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>WP179   Cell cycle  4172    4173    7043    4174    4175    4176    8379    29945   20
+WP4685  Melanoma    4893    2353    1385    1021    1019    595 80243   673 4763    
+WP5043  Pentose phosphate pathway in senescent cells    6120    221</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">read.gmt</span>(gmt_file))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 199   2</code></pre>
+</div>
+</div>
+<p>Memberships that carry no gene set ID or no gene are skipped when a collection is written, with a warning that says how many were omitted, and <code>write.gmt()</code> falls back to the gene set ID when <code>gsid2name</code> holds no usable name for a set. A <code>NA</code> that reached a file would come back as a gene genuinely named <code>NA</code> and be handed on to the enrichment routines.</p>
+<p>A <code>.gson</code> file is written by other programs as often as by this one, so <code>read.gson()</code> names the file and the shape it found instead of passing on what the JSON parser happened to notice. A file whose memberships are not keyed by gene set ID, whose tables hold a string where an array belongs, or that cannot be parsed at all is an error that says which file and which member; a local path that does not exist is caught before the parser is asked.</p>
+</section>
+<section id="locating-the-source-database" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="locating-the-source-database"><span class="header-section-number">9.8</span> Locating the source database</h2>
+<p><code>urlpattern</code> is a claim that each gene set ID resolves to a web page. <code>gson_url()</code> builds those URLs and <code>browseGS()</code> opens one in a browser, which is the step that turns a row of an enrichment table back into evidence to read.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gson_url</span>(wp)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                             WP5119 
+"https://www.wikipathways.org/pathways/WP5119.html" 
+                                             WP2840 
+"https://www.wikipathways.org/pathways/WP2840.html" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gson_url</span>(wp, <span class="fu">c</span>(<span class="st">"WP100"</span>, <span class="st">"WP106"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                             WP100 
+"https://www.wikipathways.org/pathways/WP100.html" 
+                                             WP106 
+"https://www.wikipathways.org/pathways/WP106.html" </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">browseGS</span>(wp, <span class="st">"WP4685"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The URL comes only from what the object declares. <code>gson</code> ships no table of other databases’ websites, so a producer that wants its gene sets browsable has to name the pattern; <code>ReactomePA::gson_Reactome()</code> currently passes <code>urlpattern = NULL</code>. An object that declares none gets a vector of <code>NA</code> from <code>gson_url()</code> and an error from <code>browseGS()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gson_url</span>(custom)[<span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: this GSON carries no 'urlpattern', so its gene sets have no URL</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>GS1 
+ NA </code></pre>
+</div>
+</div>
+<p>This is also where <code>gsidtype</code> earns its place. A consumer that knows the domain of the identifiers can choose the right resource and the right pattern, whereas one that does not has to infer the domain from the shape of the IDs, which is a guess about someone else’s data.</p>
+</section>
+<section id="combining-collections" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="combining-collections"><span class="header-section-number">9.9</span> Combining collections</h2>
+<p>Two operations answer two different questions, and choosing between them is a design decision rather than a stylistic one.</p>
+<p><code>gsonList()</code> keeps the resources <strong>separate</strong> and names them, so one input is tested against each knowledge base and the sources stay distinguishable in the result.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>gsons <span class="ot">&lt;-</span> <span class="fu">gsonList</span>(<span class="at">wikipathways =</span> wp, <span class="at">project =</span> custom)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(gsons)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "WikiPathways"    "Project-curated"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gsons[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "GSONList" "list"    </code></pre>
+</div>
+</div>
+<p>The component names come from the <code>gsname</code> slot of each object, not from the argument labels of the call, so <code>gsonList(wikipathways = wp)</code> is still <code>"WikiPathways"</code>. Set <code>gsname</code> when the identity of a resource must survive into the result table. Subsetting keeps the <code>GSONList</code> class, so <code>gsons[1]</code> still prints as a list of collections.</p>
+<p><code>gson_union()</code> merges several collections into <strong>one</strong> membership table, which is what an analysis needs when a single test should see all the annotations at once, for example GO, KEGG, and REAC as one <code>enricher()</code> input.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>half <span class="ot">&lt;-</span> <span class="fu">gson_union</span>(wp[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], wp[<span class="dv">51</span><span class="sc">:</span><span class="dv">100</span>])</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(half)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>half<span class="sc">@</span>gsname</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "WikiPathways"</code></pre>
+</div>
+</div>
+<p>Two objects that name the same source are the same collection, so a gene set that both of them carry is joined into one set holding every gene either gives it. Two files of one download therefore merge rather than collide.</p>
+<p>A gene set ID that two <em>different</em> sources both use is refused, because the merged table would say that one ID names two sets of genes, and every result read from it would be quietly wrong.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>left <span class="ot">&lt;-</span> <span class="fu">gson</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2gene =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="fu">c</span>(<span class="st">"X1"</span>, <span class="st">"X2"</span>), <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)),</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2name =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="fu">c</span>(<span class="st">"X1"</span>, <span class="st">"X2"</span>), <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"set one"</span>, <span class="st">"set two"</span>)),</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsname =</span> <span class="st">"SourceA"</span>,</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsidtype =</span> <span class="st">"X"</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>right <span class="ot">&lt;-</span> <span class="fu">gson</span>(</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2gene =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="fu">c</span>(<span class="st">"X1"</span>, <span class="st">"X3"</span>), <span class="at">gene =</span> <span class="fu">c</span>(<span class="st">"7"</span>, <span class="st">"8"</span>)),</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsid2name =</span> <span class="fu">data.frame</span>(<span class="at">gsid =</span> <span class="fu">c</span>(<span class="st">"X1"</span>, <span class="st">"X3"</span>), <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"other one"</span>, <span class="st">"set three"</span>)),</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsname =</span> <span class="st">"SourceB"</span>,</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">gsidtype =</span> <span class="st">"X"</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tryCatch</span>(<span class="fu">gson_union</span>(left, right), <span class="at">error =</span> conditionMessage)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gene set ID(s) used by more than one source: X1 -- merge with .conflict = \"prefix\" to qualify every ID with its source, or .conflict = \"rename\" to qualify only these"</code></pre>
+</div>
+</div>
+<p><code>.conflict</code> decides how a collision is resolved. <code>"prefix"</code> qualifies every ID with the source it comes from, <code>"rename"</code> qualifies only the colliding ones and leaves IDs that already begin with their source alone, and the <code>gsid2name</code> rows follow the IDs they describe.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>merged <span class="ot">&lt;-</span> <span class="fu">gson_union</span>(left, right, <span class="at">.conflict =</span> <span class="st">"prefix"</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(merged)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SourceA:X1" "SourceA:X2" "SourceB:X1" "SourceB:X3"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>merged<span class="sc">@</span>gsname</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SourceA + SourceB"</code></pre>
+</div>
+</div>
+<p>The metadata merges by what the merged object can still honestly say. <code>species</code>, <code>keytype</code>, and <code>schema_version</code> have to agree, because one membership table cannot mean two organisms, two identifier types, or two file schemas. <code>gsname</code>, <code>gsidtype</code>, <code>version</code>, <code>accessed_date</code>, and <code>info</code> are joined with <code>" + "</code> when the sources name themselves differently. <code>urlpattern</code> is kept only when every object declares the same one and no ID moved, since a pattern that resolves part of the collection to the wrong page is worse than no pattern.</p>
+</section>
+<section id="passing-a-collection-to-the-engines" class="level2" data-number="9.10">
+<h2 data-number="9.10" class="anchored" data-anchor-id="passing-a-collection-to-the-engines"><span class="header-section-number">9.10</span> Passing a collection to the engines</h2>
+<p>The enrichment layer consumes a <code>GSON</code> through the <code>gson</code> argument of <code>enricher()</code> and <code>GSEA()</code>, which takes the place of <code>TERM2GENE</code>. Over representation analysis tests a thresholded gene vector against the collections.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>gene <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">c</span>(wp[[<span class="st">"WP4685"</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>], wp[[<span class="st">"WP5043"</span>]]))</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>ora <span class="ot">&lt;-</span> <span class="fu">enricher</span>(</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> gene,</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gson =</span> wp,</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">5</span>,</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(ora)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Description"</span>, <span class="st">"Count"</span>, <span class="st">"pvalue"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           ID                                  Description Count       pvalue
+WP4685 WP4685                                     Melanoma    26 2.182072e-49
+WP5043 WP5043 Pentose phosphate pathway in senescent cells     9 1.828985e-22
+WP2261 WP2261              Glioblastoma signaling pathways    15 1.102757e-21
+WP4255 WP4255                   Non-small cell lung cancer    14 1.069648e-20
+WP2828 WP2828                               Bladder cancer    11 5.290695e-18
+WP4155 WP4155                           Endometrial cancer    12 1.255424e-17</code></pre>
+</div>
+</div>
+<p>For the ranked-list case the separation is the same: the ranking is the statistical input and the <code>GSON</code> object supplies the gene sets it is tested against.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(geneList, <span class="at">package =</span> <span class="st">"DOSE"</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>gsea <span class="ot">&lt;-</span> <span class="fu">GSEA</span>(</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">geneList =</span> geneList,</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">gson =</span> wp,</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">minGSSize =</span> <span class="dv">10</span>,</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxGSSize =</span> <span class="dv">500</span>,</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">eps =</span> <span class="dv">0</span>,</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">123</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(gsea)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"Description"</span>, <span class="st">"setSize"</span>, <span class="st">"NES"</span>, <span class="st">"pvalue"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           ID                             Description setSize      NES
+WP2446 WP2446           Retinoblastoma gene in cancer      84 2.887672
+WP466   WP466                         DNA replication      42 2.750442
+WP179   WP179                              Cell cycle     111 2.720093
+WP2361 WP2361                Gastric cancer network 1      23 2.529323
+WP45     WP45              G1 to S cell cycle control      62 2.436411
+WP4290 WP4290 Metabolic reprogramming in colon cancer      41 2.403659
+             pvalue
+WP2446 2.782455e-18
+WP466  4.006163e-13
+WP179  4.735758e-17
+WP2361 8.622333e-09
+WP45   6.555802e-10
+WP4290 2.751761e-08</code></pre>
+</div>
+</div>
+<p>Passed a <code>gsonList</code>, <code>enricher()</code> returns one result per source, keyed by the names of the list, and the table or figure can be faceted by knowledge base. The KEGG-specific wrappers take the same objects through <code>organism</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>kk <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(<span class="at">gene =</span> gene, <span class="at">organism =</span> kk_gson)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>kk2 <span class="ot">&lt;-</span> <span class="fu">gseKEGG</span>(<span class="at">geneList =</span> geneList, <span class="at">organism =</span> kk_gson)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>res_multi <span class="ot">&lt;-</span> <span class="fu">enricher</span>(<span class="at">gene =</span> gene, <span class="at">gson =</span> gsons)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The engine layer reads the same container directly: <code>enrichit</code> provides <code>ora_gson()</code>, <code>gsea_gson()</code>, <code>nsea_gson()</code>, and <code>mnsea_gson()</code>. <code>GOSemSim</code> accepts a <code>GSON</code> of GO annotations as the <code>annoDb</code> of <code>godata()</code> from version 2.39.3, so a frozen collection can enter the semantic-similarity layer as well as the enrichment layer.</p>
+<p>The wrapper form and the generalized form serve the same reproducibility goal: the analysis uses a local, explicit knowledge resource instead of silently retrieving a changing online database during every run.</p>
+</section>
+<section id="versioning-metadata-and-reproducibility" class="level2" data-number="9.11">
+<h2 data-number="9.11" class="anchored" data-anchor-id="versioning-metadata-and-reproducibility"><span class="header-section-number">9.11</span> Versioning, metadata, and reproducibility</h2>
+<p>Knowledge bases change independently of the code used to analyze them. A reproducible enrichment result therefore requires more than the R script and p-value cutoff. At minimum, preserve:</p>
+<ul>
+<li>the GSON file or an immutable copy of the source tables;</li>
+<li>the resource name (<code>gsname</code>) and the release (<code>version</code>) or download date;</li>
+<li>the species;</li>
+<li><code>keytype</code> for the genes and <code>gsidtype</code> for the gene set IDs;</li>
+<li>the source URL or the package that produced the resource, and <code>urlpattern</code> when the gene sets should be browsable;</li>
+<li><code>schema_version</code> as the producer wrote it;</li>
+<li>any filtering, ID conversion, or deduplication applied to the annotation;</li>
+<li>the <code>clusterProfiler</code>, <code>gson</code>, and related package versions;</li>
+<li>the analysis method, background universe, thresholds, and random seeds where applicable; and</li>
+<li>the names of a <code>gsonList</code> when several resources were tested in parallel, or the merge policy when <code>gson_union()</code> joined them.</li>
+</ul>
+<p>The object carries most of this itself, which is the point of the format: a <code>.gson</code> file that states its source, organism, release, and identifier domains does not depend on the notebook that produced it to explain what it is. Run <code>validate_gson()</code> on a resource received from elsewhere before analyzing it, and keep the report with the analysis record.</p>
+<p>The simplest local-freezing workflow is to write the GSON object once and read it during analysis:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">gson_KEGG</span>(<span class="at">species =</span> <span class="st">"hsa"</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.gson</span>(kk_gson, <span class="at">file =</span> <span class="st">"knowledge/kegg_hsa.gson"</span>)</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>kk_gson <span class="ot">&lt;-</span> <span class="fu">read.gson</span>(<span class="st">"knowledge/kegg_hsa.gson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For larger projects, keep the GSON files under version control or in an archival storage system alongside a small manifest. The manifest should state which file was used for which analysis and should not rely only on a mutable database URL. If the project uses <code>gsonList</code>, save every component and the list of names, not only the final enrichment table.</p>
+<p>One thing the format does not preserve is the row order of <code>gsid2gene</code> when a collection is not already grouped by gene set ID, because a <code>.gson</code> file keys the memberships by <code>gsid</code> and reading one regroups the table. The gene sets, and the order of the genes within each set, survive; the interleaving of the rows does not. Files written before <code>gsidtype</code> existed read it back as <code>NULL</code>, and a file that carries it still opens in older releases of the package, which ignore the unknown key.</p>
+</section>
+<section id="where-gson-fits-in-the-toolchain" class="level2" data-number="9.12">
+<h2 data-number="9.12" class="anchored" data-anchor-id="where-gson-fits-in-the-toolchain"><span class="header-section-number">9.12</span> Where GSON fits in the toolchain</h2>
+<p>GSON makes the boundaries between the layers explicit:</p>
+<pre class="text"><code>   custom table, GMT file, or remote knowledge source
+                          |
+        gson() / read.gmt() / read.gmt.wp() / gson_*() helpers
+                          |
+                GSON object  ---  validate_gson()
+                          |
+            +-------------+-------------+
+            |                           |
+   gsonList (parallel)         gson_union (merged)
+            |                           |
+   enricher() / GSEA() /  ora_gson() / gsea_gson() / godata()
+            |                           |
+   enrichment results           gson_url() / browseGS()
+            |                           |
+   plots and interpretation      manual evidence check</code></pre>
+<p>This architecture has three practical consequences:</p>
+<ol type="1">
+<li><strong>The analysis engine can be reused.</strong> The same ORA or GSEA logic can work across multiple knowledge resources.</li>
+<li><strong>The knowledge resource can be frozen.</strong> A saved GSON file separates a publication or pipeline run from future changes in an online database, and reads back as the object it was written from.</li>
+<li><strong>The resource can be shared.</strong> A custom annotation can be distributed as a named, documented object rather than as an unexplained pair of data frames.</li>
+</ol>
+<p>GSON is therefore the bridge between biological knowledge and the rest of the biomedical knowledge-mining toolkit. It allows GO, KEGG, WikiPathways, project-specific annotations, and other compatible resources to enter a common workflow without pretending that they are the same biological evidence.</p>
+</section>
+<section id="summary" class="level2" data-number="9.13">
+<h2 data-number="9.13" class="anchored" data-anchor-id="summary"><span class="header-section-number">9.13</span> Summary</h2>
+<ul>
+<li><code>gson</code> defines the <code>GSON</code> class for portable gene-set knowledge and metadata. Three mapping tables hold the knowledge; the metadata slots say what the identifiers, organism, release, and source mean.</li>
+<li><code>gson_KEGG(species = )</code>, <code>gson_WP(organism = )</code>, and <code>gson_GO(OrgDb = , keytype = , ont = )</code> create resource-specific objects, and <code>read.gmt.wp(file, output = "GSON")</code> creates one from a file already on disk.</li>
+<li><code>gson()</code> builds an object from <code>gsid2gene</code>, <code>gsid2name</code>, and <code>gene2name</code>, taking each table by position and storing every identifier as character.</li>
+<li><code>length()</code>, <code>names()</code>, <code>as.data.frame()</code>, <code>x[[i]]</code>, and <code>x[i]</code> inspect and subset a collection; subsetting prunes the three tables together and keeps the metadata.</li>
+<li><code>validate_gson()</code> reports what an object holds or claims without carrying it, while the class itself refuses a structurally invalid object at creation.</li>
+<li><code>write.gson()</code> and <code>read.gson()</code> round-trip exactly; <code>write.gmt()</code> and <code>read.gmt()</code> exchange memberships and names without the metadata.</li>
+<li><code>gson_url()</code> and <code>browseGS()</code> resolve gene sets to the pages of their source database, but only when the object declares a <code>urlpattern</code>.</li>
+<li><code>gsonList()</code> tests one input against several separate resources; <code>gson_union()</code> merges several resources into one membership table and refuses an ambiguous gene set ID.</li>
+<li><code>enricher()</code> and <code>GSEA()</code> take these objects through <code>gson</code>, the KEGG wrappers through <code>organism</code>, and <code>enrichit</code> and <code>GOSemSim</code> consume the same container.</li>
+<li>Resource identity, version, metadata, and the saved GSON files are part of a reproducible analysis record.</li>
+</ul>
+<p>The next steps are to inspect the enrichment result, compare or reduce redundant terms, and choose a visualization appropriate to the question. See the chapters on result objects, semantic similarity, and <code>enrichplot</code> for those operations.</p>
+</section>
+<section id="next-steps" class="level2" data-number="9.14">
+<h2 data-number="9.14" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">9.14</span> Next steps</h2>
+<ul>
+<li>To analyze custom or unsupported annotations, see <a href="./universal-enrichment.html#universal-api">universal enrichment</a>.</li>
+<li>For knowledge-source examples, see <a href="./go-enrichment.html#clusterprofiler-go">GO</a> or <a href="./kegg-enrichment.html#clusterprofiler-kegg">KEGG</a>.</li>
+<li>To score the terms a collection holds, see <a href="./go-semantic-similarity.html#GOSemSim">GO semantic similarity</a>, where <code>godata()</code> also accepts a <code>GSON</code> of GO annotations.</li>
+<li>For result visualization, continue to the <a href="./enrichplot.html#sec-enrichplot">visualization map</a>.</li>
+</ul>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-knowledge-sources.html" class="pagination-link" aria-label="Connect biological knowledge">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Connect biological knowledge</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./go-enrichment.html" class="pagination-link" aria-label="GO enrichment analysis">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/main/gson.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
