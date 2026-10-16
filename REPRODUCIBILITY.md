@@ -1,24 +1,45 @@
 # Reproducible and rolling build environment
 
-The book follows the current R/Bioconductor and package releases rather than freezing one permanent environment. The versions below are the local validation baseline for the current source tree; they are provenance for this validation pass, not a compatibility ceiling or a lockfile.
+The book follows the current R/Bioconductor and package releases rather than freezing one permanent environment.
+
+**Two environments are involved, and they are deliberately not identical:**
+
+1. **Local validation baseline** — the table below. This is the environment the
+   source tree was validated in, and what `Rscript scripts/check_versions.R`
+   compares against. It is provenance for this validation pass, not a
+   compatibility ceiling or a lockfile.
+2. **CI build** — `.github/workflows/publish-book.yml` installs the core
+   packages from `github::YuLab-SMU/*` rather than from CRAN or Bioconductor,
+   so it tracks development versions that do not match the table: the deployed
+   site has been built with `DOSE` 4.7.3.9000 and `GOSemSim` 2.39.4 while the
+   table lists 4.7.3 and 2.39.3. The published build therefore carries its own
+   provenance — CI writes `docs/SESSION-INFO.txt` on every successful render and
+   that file is deployed with the site. Read `SESSION-INFO.txt` for what the
+   deployed pages actually ran against; read the table for what was validated
+   here.
 
 | Component | Tested version |
 |---|---|
 | R | 4.6.1 |
 | Bioconductor | 3.23 |
 | `clusterProfiler` | 4.21.3 |
-| `enrichit` | 0.2.5 |
-| `enrichplot` | 1.99.6 |
+| `enrichit` | 0.2.6 |
+| `enrichplot` | 1.99.8 |
 | `GOSemSim` | 2.39.3 |
 | `DOSE` | 4.7.3 |
 | `ReactomePA` | 1.99.2 |
-| `meshes` | 1.39.3 |
+| `meshes` | 1.39.1 |
+| `ChIPseeker` | 1.48.0 |
+| `gson` | 0.2.2 |
+| `yulab.utils` | 0.2.5 |
+| `aisdk` | 1.5.0 |
 | `airway` | 1.32.0 |
 | `DESeq2` | 1.52.0 |
 | `fgsea` | 1.38.0 |
 | `org.Hs.eg.db` | 3.23.1 |
+| `org.Mm.eg.db` | 3.23.0 |
 
-When R, Bioconductor, or a core package release changes, update the dependencies in the build environment, rerun the full book and validation checks, regenerate `de_table.tsv` only if the documented airway/DESeq2 source or design changes, and refresh this table with the new `sessionInfo()` output. For a release build, record:
+When R, Bioconductor, or a core package release changes, update the dependencies in the build environment, rerun the full book and validation checks, regenerate `de_table.tsv` only if the documented airway/DESeq2 source or design changes, and refresh this table with the new `sessionInfo()` output. `scripts/check_versions.R` fails while any row disagrees with the installed library, so a stale table is caught rather than drifting silently. For a release build, record:
 
 ```r
 sessionInfo()

@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # fetch-depth 0 so the whitespace check below can see the base commit
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,5 +31,26 @@ jobs:
       - name: Validate source and generated links
         run: python3 scripts/check_links.py
 
-      - name: Check diff whitespace
-        run: git diff --check
+      - name: Validate bibliography
+        run: python3 scripts/check_bibliography.py
+
+      - name: Validate package macros against the registry
+        run: python3 scripts/check_package_macros.py
+
+      # `git diff --check` alone is a no-op here: a push event checks out a clean
+      # tree with no unstaged diff, so it used to pass without looking at anything.
+      # Compare the commits the event actually introduces instead.
+      - name: Check whitespace of introduced changes
+        run: |
+          set -u
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="origin/${{ github.event.pull_request.base.ref }}"
+            git fetch --no-tags --depth=1 origin "${{ github.event.pull_request.base.ref }}"
+            range="$(git merge-base HEAD "$base")"..HEAD
+          elif [ -n "${{ github.event.before }}" ] && git cat-file -e "${{ github.event.before }}"^{commit} 2>/dev/null; then
+            range="${{ github.event.before }}"..HEAD
+          else
+            range="HEAD^..HEAD"
+          fi
+          echo "checking whitespace in $range"
+          git diff --check "$range"

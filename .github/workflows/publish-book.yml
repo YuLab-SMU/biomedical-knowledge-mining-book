@@ -3,8 +3,6 @@ name: Publish Quarto Book
 on:
   push:
     branches: [ master, main ]
-  pull_request:
-    branches: [ master, main ]
   schedule:
     # Run weekly on Sundays at 2 AM UTC
     - cron: '0 2 * * 0'
@@ -65,12 +63,21 @@ jobs:
       # single-quoted shell argument truncates the script.
       - name: Install CRAN dependencies
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
-            "cran::tidyverse",
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          # dplyr, ggplot2, stringr and forcats are called directly with pkg:: in
+          # executed chunks. They currently arrive only as transitive dependencies of
+          # clusterProfiler, enrichplot and biomaRt; a chapter that calls a package
+          # should not depend on another package happening to import it.
+          retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+            "cran::dplyr",
+            "cran::ggplot2",
+            "cran::stringr",
+            "cran::forcats",
             "cran::emojifont",
             "cran::badger",
             "cran::cowplot",
-            "cran::ggarchery",
             "cran::msigdbr",
             "cran::readxl",
             "cran::aplot",
@@ -78,8 +85,7 @@ jobs:
             "cran::ggplotify",
             "cran::wget",
             "cran::httr2",
-            "cran::R.utils",
-            "cran::europepmc",
+            "cran::dotenv",
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
@@ -88,13 +94,13 @@ jobs:
 
       - name: Install Bioconductor dependencies (release)
         run: |
-          Rscript -e 'install.packages("BiocManager", repos = "https://cran.r-project.org")'
-          Rscript -e 'BiocManager::install(pkgs = c(
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'install.packages("BiocManager", repos = "https://cran.r-project.org")'
+          retry Rscript -e 'BiocManager::install(pkgs = c(
             "AnnotationHub",
-            "ExperimentHub",
-            "AnnotationHubData",
             "ChIPseeker",
-            "DO.db",
             "GO.db",
             "org.Hs.eg.db",
             "org.Mm.eg.db",
@@ -104,10 +110,9 @@ jobs:
             "pathview"
           ), ask = FALSE, update = FALSE)'
 
-      - name: Verify required Bioconductor packages
+      - name: Verify required packages are loadable
         run: |
-          Rscript -e 'BiocManager::install(c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"), ask = FALSE, update = FALSE, force = TRUE)'
-          Rscript -e 'required <- c("org.Hs.eg.db", "fgsea", "GO.db", "DO.db"); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing Bioconductor packages: ", paste(missing, collapse = ", "))'
+          Rscript -e 'required <- c("org.Hs.eg.db", "fgsea", "GO.db", "ChIPseeker", "MeSHDbi", "biomaRt", "pathview"); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing packages: ", paste(missing, collapse = ", "))'
 
       # aisdk.providers carries the DeepSeek and other non-bundled adapters;
       # without it interpret() fails with "Provider not found: deepseek".
@@ -122,7 +127,10 @@ jobs:
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/yulab.utils",
             "github::YuLab-SMU/aisdk",
             "github::YuLab-SMU/aisdk.providers",
@@ -138,7 +146,10 @@ jobs:
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/enrichit",
             "github::YuLab-SMU/DOSE",
             "github::YuLab-SMU/enrichplot",
@@ -150,23 +161,22 @@ jobs:
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/clusterProfiler")'
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/clusterProfiler")'
 
       - name: Install remaining YuLab-SMU packages
         env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
+          # Transient network failures during installation have been
+          # the main cause of failed weekly builds.
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/ReactomePA",
             "github::YuLab-SMU/meshes"
           ))'
-
-      - name: Install MicrobiomeProfiler (after clusterProfiler)
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          Rscript -e 'options(Ncpus = 1); pak::pkg_install("github::YuLab-SMU/MicrobiomeProfiler")'
-
 
       - name: Prewarm ontology caches (DO/HDO)
         run: |
@@ -187,6 +197,16 @@ jobs:
         run: |
           quarto render
           
+      # The table in REPRODUCIBILITY.md records the LOCAL validation baseline. CI
+      # installs from github::YuLab-SMU/*, so the deployed pages run development
+      # versions that do not match it. Publish the real provenance of this build
+      # next to the site instead of pretending the table describes it.
+      - name: Record build provenance
+        run: |
+          mkdir -p docs
+          Rscript -e 'writeLines(capture.output(print(sessionInfo())), "docs/SESSION-INFO.txt")'
+          Rscript -e 'cat("Bioconductor:", as.character(BiocManager::version()), "\n", file = "docs/SESSION-INFO.txt", append = TRUE)'
+
       - name: Validate navigation and source/generated links
         run: |
           python3 scripts/check_navigation.py
@@ -194,7 +214,6 @@ jobs:
           git diff --check
 
       - name: Deploy to GitHub Pages
-        if: github.event_name != 'pull_request'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
