@@ -1,0 +1,43 @@
+# Package registry ground truth for scripts/check_package_macros.py
+#
+# Which registry a package name belongs to, so that the Quarto macros
+#   r Biocpkg("X") / r CRANpkg("X") / r Githubpkg("X")
+# in the book's prose point at the right place.
+#
+# Format: one `key: value` line per package. Value is `cran`, `bioconductor`,
+# or `github`. `#` starts a comment; blank lines are ignored. Keys are matched
+# case-sensitively because R package names are case-sensitive.
+#
+# Hand-maintained. A package missing here is reported as UNCHECKED (not a
+# failure), so adding a new package to the book needs no edit to pass CI; add
+# a line when you want the macro verified.
+#
+# Rationale worth keeping: `gson` and `enrichit` are CRAN, not Bioconductor.
+# https://bioconductor.org/packages/gson answers HTTP 200 but renders
+# Bioconductor's "Removed Packages" page, so a 200 check is not evidence of a
+# Bioconductor home; CRAN is the real registry for both.
+
+# CRAN
+gson: cran
+enrichit: cran
+ggtangle: cran
+yulab.utils: cran
+msigdbr: cran
+
+# Bioconductor
+clusterProfiler: bioconductor
+DOSE: bioconductor
+GOSemSim: bioconductor
+enrichplot: bioconductor
+ReactomePA: bioconductor
+meshes: bioconductor
+ChIPseeker: bioconductor
+pathview: bioconductor
+AnnotationHub: bioconductor
+biomaRt: bioconductor
+AnnotationForge: bioconductor
+GO.db: bioconductor
+DESeq2: bioconductor
+rWikiPathways: bioconductor
+AHMeSHDbs: bioconductor
+breastCancerMAINZ: bioconductor

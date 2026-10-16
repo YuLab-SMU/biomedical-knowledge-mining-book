@@ -1,0 +1,18 @@
+# Anchors that may legitimately appear in more than one root .qmd.
+#
+# Read by scripts/check_links.py (cross-file anchor uniqueness). Every entry is a
+# deliberate compatibility alias: a chapter was split or a section was renamed,
+# and the old fragment is kept so that deep links made before the move still land
+# somewhere sensible instead of 404ing. Quarto gives one id to the whole book, so
+# the *canonical* target still has exactly one owner; the entries below only
+# excuse the alias copy.
+#
+# One anchor per line. `#` starts a comment; blank lines are ignored.
+# Before adding a line, check that the duplicate is really an alias rather than
+# two sections that happen to share a name - the second case should be renamed.
+
+# identifier-utilities.qmd owns {#sec-setReadable} on the `setReadable` section.
+# kegg-enrichment.qmd keeps a raw <a id="sec-setReadable"> under its own
+# "Translating Gene IDs to Names" heading, which was renamed to
+# {#kegg-setReadable}, so that links made before the rename still resolve there.
+sec-setReadable
