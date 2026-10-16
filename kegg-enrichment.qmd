@@ -293,10 +293,9 @@ Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see a
 
 ## Translating Gene IDs to Names {#kegg-setReadable}
 
-Legacy deep links addressed this section as `#sec-setReadable`. The canonical
-explanation of `setReadable()` lives in
-[identifier utilities](identifier-utilities.qmd#sec-setReadable), and that name
-is kept anchored here as well so old links still land on this page.
+The canonical explanation of `setReadable()` is in
+[identifier utilities](identifier-utilities.qmd#sec-setReadable); `#sec-setReadable`
+also resolves on this page, for links made before this section was renamed.
 
 <a id="sec-setReadable"></a>
 

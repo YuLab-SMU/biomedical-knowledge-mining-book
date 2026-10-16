@@ -8,7 +8,7 @@
 source("_common.R")
 ```
 
-Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene()`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015].
+Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene()`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis.
 
 ## Chapter overview
 
@@ -59,15 +59,15 @@ wrong features rather than an error, so record the genome build with the result.
 
 ```{r}
 #| label: chipseeker-annotatePeak
-#| include: false
+#| output: false
 anno <- annotatePeak(peaks,
                      tssRegion = c(-3000, 3000),
                      TxDb = TxDb.Hsapiens.UCSC.hg19.knownGene)
 ```
 
-`annotatePeak()` prints a progress banner while it works; that banner carries the
-build timestamp, so the call above is computed silently and only the resulting
-summary is shown:
+`annotatePeak()` prints a progress banner while it works, and that banner
+carries the build timestamp, so it is suppressed here (`output: false`) and the
+resulting summary is shown on its own:
 
 ```{r}
 #| label: chipseeker-annotatePeak-print
@@ -101,7 +101,7 @@ can converge on the same gene.
 
 ```{r}
 #| label: chipseeker-seq2gene
-#| include: false
+#| output: false
 linked <- seq2gene(peaks,
                    tssRegion = c(-1000, 1000),
                    flankDistance = 3000,
