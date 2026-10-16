@@ -188,7 +188,7 @@ plot_list(p1, p2, ncol=2, tag_levels = 'A')
 ```
 
 
-Note: The `dotplot()` function also works with [`compareCluster()` output](enrichplot-comparison.qmd#compare-dotplot).
+Note: The `dotplot()` function also works with [`compareCluster()` output](comparecluster-visualization.qmd#compare-dotplot).
 
 ### Highlighting specific pathways
 

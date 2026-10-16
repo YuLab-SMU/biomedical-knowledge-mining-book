@@ -20,7 +20,7 @@ A functional enrichment workflow has two different jobs:
 
 These jobs should not be confused. `enricher()` and `GSEA()` provide enrichment
 interfaces, whereas a gene-set resource provides the biological knowledge that
-those interfaces test. The `r Biocpkg("gson")` package supplies a standard way
+those interfaces test. The `r CRANpkg("gson")` package supplies a standard way
 to represent that knowledge and to move it between data sources, analysis
 functions, and machines.
 
@@ -37,7 +37,7 @@ functions, and machines.
 
 ## What GSON represents
 
-GSON means **Gene Set Object Notation**. The `r Biocpkg("gson")` package
+GSON means **Gene Set Object Notation**. The `r CRANpkg("gson")` package
 defines the `GSON` class for storing gene-set information together with the
 metadata needed to interpret and reuse it. A GSON object is therefore more
 than a two-column `TERM2GENE` table: it is a portable knowledge resource that

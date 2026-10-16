@@ -142,7 +142,7 @@ Gene set resources:
 + <http://ge-lab.org/#/data>
 
 
-There are many gene sets available online. After parsing by the `read.gmt()` function, the data can be directly used to perform enrichment analysis using `enricher()` and `GSEA()` functions (see also [Chapter 12](universal-enrichment.qmd#universal-api)).
+There are many gene sets available online. After parsing by the `read.gmt()` function, the data can be directly used to perform enrichment analysis using `enricher()` and `GSEA()` functions (see also [Universal enrichment analysis](universal-enrichment.qmd#universal-api)).
 
 
 

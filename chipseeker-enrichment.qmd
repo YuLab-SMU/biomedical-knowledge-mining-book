@@ -1,9 +1,14 @@
 # Functional enrichment analysis of genomic coordinations {#chipseeker-enrichment}
 
+```{r}
+#| label: chipseeker-setup
+#| echo: false
+#| message: false
+#| cache: false
+source("_common.R")
+```
 
-
-Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015].
-
+Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene()`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis. For more details, please refer to `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015].
 
 ## Chapter overview
 
@@ -12,7 +17,7 @@ Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed
 | **Questions** | How can genomic regions such as peaks be mapped to candidate genes before functional enrichment? |
 | **Input** | Annotated genomic regions, a genome/annotation configuration, and a region-to-gene mapping rule such as nearest, host, promoter, or flanking genes. |
 | **Methods** | Region annotation and `seq2gene()` many-to-many coordination, followed by standard ORA, GSEA, comparison, or visualization workflows. |
-| **Main functions** | `annotatePeak()`, `seq2gene()`, and downstream `enricher()` / `GSEA()` after constructing gene-level inputs. |
+| **Main functions** | `annotatePeak()`, `seq2gene()`, and downstream `enrichGO()` / `enricher()` / `GSEA()` after constructing gene-level inputs. |
 | **Output** | Region annotations, candidate gene mappings, and downstream `enrichResult` / `gseaResult` objects. |
 | **Main limitations** | Region-to-gene assignment is an inference, not proof of regulation. Results depend on genome build, annotation release, promoter/flanking parameters, and many-to-many mapping choices. |
 
@@ -20,13 +25,181 @@ Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed
 After mapping regions to genes, return to the shared [data contract](data-contract.qmd) and choose an enrichment route. Preserve the genome build, annotation release, and mapping rule with the result.
 :::
 
+## Annotating peaks {#chipseeker-annotate-peak}
 
+`annotatePeak()` places every peak in its genomic context relative to transcript
+start sites. The example uses the peak table bundled with
+`r Biocpkg("ChIPseeker")` and `TxDb.Hsapiens.UCSC.hg19.knownGene`, so it runs
+offline against a fixed annotation release rather than a downloaded one:
 
+```{r}
+#| label: chipseeker-load-peaks
+#| message: false
+suppressPackageStartupMessages({
+    library(ChIPseeker)
+    library(GenomicRanges)
+    library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+})
+
+peak_file <- system.file("extdata", "sample_peaks.txt", package = "ChIPseeker")
+peaks <- read.delim(peak_file, stringsAsFactors = FALSE)
+peaks <- makeGRangesFromDataFrame(
+    peaks,
+    seqnames.field = "chr", start.field = "start", end.field = "end",
+    keep.extra.columns = TRUE
+)
+peaks
+```
+
+The printed `GRanges` object confirms the chromosome style (`chr10`) and the six
+metadata columns carried over from the `narrowPeak`-style table. That chromosome
+naming must agree with the naming style of the `TxDb` used downstream: a
+`GRanges` holding hg19 coordinates annotated against an hg38 `TxDb` produces the
+wrong features rather than an error, so record the genome build with the result.
+
+```{r}
+#| label: chipseeker-annotatePeak
+#| include: false
+anno <- annotatePeak(peaks,
+                     tssRegion = c(-3000, 3000),
+                     TxDb = TxDb.Hsapiens.UCSC.hg19.knownGene)
+```
+
+`annotatePeak()` prints a progress banner while it works; that banner carries the
+build timestamp, so the call above is computed silently and only the resulting
+summary is shown:
+
+```{r}
+#| label: chipseeker-annotatePeak-print
+#| echo: false
+anno
+```
+
+The printed summary is the distribution of annotation features relative to
+`tssRegion`. `as.data.frame()` exposes the per-peak call together with the gene
+responsible for it:
+
+```{r}
+#| label: chipseeker-annotatePeak-table
+anno_table <- as.data.frame(anno)
+head(anno_table[, c("seqnames", "start", "end", "annotation",
+                    "geneId", "distanceToTSS")], row.names = FALSE)
+```
+
+`annotation` is a feature label — `Promoter (<=1kb)`, `1st Intron`, `3' UTR`,
+`Distal Intergenic`, and so on — and `geneId` is the Entrez identifier of the
+gene carrying that feature. `distanceToTSS` is signed: a negative value means
+the peak lies upstream of the transcript start site.
+
+## From regions to genes with `seq2gene()` {#chipseeker-seq2gene}
+
+`annotatePeak()` assigns one label per peak. `seq2gene()` answers a different
+question — which genes *may be regulated* by each region — by collecting the
+genes whose promoter, gene body, or flanking window overlaps the region. The
+mapping is many-to-many: one region can link several genes, and several regions
+can converge on the same gene.
+
+```{r}
+#| label: chipseeker-seq2gene
+#| include: false
+linked <- seq2gene(peaks,
+                   tssRegion = c(-1000, 1000),
+                   flankDistance = 3000,
+                   TxDb = TxDb.Hsapiens.UCSC.hg19.knownGene)
+```
+
+```{r}
+#| label: chipseeker-seq2gene-print
+#| echo: false
+length(linked)
+head(linked)
+```
+
+::: {.callout-caution}
+Check what that vector actually contains before feeding it anywhere. Its
+documented return value is a gene vector, and here only
+`r sum(grepl("^[0-9]+$", linked))` of `r length(linked)` entries are bare Entrez
+identifiers; the rest are composite `transcriptId.geneId` labels inherited from
+the `TxDb`'s gene naming. Splitting them with a pattern such as
+`sub(".*[._]", "", x)` looks reasonable and is **wrong** — on
+`ENST00000446298.1_3` it returns `"3"`, and those bogus values are simply not
+found during ID lookup, so enrichment quietly runs on a shrunk gene set.
+
+The robust identifier source is `annotatePeak()`'s `geneId` column, which is
+numeric Entrez by construction. Use `seq2gene()` for region-to-gene
+*connectivity* — how many genes a region could reach, and which regions share a
+gene — and take the identifier list from the annotation table.
+:::
+
+```{r}
+#| label: chipseeker-region-genes
+region_genes <- as.character(unique(as.data.frame(anno)$geneId))
+region_genes <- region_genes[grepl("^[0-9]+$", region_genes)]
+length(peaks)
+length(linked)
+length(region_genes)
+```
+
+Read those three numbers together: `r length(peaks)` input peaks produce
+`r length(linked)` region-to-gene links under the chosen window, and the
+annotated peaks resolve to `r length(region_genes)` distinct candidate genes.
+Peaks that fall in `Distal Intergenic` carry no `geneId` and are dropped, which
+is the loss to report before interpreting anything.
+
+`tssRegion` and `flankDistance` are the decisions that change the gene set most:
+widening them recruits more genes and pulls the signal toward broadly annotated
+housekeeping terms. Record both, plus the genome build, with the result.
+
+## Enriching the mapped genes {#chipseeker-downstream}
+
+Once regions have become a character vector of identifiers, nothing downstream
+is specific to ChIP-Seq. The vector enters the same engine and knowledge
+connector used anywhere else in the book:
+
+```{r}
+#| label: chipseeker-enrichGO
+#| message: false
+suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+})
+
+go_bp <- enrichGO(gene = region_genes,
+                  OrgDb = org.Hs.eg.db,
+                  ont = "BP",
+                  pvalueCutoff = 0.05,
+                  readable = TRUE)
+nrow(as.data.frame(go_bp))
+```
+
+This returns `r nrow(as.data.frame(go_bp))` terms, and that is the honest output
+rather than a broken pipeline: the peak table bundled with
+`r Biocpkg("ChIPseeker")` is synthetic, not a transcription-factor experiment,
+so there is no biological theme in it to recover. Even with the thresholds
+loosened to `pvalueCutoff = 1`, the best adjusted p-value reachable from these
+peaks is roughly 0.42 — nowhere near interpretable. Everything above still ran
+end to end, the object is a normal `enrichResult`, and every downstream route
+from [the data contract](data-contract.qmd) (`simplify()`, `dotplot()`,
+`compareCluster()`) applies once you point this chain at your own peak set.
+
+An empty ORA result is a diagnostic, not a dead end. Before re-checking the
+identifiers, look at the two decisions this chapter owns: the `tssRegion` /
+`flankDistance` window, and how many peaks survived to contribute a `geneId`.
+A background that is too wide, or a window that silently drops most regions,
+both empty the result table without raising an error.
+
+::: {.callout-warning}
+Region-to-gene assignment is an inference. A peak inside a gene body, or in the
+neighbouring intergenic window, does not establish that the gene is regulated by
+the assayed factor. Report how many regions produced how many candidate genes
+before interpreting any term.
+:::
 
 ## Next steps
 
+- Inspect the mapped genes and their background with [identifier utilities](identifier-utilities.qmd#useful-utilities) and [the data contract](data-contract.qmd).
 - Use [universal enrichment](universal-enrichment.qmd#universal-api) when the mapped genes require custom or non-model annotations.
-- Compare region-derived gene sets with the [analysis engines](01-analysis-engines.qmd) or [compareCluster](comparecluster-analysis.qmd#clusterprofiler-comparecluster).
+- Compare region-derived gene sets across experiments with [compareCluster](comparecluster-analysis.qmd#clusterprofiler-comparecluster).
 - Visualize the resulting enrichment objects with the [visualization map](enrichplot.qmd#sec-enrichplot).
 
 

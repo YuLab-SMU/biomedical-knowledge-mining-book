@@ -37,19 +37,14 @@ Understanding similarities among disease aids in early diagnosis and new drug de
 
 Formal knowledge representation of gene-disease association is demanded for this purpose.
 Ontologies, such as Gene Ontology (GO), have been successfully applied to represent biological knowledge, and many related techniques have been adopted to extract information.
-Disease Ontology (DO) [@schriml_disease_2011] was developed to create a consistent description of gene products with disease perspectives, and is essential for supporting functional genomics in disease context.
-Accurate disease descriptions can discover new relationships between genes and disease, and new functions for previously uncharacterized genes and alleles.
-
-
-
-Disease Ontology (DO) [@schriml_disease_2011] aims to provide an open source ontology for the integration of biomedical data that is associated with human disease. Unlike other clinical vocabularies that defined disease related concepts disparately, DO is organized as a directed acyclic graph, laying the foundation for quantitative computation of disease knowledge.
+Disease Ontology (DO) [@schriml_disease_2011] provides an open source ontology, organized as a directed acyclic graph, for the consistent description of gene products from a disease perspective. Unlike other clinical vocabularies that defined disease-related concepts disparately, that graph structure lays the foundation for quantitative computation of disease knowledge, and for discovering new relationships between genes and disease.
 
 We developed an `R` package `r Biocpkg("DOSE")` [@yu_dose_2015] for analyzing semantic similarities among DO terms and gene products annotated with DO terms.
 
 
 ## DO term semantic similarity measurement {#do-semantic-similarity}
 
-Four methods for determining the semantic similarity of two terms based on the Information Content of their common ancestor term were proposed by Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997], Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]. Wang [@wang_new_2007] presented a method to measure the similarity based on the graph structure. Each of these methods has its own advantage and weakness. `r Biocpkg("DOSE")` supports all these methods to compute semantic similarity among DO terms and gene products. For algorithm details, please refer to [Chapter 1](semantic-similarity.qmd#semantic-similarity-overview).
+Four methods for determining the semantic similarity of two terms based on the Information Content of their common ancestor term were proposed by Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997], Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]. Wang [@wang_new_2007] presented a method to measure the similarity based on the graph structure. Each of these methods has its own advantage and weakness. `r Biocpkg("DOSE")` supports all these methods to compute semantic similarity among DO terms and gene products. For algorithm details, please refer to [Semantic Similarity Analysis](semantic-similarity.qmd#semantic-similarity-overview).
 
 
 In `r Biocpkg("DOSE")`, we implemented `doSim` for calculating semantic similarities between pairs of DO terms or between two sets of DO terms.
@@ -72,8 +67,6 @@ The `doSim` function requires three parameter `DOID1`, `DOID2` and `measure`. `D
 
 
 We also implement a plot function `simplot()` to visualize the similarity result as demonstrated in @fig-dose-simplot.
-
-
 
 
 ```{r}
@@ -133,24 +126,6 @@ g3 <- c("57491", "6296", "51438", "5504", "27319", "1643")
 clusters <- list(a=g1, b=g2, c=g3)
 DOSE::mclusterSim(clusters, measure="Wang", combine="BMA")
 ```
-
-<!--
-
-# GO semantic similarity calculation
-
-GO Semantic similarity can be calculated by `r Biocpkg("GOSemSim")`[@yu2010].
-
-We have developed another package `r Biocpkg("GOSemSim")`[@yu2010] to explore the functional similarity at GO perspective, including molecular function (MF), biological process (BP) and cellular component (CC).
-
-
-# MeSH semantic analysis
-
-MeSH (Medical Subject Headings) is the NLM controlled vocabulary used
-to manually index articles for MEDLINE/PubMed. `r Biocpkg("meshes")`
-supports enrichment (hypergeometric test and GSEA) and semantic
-similarity analyses for more than 70 species.
-
--->
 
 
 ## Next steps

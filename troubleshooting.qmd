@@ -123,7 +123,7 @@ For an unstable or restricted connection, build the annotation once and reuse it
 ```{r eval=FALSE}
 #| label: faq-local-kegg
 library(clusterProfiler)
-createKEGGdb::createKEGGdb("hsa")   # writes KEGG.db
+createKEGGdb::create_kegg_db("hsa") # builds a local KEGG.db package
 x <- enrichKEGG(gene, organism = "hsa", use_internal_data = TRUE)
 ```
 
@@ -162,7 +162,7 @@ p2 <- dotplot(x, showCategory = selected_pathways, font.size=14)
 aplot::plot_list(p1, p2, tag_levels = "A")
 ```
 
-Note: Another solution is using the `filter` verb to extract a subset of the result as described in [Chapter 16](result-objects.qmd#clusterProfiler-dplyr).
+Note: Another solution is using the `filter` verb to extract a subset of the result as described in [Manipulating enrichment result objects](result-objects.qmd#clusterProfiler-dplyr).
 
 
 ## How to extract genes of a specific term/pathway 

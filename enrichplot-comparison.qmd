@@ -65,7 +65,7 @@ xx <- compareCluster(
 xx <- pairwise_termsim(xx)
 ```
 
-## Dotplot2: Comparing two clusters {#compare-dotplot}
+## Dotplot2: Comparing two clusters {#dotplot2-compare}
 
 The focused `dotplot2()` example belongs here because it compares selected groups rather than introducing a new statistical test.
 

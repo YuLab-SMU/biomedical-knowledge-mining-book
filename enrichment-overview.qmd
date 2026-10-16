@@ -54,7 +54,7 @@ GO and KEGG are the most frequently used for functional analysis. They are typic
 
 Other gene sets include but are not limited to Disease Ontology ([DO](http://disease-ontology.org/)), [wikiPathways](https://www.wikipathways.org) and the Molecular Signatures Database ([MSigDb](http://software.broadinstitute.org/gsea/msigdb)). Disease Gene Network ([DisGeNET](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4397996/)) used to be supported through `r Biocpkg("DOSE")` as well, but that support was [removed](disease-enrichment.qmd#dose-dgn-ora) when DisGeNET changed its licence.
 
-In the current `clusterProfiler` ecosystem, classical ORA and GSEA are now complemented by enrichit-backed topology-aware and multi-omics workflows. The algorithm engine lives in `enrichit`, while `clusterProfiler` provides high-level interfaces such as `nseGO()`, `mnseGO()`, `nseKEGG()`, and `mnseKEGG()` for biological interpretation.
+In the current `clusterProfiler` ecosystem, classical ORA and GSEA are now complemented by enrichit-backed topology-aware and multi-omics workflows. The algorithm engine lives in the `r CRANpkg("enrichit")` package, while `clusterProfiler` provides high-level interfaces such as `nseGO()`, `mnseGO()`, `nseKEGG()`, and `mnseKEGG()` for biological interpretation.
 
 ## Next steps
 

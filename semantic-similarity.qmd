@@ -31,7 +31,8 @@ weaknesses and can be applied to other ontologies that have similar structure (i
 Four methods proposed by Resnik [@philip_semantic_1999],
 Jiang [@jiang_semantic_1997], Lin [@lin_information-theoretic_1998]
 and Schlicker [@schlicker_new_2006] are information content (IC) based, which depend on the frequencies of two GO terms involved and that of their closest common ancestor term in a specific corpus of GO
-annotations. The information content of a GO term is computed by the
+annotations. Using semantic similarity to explore the Gene Ontology was
+proposed first by Lord et al. [@lord_semantic_2003]. The information content of a GO term is computed by the
 negative log probability of the term occurring in GO corpus. A rarely used term contains a greater amount of information.
 
 The frequency of a term t is defined as:
@@ -150,7 +151,7 @@ $$sim_{BMA}(g_1, g_2) = \frac{\displaystyle\sum_{1=i}^m \max_{1 \le j \le n}sim(
 The idea behind semantic similarity measurement is the notion that genes with similar functions should have similar annotation vocabularies and be closely related in the ontology structure. Measuring similarity is critical for expanding knowledge, since similar objects tend to exhibit similar behaviors, which supports many bioinformatics applications to infer gene/protein functions, miRNA functions, genetic interactions, protein-protein interactions, miRNA-mRNA interactions, and cellular localization.
 
 
-We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [Chapter 2](go-semantic-similarity.qmd#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [Chapter 3](do-semantic-similarity.qmd#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [Chapter 4](mesh-semantic-similarity.qmd#meshes-semantic-similarity)).
+We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@yu2010; @yu_gosemsim_2020] for computing semantic similarity among GO terms, sets of GO terms, gene products and gene clusters (see also [GO semantic similarity analysis](go-semantic-similarity.qmd#GOSemSim)), `r Biocpkg("DOSE")` [@yu_dose_2015] for Disease Ontology (DO) (see also [DO semantic similarity analysis](do-semantic-similarity.qmd#DOSE-semantic-similarity)) and `r Biocpkg("meshes")` [@yu_meshes_2018] that based on Medical Subject Headings (MeSH) (see also [MeSH semantic similarity measurement](mesh-semantic-similarity.qmd#meshes-semantic-similarity)).
 
 ## Next steps
 

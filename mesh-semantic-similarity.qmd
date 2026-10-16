@@ -107,7 +107,7 @@ hsamd <- readRDS("cache/hsamd.rds")
 ## MeSH semantic similarity measurement {#meshes-semantic-similarity}
 
 The `r Biocpkg("meshes")` package [@yu_meshes_2018] implemented four IC-based methods (i.e. Resnik [@philip_semantic_1999], Jiang [@jiang_semantic_1997],
-Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and one graph-structure based method (i.e. Wang [@wang_new_2007]), to measure MeSH term semantic similarity. For algorithm details, please refer to [Chapter 1](semantic-similarity.qmd#semantic-similarity-overview).
+Lin [@lin_information-theoretic_1998] and Schlicker [@schlicker_new_2006]) and one graph-structure based method (i.e. Wang [@wang_new_2007]), to measure MeSH term semantic similarity. For algorithm details, please refer to [Semantic Similarity Analysis](semantic-similarity.qmd#semantic-similarity-overview).
 
 
 The `meshSim()` function is designed to measure semantic similarity between two MeSH term vectors.

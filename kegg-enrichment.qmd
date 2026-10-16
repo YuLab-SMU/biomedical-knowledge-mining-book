@@ -138,7 +138,7 @@ To address these issues, we provide two methods to perform KEGG analysis locally
 
 ### Using `gson`
 
-The `r Biocpkg("gson")` package provides the `gson_KEGG()` function to download the latest KEGG pathway and module data for a specific organism and store it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
+The `r CRANpkg("gson")` package provides the `gson_KEGG()` function to download the latest KEGG pathway and module data for a specific organism and store it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
 
 ```{r eval=FALSE}
 #| label: gson-kegg
@@ -289,9 +289,17 @@ kk <- retry(enrichKEGG(gene         = gene,
 head(kk)
 ```
 
-Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @sec-kegg-id-conversion). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function (see also @sec-setReadable) if there is an `OrgDb` available for the species.
+Input ID type can be `kegg`, `ncbi-geneid`, `ncbi-proteinid` or `uniprot` (see also @sec-kegg-id-conversion). Unlike `enrichGO()`, there is no `readable` parameter for `enrichKEGG()`. However, users can use the `setReadable()` function (see also [Translating Gene IDs to Names](#kegg-setReadable)) if there is an `OrgDb` available for the species.
 
-## Translating Gene IDs to Names {#sec-setReadable}
+## Translating Gene IDs to Names {#kegg-setReadable}
+
+Legacy deep links addressed this section as `#sec-setReadable`. The canonical
+explanation of `setReadable()` lives in
+[identifier utilities](identifier-utilities.qmd#sec-setReadable), and that name
+is kept anchored here as well so old links still land on this page.
+
+<a id="sec-setReadable"></a>
+
 
 For GO analysis, the `readable` parameter controls whether to translate the IDs to human-readable gene names. This parameter is not available for KEGG analysis. However, the `setReadable()` function can translate input gene IDs to gene names if the corresponding `OrgDb` object is available.
 
