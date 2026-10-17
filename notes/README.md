@@ -7,8 +7,12 @@ checked by `scripts/check_*.py`.
 | File | What it is |
 |---|---|
 | `todo.md` | Running list of issues and follow-up work collected from the GitHub issue tracker and elsewhere. |
-| `book-issues.md` | Audit log from the 2026-09-21 review pass. Git-ignored: it changes on nearly every editing session, so tracking it would add noise to every pull request. |
-| `book-issues-20261016.md` | Audit log of the pass that started 2026-10-16 against baseline `e9c4af3` and ran through 2026-10-17: four batches of issues plus two follow-up rounds, all closed and published. Git-ignored for the same reason as the file above. |
+| `book-issues.md` | Audit log from the 2026-09-21 review pass. |
+| `book-issues-20261016.md` | Audit log of the pass that started 2026-10-16 against baseline `e9c4af3` and ran through 2026-10-17: four batches of issues plus two follow-up rounds, all closed and published. |
+| `book-issues-20261017.md` | Audit log of the pass against baseline `d59e5df`. 19 findings (N1–N18 + N5b), all outside the coverage of the seven self-checks, which were green at that commit. Batch 1 fixes started 2026-10-18. |
+
+These audit logs are tracked, so the review history travels with the book source;
+`.gitignore` no longer lists them.
 
 Build artifacts of a different kind — knitr caches, generated HTML, the MeSH
 objects under `cache/` — are not here. Those live where the build expects them

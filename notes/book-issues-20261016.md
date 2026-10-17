@@ -262,7 +262,7 @@ AGENTS.md §5 已验证并写明：**「把一大段 Markdown headings、代码�
 
 **改法**：删无引用的 CRAN 项；`tidyverse` 换成实际用到的 `dplyr` / `ggplot2` / `tidyr` / `stringr`（`tidyr` 目前只在 `eval: false` 里用到，按需）；被注释说明为什么保留哪些传递依赖。
 
-状态：✅（由 `b4d3666` 完成）按**运行时可达性**而非文本搜索修剪：`ggupset`/`ggridges` 因 `upsetplot()`/`ridgeplot()` 的 `require_suggested()` 实际必需，保留；新增 `dotenv`。
+状态：✅（最终依赖面由后续提交补回；**2026-10-18 复核订正**：`b4d3666` 的实际裁剪依据是 `.qmd` 正文出现次数，不是运行时可达性，`R.utils`/`ggarchery`/`europepmc` 因此被误删，见 §6.6 与 `d7504a2`/`d59e5df`。）
 
 ## 2.4 `validate-book.yml` 名为 validate，实际不验证书的内容
 
@@ -598,7 +598,7 @@ for f in figures/*; do echo "$(grep -rl "$(basename $f)" *.qmd | wc -l)  $f"; do
 `enrichment-overview.qmd`、`references.bib`、`semantic-similarity.qmd`、`do-semantic-similarity.qmd`、
 `go-semantic-similarity.qmd`、`mesh-semantic-similarity.qmd`、`identifier-utilities.qmd`、
 `other-databases.qmd`、`enrichplot-summary.qmd`、`enrichplot-comparison.qmd`、`comparecluster-visualization.qmd`、
-`chipseeker-enrichment.qmd`（重写）。净 `+197 / -351`。
+`chipseeker-enrichment.qmd`（重写）。净 `+213 / -351`（**2026-10-18 复核订正**：原记 +197）。
 
 ## 逐条落地方式
 
@@ -610,7 +610,7 @@ for f in figures/*; do echo "$(grep -rl "$(basename $f)" *.qmd | wc -l)  $f"; do
   > ⚠ 修正本清单初稿的判断：原本打算改成裸 `@anchor`，实测**不行**——跨章裸 `@anchor` 会走 citeproc 并报 `citation ... not found`（章级 H1 锚点尤其如此），且 AGENTS.md §7 本来就要求「跨章节引用改成显式文件名加 anchor」。全量构建的 citeproc warning 从 8 降到 0 是这个改法的直接证据。
 - **1.6** `kegg-enrichment.qmd` 的 `{#sec-setReadable}` → `{#kegg-setReadable}`，并按 AGENTS.md §7「保留旧 anchor」补 `<a id="sec-setReadable"></a>` 兼容锚 + 一句说明；`enrichplot-comparison.qmd` 的 `{#compare-dotplot}` → `{#dotplot2-compare}`。`enrichplot-summary.qmd:191` 那句「dotplot() also works with compareCluster() output」原本指向 Dotplot2，语义错位，改指 `comparecluster-visualization.qmd#compare-dotplot`。
   验收：`{#...}` 全局唯一；`disease-enrichment` / `other-databases` 里裸 `@sec-setReadable` 仍正确解析到 Section 18.2（原始 HTML 的 `<a id>` 不会被 Quarto 注册为 crossref 目标，所以不引入歧义）。
-- **1.7 + 1.10** `chipseeker-enrichment.qmd` 由 33 行空壳重写为 167 行、**7 个可执行 chunk** 的真实链路：`read.delim` → `makeGRangesFromDataFrame` → `annotatePeak()` → `seq2gene()` → `enrichGO()` → 表格输出。全部离线、无新增 CI 依赖（`TxDb.Hsapiens.UCSC.hg19.knownGene` / `GenomicRanges` 已是 `ChIPseeker` 的 Imports 传递依赖；改用 base `read.delim` 以避免 `readr` 这个仅 *Suggests* 的依赖）。
+- **1.7 + 1.10** `chipseeker-enrichment.qmd` 由 33 行空壳重写为 206 行、**9 个 `{r}` chunk**（**2026-10-18 复核订正**：`a6d5e31` 实际即 206 行、9 个；原记 167 行、7 个）的真实链路：`read.delim` → `makeGRangesFromDataFrame` → `annotatePeak()` → `seq2gene()` → `enrichGO()` → 表格输出。全部离线、无新增 CI 依赖（`TxDb.Hsapiens.UCSC.hg19.knownGene` / `GenomicRanges` 已是 `ChIPseeker` 的 Imports 传递依赖；改用 base `read.delim` 以避免 `readr` 这个仅 *Suggests* 的依赖）。
 - **1.8** 删除 `reactome-enrichment.qmd`(2.2 KB)、`other-databases.qmd`(1.5 KB)、`do-semantic-similarity.qmd`(0.6 KB) 三处注释块。全书 >200 字符的 HTML 注释块归零。
 - **1.9** `do-semantic-similarity.qmd` 两段同义 DO 介绍合并为一段，`[@schriml_disease_2011]` 只出现一次。
 
@@ -971,7 +971,7 @@ success  Deploy to GitHub Pages
 
 | 项 | 结果 |
 |---|---|
-| `fig-mcnetplot` | 页面引用 `.png`，**1.71 MB**（原 13.2 MB） |
+| `fig-mcnetplot` | 页面引用 `.png`，**2.52 MiB**（**2026-10-18 复核订正**：实测线上 `content-length: 2,646,722`；原记 1.71 MB） |
 | `index.html` 的 CC BY-NC 4.0 | ✅ |
 | `data-contract.html` 的 Next steps | ✅ |
 | MeSH 两章的 provenance callout | ✅ |
@@ -984,3 +984,30 @@ success  Deploy to GitHub Pages
 四层故障里，**有三层源于同一个决定**：按「正文出现次数」裁剪 CI 依赖。这个方法在 `b4d3666` 里被明确写成依据并用它删掉了 `R.utils`、`ggarchery`、`europepmc`，代价是站点冻结六天、三次发布全灭、一次渲染中断。
 
 正确判据是**运行时可达性**：沿着「这本书实际执行的 chunk → 调用的函数 → 该函数内部 require 的包」这条链走一遍，而不是在 `.qmd` 里 `grep`。同一个提交里 `ggupset` / `ggridges` 靠人工经验留了下来，`R.utils` 没这么幸运——这类问题不会自己浮出来，必须用方法去找。
+
+---
+
+# 2026-10-18 复核订正
+
+对 2026-10-16/17 的成果做了一次独立复核：逐条回源码、重跑七项自检、对每个检查注入缺陷、核对 72 页渲染产物与线上站点、用 GitHub API 核对 CI。结论是绝大部分已落地；下面记录订正与复核新增发现。
+
+## 就地订正
+
+1. **§2.3 与 §6.6 的矛盾**：`b4d3666` 的实际裁剪依据是「正文出现次数」，不是「运行时可达性」；`R.utils`/`ggarchery`/`europepmc` 因此被误删，后由 `d7504a2`/`d59e5df` 补回。§2.3 的状态注已加订正，原结论（最终依赖面正确）不变。
+2. **§1.7 规模**：`a6d5e31` 的 `chipseeker-enrichment.qmd` 实际为 206 行、9 个 `{r}` chunk（不是 167 行、7 个）；同提交的净行数为 `+213/-351`（不是 `+197/-351`）。
+3. **§6.9 图体积**：`fig-mcnetplot` 线上实测 `content-length: 2,646,722`（2.52 MiB），不是 1.71 MB；本地为 2.92 MiB。
+
+## 复核新增发现并已修
+
+4. **`SESSION-INFO.txt` 记不到书用到的包**：CI 用独立 `Rscript` 写 `sessionInfo()`，新进程只加载 base，线上文件（816 B）只有 R/Bioconductor，没有 `clusterProfiler`/`DOSE`/`GOSemSim` 等版本——与 REPRODUCIBILITY 的承诺不符。已在 `publish-book.yml` 的 `Record build provenance` 步骤改为额外记录 16 个书用包；REPRODUCIBILITY 的文字同步说明。
+5. **§1.4 DAVID 引文**：`huang_david_2007` / `fresno_rdavidwebservice_2013` 当时被删除而非按 1.4 改法补引，DAVID 节仍只有 `wadi_impact_2016`。2026-10-18 已补回两条并引用。
+6. **§1.3 归因**：宏改成 `CRANpkg("gson")` 是对的，但同句「The gson package provides the gson_KEGG() function」仍把 clusterProfiler 的导出归给 gson。2026-10-18 已改。
+7. **文档一致性**：`Makefile` 的 `clean-cache` 注释（实际不删 `cache/`）、`cache/README.md` 的 `meshes` 版本（1.39.3 vs 表里的 1.39.1）、`AGENTS.md` §8 的检查数量（六个 → 七个，补 `check_versions.R`）、`.gitignore` 对审计日志的说明，均已订正。
+
+## 复核确认（未改动）
+
+- 七项自检在 `d59e5df` / `d2f9351` 上全绿；`check_bibliography.py` 的 4 个 warning 是已知的 3 个空字段 + 1 个同段重复引用。
+- 第 5 轮 `check_figure_sizes.py` 对「缺图 / 超限 / allowlist / 陈旧未引用文件」四种路径的行为与 §5.3 一致（实测 exit 1/1/0/0）。
+- 第 6 轮的四层修复全部仍在 workflow 中；严格 YAML loader 无重复 key；CI `39001519862`（`d59e5df`）success。
+- 第 1 批 B1–B4 的 bib 修复在渲染后的参考文献文本上复核通过（`An, Omer` / `Piñero, Janet` / `Resnik, Philip` / `Böhm`）。
+- 线上：`020` redirect 200、CC BY-NC 4.0、MeSH provenance callout、三个假 DOI 消失，均核对通过。
