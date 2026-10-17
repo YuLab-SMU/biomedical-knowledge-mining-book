@@ -78,6 +78,16 @@ jobs:
           # executed chunks. They currently arrive only as transitive dependencies of
           # clusterProfiler, enrichplot and biomaRt; a chapter that calls a package
           # should not depend on another package happening to import it.
+          #
+          # R.utils looks unused -- no chapter mentions it -- but yulab.utils needs
+          # it: download_yulab_file(..., gzfile = TRUE) calls R.utils::gunzip()
+          # after fetching the ontology cache, and the only copy of HDO.sqlite on
+          # the server is the gzipped one. check_pkg() then aborts, and
+          # download_yulab_file swallows that into FALSE and returns the
+          # destination path as though the download had worked, so the cache is
+          # silently absent and the HDO prewarm step fails. Do not remove it on
+          # the grounds that it is unreferenced in the .qmd sources: trimming by
+          # text search cannot see a dependency that lives inside another package.
           retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "cran::dplyr",
             "cran::ggplot2",
@@ -94,6 +104,7 @@ jobs:
             "cran::wget",
             "cran::httr2",
             "cran::dotenv",
+            "cran::R.utils",
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
