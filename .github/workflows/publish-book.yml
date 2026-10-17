@@ -223,6 +223,16 @@ jobs:
       - name: Validate function names against installed package exports
         run: Rscript scripts/check_api_names.R
 
+      # Also needs the render output, so it belongs here and not in
+      # validate-book.yml. This is the guard for issue #41: enrichment plots
+      # draw one graphical element per gene, and a single four-panel cnetplot()
+      # once weighed 13.2 MB, which is enough to make a page take minutes to
+      # render. It reads the generated HTML rather than scanning docs/, because
+      # Quarto leaves the previous build's figure files behind and a directory
+      # scan would keep reporting a figure nobody links to.
+      - name: Validate figure payload size
+        run: python3 scripts/check_figure_sizes.py
+
       # scripts/check_versions.R is deliberately NOT run here. The table in
       # REPRODUCIBILITY.md is the local validation baseline, while this job
       # installs github::YuLab-SMU/* development versions that are documented to

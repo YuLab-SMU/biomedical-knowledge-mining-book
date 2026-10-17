@@ -75,10 +75,17 @@ python3 scripts/check_bibliography.py   # duplicate/DOI/format checks on referen
 python3 scripts/check_package_macros.py # Biocpkg()/CRANpkg() against the registry
 Rscript scripts/check_api_names.R       # `foo()` mentions vs real package exports
 Rscript scripts/check_versions.R        # version table vs the installed library
+python3 scripts/check_figure_sizes.py   # per-image payload size, read from docs/
 quarto render
 ```
 
-The first four are the offline source gate that `validate-book.yml` runs on every push and pull request; none of them reaches the network. `check_api_names.R` runs in `publish-book.yml` after the book packages are installed, because it is only meaningful against a real library. `check_versions.R` is a **local** check only: it compares this table against the local baseline, and CI installs `github::YuLab-SMU/*` development versions that are documented above to differ from it, so running it in CI would fail on a difference that is intended.
+The first four are the offline source gate that `validate-book.yml` runs on every push and pull request; none of them reaches the network. `check_api_names.R` and `check_figure_sizes.py` run in `publish-book.yml` after the render, because both read its output or need the installed packages. `check_versions.R` is a **local** check only: it compares this table against the local baseline, and CI installs `github::YuLab-SMU/*` development versions that are documented above to differ from it, so running it in CI would fail on a difference that is intended.
+
+## Figure payload size
+
+`check_figure_sizes.py` measures every image the rendered pages actually reference and fails above 4 MiB. It reads the generated HTML rather than walking `docs/`, because Quarto does not remove the previous build's figure files, so a directory scan keeps reporting images that no page links to. The limit is set above the heaviest legitimate vector figure (3.4 MB) and far below the defect it exists to catch (a four-panel `cnetplot()` at 13.2 MB, issue #41).
+
+The remedy is always `#| fig-format: png` on the offending chunk, never the `svg2png()` helper in `_common.R`: ImageMagick's SVG renderer silently drops the curves and the ranked-list panel. `scripts/figure_size_allowlist.txt` exists for figures that genuinely cannot shrink; it is empty.
 
 `code-link` is disabled in `_quarto.yml` so the build does not depend on the CRAN package index. Function names remain linked through the book’s capability map and API index.
 

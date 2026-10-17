@@ -214,4 +214,19 @@ PY
 - 没有重复 chunk label；
 - 删除旧静态结果后，页面目录和 heading 数量符合预期。
 
+### 自检脚本
+
+`scripts/` 下有六个离线检查，都在 `REPRODUCIBILITY.md` 里有说明。改完正文至少跑一遍：
+
+| 脚本 | 抓什么 |
+|---|---|
+| `check_navigation.py` | 根目录 `.qmd` 是否都在 `_quarto.yml` |
+| `check_links.py` | 内部链接、锚点、跨文件锚点唯一性 |
+| `check_bibliography.py` | 重复 key、DOI 形态、作者名姓解析、mojibake |
+| `check_package_macros.py` | `Biocpkg()` / `CRANpkg()` 与归属表是否一致 |
+| `check_api_names.R` | 正文 `` `foo()` `` 是否真是某个包的导出函数 |
+| `check_figure_sizes.py` | 单张图超过 4 MiB（需先 `quarto render`） |
+
+**新增检查时必须像 `5ecfdbe` 那样先证明它能抓到目标缺陷**：把检查脚本拿到修复前的产物上跑一次，确认它 exit 1。只证明“现在能过”不算数——第 1 批的全部问题就是在所有既有检查都绿着的情况下发布的。
+
 构建 warning 要区分“已有文件的非致命格式 warning”和“本次修改导致的错误”，不能因为 exit code 为 0 就忽略新的代码或链接问题。

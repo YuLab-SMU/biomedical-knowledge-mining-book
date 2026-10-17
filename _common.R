@@ -253,9 +253,10 @@ render_interpretation_blocks <- function(reports) {
 ## replace heavy figures with empty ones.
 ##
 ## The figures are rasterised properly by letting R draw them as PNG in the
-## first place -- add `#| fig-format: png` to the offending chunk (see the
-## gseaplot2 chunks in enrichplot.qmd). That is 60x smaller and needs no
-## external converter.
+## first place -- add `#| fig-format: png` to the offending chunk (usually with
+## `#| fig-dpi: 150`). That is ~60x smaller and needs no external converter.
+## scripts/check_figure_sizes.py fails the build when a figure the rendered
+## page references exceeds 4 MiB, so this does not have to be remembered.
 svg2png <- function(path, options) {
   if (!grepl('[.]svg$', path)) {
     return(path)

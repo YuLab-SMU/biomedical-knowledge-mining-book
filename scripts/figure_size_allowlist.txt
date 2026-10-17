@@ -1,0 +1,22 @@
+# Figures allowed to exceed scripts/check_figure_sizes.py's per-image limit.
+#
+# Format:  <file name>  #  <why it cannot be made smaller>
+#
+# Prefer fixing the figure over listing it here. Almost every oversized figure
+# in this book has been an enrichment plot drawing one graphical element per
+# gene, and the fix is to let R draw a raster directly:
+#
+#     #| fig-format: png
+#     #| fig-dpi: 150
+#
+# Do NOT use the svg2png() helper in _common.R to convert afterwards.
+# ImageMagick's built-in SVG renderer cannot parse these files: it reports an
+# unbalanced graphic context and writes a PNG containing only the axes, so the
+# curves, hit ticks and ranked-list panel are silently dropped. That replaces a
+# heavy figure with an empty one.
+#
+# This file is intentionally empty. An entry here is a standing decision to
+# accept a slow page, so it needs a reason that would still read correctly six
+# months from now.
+
+# fig-example.svg # reason it must stay a 6 MB vector

@@ -183,6 +183,8 @@ terms from other clusters in the plot.
 #| label: fig-mcnetplot  
 #| fig-width: 16
 #| fig-height: 16
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-scap: |
 #|   `cnetplot()` for comparing functional profiles of multiple gene clusters.
 #| fig-cap: |
