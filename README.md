@@ -1,6 +1,6 @@
 # Biomedical Knowledge Mining Toolkit
 
-Source files and supporting code for **Biomedical Knowledge Mining using GOSemSim and clusterProfiler**, a book by Guangchuang Yu.
+Source files and supporting code for **Biomedical Knowledge Mining Toolkit**, a book by Guangchuang Yu. The title here matches `_quarto.yml` and the rendered site at <https://yulab-smu.top/biomedical-knowledge-mining-book/>.
 
 The chapters follow a complete analysis workflow:
 
@@ -61,6 +61,8 @@ The cell-type annotation example in `interpretation.qmd` reads the local CellMar
 The generated `docs/` site and `*_cache/` / `*_files/` directories are ignored by Git. Keep source data under `datasets/`, figures under `figures/`, and shared R helpers at the project root because Quarto chapters use these relative paths.
 
 Chapter files use task-oriented names. `scripts/write_legacy_redirects.py` creates redirects for older numeric and package-oriented HTML URLs so existing links continue to work.
+
+Working notes live in [`notes/`](notes/README.md) and are not book source.
 
 ## Archive policy
 

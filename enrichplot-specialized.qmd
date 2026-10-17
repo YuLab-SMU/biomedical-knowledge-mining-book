@@ -50,6 +50,14 @@ Add `set_enrichplot_color()` to an `enrichplot` graphic with `+` to change the c
 #| label: fig-set-enrichplot-color
 #| fig-width: 18
 #| fig-height: 7
+#| fig-scap: |
+#|   Three dot plots of the 15 most significant DO terms that differ only in
+#|   their fill scale. In every panel the dot fill still encodes the adjusted
+#|   p-value, so the three colour bars are what changes: the left panel uses the
+#|   default palette with a log10 transform, the middle panel a red-to-blue
+#|   palette on a log10 scale, and the right panel an untransformed scale whose
+#|   bar runs across the raw adjusted p-values. Term labels, dot sizes and
+#|   layout are identical in all three.
 #| fig-cap: |
 #|   **Color customization using `set_enrichplot_color()`.** 
 #|   (A) Default log10 transformation.
@@ -128,9 +136,17 @@ aplot::plot_list(p, p2, ncol = 2, tag_levels = "A")
 #| label: fig-volplot
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   Volcano-style scatter of the DO over-representation result, one point per
+#|   term. The horizontal axis is `log2(FoldEnrichment)` and the vertical axis is
+#|   `-log10(p.adjust)`, so points rise to the right as a term becomes both more
+#|   over-represented and more significant; the point colour encodes the z-score.
+#|   Dashed reference lines cross at `log2(FoldEnrichment) = 1` and at
+#|   `-log10(p.adjust) = 2`, and the five terms with the highest z-score are
+#|   annotated with repelled labels near the top of the panel.
 #| fig-cap: |
 #|   **Volcano plot for ORA results.**
-#|   Visualizing -log10(p-value) vs z-score.
+#|   `log2(FoldEnrichment)` on the x-axis against `-log10(p.adjust)` on the y-axis, with terms coloured by z-score.
 
 # Example using enrichment result with fold change information
 # Note: volplot requires results with fold change values
@@ -145,6 +161,16 @@ volplot(edo)
 #| label: fig-hplot
 #| fig-width: 16
 #| fig-height: 14
+#| fig-scap: |
+#|   Twenty thin panels stacked one gene set per row, all sharing the same
+#|   horizontal axis of roughly 12,500 positions along the ranked gene list. Each
+#|   panel renders one gene set's running enrichment score as a four-step
+#|   horizon shading: four stacked colour bands whose changing heights trace the
+#|   score as it climbs and falls across the list, so the panels can be compared
+#|   by the shape of their curves and by where each peak falls. The ten most
+#|   negative-NES pathways occupy the upper half of the stack and the ten most
+#|   positive the lower half. No legend is drawn; the pathway names appear as
+#|   the strip labels on the left and the score axis is left unlabelled.
 #| fig-cap: |
 #|   **Horizontal GSEA plot for 20 disease gene sets.**
 #|   The figure shows the ten gene sets with the highest NES and the ten with

@@ -89,6 +89,15 @@ The `gseaplot` function also allows users to customize the colors of the running
 #| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   Two versions of the running-score plot for the first pathway, side by side,
+#|   each drawn as two stacked panels sharing the position axis: an upper panel
+#|   with the ranked list metric and the gene-set hits marked as vertical ticks,
+#|   and a lower panel with the running enrichment score plus the same hits. In
+#|   the left panel every element is black or green with a red dashed marker at
+#|   the score maximum; in the right panel the rank metric and its hit ticks are
+#|   gold, the running-score curve is firebrick, and the dashed line at the score
+#|   maximum is steelblue.
 #| fig-cap: |
 #|   **gseaplot with custom colors.**
 #|   (A) Default color scheme.
@@ -220,6 +229,12 @@ Users can use `geom_gsea_gene()` to label specific genes in the GSEA plot.
 #| fig-dpi: 150
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   The three-panel GSEA plot for the first pathway, in which five genes drawn
+#|   at random from that gene set are printed in labelled boxes on the running
+#|   score panel. Each box marks where along the ranked list that hit sits, so
+#|   the reader can trace individual genes back to the enrichment curve; the
+#|   middle hit-density band and the bottom ranked-metric panel are unchanged.
 #| fig-cap: |
 #|   **Labeling genes in GSEA plot.**
 library(ggplot2)
@@ -246,6 +261,12 @@ If users prefer to label with gene symbols, they can convert the gene IDs to sym
 #| label: fig-geom-gsea-gene-symbol
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   The same gene-labelling idea applied after `setReadable()` has converted the
+#|   result to gene symbols: five genes drawn at random from the first pathway
+#|   are written next to their position on the running score as repelled text
+#|   rather than as boxes, so the axis text stays legible when the labels
+#|   overlap.
 #| fig-cap: |
 #|   **Labeling gene symbols in GSEA plot.**
 #| eval: false

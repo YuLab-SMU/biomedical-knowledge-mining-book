@@ -135,6 +135,8 @@ By default, all the visualization methods provided by `r Biocpkg("enrichplot")` 
 
 See @fig-selectedPaths for a side-by-side comparison of default top categories versus user-selected pathways.
 
+`enrichKEGG()` and `enrichPathway()` in this chapter reach the remote KEGG and Reactome services, which can fail transiently, so the calls are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
+
 ```{r}
 #| label: fig-selectedPaths
 #| fig-height: 6
@@ -146,7 +148,7 @@ library(enrichplot)
 data(geneList, package='DOSE')
 de <- names(geneList)[abs(geneList)>1]
 
-x <- enrichKEGG(de)
+x <- retry(enrichKEGG(de))
 
 ## show top 10 most significant pathways and want to exclude the second one
 ## dotplot(x, showCategory = x$Description[1:10][-2])
@@ -188,7 +190,7 @@ See @fig-formatLabel for examples of wrapping long axis labels using numeric wid
 #| fig-cap: "**Wrap long axis labels.** Passing a numeric value to specify string width (A), a user specifiable labeller function (B)."
 #| fig-scap: "Wrap long axis labels."
 library(ReactomePA)
-y <- enrichPathway(de)
+y <- retry(enrichPathway(de))
 
 p1 <- dotplot(y, label_format = 20) 
 p2 <- dotplot(y, label_format = function(x) stringr::str_wrap(x, width=20))
@@ -213,7 +215,7 @@ kk <- bitr_kegg(geneID = gene, fromType='ncbi-geneid', toType='Path', organism='
 
 The warning message will indicate the percentage of genes that failed to map.
 
-To manually verify a specific gene, you can visit the KEGG website using a URL constructed with the organism code and gene ID, for example: `http://www.genome.jp/dbget-bin/www_bget?hsa:100506775`. If the gene page does not list any pathway, it means the gene has no KEGG pathway annotation.
+To manually verify a specific gene, you can visit the KEGG website using a URL constructed with the organism code and gene ID, for example: `https://www.genome.jp/dbget-bin/www_bget?hsa:100506775`. If the gene page does not list any pathway, it means the gene has no KEGG pathway annotation.
 
 ## External services, downloads, and version boundaries {#external-services}
 

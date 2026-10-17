@@ -59,6 +59,28 @@ MeSH terms were associated with Entrez Gene ID by three methods,
 |gene2pubmed|Manual curation by NCBI teams|
 |RBBH|sequence homology with BLASTP search (E-value<10<sup>-50</sup>)|
 
+::: {.callout-note}
+### About the committed semantic data
+
+`meshdata()` builds a `GOSemSimDATA` object holding the information content of
+every MeSH term and the gene-to-term annotation table behind it. For human that
+is roughly three million annotation rows, and computing the IC takes minutes, so
+the worked example below reads a committed `cache/hsamd.rds` rather than
+rebuilding it on every render. The build command is:
+
+```bash
+Rscript scripts/build_mesh_cache.R hsamd
+```
+
+The committed object records its own provenance in `x@metadata`: MeSH release
+2026, sources `Gendoo` and `gene2pubmed`, organism *Homo sapiens*, schema
+`MeSH.Hsa.eg.db`. `cache/README.md` keeps the current values. A cache built by a
+different `meshes` or `GOSemSim` release can load and then fail inside a slot
+accessor, so regenerate it whenever you change either package — the version table
+in `REPRODUCIBILITY.md` is checked against the installed library by
+`scripts/check_versions.R`.
+:::
+
 ## Supported organisms {#meshes-supported-organisms}
 
 The `r Biocpkg("meshes")` package [@yu_meshes_2018] relies on `MeSHDb` to prepare semantic data for measuring similarity. `MeSHDb` can be downloaded from `r Biocpkg("AnnotationHub")` (see also `r Biocpkg("AHMeSHDbs")`) and about 200 species are available and are supported by the `r Biocpkg("meshes")` package. 
@@ -99,8 +121,8 @@ hsamd <- meshdata(db, category='A', computeIC=T, database="gendoo")
 
 ```{r echo=FALSE}
 #| label: load-hsamd-cache
-## saveRDS(hsamd, file="cache/hsamd.rds")
-hsamd <- readRDS("cache/hsamd.rds")
+## Rebuilt with `Rscript scripts/build_mesh_cache.R`; see cache/README.md.
+hsamd <- load_mesh_cache("cache/hsamd.rds")
 ```
 
 

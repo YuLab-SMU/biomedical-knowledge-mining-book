@@ -163,6 +163,26 @@ Dot plot is similar to bar plot with the capability to encode another score as d
 
 ```{r}
 #| label: fig-dotplot-setup
+#| fig-scap:
+#|   - |
+#|     Dot plot of the DO over-representation result for its 30 most significant
+#|     terms. Terms run down the y-axis, the x-axis carries the gene ratio, the
+#|     dot size is the number of overlapping genes and the dot colour is the
+#|     adjusted p-value; `label_format = NULL` leaves the long term names
+#|     unwrapped.
+#|   - |
+#|     Dot plot of the DO gene set enrichment result for its 30 most significant
+#|     terms, drawn with exactly the same encoding — gene ratio on the x-axis,
+#|     overlap count as dot size, adjusted p-value as dot colour. Only the
+#|     result object and therefore the statistics behind the dots differ from
+#|     the panel above.
+#| fig-cap:
+#|   - |
+#|     **Dot plot for ORA** (`edo`), with `showCategory = 30` and
+#|     `label_format = NULL`.
+#|   - |
+#|     **Dot plot for GSEA** (`gseDO(geneList)`), with `showCategory = 30` and
+#|     `label_format = NULL`.
 library(ggplot2)
 edo2 <- gseDO(geneList)
 dotplot(edo, showCategory=30, label_format=NULL) + ggtitle("dotplot for ORA")
@@ -219,6 +239,16 @@ To render the HTML formatting, use the `ggtext` package with `element_markdown()
 
 ```{r}
 #| label: fig-dotplot-highlight
+#| fig-scap: |
+#|   Dot plot of a DO over-representation result whose y-axis labels are rendered
+#|   as HTML: every term whose description contains "cancer" appears in green
+#|   italics, while all remaining terms keep the ordinary label styling. The
+#|   data encoding is unchanged — gene ratio on the x-axis, overlap count as dot
+#|   size, adjusted p-value as dot colour.
+#| fig-cap: |
+#|   **Highlighting pathways with `label_format` and `ggtext`.**
+#|   Terms matching `"cancer"` are wrapped in an HTML `<i>` tag and rendered in
+#|   green italics by `element_markdown()`.
 library(ggplot2)
 library(ggtext)
 library(enrichplot)
@@ -229,6 +259,14 @@ You can also highlight specific pathways by index:
 
 ```{r}
 #| label: fig-label-format-func2
+#| fig-scap: |
+#|   Dot plot in which the labelling is selected by position rather than by
+#|   content: the topmost term is drawn in green italics and the one below it in
+#|   bold blue, while the remaining y-axis labels stay in normal type.
+#| fig-cap: |
+#|   **Highlighting labels by position.**
+#|   The first term is wrapped in a green `<i>` tag and the second in a bold blue
+#|   one.
 f2 <- function(ids) {
     ids[1] <- paste0("<i style='color:#009E73'>", ids[1], "</i>")
     ids[2] <- paste0("<i style='color:#0072B2'>**", ids[2], "**</i>")
@@ -242,6 +280,14 @@ Or apply different colors to all pathways:
 
 ```{r}
 #| label: fig-label-format-func3
+#| fig-scap: |
+#|   Dot plot in which every y-axis label is set in bold italics and each term
+#|   takes a successive colour from a `rainbow()` ramp, so the axis reads as a
+#|   colour gradient rather than as plain tick text.
+#| fig-cap: |
+#|   **Colouring every y-axis label.**
+#|   `f3` returns all labels wrapped in bold italics and coloured with
+#|   `rainbow()`.
 f3 <- function(ids) {
     # cols <- rcartocolor::carto_pal(length(ids), "Vivid")
     # cols <- colorspace::rainbow_hcl(length(ids))
@@ -261,6 +307,13 @@ The `x` variable of `dotplot()` supports a formula interface, allowing users to 
 #| label: fig-dotplot-formula
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   Two dot plots of the same enrichment result that differ only in the x-axis
+#|   variable. In the left panel the axis shows the ratio of the query gene
+#|   ratio to the background gene ratio, so terms are ordered by how much they
+#|   are over-represented relative to the universe; in the right panel it shows
+#|   `-log(p.adjust)`. Dot size stays the overlap count and dot colour the
+#|   adjusted p-value in both panels.
 #| fig-cap: |
 #|   **Dotplot with formula interface.**
 #|   (A) `x = ~GeneRatio/BgRatio`.
@@ -294,6 +347,12 @@ To increase the size of the dots in the dot plot, we can use the `scale_size` fu
 #| label: fig-dotplot-size
 #| fig-width: 12
 #| fig-height: 8
+#| fig-scap: |
+#|   Two dot plots of the ten most significant terms that differ only in how far
+#|   the dot sizes are stretched. The left panel uses the default size scale, in
+#|   which the counts fall close together; the right panel applies
+#|   `scale_size(range = c(2, 20))`, so the smallest count is drawn as a small dot
+#|   and the largest as a large one, with a size legend spanning that range.
 #| fig-cap: |
 #|   **Dotplot with adjusted dot sizes.**
 #|   (A) Default dotplot.
@@ -313,6 +372,12 @@ When GO enrichment is performed with `ont = "ALL"`, `manhattanplot()` can displa
 #| label: fig-manhattanplot
 #| fig-width: 12
 #| fig-height: 7
+#| fig-scap: |
+#|   Landscape view of a GO result enriched across all three ontologies. Terms
+#|   are placed from left to right in blocks separated by axis ticks labelled BP,
+#|   CC and MF; height above the baseline and node colour both encode
+#|   `-log10(p.adjust)`, and node size encodes the overlap count. The twelve
+#|   highest terms carry text labels.
 #| fig-cap: |
 #|   **Manhattan plot of GO enrichment results.**
 #|   Terms are grouped by ontology and plotted by `-log10(p.adjust)`.

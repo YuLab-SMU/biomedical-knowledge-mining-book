@@ -1,26 +1,26 @@
+# Build entry points for the book. Deployment is handled by the GitHub Actions
+# publish workflow, so there is deliberately no local `publish` target: a manual
+# push to gh-pages/ would be overwritten by the next CI run.
+#
+# README documents `make book` and `make fresh`. Keep the list short -- a target
+# that cannot run is worse than no target.
+
 book:
 	quarto render
-	# Rscript -e 'quarto::quarto_render()'
 
 fresh:
-	quarto render --cache-refresh 
+	quarto render --cache-refresh
 
-nocache:
-	quarto render example.qmd --no-cache 	
+# Drop every knitr cache so the next build recomputes every chunk. This also
+# discards the committed MeSH objects, which are rebuilt on demand with
+# `Rscript scripts/build_mesh_cache.R` -- see cache/README.md.
+clean-cache:
+	find . -type d -name '*_cache' -prune -exec rm -rf {} +
 
+clean:
+	quarto clean
 
-pdfbook:
-	quarto render --to pdf
-
-sync:
-	# rsync -av --remove-source-files docs/ gh-pages/ ;\
-	cd gh-pages;\
-	find . -maxdepth 1 ! -name "CNAME" ! -name ".gitignore" ! -name ".git" ! -name . |xargs rm -r ;\
-	mv -f ../docs/* ./
-
-publish: sync
-	cd gh-pages;\
-	git add .;\
-	git commit -m 'update';\
-	git push -u origin gh-pages
-	
+# There is deliberately no `pdfbook` target: _quarto.yml declares no PDF format,
+# so `quarto render --to pdf` has nothing to resolve, and no TeX toolchain is
+# assumed in this environment. Adding one means configuring a format in
+# _quarto.yml and checking the output, not just wiring up a command.

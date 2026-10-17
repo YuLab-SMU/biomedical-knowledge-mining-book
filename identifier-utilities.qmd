@@ -81,10 +81,12 @@ The `bitr_kegg()` function supports ID conversion via the KEGG API, which is use
 Some of the functions, especially those internally supported for [DO](disease-enrichment.qmd#dose-enrichment), [GO](go-enrichment.qmd#clusterprofiler-go), and [Reactome Pathway](reactome-enrichment.qmd#reactomepa), support a parameter, `readable`.  If `readable = TRUE`, all the gene IDs will be translated to gene symbols. The `readable` parameter is not available for enrichment analysis of KEGG or using user's own annotation. KEGG analysis using `enrichKEGG` and `gseKEGG`, which internally query annotation information from KEEGG database and thus support all species if it is available in the KEGG database. However, KEGG database doesn't provide gene ID to symbol mapping information. For analysis using user's own annotation data, we even don't know what species is in analyzed. Translating gene IDs to gene symbols is partly supported using the `setReadable` function if and only if there is an `OrgDb` available. The `setReadable()` function also works with `compareCluster()` output.
 
 
+`enrichKEGG()` queries the remote KEGG service and can fail transiently, so the call below is wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
+
 ```{r}
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
-x <- enrichKEGG(de)
+x <- retry(enrichKEGG(de))
 ## The geneID column is ENTREZID
 head(x, 3)
 
@@ -126,7 +128,11 @@ url <- "https://maayanlab.cloud/Enrichr/geneSetLibrary?mode=text&libraryName=COV
 ## Enrichr is an external service and the library name is not guaranteed to be
 ## stable, so retry the download and skip this example if it is unavailable
 ## rather than failing the whole book build.
-gmt <- retry_download(url, destfile = "COVID19_GeneSets.gmt")
+##
+## The file goes to a temporary directory. Writing it into the repository root
+## left an untracked artifact beside the sources, so every ordinary build
+## dirtied the working tree.
+gmt <- retry_download(url, destfile = tempfile(fileext = ".gmt"))
 
 if (!is.null(gmt)) {
     covid19_gs <- read.gmt(gmt)
@@ -139,7 +145,12 @@ if (!is.null(gmt)) {
 Gene set resources:
 
 + <https://maayanlab.cloud/Enrichr/#stats>
-+ <http://ge-lab.org/#/data>
+
+A GeLab web service used to be listed at `ge-lab.org` here. That host stopped
+resolving and the site now serves unrelated content, so it is left out rather
+than linked; see also the note on the DAVID web service in
+[other databases](other-databases.qmd#david-functional-analysis), which is
+unavailable for the same reason.
 
 
 There are many gene sets available online. After parsing by the `read.gmt()` function, the data can be directly used to perform enrichment analysis using `enricher()` and `GSEA()` functions (see also [Universal enrichment analysis](universal-enrichment.qmd#universal-api)).

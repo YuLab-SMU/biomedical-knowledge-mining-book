@@ -146,6 +146,15 @@ terms from other clusters should be retained for comparison.
 #| label: fig-includeAll
 #| fig-width: 14
 #| fig-height: 10
+#| fig-scap: |
+#|   Two dot plots of the same `compareCluster` result with `showCategory = 5`,
+#|   drawn side by side to contrast term selection. In the left panel each
+#|   cluster contributes only its own five most significant terms, so a term
+#|   shared by two clusters is drawn under one column and appears empty under
+#|   the other. In the right panel the same shared term is drawn in both columns
+#|   because the matched terms of the other clusters are kept, which makes the
+#|   overlap between clusters visible. Dot size is the gene ratio and dot colour
+#|   the adjusted p-value in both panels.
 #| fig-cap: |
 #|   **Comparison of dotplot with and without includeAll parameter.** 
 #|   (A) `includeAll=FALSE` produces a plot that strictly follows `showCategory` but may hide overlapping terms. 

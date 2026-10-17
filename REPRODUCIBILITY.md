@@ -54,17 +54,31 @@ Rscript scripts/make_airway_de_table.R
 
 The generated table is committed so ordinary book rendering does not require the `airway` package or a DESeq2 rerun. If the source package or analysis design changes, regenerate the table, review its schema and row count, and update `datasets/readme.md`.
 
-The committed MeSH caches were regenerated with `meshes` 1.39.3 from the human AnnotationHub record `AH122129` (MeSH v011, 2026). The package now bundles the NLM descriptor-name map needed because current MeSHDb records expose gene/MeSH mappings but no `MESHTERM` column. Update the package data and the three cache files together when the annual NLM descriptor release changes.
+The three committed MeSH objects under `cache/` were built with `meshes` 1.39.3 from the human AnnotationHub record `AH122129` (MeSH v011, 2026). That is deliberately a different `meshes` version from the 1.39.1 in the table above: the caches were generated once and are loaded from disk by both MeSH chapters, because rebuilding them needs an AnnotationHub download plus a `meshdata()` call that runs for minutes. The build loads objects rather than re-deriving them; it does not exercise 1.39.3 code paths.
+
+The package now bundles the NLM descriptor-name map needed because current MeSHDb records expose gene/MeSH mappings but no `MESHTERM` column. Regenerate the caches, and update this paragraph plus `cache/README.md`, whenever the annual NLM descriptor release changes or the `meshes` / `GOSemSim` version changes:
+
+```bash
+Rscript scripts/build_mesh_cache.R
+```
+
+The script prints the AnnotationHub record and MeSH release it resolved to. `cache/README.md` records each object's provenance as read from the object itself.
 
 ## Local validation
 
 Run the same checks used by the repository workflows:
 
 ```bash
-python3 scripts/check_navigation.py
-python3 scripts/check_links.py
+python3 scripts/check_navigation.py     # every root .qmd is in _quarto.yml
+python3 scripts/check_links.py          # internal links, anchors, generated HTML
+python3 scripts/check_bibliography.py   # duplicate/DOI/format checks on references.bib
+python3 scripts/check_package_macros.py # Biocpkg()/CRANpkg() against the registry
+Rscript scripts/check_api_names.R       # `foo()` mentions vs real package exports
+Rscript scripts/check_versions.R        # version table vs the installed library
 quarto render
 ```
+
+The first four are the offline source gate that `validate-book.yml` runs on every push and pull request; none of them reaches the network. `check_api_names.R` runs in `publish-book.yml` after the book packages are installed, because it is only meaningful against a real library. `check_versions.R` is a **local** check only: it compares this table against the local baseline, and CI installs `github::YuLab-SMU/*` development versions that are documented above to differ from it, so running it in CI would fail on a difference that is intended.
 
 `code-link` is disabled in `_quarto.yml` so the build does not depend on the CRAN package index. Function names remain linked through the book’s capability map and API index.
 

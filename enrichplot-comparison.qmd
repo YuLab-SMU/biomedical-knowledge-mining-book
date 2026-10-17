@@ -73,6 +73,14 @@ The focused `dotplot2()` example belongs here because it compares selected group
 #| label: fig-dotplot2
 #| fig-width: 14
 #| fig-height: 7
+#| fig-scap: |
+#|   Mirrored dot plot comparing two gene clusters over the same five terms per
+#|   side. Cluster X1 is drawn on the left and cluster X2 on the right, with the
+#|   axis labels showing absolute fold enrichment and a dashed vertical line
+#|   marking the zero difference between the two sides. A grey segment runs from
+#|   that line out to each term, the dot size is the number of genes contributed
+#|   and the dot colour the adjusted p-value; a labelled arrow under each half
+#|   points to the cluster name.
 #| fig-cap: |
 #|   **Dotplot2 for comparing two clusters.**
 #|   Enrichment is shown on opposite sides for clusters X1 and X2;

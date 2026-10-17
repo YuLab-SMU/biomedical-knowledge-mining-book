@@ -1,5 +1,4 @@
 _bookdown_files
-#COVID19_GeneSets.gmt
 gh-pages
 docs
 biomedicalKnowledge.Rmd
@@ -14,6 +13,16 @@ biomedicalKnowledge_files
 *_cache/
 *.html
 *.rmarkdown
-book-issues.md
 site_libs/
 hplot-review/
+
+# Download artifact of the Enrichr example in identifier-utilities.qmd. The
+# chunk writes it to a temporary directory now; this keeps an already-present
+# copy from showing up as an untracked file.
+COVID19_GeneSets.gmt
+# Python bytecode from scripts/*.py
+__pycache__/
+
+# Review log kept alongside todo.md. Not book source, and not worth carrying
+# through every pull request; notes/README.md explains the directory.
+notes/book-issues.md

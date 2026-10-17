@@ -154,3 +154,10 @@ Before running an enrichment function, verify:
 5. **Object:** Are you retaining `enrichResult`, `gseaResult`, or `compareClusterResult` rather than only a printed table?
 
 The next chapter applies these contracts to one offline, end-to-end example.
+
+## Next steps
+
+- For the ORA and GSEA engines that consume these objects, see [enrichment foundations](enrichment-foundations.qmd#sec-enrichment-foundations).
+- For custom `TERM2GENE` and `TERM2NAME` tables, see [universal enrichment analysis](universal-enrichment.qmd#universal-api).
+- For identifier namespaces, conversion, and GMT parsing, see [preparing biological identifiers](identifier-utilities.qmd#useful-utilities).
+- To see the contracts applied end to end, use the [first complete workflow](first-workflow.qmd#first-workflow).

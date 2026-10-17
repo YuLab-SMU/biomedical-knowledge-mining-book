@@ -61,7 +61,7 @@ GO / KEGG / WikiPathways / CellMarker / 自定义注释
 ## 3. 当前导航与源文件规则
 
 - `_quarto.yml` 是书籍导航的权威来源。
-- 当前所有 46 个 `.qmd` 都在 `_quarto.yml` 中使用；没有确认无用的 `.qmd` 时，不要为了“看起来整齐”随意移动文件。
+- 根目录下的全部 `.qmd` 都应在 `_quarto.yml` 中出现；确切数量以 `python3 scripts/check_navigation.py` 的输出为准，不要在本文件里写死数字。没有确认无用的 `.qmd` 时，不要为了“看起来整齐”随意移动文件。
 - `docs/`、`*_cache/`、`*_files/` 是构建生成物，已经由 `.gitignore` 忽略；不要手工修改生成的 HTML 代替修改 `.qmd`。
 - 稳定源数据放在 `datasets/`，图片放在 `figures/`，共享 R 工具放在项目根目录的 `_common.R` 等文件中；由于章节大量使用相对路径，不要无计划地移动这些目录。
 - 新的 part 导言使用 `00-start-here.qmd`、`01-analysis-engines.qmd` 等明确的能力名称；旧的数字文件名原则上暂时保留，用导航和交叉链接完成渐进迁移。已完成迁移并经项目明确决定删除的 `020`、`029` 兼容源文件不再恢复。

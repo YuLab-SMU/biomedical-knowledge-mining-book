@@ -7,7 +7,9 @@ book:
   title: "Biomedical Knowledge Mining Toolkit"
   reader-mode: true
   author: "Guangchuang Yu"
-  date: "11/18/2025"
+  # The book is revised continuously, so a fixed date went stale within months
+  # and made every page look a year out of date. Track the build instead.
+  date: last-modified
 
   page-footer:
     left: |
@@ -16,7 +18,7 @@ book:
       This book was built with <a href="https://quarto.org/">Quarto</a>.
   site-url: https://yulab-smu.top/biomedical-knowledge-mining-book/
   repo-url: https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/
-  repo-branch: main
+  repo-branch: master
   repo-actions: [edit, issue]
   chapters:
     - index.qmd

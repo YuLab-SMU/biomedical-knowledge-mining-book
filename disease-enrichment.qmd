@@ -29,7 +29,7 @@ We developed `r Biocpkg("DOSE")` [@yu_dose_2015] package to promote the investig
 ## Disease over-representation analysis {#dose-ora}
 
 
-`r Biocpkg("DOSE")` supports enrichment analysis of Disease Ontology (DO) [@schriml_disease_2011] and [Network of Cancer Gene](http://ncg.kcl.ac.uk/) [@omer_ncg]. In addition, several visualization methods were provided by `r Biocpkg("enrichplot")` to help interpreting semantic and enrichment results.
+`r Biocpkg("DOSE")` supports enrichment analysis of Disease Ontology (DO) [@schriml_disease_2011] and [Network of Cancer Gene](https://ncg.kcl.ac.uk/) [@omer_ncg]. NCG has not been updated since release 5.0, so enrichment results against it should be read as a historical resource. In addition, several visualization methods were provided by `r Biocpkg("enrichplot")` to help interpreting semantic and enrichment results.
 
 
 ### Over-representation analysis for disease ontology {#dose-do-ora}
@@ -69,12 +69,14 @@ The `readable` is a logical parameter that indicates whether the entrezgene IDs 
 
 ### Over-representation analysis for the network of cancer gene {#dose-ncg-ora}
 
-[Network of Cancer Gene](http://ncg.kcl.ac.uk/) (NCG) [@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
+[Network of Cancer Gene](https://ncg.kcl.ac.uk/) (NCG) [@omer_ncg] is a manually curated repository of cancer genes. NCG release 5.0 (Aug. 2015) collects 1,571 cancer genes from 175 published studies. The database has not been updated since that release, so the genes it contributes should be read as a historical snapshot rather than a current cancer gene census. `r Biocpkg("DOSE")` supports analyzing gene list and determine whether they are enriched in genes known to be mutated in a given cancer type.
+
+NCG is a remote service served by the KCL group and can fail transiently, so the calls in this chapter are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
 
 ```{r}
 #| label: enrichncg-example
 gene2 <- names(geneList)[abs(geneList) > 3]
-ncg <- enrichNCG(gene2) 
+ncg <- retry(enrichNCG(gene2))
 head(ncg)
 ```
 
@@ -129,10 +131,10 @@ head(y, 3)
 
 ```{r}
 #| label: gsencg-example
-ncg <- gseNCG(geneList,
-              pvalueCutoff  = 0.5,
-              pAdjustMethod = "BH",
-              verbose       = FALSE)
+ncg <- retry(gseNCG(geneList,
+                    pvalueCutoff  = 0.5,
+                    pAdjustMethod = "BH",
+                    verbose       = FALSE))
 ncg <- setReadable(ncg, 'org.Hs.eg.db')
 head(ncg, 3) 
 ```

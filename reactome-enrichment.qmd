@@ -36,6 +36,7 @@ Currently `r Biocpkg("ReactomePA")` supports several model organisms, including 
 Enrichment analysis is a widely used approach to identify biological
 themes. `r Biocpkg("ReactomePA")` implemented `enrichPathway()` that uses [hypergeometric model](enrichment-foundations.qmd#ora-algorithm) to assess whether the number of selected genes associated with a reactome pathway is larger than expected.
 
+Reactome is a remote service that can fail transiently, so the calls in this chapter are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
 
 ```{r enrichpathway}
 library(ReactomePA)
@@ -43,7 +44,7 @@ data(geneList, package="DOSE"
 )
 de <- names(geneList)[abs(geneList) > 1.5]
 head(de)
-x <- enrichPathway(gene=de, pvalueCutoff = 0.05, readable=TRUE)
+x <- retry(enrichPathway(gene=de, pvalueCutoff = 0.05, readable=TRUE))
 head(x)
 ``` 
 
@@ -52,10 +53,10 @@ head(x)
 
 
 ```{r gsepathway}
-y <- gsePathway(geneList, 
+y <- retry(gsePathway(geneList,
                 pvalueCutoff = 0.2,
                 pAdjustMethod = "BH", 
-                verbose = FALSE)
+                verbose = FALSE))
 head(y)
 ```
 
@@ -73,9 +74,9 @@ head(y)
 #| fig-width: 8
 #| fig-cap: "**Visualize reactome pathway.**"
 #| fig-scap: "Visualize reactome pathway."
-viewPathway("E2F mediated regulation of DNA replication", 
+retry(viewPathway("E2F mediated regulation of DNA replication",
             readable = TRUE, 
-            foldChange = geneList)
+            foldChange = geneList))
 ```
 
 

@@ -1,3 +1,15 @@
+## Manual diagram source. NOT part of the book build.
+##
+## This script draws a static course/roadmap diagram with DiagrammeR. No chapter
+## renders it and no Quarto or knitr chunk sources it; `DiagrammeR` is not in
+## the CI dependency list either. Run it by hand only when you want to refresh
+## the drawing:
+##
+##   Rscript scripts/clusterProfiler-diagram.R
+##
+## It was kept in the repository root rather than under scripts/ for a long time
+## with no reader, which is why the output PNG was unreferenced dead weight.
+
 library("DiagrammeR")
 
 

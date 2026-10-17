@@ -205,3 +205,10 @@ A minimal analysis record contains:
 * the result object used to create figures.
 
 This record makes a route reproducible and makes it possible to tell whether two enrichment results are genuinely comparable.
+
+## Next steps
+
+- For the input contract that every route depends on, apply the [data contract](data-contract.qmd#data-contract).
+- For the ORA and GSEA engines behind these routes, see [enrichment foundations](enrichment-foundations.qmd#sec-enrichment-foundations).
+- For the plots that match the returned result class, use the [visualization map](enrichplot.qmd#sec-enrichplot).
+- To check the result before writing it up, continue with [how to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment) and [reproducible reporting](reproducible-report.qmd#reproducible-report).

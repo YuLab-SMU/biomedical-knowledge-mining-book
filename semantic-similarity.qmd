@@ -156,5 +156,6 @@ We developed several Bioconductor packages, including `r Biocpkg("GOSemSim")` [@
 ## Next steps
 
 - Apply the knowledge-specific implementations in [GOSemSim](go-semantic-similarity.qmd#GOSemSim), [DOSE](do-semantic-similarity.qmd#DOSE-semantic-similarity), or [MeSH](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity).
+- To drop redundant terms from an enrichment result, use [`simplify()`](go-enrichment.qmd#simplifying-enriched-go-terms).
 - Use term selection before [visualizing networks](enrichplot-networks.qmd#sec-visualization-networks).
 

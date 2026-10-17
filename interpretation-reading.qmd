@@ -56,3 +56,10 @@ Continue to [evidence-guided interpretation](interpretation.qmd#evidence-guided-
 - Comparing results made with different universes without noting the difference.
 - Interpreting a readable symbol table as if it changed the statistical test.
 - Reporting only the top terms without the database, release, identifier type, and parameters.
+
+## Next steps
+
+- For filtering, sorting, and reshaping the result object, see [manipulating enrichment result objects](result-objects.qmd#clusterProfiler-dplyr).
+- For the plots that match each result class, use the [visualization map](enrichplot.qmd#sec-enrichplot).
+- For the evidence-synthesis layer, see [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation).
+- To keep the analysis record with the figures, see [reproducible reporting](reproducible-report.qmd#reproducible-report).

@@ -26,6 +26,19 @@ categories of MeSH are supported. The analysis supports about 200 species (see a
 | **Output** | `enrichResult` / `gseaResult` objects for downstream plotting and comparison. |
 | **Main limitations** | Results depend on database preparation, source, species coverage, and ID mapping; the same concepts may differ across sources. |
 
+::: {.callout-note}
+### Where the worked examples come from
+
+The two results below are read from `cache/enrichMeSH.rds` and `cache/gseMeSH.rds` instead of being recomputed during the book build. Running them live requires the full `MeSHDb` for the species, which is downloaded from `AnnotationHub` and then scanned for every gene; that is minutes of work on a good connection and an indefinite wait on a bad one, so it is a poor fit for a reproducible build. The code that produces them is kept and runnable, and the objects are committed:
+
+```bash
+Rscript scripts/build_mesh_cache.R          # rebuild all three MeSH caches
+Rscript scripts/build_mesh_cache.R hsamd    # or rebuild one of them
+```
+
+The committed objects record their own provenance: `cache/enrichMeSH.rds` was built against MeSH release 2026 for *Homo sapiens* from the `gendoo` source, and `cache/gseMeSH.rds` from `gene2pubmed`. `cache/README.md` lists the current values. If a cache file is missing the build stops with the command above rather than failing inside `readRDS()`, and if you change the `meshes`, `GOSemSim`, or `DOSE` version, regenerate the caches and update `REPRODUCIBILITY.md` in the same commit.
+:::
+
 
 ## MeSH over-representation analysis {#meshes-ora}
 
@@ -49,8 +62,10 @@ x <- enrichMeSH(de, MeSHDb = db, database='gendoo', category = 'C')
 
 ```{r echo=FALSE}
 #| label: load-enrichMeSH-cache
-## saveRDS(x, file="cache/enrichMeSH.rds")
-x <- readRDS("cache/enrichMeSH.rds")
+## The result is read from cache/enrichMeSH.rds rather than recomputed: enrichMeSH()
+## needs the full MeSHDb, which takes minutes to build. Rebuild with
+## `Rscript scripts/build_mesh_cache.R` -- see the note under the table below.
+x <- load_mesh_cache("cache/enrichMeSH.rds")
 ```
 
 ```{r}
@@ -73,8 +88,8 @@ y <- gseMeSH(geneList, MeSHDb = db, database = 'gene2pubmed', category = "G")
 ```{r}
 #| label: load-gseMeSH-cache
 #| echo: false
-## saveRDS(y, file="cache/gseMeSH.rds")
-y <- readRDS("cache/gseMeSH.rds")
+## See the note under the table below on how this cache is produced.
+y <- load_mesh_cache("cache/gseMeSH.rds")
 ```
 
 ```{r}

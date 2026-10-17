@@ -82,3 +82,10 @@ Figures should carry the filtering rule, color meaning, database identity, and r
 - [ ] Interpretation distinguishes association from mechanism and notes external validation needs.
 
 Use [How to read an enrichment result](interpretation-reading.qmd#how-to-read-enrichment) before drafting the interpretation, and see [evidence-guided interpretation](interpretation.qmd#evidence-guided-interpretation) for the optional evidence-synthesis layer.
+
+## Next steps
+
+- For the input contract that the record must preserve, see [the data contract](data-contract.qmd#data-contract).
+- For identifier namespaces and mapping summaries, see [preparing biological identifiers](identifier-utilities.qmd#useful-utilities).
+- For versioned annotation files stored beside the results, see [GSON](gson.qmd#sec-gson).
+- For the delivery hand-off, use the [appendix reproducibility record](appendix.qmd#reproducibility-record).

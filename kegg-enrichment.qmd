@@ -28,7 +28,7 @@ The KEGG FTP service has not been freely available for academic use since 2012, 
 
 ## Supported organisms {#clusterProfiler-kegg-supported-organisms}
 
-The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in the KEGG database. Users should pass an abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <http://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
+The `r Biocpkg("clusterProfiler")` package supports all organisms that have KEGG annotation data available in the KEGG database. Users should pass an abbreviation of academic name to the `organism` parameter. The full list of KEGG supported organisms can be accessed via <https://www.genome.jp/kegg/catalog/org_list.html>. [KEGG Orthology](https://www.genome.jp/kegg/ko.html) (KO) Database is also supported by specifying `organism = "ko"`.
 
 
 The `r Biocpkg("clusterProfiler")` package provides the `search_kegg_organism()` function to help search for supported organisms.
@@ -50,7 +50,7 @@ The `enrichKEGG()` function requires three key parameters: `gene` (gene IDs), `o
 
 ### Determine the `organism` code
 
-The `organism` parameter accepts a KEGG organism code (e.g., 'hsa' for human, 'mmu' for mouse). To find the code for your species, you can search the [KEGG Organism Catalog](http://www.genome.jp/kegg/catalog/org_list.html) or use the `search_kegg_organism()` function as mentioned above.
+The `organism` parameter accepts a KEGG organism code (e.g., 'hsa' for human, 'mmu' for mouse). To find the code for your species, you can search the [KEGG Organism Catalog](https://www.genome.jp/kegg/catalog/org_list.html) or use the `search_kegg_organism()` function as mentioned above.
 
 For rice, searching for "rice" or "Oryza sativa" in the catalog reveals two main subspecies:
 * *Oryza sativa japonica* (Japanese rice) -> code: `osa`
@@ -389,7 +389,7 @@ To prevent this cached data from becoming outdated, the package utilizes **GitHu
 ## KEGG module over-representation analysis {#clusterprofiler-kegg-module-ora}
 
 
-[KEGG Module](http://www.genome.jp/kegg/module.html) is a collection of manually defined functional units. In some situations, KEGG Modules have a more straightforward interpretation.
+[KEGG Module](https://www.genome.jp/kegg/module.html) is a collection of manually defined functional units. In some situations, KEGG Modules have a more straightforward interpretation.
 
 ```{r}
 #| label: kegg-module-example

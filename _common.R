@@ -65,6 +65,34 @@ retry_download <- function(url, destfile, ...) {
 }
 
 
+## Load a committed cache file, failing with an actionable message.
+##
+## The MeSH chapters ship their worked examples as cache/*.rds instead of running
+## them live. Building them needs an AnnotationHub download plus a meshdata()
+## call that runs for minutes, so the build reads committed objects rather than
+## re-deriving them on every render.
+##
+## That choice is only safe while the cache stays regenerable, so the failure
+## mode here names the script that rebuilds it rather than surfacing R's bare
+## "cannot open compressed file". It also checks that the object still loads:
+## a cache written by a different major version of meshes/GOSemSim can parse and
+## then fail deep inside a slot accessor, which is much harder to read.
+load_mesh_cache <- function(path) {
+  if (!file.exists(path)) {
+    stop(
+      "Missing cache file '", path, "'. Rebuild it with ",
+      "`Rscript scripts/build_mesh_cache.R` from the repository root.",
+      call. = FALSE
+    )
+  }
+  x <- readRDS(path)
+  if (!is.list(x) && is.null(attr(x, "class"))) {
+    stop("Cache file '", path, "' did not deserialize into an object.", call. = FALSE)
+  }
+  x
+}
+
+
 ## Safe HTML formatting for live interpretation reports.
 ##
 ## The package print methods intentionally emit Markdown headings. That is useful

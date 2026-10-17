@@ -7,6 +7,7 @@ A protein–protein interaction network is a way to organize supporting evidence
 #| message: false
 #| cache: false
 
+source("_common.R")
 library(clusterProfiler)
 library(org.Hs.eg.db)
 ```
@@ -19,13 +20,15 @@ To visualize these networks, we recommend using the `ggtangle` package, which pr
 
 You can retrieve the PPI network for a specific list of genes using `getPPI()`. You need to specify the taxonomy ID (e.g., `9606` for human).
 
+Both STRING, which backs `getPPI()`, and KEGG, which backs `enrichKEGG()` below, are remote services that can fail transiently, so the calls in this chapter are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper.
+
 ```{r}
 library(clusterProfiler)
 library(ggtangle)
 library(ggplot2)
 
 genes <- c("TP53", "BRCA1", "BRCA2", "S100A6")
-g <- getPPI(genes, taxID="9606")
+g <- retry(getPPI(genes, taxID="9606"))
 ```
 
 ## Retrieving PPI for Enrichment Results
@@ -35,21 +38,21 @@ A more common scenario is to explore the interactions among genes enriched in a 
 ```{r}
 data(geneList, package="DOSE")
 de <- names(geneList)[1:100]
-x <- enrichKEGG(de)
+x <- retry(enrichKEGG(de))
 y <- setReadable(x, 'org.Hs.eg.db', 'ENTREZID')
 
 # Get PPI for the first pathway
-g <- getPPI(y, 1)
+g <- retry(getPPI(y, 1))
 ```
 
 You can also specify the pathway ID directly or retrieve PPIs for multiple pathways.
 
 ```{r}
 # Get PPI for a specific pathway ID
-g2 <- getPPI(y, "hsa04110")
+g2 <- retry(getPPI(y, "hsa04110"))
 
 # Get PPI for the top 3 pathways
-g3 <- getPPI(y, 1:3)
+g3 <- retry(getPPI(y, 1:3))
 ```
 
 ## Adding Neighbors
@@ -58,7 +61,7 @@ Sometimes it is useful to include neighbors of the query genes to see the broade
 
 ```{r}
 # Add 10 neighbor nodes
-g_extended <- getPPI(y, 1, add_nodes = 10)
+g_extended <- retry(getPPI(y, 1, add_nodes = 10))
 ```
 
 ## Visualization with ggtangle

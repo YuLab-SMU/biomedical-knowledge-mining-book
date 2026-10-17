@@ -134,6 +134,8 @@ We can use `slice` to choose rows by their ordinal position in the enrichment re
 
 In the following example, a GSEA result of Reactome pathway was sorted by the absolute values of NES and the result was grouped by the sign of NES. We then extracted first 5 rows of each groups. The result was displayed in @fig-dot-sliceNES.
 
+Reactome is a remote service that can fail transiently, so the call in this chapter is wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
+
 
 
 ```{r}
@@ -147,7 +149,7 @@ In the following example, a GSEA result of Reactome pathway was sorted by the ab
 
 
 library(ReactomePA)
-x <- gsePathway(geneList)
+x <- retry(gsePathway(geneList))
 
 
 y <- arrange(x, abs(NES)) %>% 

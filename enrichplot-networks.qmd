@@ -125,9 +125,21 @@ Users can color specific genes by providing a named vector of fold changes conta
 
 ```{r}
 #| label: fig-cnetplot-custom-color
-foldChange <- c(rep(1, 6), rep(-1, 4))
+#| fig-scap: |
+#|   Gene–term network of the five most significant DO categories, with a size
+#|   legend for `itemNum` and a colour bar for "fold change". Eight genes are
+#|   named in the `foldChange` vector and all eight appear in the displayed
+#|   categories: four at `+1` take the top of the colour scale and four at `-1`
+#|   the bottom, while every gene not named in the vector keeps the neutral
+#|   default grey. The category nodes are drawn in tan and sized by item number.
+#| fig-cap: |
+#|   **Coloring specific genes with a named `foldChange` vector.**
+#|   Only genes that are members of the displayed categories join the colour
+#|   scale, so the names in the vector are chosen from the terms actually drawn;
+#|   every other gene node keeps the default grey.
+foldChange <- c(rep(1, 4), rep(-1, 4))
 names(foldChange) <- c("MARCO", "GZMB", "CXCL11", "CXCL10",
-                       "LAG3", "CCL8", "PDK1", "GABRP", "MELK", "CENPE")
+                       "AURKA", "TOP2A", "MMP1", "BIRC5")
 p <- cnetplot(edox, foldChange=foldChange)
 p
 ```
@@ -136,6 +148,15 @@ If you want to remove the color legend:
 
 ```{r}
 #| label: fig-cnetplot-no-legend
+#| fig-scap: |
+#|   The same gene–term network with its "fold change" colour guide removed. The
+#|   nodes are drawn exactly as before — the four up- and four down-regulated
+#|   genes keep their two colours — but the page no longer shows a bar explaining
+#|   what the colour scale stood for, leaving the colour encoding undocumented.
+#| fig-cap: |
+#|   **Removing the fold-change legend.**
+#|   `guides(color = 'none')` keeps the gene colours but drops the colour bar
+#|   that explains them.
 p <- p + guides(color='none')
 p
 ```
@@ -144,6 +165,16 @@ To create a custom legend, you can use a dummy data frame and `geom_point`:
 
 ```{r}
 #| label: fig-cnetplot-custom-legend
+#| fig-scap: |
+#|   The gene–term network with a hand-built legend added beside it. The guide is
+#|   titled "VIP genes" and shows a blue dot for upregulated genes above a red
+#|   dot for downregulated genes; it is generated from a dummy data frame whose
+#|   points are drawn at size zero, so only the legend appears and the network
+#|   itself is left untouched.
+#| fig-cap: |
+#|   **Building a custom legend with a zero-size dummy `geom_point` layer.**
+#|   The `alpha` guide is titled "VIP genes" and displays blue (upregulated) and
+#|   red (downregulated) dots.
 d <- data.frame(type=c('upregulated', 'downregulated'), x=0, y=0)
 g <- p + geom_point(aes(alpha=type, x=x, y=y), data=d, shape=16, size=0)
 
@@ -349,6 +380,17 @@ GO annotations often contain redundant terms that can dominate enrichment result
 #| label: fig-simplify-go
 #| fig-format: png
 #| fig-dpi: 150
+#| fig-scap: |
+#|   Two enrichment maps of the same GO result side by side, both filling their
+#|   nodes with `p.adjust` on a log10 scale. The left map keeps every enriched
+#|   term, so several tightly connected groups of overlapping GO terms appear.
+#|   The right map keeps only the most significant member of each redundant
+#|   group, so the network is sparser and its functional modules are more
+#|   distinct.
+#| fig-cap: |
+#|   **Enrichment map before and after `simplify()`.**
+#|   Original GO terms (left) and the result of
+#|   `simplify(cutoff = 0.7, by = "p.adjust", select_fun = min)` (right).
 # Load required packages
 library(clusterProfiler)
 library(enrichplot)

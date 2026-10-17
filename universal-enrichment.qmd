@@ -119,7 +119,7 @@ head(y)
 ## MSigDb analysis
 
 
-[Molecular Signatures Database](http://software.broadinstitute.org/gsea/msigdb) is a collection of annotated gene sets. It contains 8 major collections:
+[Molecular Signatures Database](https://www.gsea-msigdb.org/gsea/msigdb) is a collection of annotated gene sets. It contains 8 major collections:
 
 * H: hallmark gene sets
 * C1: positional gene sets
@@ -144,7 +144,7 @@ It supports several species:
 ## warm cache this chunk would be skipped, the package would never be attached,
 ## and those chunks would fail with "could not find function msigdbr".
 library(msigdbr)
-msigdbr_species()
+retry(msigdbr_species())
 ```
 
 We can retrieve human gene sets with `msigdbr()`. Since the complete human MSigDB table is large, it is usually better to request only the collection you need in analysis workflows.
