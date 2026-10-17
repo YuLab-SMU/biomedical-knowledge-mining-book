@@ -79,15 +79,31 @@ jobs:
           # clusterProfiler, enrichplot and biomaRt; a chapter that calls a package
           # should not depend on another package happening to import it.
           #
-          # R.utils looks unused -- no chapter mentions it -- but yulab.utils needs
-          # it: download_yulab_file(..., gzfile = TRUE) calls R.utils::gunzip()
-          # after fetching the ontology cache, and the only copy of HDO.sqlite on
-          # the server is the gzipped one. check_pkg() then aborts, and
-          # download_yulab_file swallows that into FALSE and returns the
-          # destination path as though the download had worked, so the cache is
-          # silently absent and the HDO prewarm step fails. Do not remove it on
-          # the grounds that it is unreferenced in the .qmd sources: trimming by
-          # text search cannot see a dependency that lives inside another package.
+          # The next four are the same situation one level deeper: none of them is
+          # named in any .qmd, but enrichplot calls require_suggested() on them from
+          # inside plotting methods the book executes, and a missing one aborts the
+          # render rather than degrading:
+          #
+          #   ggarchery  goplot.enrichResult()             enrichplot-specialized.qmd
+          #   europepmc  pmcplot()                         enrichplot-specialized.qmd
+          #   ggstar     dotplot.compareClusterResult()    the compareCluster chapters
+          #   ggrepel    .manhattanplot_internal()         enrichplot-summary.qmd
+          #
+          # ggstar and ggrepel probably arrive transitively today (ggtreeExtra,
+          # ggplot2). Listing them costs a few seconds and stops that from silently
+          # becoming the next failure.
+          #
+          # R.utils is in the same category and subtler: yulab.utils needs it because
+          # download_yulab_file(..., gzfile = TRUE) calls R.utils::gunzip() after
+          # fetching the ontology cache, and the only copy of HDO.sqlite on the
+          # server is the gzipped one. check_pkg() then aborts, and
+          # download_yulab_file swallows that into FALSE and returns the destination
+          # path as though the download had worked, so the cache is silently absent
+          # and the HDO prewarm step fails.
+          #
+          # The rule these four share: trim by runtime reachability, never by counting
+          # mentions in the .qmd sources. A dependency that lives inside another
+          # package's code is invisible to text search.
           retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "cran::dplyr",
             "cran::ggplot2",
@@ -105,6 +121,10 @@ jobs:
             "cran::httr2",
             "cran::dotenv",
             "cran::R.utils",
+            "cran::ggarchery",
+            "cran::europepmc",
+            "cran::ggstar",
+            "cran::ggrepel",
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
@@ -130,8 +150,17 @@ jobs:
           ), ask = FALSE, update = FALSE)'
 
       - name: Verify required packages are loadable
+        # Everything the executed chunks reach, including packages that no chapter
+        # names but that enrichplot loads from inside a plotting method and that
+        # yulab.utils needs for the ontology cache. Checking here costs seconds;
+        # finding the same omission from a render abort costs a full install and a
+        # half-finished book.
         run: |
-          Rscript -e 'required <- c("org.Hs.eg.db", "fgsea", "GO.db", "ChIPseeker", "MeSHDbi", "biomaRt", "pathview"); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing packages: ", paste(missing, collapse = ", "))'
+          Rscript -e 'required <- c(
+            "org.Hs.eg.db", "fgsea", "GO.db", "ChIPseeker", "MeSHDbi", "biomaRt", "pathview",
+            "R.utils", "ggarchery", "europepmc", "ggstar", "ggrepel", "ggupset", "ggridges",
+            "ggplotify", "httr2", "dotenv", "msigdbr", "ggplot2", "dplyr", "stringr", "forcats"
+          ); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing packages: ", paste(missing, collapse = ", "))'
 
       # aisdk.providers carries the DeepSeek and other non-bundled adapters;
       # without it interpret() fails with "Provider not found: deepseek".
