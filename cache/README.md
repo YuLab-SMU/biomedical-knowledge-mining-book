@@ -43,14 +43,15 @@ packageVersion("meshes")
 | Organism | *Homo sapiens* |
 | Sources | `Gendoo`, `gene2pubmed` |
 | Annotation schema | `MeSH.Hsa.eg.db` 1.0 |
-| Built with `meshes` | see `REPRODUCIBILITY.md` — that table is the authoritative record |
+| Built with `meshes` | 1.39.3 (deliberately different from the 1.39.1 local baseline in `REPRODUCIBILITY.md`; see its cache paragraph) |
 
 ## When to regenerate
 
 - A `meshes`, `GOSemSim`, or `DOSE` version change. `scripts/check_versions.R`
-  fails the build when the `REPRODUCIBILITY.md` table disagrees with the
-  installed library; regenerate the caches and update that table in the same
-  commit so the objects and the recorded versions cannot drift apart.
+  compares the `REPRODUCIBILITY.md` table with the installed library; when you
+  regenerate the caches, record the new `meshes` version in this note in the
+  same commit. The table stays the local validation baseline, so the two can
+  differ deliberately — see `REPRODUCIBILITY.md`.
 - The MeSH release changes enough to alter the enriched term lists.
 
 After regenerating, update the provenance rows above if any of them moved.

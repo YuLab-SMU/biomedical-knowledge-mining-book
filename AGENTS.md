@@ -216,7 +216,7 @@ PY
 
 ### 自检脚本
 
-`scripts/` 下有六个离线检查，都在 `REPRODUCIBILITY.md` 里有说明。改完正文至少跑一遍：
+`scripts/` 下有七个离线检查，都在 `REPRODUCIBILITY.md` 里有说明。改完正文至少跑一遍：
 
 | 脚本 | 抓什么 |
 |---|---|
@@ -225,6 +225,7 @@ PY
 | `check_bibliography.py` | 重复 key、DOI 形态、作者名姓解析、mojibake |
 | `check_package_macros.py` | `Biocpkg()` / `CRANpkg()` 与归属表是否一致 |
 | `check_api_names.R` | 正文 `` `foo()` `` 是否真是某个包的导出函数 |
+| `check_versions.R` | `REPRODUCIBILITY.md` 版本表与本地已装版本是否一致（本地专用） |
 | `check_figure_sizes.py` | 单张图超过 4 MiB（需先 `quarto render`） |
 
 **新增检查时必须像 `5ecfdbe` 那样先证明它能抓到目标缺陷**：把检查脚本拿到修复前的产物上跑一次，确认它 exit 1。只证明“现在能过”不算数——第 1 批的全部问题就是在所有既有检查都绿着的情况下发布的。

@@ -11,9 +11,9 @@ book:
 fresh:
 	quarto render --cache-refresh
 
-# Drop every knitr cache so the next build recomputes every chunk. This also
-# discards the committed MeSH objects, which are rebuilt on demand with
-# `Rscript scripts/build_mesh_cache.R` -- see cache/README.md.
+# Drop every knitr cache so the next build recomputes every chunk. The
+# committed MeSH objects under cache/ are not knitr caches and are left alone;
+# rebuild them with `Rscript scripts/build_mesh_cache.R` -- see cache/README.md.
 clean-cache:
 	find . -type d -name '*_cache' -prune -exec rm -rf {} +
 

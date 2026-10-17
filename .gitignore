@@ -23,7 +23,6 @@ COVID19_GeneSets.gmt
 # Python bytecode from scripts/*.py
 __pycache__/
 
-# Review logs kept alongside todo.md. Not book source, and not worth carrying
-# through every pull request; notes/README.md explains the directory.
-#notes/book-issues.md
-#notes/book-issues-20261016.md
+# Review logs live in notes/ and are tracked on purpose; notes/README.md
+# explains the directory. They were briefly ignored, which is why the log file
+# names still appear in older notes.
