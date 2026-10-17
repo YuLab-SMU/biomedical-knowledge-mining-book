@@ -187,24 +187,35 @@ jobs:
           ))'
 
       - name: Prewarm ontology caches (DO/HDO)
-        # download_yulab_file() is (destfile, urls, gzfile, appname). The old
-        # fallback passed the filename positionally, so `urls` went missing and
-        # the step died with `argument "urls" is missing`. yulab.utils is installed
-        # from GitHub here, so its signature can move under us; this is how it moved
-        # on 2026-10-17. The URL list is the one GOSemSim:::load_onto() itself uses,
-        # so keep the two in step. user_dir() replaces the hardcoded path so a
-        # change to the convention does not silently break it too.
+        # Two separate failures used to live in this step, and neither produced a
+        # useful message.
+        #
+        # 1. download_yulab_file() is (destfile, urls, gzfile, appname). The
+        #    fallback passed the filename positionally, so `urls` went missing.
+        # 2. The parent directory did not exist on a fresh runner.
+        #    download_yulab_file() writes through httr2, cannot create the
+        #    directory, and returns the path as if it had succeeded. The step then
+        #    failed 0.1s later with "HDO.sqlite missing after download attempt",
+        #    which reads like a network problem and is not one -- so wrapping it
+        #    in retry() could never help. Verified both halves locally: the same
+        #    call downloads 10.95 MB once dir.create() runs first.
+        #
+        # The URL list is the one GOSemSim:::load_onto() itself passes; keep the
+        # two in step. user_dir() replaces the hardcoded path so a change to the
+        # convention does not break this quietly too.
         run: |
           retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
           retry Rscript -e 'options(timeout=600); options(download.file.method="libcurl"); suppressWarnings(suppressMessages({
-            try(GOSemSim:::load_onto("HDO"));
             fp <- path.expand(file.path(yulab.utils::user_dir("GOSemSim"), "HDO.sqlite"));
+            dir.create(dirname(fp), recursive = TRUE, showWarnings = FALSE);
+            try(GOSemSim:::load_onto("HDO"));
             if (!file.exists(fp)) try(yulab.utils::download_yulab_file(
               fp,
               c("https://yulab-smu.top/DOSE",
                 "https://raw.githubusercontent.com/YuLab-SMU/DOSE/refs/heads/gh-pages"),
               gzfile = TRUE));
-            if (!file.exists(fp)) stop("HDO.sqlite missing after download attempt")
+            if (!file.exists(fp)) stop("HDO.sqlite missing at ", fp,
+              " -- download_yulab_file() reports success when it cannot write")
           }))'
 
         
