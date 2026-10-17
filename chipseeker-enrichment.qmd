@@ -6,6 +6,15 @@
 #| message: false
 #| cache: false
 source("_common.R")
+# Load the packages here, in a chunk that is never cached: a library() call
+# inside a cached chunk is not re-run on a cache hit, and then inline code
+# evaluates S4 objects without their methods (length() on an unregistered
+# GRanges returns 1 instead of the number of ranges).
+suppressPackageStartupMessages({
+    library(ChIPseeker)
+    library(GenomicRanges)
+    library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+})
 ```
 
 Functional analysis using NGS data (e.g., RNA-Seq and ChIP-Seq) can be performed by linking coding and non-coding regions to coding genes via the `r Biocpkg("ChIPseeker")` [@yu_chipseeker_2015] package, which can annotate genomic regions to their nearest genes, host genes, and flanking genes respectively. In addition, it provides a function, `seq2gene()`, that simultaneously considers host genes, promoter regions and flanking genes from intergenic regions that may be under control via cis-regulation. This function maps genomic regions to genes in a many-to-many manner and facilitates functional analysis.
@@ -142,9 +151,16 @@ length(region_genes)
 
 Read those three numbers together: `r length(peaks)` input peaks produce
 `r length(linked)` region-to-gene links under the chosen window, and the
-annotated peaks resolve to `r length(region_genes)` distinct candidate genes.
-Peaks that fall in `Distal Intergenic` carry no `geneId` and are dropped, which
-is the loss to report before interpreting anything.
+annotated peaks resolve to `r length(region_genes)` **distinct** candidate
+genes. The distinct count can be smaller than the peak count because several
+peaks may map to the same gene — here `r length(peaks) - length(region_genes)`
+peak(s) are extra assignments to an already-counted gene
+(`r length(peaks)` peaks → `r length(region_genes)` genes). A peak is dropped
+only when its window reaches no annotated gene at all and its `geneId` is `NA`;
+in this example `r sum(is.na(as.data.frame(anno)$geneId))` peaks have an `NA`
+geneId, including the 24 `Distal Intergenic` peaks, which `annotatePeak()`
+assigns to their nearest flanking gene. Report both the deduplication and any
+truly unassigned peaks before interpreting the result.
 
 `tssRegion` and `flankDistance` are the decisions that change the gene set most:
 widening them recruits more genes and pulls the signal toward broadly annotated

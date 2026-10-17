@@ -203,24 +203,57 @@ For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your e
 ```{r}
 #| eval: false
 library(igraph)
+library(enrichit)
 
-# Fetch network as an igraph object to calculate topological weights
-net_ig <- get_ppi_network(9606, output = "igraph")
+# The offline demo keeps the gene list, the network nodes and the gene sets in
+# the same Entrez namespace — the property the original example was missing.
+demo <- clusterprofiler_enrichit_demo()
 
-# Calculate PageRank centrality as weights
-pr_weights <- page_rank(net_ig)$vector
+# ora()/gsea() take a named list of gene sets; the demo GSON uses the same IDs.
+gene_sets <- split(demo$kegg_gson@gsid2gene$gene,
+                   demo$kegg_gson@gsid2gene$gsid)
+names(gene_sets) <- demo$kegg_gson@gsid2name$name[
+    match(names(gene_sets), demo$kegg_gson@gsid2name$gsid)]
 
-# Run Weighted ORA
-res_wora <- ora(gene = de_genes, 
-                gene_sets = pathways, 
-                universe = all_genes, 
-                weight = pr_weights)
+# Any gene-level weight works. Here, PageRank centrality on the demo network:
+net <- graph_from_data_frame(demo$network[, c("from", "to")], directed = FALSE)
+w <- page_rank(net)$vector      # names = Entrez IDs, same as the gene list
 
-# Run Weighted GSEA
-res_wgsea <- gsea(geneList = stats, 
-                  gene_sets = pathways, 
-                  weight = pr_weights)
+de_genes <- names(demo$geneList_evidence)[1:100]
+res_wora <- ora(gene = de_genes,
+                gene_sets = gene_sets,
+                universe = names(demo$geneList_evidence),
+                weight = w)
+
+res_wgsea <- gsea(geneList = demo$geneList_signed,
+                  gene_sets = gene_sets,
+                  weight = w)
 ```
+
+::: {.callout-warning}
+## `weight` must share the namespace of the genes
+
+`weight` is matched by **name**, not by position. Its names must be the same
+identifiers as `gene` / `geneList` / `universe` — here, Entrez IDs. If they do
+not overlap:
+
+- `ora()` only warns ("Some background genes do not have weights. Assigning
+  median weight.") and continues with a fallback weighting, so the result still
+  looks plausible;
+- `gsea()` stops with "No common genes found between geneList and weight".
+
+That asymmetry is easy to miss, especially in a chunk or session with
+`warning = FALSE`. Check the overlap explicitly before trusting a weighted
+result:
+
+```r
+stopifnot(any(names(w) %in% names(demo$geneList_evidence)))
+```
+:::
+
+The demo network is deliberately small, so its centrality is nearly uniform;
+the numbers here demonstrate the calling contract rather than a biological
+effect. Use your own network and gene-level scores for a real analysis.
 
 The beauty of weighted enrichment lies in its **infinite possibilities**. Your `weight` doesn't have to be network centrality. It can be a **tissue specificity score**, an evolutionary **conservation score**, or a **multi-omics confidence score**. If you have prior knowledge that "these genes are more important", simply pass them to the `weight` parameter and let `enrichit` handle the rest.
 

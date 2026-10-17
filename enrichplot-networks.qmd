@@ -92,7 +92,7 @@ The `node_label` parameter also supports enhanced functionality:
 1. **Vector selection**: Specify specific genes to label using a character vector, e.g., `node_label = c("gene1", "gene2")`
 2. **'exclusive' labeling**: Label only genes that belong exclusively to one category using `node_label = "exclusive"`
 3. **'share' labeling**: Label genes that are shared between multiple categories using `node_label = "share"` (as shown in the example above)
-4. **Conditional filtering**: Use comparison operators to filter genes based on fold change, e.g., `node_label = "> 1"` or `node_label = "< -1"` to label genes with absolute fold change greater than 1 
+4. **Conditional filtering**: comparison operators filter on the **signed** fold change. `node_label = "> 1"` labels only up-regulated genes above 1, and `node_label = "< -1"` labels only down-regulated genes below -1; `"> 1"` is not an absolute-value filter and silently drops every down-regulated gene. To label both tails, run the two conditions separately (a single condition cannot express `|fold change| > 1`).
 
 
 
@@ -254,9 +254,14 @@ colors and `scale_fill_*()` for node fills. Match the scale to the aesthetic:
 aesthetic, so re-colour it with a continuous scale such as
 `scale_color_gradient()` / `scale_color_gradient2()`; a discrete
 `scale_color_manual()` would fail with *"Continuous value supplied to a discrete
-scale"*. For `emapplot()`, node colors are
-mapped to the fill aesthetic, so use `scale_fill_manual(values = ...)` (or
-`scale_fill_gradient*()`) there to customize the node colors.
+scale"*. For `emapplot(enrichResult)`, node colors are mapped to the **colour**
+aesthetic, so use `scale_colour_manual(values = ...)` (or
+`scale_colour_gradient*()`) there; a `scale_fill_*()` scale is a silent no-op on
+that layer. The exception is the pie-composed compareCluster display
+(`emapplot(..., pie = ...)` and the compareCluster `cnetplot()` pies), whose
+node layer is a bar geometry and does use `fill` — there `scale_fill_*()` is
+correct (see the custom pie colours in
+[compareCluster visualization](comparecluster-visualization.qmd#compare-cnetplot)).
 
 Note: The `cnetplot()` function also works with [`compareCluster()` output](comparecluster-visualization.qmd#compare-cnetplot).
 
@@ -411,12 +416,12 @@ ego <- pairwise_termsim(ego)
 ego_simplified <- pairwise_termsim(ego_simplified)
 
 p1 <- emapplot(ego, node_label_size=.8, size_edge=.5) + 
-    scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
+    scale_colour_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
           guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
     ggtitle("Original GO terms")
 
 p2 <- emapplot(ego_simplified, node_label_size=.8, size_edge=.5) + 
-    scale_fill_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
+    scale_colour_continuous(low = "#e06663", high = "#327eba", name = "p.adjust",
                 guide = guide_colorbar(reverse = TRUE, order=1), trans='log10') +
     ggtitle("After removing redundant terms")
 

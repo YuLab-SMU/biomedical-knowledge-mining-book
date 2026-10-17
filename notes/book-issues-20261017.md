@@ -28,7 +28,7 @@
 
 去重后共 **19 项**（第 1–4 批 16 项，第 5 批新增 N14/N15/N16 三项；N13/N17/N18 与第 1 批重复计一次）。
 
-状态标记：⬜ 未开始（本清单只建档，未动任何文件）
+状态标记：第 1 批 ✅（2026-10-18，见文末修复记录）；第 2–4 批 ⬜ 未开始。
 
 **第 1 批硬伤的共同形态值得单独记一句**：N1 会直接报错，而 N2 / N11 / N12 / N13 / N17(下半) / N18 **都不报错或只把手打输出当真**——加权静默退回不加权、`scale_fill_*` 对 emapplot 是空操作、`node_label="> 1"` 静默丢下调基因、水稻 keyType 案例把"支持"写成"不支持"、`subset()` 对 S4 静默走 default 分支、150→149 的归因写错但数字对。N11 尤其典型：示例的 low/high 正好等于默认调色板端点，所以它连"看起来变了"都自证了。**"能渲染、数字对得上"不等于"是对的"**——第 6 轮那条教训在内容层的复现。
 
@@ -432,3 +432,37 @@ git status: clean（本清单只建档，未改任何书稿文件）
 | 2026-10-17 | 建档（基线 `d59e5df`，七项自检全绿后开始）。机械扫描五套 + 分章深读 5 路（1 路交付 6 项发现、其中 4 项经复核入册为 N3/N4/N5/N5b；4 路在模型切换中中断，其 engines 线索由主代理实测闭环为 N2）。建档时 10 条：N1–N10；后续增至 19 条（N1–N18 + N5b），含"已排除项"9 条留档。未改任何书稿文件。 |
 | 2026-10-17 | 订正两处**我自己的**误判并留档：(a) N5b 初稿曾判定 `nseKEGG()` 不接受 GSON——错，`.prepare_nse_kegg_data()` 有 `inherits(organism,"GSON")` 显式分支，能力不在签名里；据此记下"参数名审计不能外推到参数能力"。(b) N6 初稿"18/21 可离线"低估为……实为 19/21（我把 `subnet` 里的 `net` 误读成网络调用）。另补：`_common.R:317` 已有命名空间全程对齐的离线夹具 `clusterprofiler_enrichit_demo()`，且同一段 `nseGO()` 在 `go-enrichment.qmd` 已真跑出表——N6 的"跑不动"理由不成立。 |
 | 2026-10-17 | viz 评审子代理报"正在写报告"即中断、未落盘；但其留在 `/tmp/audit/` 的 30+ 个验证脚本（O1–O4/P1/Q1/R2）暴露出两条未交付线索。主代理**自行复跑**并确认，新增 **N11**（emapplot 节点色在 colour 不在 fill；`:414/:419` 示例为空操作，边界：`pie=` 的 compareCluster 分支确实用 fill，故 comparecluster-visualization.qmd:219 正确）与 **N12**（`node_label="> 1"` 是带符号过滤，非绝对值；由 `"< -1"` 命中 −2.44 反证）。第 1 批由 2 条增至 4 条；第 5 批并入后共 19 项。 |
+| 2026-10-18 | 第 1 批完成（N1/N2/N11/N12/N13/N17/N18），另修 N18b（cached chunk 里的 `library()` 导致内联 `length(peaks)` 返回 1）。六个章节重渲染均 exit 0；七项自检全绿；`quarto-uncaptioned` 0。 |
+
+---
+
+# 2026-10-18 第 1 批修复记录
+
+处理 N1、N2、N11、N12、N13、N17、N18，并对每一条做了实跑验证。六个受影响章节逐一 `quarto render` 均 exit 0。
+
+| 条目 | 改动 | 验证 |
+|---|---|---|
+| N1 | 删除两处 `listType="Gene"`；DAVID callout 改为「调用约定以 `formals(enrichDAVID)` 为准」 | `formals` 确认无 `listType`；`enrichDAVID(..., listType=)` 报 `unused argument` |
+| N2 | 加权示例改用 `clusterprofiler_enrichit_demo()`：GSON → 命名 list、`page_rank(demo$network)`、基因/权重同一 Entrez 命名空间；新增 callout 说明「ORA 只 warning 并退回中位权重，GSEA 直接报错」 | 真跑示例：ORA/GSEA 各 3 行；确认 `names(w)` 与 geneList 有交集 |
+| N11 | `emapplot(enrichResult)` 改为 colour；两处 `scale_fill_continuous` → `scale_colour_continuous`；写明 `pie=` 分支的 fill 例外 | `ggplot_build`：节点层 aes = colour,size，fill 仅 1 个 NA；fill scale 不改变颜色，colour scale 改变 |
+| N12 | `node_label` 文案改为**带符号**过滤，并说明单条件不能表达 `|fc|>1` | 实测 `"> 1"` 只出正 fold-change（34 个），`"< -1"` 只出负的（1 个） |
+| N13 | 三个 `Output:` 换成 2026-10-18 实跑捕获；结论改为 `kegg`/`uniprot` 均支持、`ncbi-geneid` HTTP 400；ID 形态改为 `Os01g0100100` | 通过本地代理实跑 `enrichKEGG` 三种 keyType；`/list/dosa` 确认为 g 型 ID |
+| N17 | 删除「`gseGO()` 结果也可用」；`subset(x, level ...)` → `subset(as.data.frame(x), ...)` | `subset(ego2, level ...)` 报 `object 'level' not found`；`subset(as.data.frame(ego2), ...)` 得 158 行；`gofilter(gseaResult)` 报 class 错误 |
+| N18 | 150→149 改为「去重后的基因数；NA 为 0」；改用 inline `length(peaks)-length(region_genes)` / `sum(is.na(...))` | 复跑该章：150 peaks、24 distal intergenic、0 NA、149 distinct、duplicated=1 |
+| N18b（新发现） | `library(ChIPseeker/GenomicRanges/TxDb)` 原在 cached chunk 内；cache hit 时不重新 attach，内联 `length(peaks)` 返回 1，页面显示「1 input peaks」。已把三个 `library()` 移入 `cache: false` 的 setup chunk | 重渲染后页面显示「150 input peaks」；`length(peaks)` 正确 |
+
+验收：
+
+```
+python3 scripts/check_navigation.py     PASS
+python3 scripts/check_links.py          PASS (source 50 + HTML 72)
+python3 scripts/check_bibliography.py   PASS 27 entries, 0 errors (4 warnings)
+python3 scripts/check_package_macros.py PASS 88 macros / 21 registry
+Rscript scripts/check_api_names.R       PASS 224 mentions / 31 packages
+Rscript scripts/check_versions.R        PASS 18 rows
+python3 scripts/check_figure_sizes.py   PASS 0 oversized
+quarto render <6 chapters>              all exit 0
+quarto-uncaptioned                      0
+```
+
+> N18b 的教训与 AGENTS §7「每个 QMD 必须独立加载包」同源：包的加载若只发生在 cached chunk，缓存命中时不会重放；内联代码随后在未注册 S4 方法的环境里算 `length()`，得到的是 1 而不是 150。凡是「cache 命中 + 内联访问 S4 对象」的章节都要检查这一条。
