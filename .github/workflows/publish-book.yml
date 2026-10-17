@@ -187,11 +187,24 @@ jobs:
           ))'
 
       - name: Prewarm ontology caches (DO/HDO)
+        # download_yulab_file() is (destfile, urls, gzfile, appname). The old
+      # fallback passed the filename positionally, so `urls` went missing and
+      # the step died with `argument "urls" is missing`. yulab.utils is installed
+      # from GitHub here, so its signature can move under us; this is how it moved
+      # on 2026-10-17. The URL list is the one GOSemSim:::load_onto() itself uses,
+      # so keep the two in step. user_dir() replaces the hardcoded path so a
+      # change to the convention does not silently break it too.
+      - name: Prewarm ontology caches (DO/HDO)
         run: |
-          Rscript -e 'options(timeout=600); options(download.file.method="libcurl"); suppressWarnings(suppressMessages({
+          retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          retry Rscript -e 'options(timeout=600); options(download.file.method="libcurl"); suppressWarnings(suppressMessages({
             try(GOSemSim:::load_onto("HDO"));
-            fp <- path.expand("~/.local/share/GOSemSim/HDO.sqlite");
-            if (!file.exists(fp)) try(yulab.utils::download_yulab_file("GOSemSim/HDO.sqlite"));
+            fp <- path.expand(file.path(yulab.utils::user_dir("GOSemSim"), "HDO.sqlite"));
+            if (!file.exists(fp)) try(yulab.utils::download_yulab_file(
+              fp,
+              c("https://yulab-smu.top/DOSE",
+                "https://raw.githubusercontent.com/YuLab-SMU/DOSE/refs/heads/gh-pages"),
+              gzfile = TRUE));
             if (!file.exists(fp)) stop("HDO.sqlite missing after download attempt")
           }))'
 
