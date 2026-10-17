@@ -138,7 +138,7 @@ To address these issues, we provide two methods to perform KEGG analysis locally
 
 ### Using `gson`
 
-The `r CRANpkg("gson")` package provides the `gson_KEGG()` function to download the latest KEGG pathway and module data for a specific organism and store it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
+The `r CRANpkg("gson")` package defines the `GSON` container. `gson_KEGG()` — exported by `r Biocpkg("clusterProfiler")` — downloads the latest KEGG pathway and module data for a specific organism and stores it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
 
 ```{r eval=FALSE}
 #| label: gson-kegg

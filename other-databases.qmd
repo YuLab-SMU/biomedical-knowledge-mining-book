@@ -63,7 +63,7 @@ If your input gene ID type is not Entrez gene ID, you can use the [`bitr()`](ide
 
 ## DAVID functional analysis {#david-functional-analysis}
 
-DAVID is a popular bioinformatics resource for functional annotation and enrichment analysis. Although we recommend using `enrichGO` and `enrichKEGG` which use up-to-date data maintained by Bioconductor, `r Biocpkg("clusterProfiler")` provides `enrichDAVID` to support DAVID analysis for users who prefer it.
+DAVID is a popular bioinformatics resource for functional annotation and enrichment analysis [@huang_david_2007]. A dedicated R interface to its web service exists in RDAVIDWebService [@fresno_rdavidwebservice_2013], while `r Biocpkg("clusterProfiler")` provides `enrichDAVID` for the same service. Although we recommend using `enrichGO` and `enrichKEGG` which use up-to-date data maintained by Bioconductor, `enrichDAVID` supports DAVID analysis for users who prefer it.
 
 ::: {.callout-warning}
 ### The DAVID web service host was unreachable when this edition was built
