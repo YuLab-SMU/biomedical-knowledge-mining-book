@@ -71,3 +71,7 @@ Only move a legacy chapter to `_archive/` after removing it from the navigation 
 ## Contributing
 
 Contributions, bug reports, examples, and suggestions are welcome. Please open an issue or submit a pull request on the [GitHub repository](https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/).
+
+## License
+
+The book's prose and figures are under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — credit the author, no commercial use. The R packages the chapters demonstrate keep their own licenses, mostly GPL-2 or GPL-3; see [`LICENSE`](LICENSE) for the full statement and the boundary between the two.

@@ -133,3 +133,5 @@ If you use this software suite in published research, cite the papers most relev
 ## Contributing {-}
 
 The source code is hosted at <https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/>. Feedback, bug reports, examples, and improvements to the workflow are welcome through issues and pull requests.
+
+The prose and the figures in this book are licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): credit the author, and do not use them commercially. The R packages the chapters demonstrate carry their own licenses, most of them GPL-2 or GPL-3, and those terms continue to govern that code. The full statement is in [LICENSE](https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/blob/master/LICENSE).
