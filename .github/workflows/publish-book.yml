@@ -11,6 +11,14 @@ on:
 permissions:
   contents: write
 
+# Two pushes in quick succession would otherwise queue two full renders that both
+# deploy with force_orphan, and whichever finished last would win -- so a newer,
+# better commit could be overwritten by the older build it superseded. Cancelling
+# the in-flight run keeps the site consistent with the newest commit on the branch.
+concurrency:
+  group: publish-book-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
