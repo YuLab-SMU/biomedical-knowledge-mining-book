@@ -14,9 +14,12 @@ The book follows the current R/Bioconductor and package releases rather than fre
    site has been built with `DOSE` 4.7.3.9000 and `GOSemSim` 2.39.4 while the
    table lists 4.7.3 and 2.39.3. The published build therefore carries its own
    provenance — CI writes `docs/SESSION-INFO.txt` on every successful render and
-   that file is deployed with the site. Read `SESSION-INFO.txt` for what the
-   deployed pages actually ran against; read the table for what was validated
-   here.
+   that file is deployed with the site. It records the R session plus the
+   versions of the packages the chapters use (clusterProfiler, enrichit,
+   enrichplot, GOSemSim, DOSE, ReactomePA, meshes, ChIPseeker, gson, yulab.utils,
+   aisdk, airway, DESeq2, fgsea, org.Hs.eg.db, org.Mm.eg.db). Read it for what
+   the deployed pages actually ran against; read the table for what was
+   validated here.
 
 | Component | Tested version |
 |---|---|

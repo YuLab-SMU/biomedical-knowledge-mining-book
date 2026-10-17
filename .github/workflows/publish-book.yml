@@ -273,10 +273,23 @@ jobs:
       # versions that do not match it. Publish the real provenance of this build
       # next to the site instead of pretending the table describes it.
       - name: Record build provenance
+        # A fresh `Rscript` has none of the book packages loaded, so a bare
+        # sessionInfo() records only the base packages -- which is what the
+        # first version of this step did, while REPRODUCIBILITY.md told readers
+        # to look here for the DOSE/GOSemSim versions the deployed pages ran
+        # against. Name the packages the chapters actually use.
         run: |
           mkdir -p docs
-          Rscript -e 'writeLines(capture.output(print(sessionInfo())), "docs/SESSION-INFO.txt")'
-          Rscript -e 'cat("Bioconductor:", as.character(BiocManager::version()), "\n", file = "docs/SESSION-INFO.txt", append = TRUE)'
+          Rscript -e 'pkgs <- c(
+            "clusterProfiler", "enrichit", "enrichplot", "GOSemSim", "DOSE",
+            "ReactomePA", "meshes", "ChIPseeker", "gson", "yulab.utils",
+            "aisdk", "airway", "DESeq2", "fgsea", "org.Hs.eg.db", "org.Mm.eg.db"
+          ); ver <- vapply(pkgs, function(p) tryCatch(as.character(packageVersion(p)),
+            error = function(e) "not installed"), character(1));
+          writeLines(c(capture.output(print(sessionInfo())), "",
+            "Book package versions:", sprintf("%s %s", names(ver), ver),
+            paste("Bioconductor:", as.character(BiocManager::version()))),
+            "docs/SESSION-INFO.txt")'
 
       - name: Validate navigation and source/generated links
         run: |
