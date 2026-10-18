@@ -146,7 +146,8 @@ geneList <- sort(agg_fisher_res$score, decreasing = TRUE)
 
 gsea_res <- gsea(
     geneList = geneList,
-    gene_sets = omics_pathways
+    gene_sets = omics_pathways,
+    scoreType = "pos"   # Fisher/Brown aggregated scores are all positive
 )
 head(as.data.frame(gsea_res))
 ```
