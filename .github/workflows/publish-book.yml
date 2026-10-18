@@ -88,6 +88,13 @@ jobs:
           #   europepmc  pmcplot()                         enrichplot-specialized.qmd
           #   ggstar     dotplot.compareClusterResult()    the compareCluster chapters
           #   ggrepel    .manhattanplot_internal()         enrichplot-summary.qmd
+          #   BiasedUrn  ora(..., weight = )               enrichment-network.qmd
+          #
+          # BiasedUrn is enrichit's Suggests, not its Imports, so it is absent
+          # unless named. The weighted-ORA chunk in enrichment-network.qmd calls
+          # ora(weight = w), which stops on check_installed('BiasedUrn') rather
+          # than degrading to unweighted ORA. The book runs the weighted path,
+          # so the package has to be on the runner.
           #
           # ggstar and ggrepel probably arrive transitively today (ggtreeExtra,
           # ggplot2). Listing them costs a few seconds and stops that from silently
@@ -128,7 +135,8 @@ jobs:
             "cran::ggupset",
             "cran::ggridges",
             "cran::shadowtext",
-            "cran::ggforce"
+            "cran::ggforce",
+            "cran::BiasedUrn"
           ))'
 
       - name: Install Bioconductor dependencies (release)
@@ -159,7 +167,8 @@ jobs:
           Rscript -e 'required <- c(
             "org.Hs.eg.db", "fgsea", "GO.db", "ChIPseeker", "MeSHDbi", "biomaRt", "pathview",
             "R.utils", "ggarchery", "europepmc", "ggstar", "ggrepel", "ggupset", "ggridges",
-            "ggplotify", "httr2", "dotenv", "msigdbr", "ggplot2", "dplyr", "stringr", "forcats"
+            "ggplotify", "httr2", "dotenv", "msigdbr", "ggplot2", "dplyr", "stringr", "forcats",
+            "BiasedUrn"
           ); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing packages: ", paste(missing, collapse = ", "))'
 
       # aisdk.providers carries the DeepSeek and other non-bundled adapters;

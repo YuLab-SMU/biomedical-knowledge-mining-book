@@ -245,6 +245,22 @@ head(as.data.frame(res_wora)[, c("ID", "SetSize", "Count", "pvalue")])
 head(as.data.frame(res_wgsea)[, c("ID", "setSize", "enrichmentScore", "NES", "pvalue")])
 ```
 
+::: {.callout-note}
+## Weighted ORA needs `BiasedUrn` installed
+
+`BiasedUrn` is a *suggested* package of `enrichit`, so a default install does not
+bring it in. Weighted ORA calls `BiasedUrn::pWNCHypergeo()` and **stops** when it
+is missing — it does not fall back to ordinary ORA:
+
+```r
+Error: The package "BiasedUrn" is required for weighted ORA.
+```
+
+Install it with `install.packages("BiasedUrn")` before running this section.
+Weighted GSEA is unaffected; the weights are fused into the ranked statistics
+before the C++ engine, so no extra package is needed.
+:::
+
 ::: {.callout-warning}
 ## `weight` must share the namespace of the genes
 
