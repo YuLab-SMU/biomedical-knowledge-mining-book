@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>7&nbsp; Multi-omics enrichment integration – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./comparecluster-analysis.html" rel="next">
+<link href="./enrichment-network.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd0503e23dce65854c81c5baaade3bdf.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-analysis-engines.html">Choose the analysis engine</a></li><li class="breadcrumb-item"><a href="./enrichment-multiomics.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Start here: from data to a first result</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Choose the analysis engine</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Connect biological knowledge</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Organize and integrate evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Visualize and communicate results</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Interpret and report biological evidence</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recipes and reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#multi-omics-early-integration" id="toc-multi-omics-early-integration" class="nav-link active" data-scroll-target="#multi-omics-early-integration"><span class="header-section-number">7.1</span> Multi-omics Early Integration</a>
+  <ul class="collapse">
+  <li><a href="#statistical-aggregation-aggregate_omics" id="toc-statistical-aggregation-aggregate_omics" class="nav-link" data-scroll-target="#statistical-aggregation-aggregate_omics"><span class="header-section-number">7.1.1</span> 1. Statistical Aggregation (<code>aggregate_omics</code>)</a></li>
+  <li><a href="#a.-correlation-aware-aggregation-with-browns-method" id="toc-a.-correlation-aware-aggregation-with-browns-method" class="nav-link" data-scroll-target="#a.-correlation-aware-aggregation-with-browns-method"><span class="header-section-number">7.1.2</span> 1a. Correlation-aware Aggregation with Brown’s Method</a></li>
+  <li><a href="#id-harmonization-harmonize_ids" id="toc-id-harmonization-harmonize_ids" class="nav-link" data-scroll-target="#id-harmonization-harmonize_ids"><span class="header-section-number">7.1.3</span> 2. ID Harmonization (<code>harmonize_ids</code>)</a></li>
+  <li><a href="#handling-directional-conflicts-conflict_policy" id="toc-handling-directional-conflicts-conflict_policy" class="nav-link" data-scroll-target="#handling-directional-conflicts-conflict_policy"><span class="header-section-number">7.1.4</span> 3. Handling Directional Conflicts (<code>conflict_policy</code>)</a></li>
+  <li><a href="#distribution-to-enrichment-backends" id="toc-distribution-to-enrichment-backends" class="nav-link" data-scroll-target="#distribution-to-enrichment-backends"><span class="header-section-number">7.1.5</span> 4. Distribution to Enrichment Backends</a></li>
+  <li><a href="#late-fusion-at-the-pathway-level" id="toc-late-fusion-at-the-pathway-level" class="nav-link" data-scroll-target="#late-fusion-at-the-pathway-level"><span class="header-section-number">7.1.6</span> 5. Late Fusion at the Pathway Level</a></li>
+  <li><a href="#contribution-tracing" id="toc-contribution-tracing" class="nav-link" data-scroll-target="#contribution-tracing"><span class="header-section-number">7.1.7</span> 6. Contribution Tracing</a></li>
+  </ul></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">7.2</span> Next steps</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/master/enrichment-multiomics.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-analysis-engines.html">Choose the analysis engine</a></li><li class="breadcrumb-item"><a href="./enrichment-multiomics.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-enrichment-multiomics" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This chapter covers the integration layer between molecular measurements and enrichment backends. It separates feature-level aggregation, identifier harmonization, directional conflict handling, pathway-level late fusion, and contribution tracing so that the provenance of a combined result remains inspectable.</p>
+<section id="multi-omics-early-integration" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="multi-omics-early-integration"><span class="header-section-number">7.1</span> Multi-omics Early Integration</h2>
+<p>With the rapid development of sequencing technologies, it is very common to perform functional analysis on multi-omics data (e.g., Transcriptomics + Proteomics). A naive approach is to perform enrichment analysis on each omics separately and then intersect the enriched pathways. However, this late-integration strategy completely ignores the fact that different omics might provide weak but consistent signals for the same pathway, which would be filtered out by strict thresholds in single-omics analysis.</p>
+<p>To solve this, <code>enrichit</code> introduces an <strong>Early Integration</strong> pipeline. The core philosophy is simple: <strong>Integrate first, enrich later. Decouple the integration layer from the enrichment layer.</strong></p>
+<section id="statistical-aggregation-aggregate_omics" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="statistical-aggregation-aggregate_omics"><span class="header-section-number">7.1.1</span> 1. Statistical Aggregation (<code>aggregate_omics</code>)</h3>
+<p>Instead of finding the intersection of pathways, we aggregate the evidence at the feature level. <code>aggregate_omics()</code> takes multi-source statistics (e.g., p-values or signed scores) and merges them into a unified evidence score. For p-values, it supports classic methods like <code>fisher</code> or <code>stouffer</code>, and internally converts them to a monotonically increasing score suitable for ranking. It also supports <strong>Brown’s method</strong> for correlation-aware p-value aggregation and <code>weighted_mean</code> for signed statistics with explicit layer weights.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(enrichit)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create mock p-values for RNA and Protein data across 1000 genes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>omics_gene_ids <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"Gene"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rna_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rna_pvals) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>prot_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prot_pvals) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Inject consistent but weak signals into the first 20 genes (pathway of interest)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>rna_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">20</span>, <span class="fl">0.01</span>, <span class="fl">0.08</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">20</span>, <span class="fl">0.01</span>, <span class="fl">0.08</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate p-values from RNA and Protein data using Fisher's method</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>agg_fisher_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_pvals, <span class="at">PROT =</span> prot_pvals),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"fisher"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">feature_type =</span> <span class="st">"gene"</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the top aggregated scores</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">sort</span>(agg_fisher_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Gene911  Gene254    Gene9  Gene478   Gene74   Gene20 
+2.712320 2.551594 2.446322 2.394249 2.366397 2.273862 </code></pre>
+</div>
+</div>
+</section>
+<section id="a.-correlation-aware-aggregation-with-browns-method" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="a.-correlation-aware-aggregation-with-browns-method"><span class="header-section-number">7.1.2</span> 1a. Correlation-aware Aggregation with Brown’s Method</h3>
+<p>Fisher’s method is simple and powerful, but it silently assumes that the evidences are independent. Real multi-omics layers are often correlated: RNA and protein do not live on separate planets. If you pretend they are independent, you are inviting double counting.</p>
+<p>Brown’s method fixes this by adjusting the degrees of freedom of Fisher’s statistic using an empirical or user-supplied covariance structure. In <code>enrichit</code>, this is exposed directly through <code>aggregate_omics(method = "brown")</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>omics_pmat <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">RNA =</span> rna_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>], <span class="at">PROT =</span> prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(omics_pmat) <span class="ot">&lt;-</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">4</span>, <span class="fl">1.2</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fl">1.2</span>, <span class="dv">4</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>agg_brown_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> omics_pmat,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"brown"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cov_matrix =</span> cov_mat</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">sort</span>(agg_brown_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Gene9   Gene74   Gene20    Gene8    Gene5    Gene2 
+2.102805 2.038788 1.964581 1.935310 1.897638 1.887833 </code></pre>
+</div>
+</div>
+</section>
+<section id="id-harmonization-harmonize_ids" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="id-harmonization-harmonize_ids"><span class="header-section-number">7.1.3</span> 2. ID Harmonization (<code>harmonize_ids</code>)</h3>
+<p>Proteomics data often use UniProt IDs or protein groups, while your pathway annotations are usually gene-based. Directly feeding protein-level data to gene set enrichment will cause a huge ID mismatch.</p>
+<p><code>harmonize_ids()</code> acts as a dedicated ID mapping layer. It maps the protein-level aggregated results to the gene-level, and handles many-to-one mappings gracefully using folding strategies like <code>min_p</code> or <code>max_abs</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Suppose our proteomics data used UniProt IDs (e.g., Q9Y6N7)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and we need to map them back to standard Gene Symbols</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>id_mapping_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_id =</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">target_id =</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>) <span class="co"># P12345 and P12346 both map to Gene1</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># For demonstration, we create a mock protein-level aggregated result</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>protein_agg_res <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">PROT =</span> prot_pvals[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"fisher"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"pvalue"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">feature_type =</span> <span class="st">"protein"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(protein_agg_res<span class="sc">$</span>score) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>protein_agg_res<span class="sc">$</span>feature_id <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P12345"</span>, <span class="st">"P12346"</span>, <span class="st">"Q9Y6N7"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Map and collapse protein-level features to gene-level</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>harmonized_res <span class="ot">&lt;-</span> <span class="fu">harmonize_ids</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> protein_agg_res, <span class="co"># Assuming this is an aggregated result from proteomics</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> id_mapping_df,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">from =</span> <span class="st">"protein"</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">to =</span> <span class="st">"gene"</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">collapse =</span> <span class="st">"min_p"</span> <span class="co"># If multiple proteins map to one gene, take the most significant one</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>harmonized_res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$input_type
+[1] "pvalue"
+
+$feature_type
+[1] "gene"
+
+$feature_id
+[1] "Gene1" "Gene2"
+
+$score
+   Gene1    Gene2 
+1.390788 1.097789 
+
+$pvalue
+     Gene1      Gene2 
+0.04066417 0.07983821 
+
+attr(,"class")
+[1] "omics_aggregated"</code></pre>
+</div>
+</div>
+</section>
+<section id="handling-directional-conflicts-conflict_policy" class="level3" data-number="7.1.4">
+<h3 data-number="7.1.4" class="anchored" data-anchor-id="handling-directional-conflicts-conflict_policy"><span class="header-section-number">7.1.4</span> 3. Handling Directional Conflicts (<code>conflict_policy</code>)</h3>
+<p>When integrating signed statistics across omics (e.g., transcriptomics and proteomics), you often encounter conflicting directions—a gene might be significantly up-regulated in RNA but down-regulated in Protein.</p>
+<p>Instead of naively averaging them out to zero, <code>aggregate_omics()</code> introduces a <code>conflict_policy</code> parameter when <code>input = "signed_score"</code>. You can choose <code>"strict"</code> to completely drop conflicting features, or <code>"penalty"</code> to halve their aggregated scores. This actively filters out biological noise and reduces false positives before enrichment.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example with conflicting directions between RNA and PROT</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>rna_signed <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log10</span>(rna_pvals) <span class="sc">*</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">length</span>(rna_pvals))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>prot_signed <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log10</span>(prot_pvals) <span class="sc">*</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">length</span>(prot_pvals))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(rna_signed) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prot_signed) <span class="ot">&lt;-</span> omics_gene_ids</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>agg_strict <span class="ot">&lt;-</span> <span class="fu">aggregate_omics</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_signed, <span class="at">PROT =</span> prot_signed),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">input =</span> <span class="st">"signed_score"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"mean"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">conflict_policy =</span> <span class="st">"strict"</span> <span class="co"># Drops conflicting genes automatically</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>agg_strict</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$input_type
+[1] "signed_score"
+
+$feature_type
+[1] "gene"
+
+$feature_id
+  [1] "Gene1"    "Gene4"    "Gene5"    "Gene8"    "Gene9"    "Gene12"  
+  [7] "Gene13"   "Gene16"   "Gene17"   "Gene20"   "Gene21"   "Gene24"  
+ [13] "Gene25"   "Gene28"   "Gene29"   "Gene32"   "Gene33"   "Gene36"  
+ [19] "Gene37"   "Gene40"   "Gene41"   "Gene44"   "Gene45"   "Gene48"  
+ [25] "Gene49"   "Gene52"   "Gene53"   "Gene56"   "Gene57"   "Gene60"  
+ [31] "Gene61"   "Gene64"   "Gene65"   "Gene68"   "Gene69"   "Gene72"  
+ [37] "Gene73"   "Gene76"   "Gene77"   "Gene80"   "Gene81"   "Gene84"  
+ [43] "Gene85"   "Gene88"   "Gene89"   "Gene92"   "Gene93"   "Gene96"  
+ [49] "Gene97"   "Gene100"  "Gene101"  "Gene104"  "Gene105"  "Gene108" 
+ [55] "Gene109"  "Gene112"  "Gene113"  "Gene116"  "Gene117"  "Gene120" 
+ [61] "Gene121"  "Gene124"  "Gene125"  "Gene128"  "Gene129"  "Gene132" 
+ [67] "Gene133"  "Gene136"  "Gene137"  "Gene140"  "Gene141"  "Gene144" 
+ [73] "Gene145"  "Gene148"  "Gene149"  "Gene152"  "Gene153"  "Gene156" 
+ [79] "Gene157"  "Gene160"  "Gene161"  "Gene164"  "Gene165"  "Gene168" 
+ [85] "Gene169"  "Gene172"  "Gene173"  "Gene176"  "Gene177"  "Gene180" 
+ [91] "Gene181"  "Gene184"  "Gene185"  "Gene188"  "Gene189"  "Gene192" 
+ [97] "Gene193"  "Gene196"  "Gene197"  "Gene200"  "Gene201"  "Gene204" 
+[103] "Gene205"  "Gene208"  "Gene209"  "Gene212"  "Gene213"  "Gene216" 
+[109] "Gene217"  "Gene220"  "Gene221"  "Gene224"  "Gene225"  "Gene228" 
+[115] "Gene229"  "Gene232"  "Gene233"  "Gene236"  "Gene237"  "Gene240" 
+[121] "Gene241"  "Gene244"  "Gene245"  "Gene248"  "Gene249"  "Gene252" 
+[127] "Gene253"  "Gene256"  "Gene257"  "Gene260"  "Gene261"  "Gene264" 
+[133] "Gene265"  "Gene268"  "Gene269"  "Gene272"  "Gene273"  "Gene276" 
+[139] "Gene277"  "Gene280"  "Gene281"  "Gene284"  "Gene285"  "Gene288" 
+[145] "Gene289"  "Gene292"  "Gene293"  "Gene296"  "Gene297"  "Gene300" 
+[151] "Gene301"  "Gene304"  "Gene305"  "Gene308"  "Gene309"  "Gene312" 
+[157] "Gene313"  "Gene316"  "Gene317"  "Gene320"  "Gene321"  "Gene324" 
+[163] "Gene325"  "Gene328"  "Gene329"  "Gene332"  "Gene333"  "Gene336" 
+[169] "Gene337"  "Gene340"  "Gene341"  "Gene344"  "Gene345"  "Gene348" 
+[175] "Gene349"  "Gene352"  "Gene353"  "Gene356"  "Gene357"  "Gene360" 
+[181] "Gene361"  "Gene364"  "Gene365"  "Gene368"  "Gene369"  "Gene372" 
+[187] "Gene373"  "Gene376"  "Gene377"  "Gene380"  "Gene381"  "Gene384" 
+[193] "Gene385"  "Gene388"  "Gene389"  "Gene392"  "Gene393"  "Gene396" 
+[199] "Gene397"  "Gene400"  "Gene401"  "Gene404"  "Gene405"  "Gene408" 
+[205] "Gene409"  "Gene412"  "Gene413"  "Gene416"  "Gene417"  "Gene420" 
+[211] "Gene421"  "Gene424"  "Gene425"  "Gene428"  "Gene429"  "Gene432" 
+[217] "Gene433"  "Gene436"  "Gene437"  "Gene440"  "Gene441"  "Gene444" 
+[223] "Gene445"  "Gene448"  "Gene449"  "Gene452"  "Gene453"  "Gene456" 
+[229] "Gene457"  "Gene460"  "Gene461"  "Gene464"  "Gene465"  "Gene468" 
+[235] "Gene469"  "Gene472"  "Gene473"  "Gene476"  "Gene477"  "Gene480" 
+[241] "Gene481"  "Gene484"  "Gene485"  "Gene488"  "Gene489"  "Gene492" 
+[247] "Gene493"  "Gene496"  "Gene497"  "Gene500"  "Gene501"  "Gene504" 
+[253] "Gene505"  "Gene508"  "Gene509"  "Gene512"  "Gene513"  "Gene516" 
+[259] "Gene517"  "Gene520"  "Gene521"  "Gene524"  "Gene525"  "Gene528" 
+[265] "Gene529"  "Gene532"  "Gene533"  "Gene536"  "Gene537"  "Gene540" 
+[271] "Gene541"  "Gene544"  "Gene545"  "Gene548"  "Gene549"  "Gene552" 
+[277] "Gene553"  "Gene556"  "Gene557"  "Gene560"  "Gene561"  "Gene564" 
+[283] "Gene565"  "Gene568"  "Gene569"  "Gene572"  "Gene573"  "Gene576" 
+[289] "Gene577"  "Gene580"  "Gene581"  "Gene584"  "Gene585"  "Gene588" 
+[295] "Gene589"  "Gene592"  "Gene593"  "Gene596"  "Gene597"  "Gene600" 
+[301] "Gene601"  "Gene604"  "Gene605"  "Gene608"  "Gene609"  "Gene612" 
+[307] "Gene613"  "Gene616"  "Gene617"  "Gene620"  "Gene621"  "Gene624" 
+[313] "Gene625"  "Gene628"  "Gene629"  "Gene632"  "Gene633"  "Gene636" 
+[319] "Gene637"  "Gene640"  "Gene641"  "Gene644"  "Gene645"  "Gene648" 
+[325] "Gene649"  "Gene652"  "Gene653"  "Gene656"  "Gene657"  "Gene660" 
+[331] "Gene661"  "Gene664"  "Gene665"  "Gene668"  "Gene669"  "Gene672" 
+[337] "Gene673"  "Gene676"  "Gene677"  "Gene680"  "Gene681"  "Gene684" 
+[343] "Gene685"  "Gene688"  "Gene689"  "Gene692"  "Gene693"  "Gene696" 
+[349] "Gene697"  "Gene700"  "Gene701"  "Gene704"  "Gene705"  "Gene708" 
+[355] "Gene709"  "Gene712"  "Gene713"  "Gene716"  "Gene717"  "Gene720" 
+[361] "Gene721"  "Gene724"  "Gene725"  "Gene728"  "Gene729"  "Gene732" 
+[367] "Gene733"  "Gene736"  "Gene737"  "Gene740"  "Gene741"  "Gene744" 
+[373] "Gene745"  "Gene748"  "Gene749"  "Gene752"  "Gene753"  "Gene756" 
+[379] "Gene757"  "Gene760"  "Gene761"  "Gene764"  "Gene765"  "Gene768" 
+[385] "Gene769"  "Gene772"  "Gene773"  "Gene776"  "Gene777"  "Gene780" 
+[391] "Gene781"  "Gene784"  "Gene785"  "Gene788"  "Gene789"  "Gene792" 
+[397] "Gene793"  "Gene796"  "Gene797"  "Gene800"  "Gene801"  "Gene804" 
+[403] "Gene805"  "Gene808"  "Gene809"  "Gene812"  "Gene813"  "Gene816" 
+[409] "Gene817"  "Gene820"  "Gene821"  "Gene824"  "Gene825"  "Gene828" 
+[415] "Gene829"  "Gene832"  "Gene833"  "Gene836"  "Gene837"  "Gene840" 
+[421] "Gene841"  "Gene844"  "Gene845"  "Gene848"  "Gene849"  "Gene852" 
+[427] "Gene853"  "Gene856"  "Gene857"  "Gene860"  "Gene861"  "Gene864" 
+[433] "Gene865"  "Gene868"  "Gene869"  "Gene872"  "Gene873"  "Gene876" 
+[439] "Gene877"  "Gene880"  "Gene881"  "Gene884"  "Gene885"  "Gene888" 
+[445] "Gene889"  "Gene892"  "Gene893"  "Gene896"  "Gene897"  "Gene900" 
+[451] "Gene901"  "Gene904"  "Gene905"  "Gene908"  "Gene909"  "Gene912" 
+[457] "Gene913"  "Gene916"  "Gene917"  "Gene920"  "Gene921"  "Gene924" 
+[463] "Gene925"  "Gene928"  "Gene929"  "Gene932"  "Gene933"  "Gene936" 
+[469] "Gene937"  "Gene940"  "Gene941"  "Gene944"  "Gene945"  "Gene948" 
+[475] "Gene949"  "Gene952"  "Gene953"  "Gene956"  "Gene957"  "Gene960" 
+[481] "Gene961"  "Gene964"  "Gene965"  "Gene968"  "Gene969"  "Gene972" 
+[487] "Gene973"  "Gene976"  "Gene977"  "Gene980"  "Gene981"  "Gene984" 
+[493] "Gene985"  "Gene988"  "Gene989"  "Gene992"  "Gene993"  "Gene996" 
+[499] "Gene997"  "Gene1000"
+
+$score
+      Gene1       Gene4       Gene5       Gene8       Gene9      Gene12 
+ 1.38601093 -1.48055429  1.55057901 -1.57728481  1.69561425 -1.41958769 
+     Gene13      Gene16      Gene17      Gene20      Gene21      Gene24 
+ 1.28734945 -1.42091397  1.23963943 -1.59801090  0.19346498 -0.20308187 
+     Gene25      Gene28      Gene29      Gene32      Gene33      Gene36 
+ 0.13707152 -0.28381594  0.55471367 -0.15483172  0.25492306 -0.29099074 
+     Gene37      Gene40      Gene41      Gene44      Gene45      Gene48 
+ 0.47308504 -0.49209840  0.46223653 -0.35804881  0.71612633 -1.10705275 
+     Gene49      Gene52      Gene53      Gene56      Gene57      Gene60 
+ 0.31844691 -0.21851256  0.07358986 -0.62170662  0.53768309 -0.28590560 
+     Gene61      Gene64      Gene65      Gene68      Gene69      Gene72 
+ 0.15762503 -0.49677445  0.59924639 -0.47856342  0.05568018 -0.13616648 
+     Gene73      Gene76      Gene77      Gene80      Gene81      Gene84 
+ 0.10255746 -0.42937097  0.49340094 -0.70169385  0.50981755 -0.24341626 
+     Gene85      Gene88      Gene89      Gene92      Gene93      Gene96 
+ 0.55365003 -0.79085684  0.07277038 -0.64368036  0.70104112 -0.42370194 
+     Gene97     Gene100     Gene101     Gene104     Gene105     Gene108 
+ 0.05495944 -0.49515568  0.15913438 -0.07426192  0.18914752 -0.12176958 
+    Gene109     Gene112     Gene113     Gene116     Gene117     Gene120 
+ 0.20421580 -0.30197451  0.76791781 -0.72943719  0.31754276 -0.31914372 
+    Gene121     Gene124     Gene125     Gene128     Gene129     Gene132 
+ 0.44137419 -0.58088697  0.64564677 -0.64307098  0.88848023 -0.06814228 
+    Gene133     Gene136     Gene137     Gene140     Gene141     Gene144 
+ 0.16252143 -0.15204404  0.25191228 -0.47136351  0.29312313 -0.37804951 
+    Gene145     Gene148     Gene149     Gene152     Gene153     Gene156 
+ 0.36874225 -0.65850758  0.54668163 -0.26283611  0.26821821 -0.41921173 
+    Gene157     Gene160     Gene161     Gene164     Gene165     Gene168 
+ 0.71218614 -0.66967341  0.36201511 -0.52168947  0.68740591 -0.59879386 
+    Gene169     Gene172     Gene173     Gene176     Gene177     Gene180 
+ 0.60496504 -0.56578114  0.12585873 -0.23510965  0.28590815 -0.21628033 
+    Gene181     Gene184     Gene185     Gene188     Gene189     Gene192 
+ 1.34079876 -0.31955611  0.16151859 -0.17574012  0.09938029 -0.37424411 
+    Gene193     Gene196     Gene197     Gene200     Gene201     Gene204 
+ 0.17681861 -0.52035083  0.22274637 -0.32813073  0.34415685 -0.21599387 
+    Gene205     Gene208     Gene209     Gene212     Gene213     Gene216 
+ 0.35394433 -0.67125883  0.43642167 -0.29871261  0.62867460 -0.12196279 
+    Gene217     Gene220     Gene221     Gene224     Gene225     Gene228 
+ 0.43566388 -0.03033864  0.50513660 -0.10800855  0.64867018 -0.44869238 
+    Gene229     Gene232     Gene233     Gene236     Gene237     Gene240 
+ 0.11104482 -0.46238586  0.37689079 -0.88319597  0.82991534 -0.30103090 
+    Gene241     Gene244     Gene245     Gene248     Gene249     Gene252 
+ 0.68366009 -0.27743349  0.30110353 -0.69447277  0.36700210 -0.47293915 
+    Gene253     Gene256     Gene257     Gene260     Gene261     Gene264 
+ 0.23638648 -0.08373381  0.92887914 -0.14990686  0.31890209 -0.42829458 
+    Gene265     Gene268     Gene269     Gene272     Gene273     Gene276 
+ 0.21998780 -0.24368656  1.37724019 -1.17006544  0.74277409 -0.19482637 
+    Gene277     Gene280     Gene281     Gene284     Gene285     Gene288 
+ 0.07226883 -0.29718667  0.40722586 -0.38463385  0.74337345 -0.45315811 
+    Gene289     Gene292     Gene293     Gene296     Gene297     Gene300 
+ 0.86167017 -0.63783336  0.91783233 -0.30303952  0.06049955 -0.17119761 
+    Gene301     Gene304     Gene305     Gene308     Gene309     Gene312 
+ 0.84286309 -0.10724537  0.16902047 -1.47511249  0.25448947 -0.38470082 
+    Gene313     Gene316     Gene317     Gene320     Gene321     Gene324 
+ 0.10963486 -0.53176904  0.09318458 -0.76842903  0.08113423 -0.29981729 
+    Gene325     Gene328     Gene329     Gene332     Gene333     Gene336 
+ 0.49730375 -0.88330235  1.19114042 -0.51878664  0.18378154 -0.53807228 
+    Gene337     Gene340     Gene341     Gene344     Gene345     Gene348 
+ 0.15108973 -0.14078405  0.45094192 -0.62569743  0.24850109 -0.29888578 
+    Gene349     Gene352     Gene353     Gene356     Gene357     Gene360 
+ 0.45512205 -1.16468065  0.58480437 -0.16446979  0.44050667 -0.19452138 
+    Gene361     Gene364     Gene365     Gene368     Gene369     Gene372 
+ 0.51501180 -0.43560023  0.53572770 -0.99141913  0.60914279 -0.60018086 
+    Gene373     Gene376     Gene377     Gene380     Gene381     Gene384 
+ 0.22710223 -0.05015822  0.26903821 -0.11280510  0.28339973 -0.61713929 
+    Gene385     Gene388     Gene389     Gene392     Gene393     Gene396 
+ 0.16168725 -0.30506447  1.11913646 -0.34845441  0.25004927 -0.35821439 
+    Gene397     Gene400     Gene401     Gene404     Gene405     Gene408 
+ 0.37313440 -0.31435591  0.31914831 -0.27144499  0.50764863 -0.55334631 
+    Gene409     Gene412     Gene413     Gene416     Gene417     Gene420 
+ 0.76701645 -0.05768441  0.43957911 -0.42660699  0.12574488 -1.01311633 
+    Gene421     Gene424     Gene425     Gene428     Gene429     Gene432 
+ 0.16466916 -0.26127293  0.19238408 -0.20895357  0.41416127 -0.38568046 
+    Gene433     Gene436     Gene437     Gene440     Gene441     Gene444 
+ 0.29004705 -0.31558768  0.57797609 -0.53990158  0.68783766 -0.54180242 
+    Gene445     Gene448     Gene449     Gene452     Gene453     Gene456 
+ 0.09665229 -0.59326935  0.37324742 -0.29469799  0.38269407 -0.07424863 
+    Gene457     Gene460     Gene461     Gene464     Gene465     Gene468 
+ 0.36268914 -0.91451478  0.01466070 -0.75158335  0.90921987 -0.51084229 
+    Gene469     Gene472     Gene473     Gene476     Gene477     Gene480 
+ 0.43466580 -0.63418733  0.25200454 -0.24579209  0.26526546 -0.11687527 
+    Gene481     Gene484     Gene485     Gene488     Gene489     Gene492 
+ 0.39273657 -0.12601469  0.01700629 -0.27304404  0.30128220 -1.54517992 
+    Gene493     Gene496     Gene497     Gene500     Gene501     Gene504 
+ 0.16949569 -0.04675646  0.30026993 -0.23151847  0.23963218 -0.86708482 
+    Gene505     Gene508     Gene509     Gene512     Gene513     Gene516 
+ 0.29743826 -0.33024655  0.19748202 -0.55132381  0.06944188 -0.57094414 
+    Gene517     Gene520     Gene521     Gene524     Gene525     Gene528 
+ 1.01217198 -0.40339895  0.33641800 -0.89563311  0.21046796 -0.98569938 
+    Gene529     Gene532     Gene533     Gene536     Gene537     Gene540 
+ 0.09799569 -0.16040998  0.19791836 -0.36668545  0.44246139 -0.44173225 
+    Gene541     Gene544     Gene545     Gene548     Gene549     Gene552 
+ 0.70909797 -0.40755970  0.14649127 -0.21959663  0.15514124 -0.87075427 
+    Gene553     Gene556     Gene557     Gene560     Gene561     Gene564 
+ 0.27351756 -0.36414187  0.17127405 -0.89791829  0.71133120 -0.67620743 
+    Gene565     Gene568     Gene569     Gene572     Gene573     Gene576 
+ 0.24350512 -0.06859665  0.64509277 -0.80347280  0.16741679 -0.13826862 
+    Gene577     Gene580     Gene581     Gene584     Gene585     Gene588 
+ 0.95603105 -0.30625253  0.12051142 -0.70765729  0.07437365 -0.29200590 
+    Gene589     Gene592     Gene593     Gene596     Gene597     Gene600 
+ 0.18709819 -0.63416553  0.09999652 -0.58805275  0.26097380 -1.01353541 
+    Gene601     Gene604     Gene605     Gene608     Gene609     Gene612 
+ 0.40960191 -0.29138991  0.42717687 -0.48875426  0.34783890 -0.57565736 
+    Gene613     Gene616     Gene617     Gene620     Gene621     Gene624 
+ 0.99286707 -0.25609225  0.13258873 -0.99750623  1.13038499 -0.27022486 
+    Gene625     Gene628     Gene629     Gene632     Gene633     Gene636 
+ 0.85221065 -0.39938013  0.32807449 -0.18535889  0.35641976 -0.35361883 
+    Gene637     Gene640     Gene641     Gene644     Gene645     Gene648 
+ 0.38455100 -0.23875522  0.59338245 -0.21974706  0.68746430 -0.56341916 
+    Gene649     Gene652     Gene653     Gene656     Gene657     Gene660 
+ 0.46306209 -0.08946643  0.38539930 -0.17479188  0.47915060 -0.28040709 
+    Gene661     Gene664     Gene665     Gene668     Gene669     Gene672 
+ 0.07066621 -0.16975955  0.36676127 -0.60599822  0.28086653 -0.26781722 
+    Gene673     Gene676     Gene677     Gene680     Gene681     Gene684 
+ 1.23119872 -0.20696206  0.18763779 -0.44694881  0.39228956 -0.26760158 
+    Gene685     Gene688     Gene689     Gene692     Gene693     Gene696 
+ 0.25570746 -0.49596854  0.22448186 -0.63839186  0.42655323 -0.15426510 
+    Gene697     Gene700     Gene701     Gene704     Gene705     Gene708 
+ 0.40307105 -0.58762276  0.11003389 -0.04652932  0.27424104 -0.32495402 
+    Gene709     Gene712     Gene713     Gene716     Gene717     Gene720 
+ 0.36760652 -0.73955381  0.66077367 -0.21971751  1.20923694 -0.96321136 
+    Gene721     Gene724     Gene725     Gene728     Gene729     Gene732 
+ 0.23244708 -0.28136633  0.65028235 -0.19803317  0.23098401 -0.20399635 
+    Gene733     Gene736     Gene737     Gene740     Gene741     Gene744 
+ 0.84578228 -0.36075894  0.30945595 -1.49669603  0.44927601 -1.24712181 
+    Gene745     Gene748     Gene749     Gene752     Gene753     Gene756 
+ 0.68013323 -0.63413888  0.09451083 -0.34364999  0.45059633 -0.30552458 
+    Gene757     Gene760     Gene761     Gene764     Gene765     Gene768 
+ 0.17741324 -0.35987112  0.22729498 -0.31069195  0.30733186 -0.42301776 
+    Gene769     Gene772     Gene773     Gene776     Gene777     Gene780 
+ 0.15843198 -0.14214001  0.49758962 -0.46999161  0.56630355 -0.20916204 
+    Gene781     Gene784     Gene785     Gene788     Gene789     Gene792 
+ 0.69015378 -0.19822262  0.48480947 -1.08020516  0.35856505 -0.85981869 
+    Gene793     Gene796     Gene797     Gene800     Gene801     Gene804 
+ 0.44201323 -0.43417426  0.58739533 -0.43924066  0.56810071 -0.75098395 
+    Gene805     Gene808     Gene809     Gene812     Gene813     Gene816 
+ 0.39478173 -0.27769956  0.09532909 -0.19085023  0.26954941 -0.59401465 
+    Gene817     Gene820     Gene821     Gene824     Gene825     Gene828 
+ 0.36944310 -1.29345508  0.08206796 -0.03231110  0.19817125 -0.66307836 
+    Gene829     Gene832     Gene833     Gene836     Gene837     Gene840 
+ 0.30517087 -0.20640976  0.18394753 -0.37157270  0.16646248 -0.56031821 
+    Gene841     Gene844     Gene845     Gene848     Gene849     Gene852 
+ 0.24294147 -0.51551383  0.28665444 -1.33320317  0.37666011 -0.10385543 
+    Gene853     Gene856     Gene857     Gene860     Gene861     Gene864 
+ 0.16949598 -0.29867657  0.01280617 -0.03931377  0.30630581 -0.19571591 
+    Gene865     Gene868     Gene869     Gene872     Gene873     Gene876 
+ 0.25455245 -0.49727187  0.29964097 -0.42894422  0.36347137 -0.10023195 
+    Gene877     Gene880     Gene881     Gene884     Gene885     Gene888 
+ 1.13327981 -0.32912721  0.51925404 -0.71896955  0.73288778 -0.46653369 
+    Gene889     Gene892     Gene893     Gene896     Gene897     Gene900 
+ 0.53801377 -0.06255424  0.38485298 -0.18649630  1.05170795 -0.18453257 
+    Gene901     Gene904     Gene905     Gene908     Gene909     Gene912 
+ 0.19362561 -0.14673826  0.21262110 -0.09105916  0.14024242 -0.76508566 
+    Gene913     Gene916     Gene917     Gene920     Gene921     Gene924 
+ 0.14665534 -0.55136439  0.66908501 -0.66568605  0.09916270 -0.18451579 
+    Gene925     Gene928     Gene929     Gene932     Gene933     Gene936 
+ 0.20312011 -0.69253100  0.56567222 -0.52476294  0.80219976 -0.79636973 
+    Gene937     Gene940     Gene941     Gene944     Gene945     Gene948 
+ 0.30388624 -0.87381857  0.14653685 -0.27714135  1.10297231 -0.32469323 
+    Gene949     Gene952     Gene953     Gene956     Gene957     Gene960 
+ 0.22923282 -0.46221172  0.34647533 -0.17033091  0.30896371 -0.58984647 
+    Gene961     Gene964     Gene965     Gene968     Gene969     Gene972 
+ 0.14931058 -0.76310573  0.23107567 -1.14253715  0.07365896 -0.69675814 
+    Gene973     Gene976     Gene977     Gene980     Gene981     Gene984 
+ 0.20834152 -0.19007568  0.43104469 -0.55156122  0.23197804 -0.44524654 
+    Gene985     Gene988     Gene989     Gene992     Gene993     Gene996 
+ 0.10760669 -0.58008567  0.46190328 -0.71567826  0.15455090 -0.06503208 
+    Gene997    Gene1000 
+ 0.35718469 -0.65572816 
+
+$original_matrix
+                  RNA          PROT
+Gene1     1.674131900  1.0978899630
+Gene4    -1.337144008 -1.6239645727
+Gene5     1.351660373  1.7494976432
+Gene8    -1.857067378 -1.2975022499
+Gene9     1.983897144  1.4073313497
+Gene12   -1.541902758 -1.2972726211
+Gene13    1.284815747  1.2898831520
+Gene16   -1.631094249 -1.2107336878
+Gene17    1.202473893  1.2768049587
+Gene20   -1.989382725 -1.2066390704
+Gene21    0.050834852  0.3360950980
+Gene24   -0.002495762 -0.4036679754
+Gene25    0.183290975  0.0908520625
+Gene28   -0.226109731 -0.3415221468
+Gene29    0.538862178  0.5705651619
+Gene32   -0.044649502 -0.2650139372
+Gene33    0.160707225  0.3491388943
+Gene36   -0.320757517 -0.2612239721
+Gene37    0.120067583  0.8261024977
+Gene40   -0.635213095 -0.3489837095
+Gene41    0.845271724  0.0792013431
+Gene44   -0.433155568 -0.2829420486
+Gene45    0.816887534  0.6153651338
+Gene48   -0.331649080 -1.8824564111
+Gene49    0.575163035  0.0617307826
+Gene52   -0.354381189 -0.0826439248
+Gene53    0.097494073  0.0496856526
+Gene56   -0.685013933 -0.5583992983
+Gene57    0.894382021  0.1809841678
+Gene60   -0.426591348 -0.1452198591
+Gene61    0.177103131  0.1381469249
+Gene64   -0.561641780 -0.4319071253
+Gene65    0.089034249  1.1094585227
+Gene68   -0.090235693 -0.8668911399
+Gene69    0.099992298  0.0113680601
+Gene72   -0.201196701 -0.0711362610
+Gene73    0.148630094  0.0564848211
+Gene76   -0.657342695 -0.2013992352
+Gene77    0.420426129  0.5663757476
+Gene80   -0.954147488 -0.4492402110
+Gene81    0.613288001  0.4063470936
+Gene84   -0.103365865 -0.3834666566
+Gene85    0.987733872  0.1195661833
+Gene88   -0.049123683 -1.5325899986
+Gene89    0.052336417  0.0932043450
+Gene92   -0.185019036 -1.1023416754
+Gene93    0.464052433  0.9380298070
+Gene96   -0.726556276 -0.1208475951
+Gene97    0.106629833  0.0032890409
+Gene100  -0.291149726 -0.6991616261
+Gene101   0.221856741  0.0964120278
+Gene104  -0.020235976 -0.1282878642
+Gene105   0.316140639  0.0621544004
+Gene108  -0.215571740 -0.0279674253
+Gene109   0.386486108  0.0219454977
+Gene112  -0.521103364 -0.0828456502
+Gene113   1.216664149  0.3191714678
+Gene116  -0.846812510 -0.6120618680
+Gene117   0.260202533  0.3748829928
+Gene120  -0.393070435 -0.2452170109
+Gene121   0.188496391  0.6942519962
+Gene124  -0.658036273 -0.5037376647
+Gene125   0.432398644  0.8588948911
+Gene128  -1.040748670 -0.2453932961
+Gene129   0.847996463  0.9289639954
+Gene132  -0.049930236 -0.0863543271
+Gene133   0.171985521  0.1530573371
+Gene136  -0.180562381 -0.1235256933
+Gene137   0.085230978  0.4185935815
+Gene140  -0.357108779 -0.5856182442
+Gene141   0.506260130  0.0799861392
+Gene144  -0.735537490 -0.0205615218
+Gene145   0.074311897  0.6631726065
+Gene148  -1.115254663 -0.2017605037
+Gene149   0.609552993  0.4838102634
+Gene152  -0.303183113 -0.2224891057
+Gene153   0.411270111  0.1251663110
+Gene156  -0.408941590 -0.4294818740
+Gene157   0.242653087  1.1817191887
+Gene160  -0.661562096 -0.6777847202
+Gene161   0.299037199  0.4249930294
+Gene164  -0.426300131 -0.6170788186
+Gene165   0.449227125  0.9255846905
+Gene168  -0.655405487 -0.5421822395
+Gene169   0.384317002  0.8256130804
+Gene172  -0.735587178 -0.3959750932
+Gene173   0.063665184  0.1880522851
+Gene176  -0.208998965 -0.2612203356
+Gene177   0.429179224  0.1426370691
+Gene180  -0.235263534 -0.1972971320
+Gene181   0.075840800  2.6057567149
+Gene184  -0.576724946 -0.0623872705
+Gene185   0.225962706  0.0970744704
+Gene188  -0.248266484 -0.1032137637
+Gene189   0.039439698  0.1593208728
+Gene192  -0.492842317 -0.2556459048
+Gene193   0.006281290  0.3473559270
+Gene196  -0.331117908 -0.7095837517
+Gene197   0.390584261  0.0549084768
+Gene200  -0.241946150 -0.4143153080
+Gene201   0.622100230  0.0662134622
+Gene204  -0.288167703 -0.1438200271
+Gene205   0.395154987  0.3127336812
+Gene208  -0.540246835 -0.8022708257
+Gene209   0.767905834  0.1049375159
+Gene212  -0.596939686 -0.0004855307
+Gene213   0.665034265  0.5923149339
+Gene216  -0.154373009 -0.0895525691
+Gene217   0.453594755  0.4177329983
+Gene220  -0.036751907 -0.0239253738
+Gene221   0.548937997  0.4613352018
+Gene224  -0.163438491 -0.0525786056
+Gene225   1.277004786  0.0203355680
+Gene228  -0.251615605 -0.6457691593
+Gene229   0.155981844  0.0661077927
+Gene232  -0.368128734 -0.5566429957
+Gene233   0.265936321  0.4878452656
+Gene236  -0.401043297 -1.3653486357
+Gene237   0.703895067  0.9559356070
+Gene240  -0.095058149 -0.5070036506
+Gene241   0.262150720  1.1051694583
+Gene244  -0.198558310 -0.3563086757
+Gene245   0.506026752  0.0961803056
+Gene248  -0.013516513 -1.3754290340
+Gene249   0.014394648  0.7196095562
+Gene252  -0.654062083 -0.2918162202
+Gene253   0.226911874  0.2458610892
+Gene256  -0.104969009 -0.0624986160
+Gene257   0.774533546  1.0832247369
+Gene260  -0.061426838 -0.2383868916
+Gene261   0.033526004  0.6042781780
+Gene264  -0.022200066 -0.8343890850
+Gene265   0.286976012  0.1529995960
+Gene268  -0.459264416 -0.0281087035
+Gene269   1.698442645  1.0560377329
+Gene272  -2.200605412 -0.1395254655
+Gene273   1.142323076  0.3432251025
+Gene276  -0.133603773 -0.2560489689
+Gene277   0.012389305  0.1321483537
+Gene280  -0.187877027 -0.4064963034
+Gene281   0.119991072  0.6944606445
+Gene284  -0.647845800 -0.1214219028
+Gene285   1.236882409  0.2498644957
+Gene288  -0.646109853 -0.2602063769
+Gene289   1.262575882  0.4607644667
+Gene292  -0.996877460 -0.2787892659
+Gene293   1.143246362  0.6924182886
+Gene296  -0.087987493 -0.5180915491
+Gene297   0.007826436  0.1131726596
+Gene300  -0.097544758 -0.2448504558
+Gene301   0.105365387  1.5803607859
+Gene304  -0.137039807 -0.0774509331
+Gene305   0.200568566  0.1374723657
+Gene308  -2.085364952 -0.8648600334
+Gene309   0.344421350  0.1645575885
+Gene312  -0.332859158 -0.4365424831
+Gene313   0.146740562  0.0725291563
+Gene316  -0.095385997 -0.9681520874
+Gene317   0.077945005  0.1084241496
+Gene320  -0.067077247 -1.4697808196
+Gene321   0.068662480  0.0936059735
+Gene324  -0.152432238 -0.4472023446
+Gene325   0.983774664  0.0108328268
+Gene328  -1.457488223 -0.3091164787
+Gene329   0.470580832  1.9117000036
+Gene332  -0.543200877 -0.4943724000
+Gene333   0.132062878  0.2355002051
+Gene336  -0.307535086 -0.7686094751
+Gene337   0.156534394  0.1456450669
+Gene340  -0.009726248 -0.2718418594
+Gene341   0.382228962  0.5196548683
+Gene344  -0.647675923 -0.6037189388
+Gene345   0.312995930  0.1840062555
+Gene348  -0.410811231 -0.1869603244
+Gene349   0.639700430  0.2705436739
+Gene352  -0.014362720 -2.3149985766
+Gene353   0.288132220  0.8814765129
+Gene356  -0.006143274 -0.3227963034
+Gene357   0.174722231  0.7062911176
+Gene360  -0.078180750 -0.3108620166
+Gene361   0.842189643  0.1878339520
+Gene364  -0.511280739 -0.3599197205
+Gene365   0.439733952  0.6317214382
+Gene368  -1.750414941 -0.2324233289
+Gene369   0.390824224  0.8274613506
+Gene372  -0.464948036 -0.7354136921
+Gene373   0.062239796  0.3919646731
+Gene376  -0.015993553 -0.0843228958
+Gene377   0.110927249  0.4271491680
+Gene380  -0.012627631 -0.2129825672
+Gene381   0.232918309  0.3338811511
+Gene384  -0.113964162 -1.1203144172
+Gene385   0.269478393  0.0538961004
+Gene388  -0.549414648 -0.0607142851
+Gene389   1.022448258  1.2158246698
+Gene392  -0.528265160 -0.1686436696
+Gene393   0.139073533  0.3610250038
+Gene396  -0.620522922 -0.0959058527
+Gene397   0.567760693  0.1785081048
+Gene400  -0.003822690 -0.6248891267
+Gene401   0.006099170  0.6321974559
+Gene404  -0.239349996 -0.3035399791
+Gene405   0.402909673  0.6123875859
+Gene408  -1.083531597 -0.0231610174
+Gene409   0.469400038  1.0646328578
+Gene412  -0.080101919 -0.0352669100
+Gene413   0.667214077  0.2119441472
+Gene416  -0.716646029 -0.1365679482
+Gene417   0.021992475  0.2294972938
+Gene420  -1.552957197 -0.4732754544
+Gene421   0.261648029  0.0676902982
+Gene424  -0.492228600 -0.0303172624
+Gene425   0.050066581  0.3347015879
+Gene428  -0.410939251 -0.0069678921
+Gene429   0.794592365  0.0337301735
+Gene432  -0.248994585 -0.5223663315
+Gene433   0.482082093  0.0980120038
+Gene436  -0.212771992 -0.4184033620
+Gene437   0.965858927  0.1900932482
+Gene440  -0.792727212 -0.2870759433
+Gene441   0.548224505  0.8274508236
+Gene444  -0.781147132 -0.3024577007
+Gene445   0.062247591  0.1310569933
+Gene448  -0.832434247 -0.3541044569
+Gene449   0.446047876  0.3004469567
+Gene452  -0.456177969 -0.1332180088
+Gene453   0.618829482  0.1465586625
+Gene456  -0.050571976 -0.0979252834
+Gene457   0.090536286  0.6348419859
+Gene460  -0.903986989 -0.9250425799
+Gene461   0.011117535  0.0182038569
+Gene464  -0.781732188 -0.7214345043
+Gene465   0.232891235  1.5855484949
+Gene468  -0.160391350 -0.8612932394
+Gene469   0.548440132  0.3208914709
+Gene472  -0.085112295 -1.1832623552
+Gene473   0.369136746  0.1348723304
+Gene476  -0.352101468 -0.1394827038
+Gene477   0.202631216  0.3278996961
+Gene480  -0.151889589 -0.0818609439
+Gene481   0.667225368  0.1182477785
+Gene484  -0.162574020 -0.0894553525
+Gene485   0.030266834  0.0037457436
+Gene488  -0.168626937 -0.3774611327
+Gene489   0.367594749  0.2349696510
+Gene492  -1.151878788 -1.9384810560
+Gene493   0.337445019  0.0015463595
+Gene496  -0.003075237 -0.0904376894
+Gene497   0.596709581  0.0038302866
+Gene500  -0.104065359 -0.3589715883
+Gene501   0.451480281  0.0277840767
+Gene504  -1.097057088 -0.6371125551
+Gene505   0.437166960  0.1577095668
+Gene508  -0.297613660 -0.3628794306
+Gene509   0.024552059  0.3704119764
+Gene512  -1.083381937 -0.0192656925
+Gene513   0.065447596  0.0734361659
+Gene516  -0.765119929 -0.3767683552
+Gene517   0.342216184  1.6821277783
+Gene520  -0.088798967 -0.7179989316
+Gene521   0.521227913  0.1516080860
+Gene524  -1.427477310 -0.3637889187
+Gene525   0.284995911  0.1359400048
+Gene528  -1.593005352 -0.3783934018
+Gene529   0.004769339  0.1912220439
+Gene532  -0.162659343 -0.1581606218
+Gene533   0.349656535  0.0461801753
+Gene536  -0.131336941 -0.6020339528
+Gene537   0.457523775  0.4273989999
+Gene540  -0.561385886 -0.3220786123
+Gene541   0.096395564  1.3218003754
+Gene544  -0.557747515 -0.2573718924
+Gene545   0.123141528  0.1698410085
+Gene548  -0.068356680 -0.3708365875
+Gene549   0.095696653  0.2145858189
+Gene552  -0.688376017 -1.0531325174
+Gene553   0.244595761  0.3024393618
+Gene556  -0.231392488 -0.4968912576
+Gene557   0.176698517  0.1658495877
+Gene560  -1.791545719 -0.0042908674
+Gene561   1.321390721  0.1012716755
+Gene564  -0.696629793 -0.6557850722
+Gene565   0.186911958  0.3000982873
+Gene568  -0.090280965 -0.0469123333
+Gene569   0.261994081  1.0281914528
+Gene572  -0.042848740 -1.5640968501
+Gene573   0.231020688  0.1038128832
+Gene576  -0.149330548 -0.1272066866
+Gene577   0.383728912  1.5283331801
+Gene580  -0.309747684 -0.3027573836
+Gene581   0.056172214  0.1848506277
+Gene584  -0.434274996 -0.9810395782
+Gene585   0.058513457  0.0902338360
+Gene588  -0.176066185 -0.4079456062
+Gene589   0.009934963  0.3642614074
+Gene592  -1.216223407 -0.0521076622
+Gene593   0.013658805  0.1863342377
+Gene596  -0.055140388 -1.1209651214
+Gene597   0.293819548  0.2281280487
+Gene600  -1.495235248 -0.5318355725
+Gene601   0.624830945  0.1943728745
+Gene604  -0.496897943 -0.0858818841
+Gene605   0.759491146  0.0948625920
+Gene608  -0.084749322 -0.8927591899
+Gene609   0.480174855  0.2155029547
+Gene612  -1.014871198 -0.1364435258
+Gene613   1.657701401  0.3280327376
+Gene616  -0.106891521 -0.4052929696
+Gene617   0.049685724  0.2154917314
+Gene620  -1.355098135 -0.6399143236
+Gene621   0.044119488  2.2166504924
+Gene624  -0.423870184 -0.1165795402
+Gene625   1.375634884  0.3287864101
+Gene628  -0.070342288 -0.7284179738
+Gene629   0.440809759  0.2153392241
+Gene632  -0.073228296 -0.2974894763
+Gene633   0.339208907  0.3736306049
+Gene636  -0.657610529 -0.0496271263
+Gene637   0.020473820  0.7486281851
+Gene640  -0.379055367 -0.0984550689
+Gene641   0.226331654  0.9604332550
+Gene644  -0.414323200 -0.0251709211
+Gene645   1.044206049  0.3307225578
+Gene648  -1.068651697 -0.0581866166
+Gene649   0.522130072  0.4039941082
+Gene652  -0.037603607 -0.1413292557
+Gene653   0.322620741  0.4481778645
+Gene656  -0.066792500 -0.2827912536
+Gene657   0.041366127  0.9169350832
+Gene660  -0.455256504 -0.1055576852
+Gene661   0.072857561  0.0684748532
+Gene664  -0.147101434 -0.1924176560
+Gene665   0.628435556  0.1050869937
+Gene668  -0.803636356 -0.4083600882
+Gene669   0.189057225  0.3726758263
+Gene672  -0.282900740 -0.2527337023
+Gene673   1.064100468  1.3982969819
+Gene676  -0.231156176 -0.1827679388
+Gene677   0.093290942  0.2819846350
+Gene680  -0.348583273 -0.5453143382
+Gene681   0.134453213  0.6501259025
+Gene684  -0.052288869 -0.4829142910
+Gene685   0.021069102  0.4903458200
+Gene688  -0.767770918 -0.2241661535
+Gene689   0.319418341  0.1295453758
+Gene692  -0.197362733 -1.0794209795
+Gene693   0.267959518  0.5851469365
+Gene696  -0.234308655 -0.0742215428
+Gene697   0.782447911  0.0236941981
+Gene700  -0.448840972 -0.7264045549
+Gene701   0.073177450  0.1468903330
+Gene704  -0.064291484 -0.0287671622
+Gene705   0.475489689  0.0729923843
+Gene708  -0.424299052 -0.2256089897
+Gene709   0.730783656  0.0044293835
+Gene712  -0.283293709 -1.1958139147
+Gene713   0.180705304  1.1408420273
+Gene716  -0.415152661 -0.0242823639
+Gene717   2.165356239  0.2531176392
+Gene720  -0.967031365 -0.9593913490
+Gene721   0.378129031  0.0867651246
+Gene724  -0.059484101 -0.5032485506
+Gene725   0.216190746  1.0843739457
+Gene728  -0.212695666 -0.1833706820
+Gene729   0.100604062  0.3613639530
+Gene732  -0.058050326 -0.3499423736
+Gene733   0.188862850  1.5027017148
+Gene736  -0.500570287 -0.2209475952
+Gene737   0.094605540  0.5243063621
+Gene740  -2.923859155 -0.0695328950
+Gene741   0.003413638  0.8951383829
+Gene744  -0.223768600 -2.2704750115
+Gene745   0.493050830  0.8672156319
+Gene748  -1.161575360 -0.1067024057
+Gene749   0.158002262  0.0310193990
+Gene752  -0.603092084 -0.0842079034
+Gene753   0.797415026  0.1037776396
+Gene756  -0.309948368 -0.3011007996
+Gene757   0.306016100  0.0488103804
+Gene760  -0.690915569 -0.0288266670
+Gene761   0.289221843  0.1653681156
+Gene764  -0.316720639 -0.3046632594
+Gene765   0.244618624  0.3700450941
+Gene768  -0.384804453 -0.4612310645
+Gene769   0.165572758  0.1512911957
+Gene772  -0.089849025 -0.1944309981
+Gene773   0.170123978  0.8250552645
+Gene776  -0.600709641 -0.3392735839
+Gene777   0.479454908  0.6531521859
+Gene780  -0.092259794 -0.3260642940
+Gene781   0.587033712  0.7932738460
+Gene784  -0.184156201 -0.2122890444
+Gene785   0.090593976  0.8790249718
+Gene788  -1.726576980 -0.4338333304
+Gene789   0.548009974  0.1691201344
+Gene792  -0.265574950 -1.4540624259
+Gene793   0.658718750  0.2253077193
+Gene796  -0.389733160 -0.4786153628
+Gene797   0.984172804  0.1906178567
+Gene800  -0.586289877 -0.2921914378
+Gene801   0.327272563  0.8089288493
+Gene804  -1.327960540 -0.1740073679
+Gene805   0.580380747  0.2091827106
+Gene808  -0.320733831 -0.2346652788
+Gene809   0.125638293  0.0650198819
+Gene812  -0.157949435 -0.2237510201
+Gene813   0.439780548  0.0993182807
+Gene816  -0.856349404 -0.3316798953
+Gene817   0.530164335  0.2087218563
+Gene820  -0.250514435 -2.3363957330
+Gene821   0.161956599  0.0021793144
+Gene824  -0.003911306 -0.0607108869
+Gene825   0.128891427  0.2674510828
+Gene828  -1.271346500 -0.0548102199
+Gene829   0.469089213  0.1412525214
+Gene832  -0.112433624 -0.3003858909
+Gene833   0.334442262  0.0334527907
+Gene836  -0.242548002 -0.5005974018
+Gene837   0.152542746  0.1803822080
+Gene840  -1.012157481 -0.1084789444
+Gene841   0.016634764  0.4692481813
+Gene844  -0.921076219 -0.1099514495
+Gene845   0.259432809  0.3138760661
+Gene848  -2.037159883 -0.6292464499
+Gene849   0.626655876  0.1266643504
+Gene852  -0.138824829 -0.0688860304
+Gene853   0.003599877  0.3353920766
+Gene856  -0.360466028 -0.2368871085
+Gene857   0.022813766  0.0027985679
+Gene860  -0.051087739 -0.0275398087
+Gene861   0.372171318  0.2404403006
+Gene864  -0.329179957 -0.0622518602
+Gene865   0.209063444  0.3000414541
+Gene868  -0.942127559 -0.0524161737
+Gene869   0.294407496  0.3048744533
+Gene872  -0.770141481 -0.0877469524
+Gene873   0.118053394  0.6088893488
+Gene876  -0.171626943 -0.0288369498
+Gene877   1.884688117  0.3818715104
+Gene880  -0.199385890 -0.4588685397
+Gene881   0.969421913  0.0690861640
+Gene884  -0.827999566 -0.6099395391
+Gene885   0.127644497  1.3381310536
+Gene888  -0.526187499 -0.4068798782
+Gene889   0.585985379  0.4900421604
+Gene892  -0.121104887 -0.0040035995
+Gene893   0.174182255  0.5955236990
+Gene896  -0.119662792 -0.2533298123
+Gene897   1.697485819  0.4059300751
+Gene900  -0.098049936 -0.2710152010
+Gene901   0.034469426  0.3527817948
+Gene904  -0.233912353 -0.0595641690
+Gene905   0.175013174  0.2502290223
+Gene908  -0.044138044 -0.1379802733
+Gene909   0.085934906  0.1945499249
+Gene912  -1.282341013 -0.2478303103
+Gene913   0.062201272  0.2311094005
+Gene916  -0.017970508 -1.0847582808
+Gene917   0.228270161  1.1098998619
+Gene920  -0.495456789 -0.8359153141
+Gene921   0.092381079  0.1059443304
+Gene924  -0.067223468 -0.3018081189
+Gene925   0.156177817  0.2500623984
+Gene928  -0.255956061 -1.1291059337
+Gene929   0.862507843  0.2688365971
+Gene932  -0.690165755 -0.3593601272
+Gene933   0.113158055  1.4912414571
+Gene936  -0.799454825 -0.7932846387
+Gene937   0.279035497  0.3287369803
+Gene940  -1.625459813 -0.1221773231
+Gene941   0.010599269  0.2824744400
+Gene944  -0.379286353 -0.1749963531
+Gene945   1.031863596  1.1740810222
+Gene948  -0.466209589 -0.1831768645
+Gene949   0.381682564  0.0767830718
+Gene952  -0.807225900 -0.1171975489
+Gene953   0.019278811  0.6736718554
+Gene956  -0.016547221 -0.3241145937
+Gene957   0.190152524  0.4277749034
+Gene960  -0.370687125 -0.8090058186
+Gene961   0.294001160  0.0046199962
+Gene964  -0.853940430 -0.6722710299
+Gene965   0.041939789  0.4202115481
+Gene968  -0.932454461 -1.3526198310
+Gene969   0.118028881  0.0292890304
+Gene972  -1.336991590 -0.0565246888
+Gene973   0.086268424  0.3304146222
+Gene976  -0.191639407 -0.1885119472
+Gene977   0.023137225  0.8389521547
+Gene980  -0.377738586 -0.7253838631
+Gene981   0.339251364  0.1247047158
+Gene984  -0.202655789 -0.6878372980
+Gene985   0.044705949  0.1705074308
+Gene988  -0.814585693 -0.3455856418
+Gene989   0.718257364  0.2055492013
+Gene992  -0.650178728 -0.7811777843
+Gene993   0.242491100  0.0666106908
+Gene996  -0.081118756 -0.0489454128
+Gene997   0.192387983  0.5219813951
+Gene1000 -0.963275023 -0.3481812906
+
+attr(,"class")
+[1] "omics_aggregated"</code></pre>
+</div>
+</div>
+</section>
+<section id="distribution-to-enrichment-backends" class="level3" data-number="7.1.5">
+<h3 data-number="7.1.5" class="anchored" data-anchor-id="distribution-to-enrichment-backends"><span class="header-section-number">7.1.5</span> 4. Distribution to Enrichment Backends</h3>
+<p>Once the multi-omics data is aggregated and harmonized, you obtain a unified object containing a ranking <code>score</code>.</p>
+<p>For <strong>GSEA</strong> or <strong>NSEA</strong>, you can directly extract the sorted score vector and feed it to the engine:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>omics_pathways <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">TargetPathway =</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>])</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>geneList <span class="ot">&lt;-</span> <span class="fu">sort</span>(agg_fisher_res<span class="sc">$</span>score, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>gsea_res <span class="ot">&lt;-</span> <span class="fu">gsea</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">geneList =</span> geneList,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">scoreType =</span> <span class="st">"pos"</span>   <span class="co"># Fisher/Brown aggregated scores are all positive</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(gsea_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"setSize"</span>, <span class="st">"enrichmentScore"</span>, <span class="st">"NES"</span>, <span class="st">"pvalue"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             ID setSize enrichmentScore      NES pvalue
+1 TargetPathway      20       0.9806122 2.215595  1e-10</code></pre>
+</div>
+</div>
+<p>For <strong>ORA</strong>, which requires discrete gene lists, <code>enrichit</code> provides an adapter function <code>select_features_for_ora()</code>. It takes the aggregated object and a cutoff, and returns the selected <code>gene</code> list and background <code>universe</code>, perfectly bridging the gap between continuous multi-omics scores and traditional hypergeometric tests.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a mock pathway containing the 20 genes we injected signal into</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>selected_ora_inputs <span class="ot">&lt;-</span> <span class="fu">select_features_for_ora</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> agg_fisher_res, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cutoff =</span> <span class="fl">0.05</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"pvalue"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Only genes with significant aggregated evidence will be selected</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>early_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> selected_ora_inputs<span class="sc">$</span>gene,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> selected_ora_inputs<span class="sc">$</span>universe,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(early_ora_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"SetSize"</span>, <span class="st">"Count"</span>, <span class="st">"pvalue"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             ID SetSize Count       pvalue
+1 TargetPathway      20    20 1.707415e-25</code></pre>
+</div>
+</div>
+<p>By decoupling ID mapping, statistical integration, and pathway enrichment, <code>enrichit</code> provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.</p>
+<p>These workflow helpers are also available from <code>clusterProfiler</code>, which means the aggregated result can be sent directly to high-level functions such as <code>enrichGO()</code>, <code>gseGO()</code>, or <code>nseGO()</code> without changing the underlying multi-omics logic.</p>
+</section>
+<section id="late-fusion-at-the-pathway-level" class="level3" data-number="7.1.6">
+<h3 data-number="7.1.6" class="anchored" data-anchor-id="late-fusion-at-the-pathway-level"><span class="header-section-number">7.1.6</span> 5. Late Fusion at the Pathway Level</h3>
+<p>Early fusion is elegant when your features align cleanly. But sometimes that assumption collapses immediately: transcriptomics might have a background of 20,000 genes, proteomics might only detect 4,000 proteins, and region-based omics may not even live in gene space before annotation. In these cases, forcing everything into one feature matrix is a great way to manufacture missing values and mapping noise.</p>
+<p>This is where <strong>Late Fusion</strong> comes in. Each omics is enriched independently using its own background and preferred backend; then <code>aggregate_enrichment()</code> merges the pathway-level p-values across results. The mathematics is the same family as feature-level aggregation, but the biology is much cleaner because each layer is allowed to speak in its native space first.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>late_fusion_pathways <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">SharedPath =</span> omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>],</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">RNAPath =</span> omics_gene_ids[<span class="dv">9</span><span class="sc">:</span><span class="dv">16</span>],</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ProtPath =</span> omics_gene_ids[<span class="dv">17</span><span class="sc">:</span><span class="dv">24</span>]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>rna_sig <span class="ot">&lt;-</span> <span class="fu">c</span>(omics_gene_ids[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], omics_gene_ids[<span class="dv">9</span><span class="sc">:</span><span class="dv">13</span>])</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>prot_sig <span class="ot">&lt;-</span> <span class="fu">c</span>(omics_gene_ids[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span><span class="sc">:</span><span class="dv">8</span>)], omics_gene_ids[<span class="dv">17</span><span class="sc">:</span><span class="dv">21</span>])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>rna_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> rna_sig,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> late_fusion_pathways</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>prot_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> prot_sig,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> omics_gene_ids[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">60</span>)],</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_sets =</span> late_fusion_pathways</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>late_fusion_res <span class="ot">&lt;-</span> <span class="fu">aggregate_enrichment</span>(</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">res_list =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_ora_res, <span class="at">PROT =</span> prot_ora_res),</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"brown"</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(late_fusion_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"pvalue"</span>, <span class="st">"p.adjust"</span>, <span class="st">"Count"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ID     pvalue   p.adjust Count
+SharedPath SharedPath 0.01646848 0.03719786     8
+RNAPath       RNAPath 0.02479857 0.03719786     5
+ProtPath     ProtPath 0.04647113 0.04647113     5</code></pre>
+</div>
+</div>
+</section>
+<section id="contribution-tracing" class="level3" data-number="7.1.7">
+<h3 data-number="7.1.7" class="anchored" data-anchor-id="contribution-tracing"><span class="header-section-number">7.1.7</span> 6. Contribution Tracing</h3>
+<p>After running a multi-omics integration, you may want to know whether a significant pathway was driven by the transcriptome, the proteome, or their combination. <code>enrichit</code> provides tools to trace the contribution back to the original omics data.</p>
+<p>First, you can classify the pattern of each pathway by comparing the merged results with single-omics results:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run ORA for individual omics</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>rna_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> omics_gene_ids[rna_pvals <span class="sc">&lt;</span> <span class="fl">0.05</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>prot_ora_res <span class="ot">&lt;-</span> <span class="fu">ora</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene =</span> omics_gene_ids[prot_pvals <span class="sc">&lt;</span> <span class="fl">0.05</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">universe =</span> omics_gene_ids,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">gene_sets =</span> omics_pathways</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Classify contribution patterns</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>classified_ora_res <span class="ot">&lt;-</span> <span class="fu">classify_omics_pattern</span>(</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">merged_res =</span> early_ora_res,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">single_res =</span> <span class="fu">list</span>(<span class="at">RNA =</span> rna_ora_res, <span class="at">PROT =</span> prot_ora_res),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_cutoff =</span> <span class="fl">0.05</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"pvalue"</span>   <span class="co"># enrichit::ora() reports pvalue, not p.adjust</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(classified_ora_res)[, <span class="fu">c</span>(<span class="st">"ID"</span>, <span class="st">"pvalue"</span>, <span class="st">"Omics_Pattern"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             ID       pvalue Omics_Pattern
+1 TargetPathway 1.707415e-25        Shared</code></pre>
+</div>
+</div>
+<p>The <code>Omics_Pattern</code> column will label the pathway as <code>Shared</code>, <code>RNA-Specific</code>, <code>PROT-Specific</code>, or <code>Enhanced (1+1&gt;2)</code>.</p>
+<p>Then, you can extract the gene-level contribution for a specific pathway to see the original statistics of the core enrichment genes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get original multi-omics statistics for genes in the pathway</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>contribution_df <span class="ot">&lt;-</span> <span class="fu">get_omics_contribution</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">res =</span> classified_ora_res, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">agg =</span> agg_fisher_res, </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pathway_id =</span> <span class="st">"TargetPathway"</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(contribution_df, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Feature        RNA       PROT Aggregated_Score Aggregated_Pvalue
+1   Gene1 0.02117718 0.07981969         1.903800       0.012479586
+2   Gene2 0.02011611 0.04066417         2.178296       0.006632908
+3   Gene3 0.02044263 0.07983821         1.916972       0.012106753</code></pre>
+</div>
+</div>
+<p>This data frame is extremely useful for downstream visualization, such as drawing multi-omics heatmaps for the core enriched genes.</p>
+</section>
+</section>
+<section id="next-steps" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">7.2</span> Next steps</h2>
+<ul>
+<li>For the statistical foundations used by each backend, see <a href="./enrichment-foundations.html#sec-enrichment-foundations">ORA and GSEA</a>.</li>
+<li>For genomic regions that must first be mapped to genes, see <a href="./chipseeker-enrichment.html#chipseeker-enrichment">ChIPseeker</a>.</li>
+<li>For result-object organization and interpretation, continue to <a href="./03-evidence-integration.html">evidence integration</a> and <a href="./interpretation.html#evidence-guided-interpretation">evidence-guided interpretation</a>.</li>
+<li>For multi-omics contribution figures, see <a href="./enrichplot-specialized.html#sec-visualization-specialized">specialized visualization</a>.</li>
+</ul>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./enrichment-network.html" class="pagination-link" aria-label="Network-aware and weighted enrichment">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./comparecluster-analysis.html" class="pagination-link" aria-label="Comparing biological themes from multiple gene lists">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/master/enrichment-multiomics.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
