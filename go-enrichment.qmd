@@ -165,15 +165,21 @@ ego3 <- gseGO(geneList     = geneList,
 
 The format of input data, `geneList`, is documented in the @sec-id-convert. Beware that only gene sets with size in `[minGSSize, maxGSSize]` will be tested.
 
-::: {.callout-note title="Size filtering is overlap-based, not annotation-based" icon="lightbulb"}
-`minGSSize` and `maxGSSize` operate on the **overlap** of each gene set with the genes you actually provide (the candidate vector for ORA, or the named `geneList` for GSEA), not on the raw, full annotation size stored in the ontology database. The code therefore does roughly:
+::: {.callout-note title="Size filtering follows the background you supply" icon="lightbulb"}
+`minGSSize` and `maxGSSize` bound the **effective** gene-set size after intersecting the annotation with the genes that define the test:
+
+- GSEA (`gseGO()`, `gseKEGG()`, `GSEA()`): the named `geneList`;
+- ORA with an explicit `universe`: the `universe` vector;
+- ORA without a `universe`: the background defaults to all annotated genes, so the effective size is the full annotation and `maxGSSize` caps the **raw** annotation size.
+
+The code therefore does roughly:
 
 ```r
-gene_sets <- lapply(gene_sets, intersect, names(geneList)) # or universe for ORA
+gene_sets <- lapply(gene_sets, intersect, background) # geneList or universe
 idx <- get_geneSet_index(gene_sets, minGSSize, maxGSSize)
 ```
 
-This is important for broad libraries such as MSigDB Hallmark collections, Reactome, or the upper HDO Slim. A database gene set annotated with 3 000 genes is **not** rejected just because 3 000 > `maxGSSize = 500`; it is kept if its overlap with your 12 000 measured genes has, say, 480 members. The only terms genuinely dropped are (a) very small overlaps (below `minGSSize`, which usually means the term has too few observed members for Fisher's exact test or the weighted Kolmogorov-Smirnov statistic to be reliable) and (b) extremely broad overlaps (above `maxGSSize`, which usually correspond to root-level, biologically uninformative nodes that inflate the multiple-testing burden without adding insight).
+This matters for broad libraries such as MSigDB Hallmark collections, Reactome, or the upper HDO Slim. A 3 000-gene set tested against a 12 000-gene `universe` is filtered on its ~480 observed members and can pass; the same set with no `universe` is filtered on its full 3 000-gene annotation and is dropped by `maxGSSize = 500`. Pass a character `universe` when you want overlap semantics for ORA, or raise `maxGSSize` (for example to `Inf`).
 
 See also [Tuning `minGSSize` and `maxGSSize`](#sec-tune-gene-set-size).
 :::
@@ -358,11 +364,11 @@ The inference requires that the gene-set IDs really are GO terms (`GO:0008150`, 
 
 It is common to receive a message saying "No gene set have size > 10 ... return NULL" or finding no significant terms.
 
-1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. Remember that filtering is based on the overlap with your provided input, not the raw database annotation size (see [Tuning `minGSSize` and `maxGSSize`](#sec-tune-gene-set-size) and the overlap-rule callout above). A term whose full annotation has 3 000 genes may still pass if only 200 of those genes were measured in your experiment. If no term passes both cutoffs, enlarge the window with, for example, `minGSSize = 5, maxGSSize = 5000`, or set `maxGSSize = Inf` to disable the upper cap entirely.
+1.  **Gene Set Size**: The default `minGSSize` is 10 and `maxGSSize` is 500. For GSEA, filtering uses the overlap with `geneList`; for ORA it uses the overlap with `universe`. Without a `universe`, the background is all annotated genes and the bound applies to the raw annotation size (see the callout above and [Tuning `minGSSize` and `maxGSSize`](#sec-tune-gene-set-size)). A term whose full annotation has 3 000 genes passes with a mapped universe when only 200 of those genes were measured, but not with the default no-universe background. If no term passes both cutoffs, enlarge the window with, for example, `minGSSize = 5, maxGSSize = 5000`, or set `maxGSSize = Inf` to disable the upper cap entirely.
 
 ### Tuning `minGSSize` and `maxGSSize` {#sec-tune-gene-set-size}
 
-The default `maxGSSize = 500` is a conservative first-pass safety net, not a hard recommendation. It was chosen to avoid root-level GO/HDO nodes and extremely broad Hallmark-style gene sets overwhelming the multiple-testing correction in a typical short list of a few hundred differentially expressed genes. It also used to cap raw annotation sizes in older code paths, but that restriction no longer applies: size filtering now happens **after** intersecting with your measured genes.
+The default `maxGSSize = 500` is a conservative first-pass safety net, not a hard recommendation. It was chosen to avoid root-level GO/HDO nodes and extremely broad Hallmark-style gene sets overwhelming the multiple-testing correction in a typical short list of a few hundred differentially expressed genes. For GSEA and for ORA with an explicit `universe`, size filtering happens **after** intersecting with those genes; ORA with no `universe` is the exception, because its background is all annotated genes (see the callout above).
 
 The table below is a pragmatic starting point. Always verify the term list after the first run and adjust the window to the characteristic scale of your annotation library and input list.
 

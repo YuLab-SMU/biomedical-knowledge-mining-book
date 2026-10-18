@@ -392,7 +392,7 @@ In a real analysis, users can pass a KEGG organism code such as `"hsa"` directly
 
 KEGG pathways are organized into a hierarchical structure with top-level categories such as "Metabolism", "Genetic Information Processing", "Environmental Information Processing", "Cellular Processes", "Organismal Systems", "Human Diseases", and "Drug Development". This classification helps users interpret enrichment results by providing higher-level biological context. For instance, users might be interested specifically in signaling pathways ("Environmental Information Processing") or metabolic pathways ("Metabolism") while excluding disease-related pathways.
 
-The `r Biocpkg("clusterProfiler")` package integrates this classification information directly into the enrichment results. The output `data.frame` contains `category` and `subcategory` columns, which can be used to filter or group the results.
+The `r Biocpkg("clusterProfiler")` package integrates this classification information into the results of `enrichKEGG()` and its module/topology variants: their `data.frame` carries `category` and `subcategory` columns, which can be used to filter or group the results. `gseKEGG()` currently does not add these two columns.
 
 ### Data Update Strategy
 
