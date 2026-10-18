@@ -498,10 +498,11 @@ quarto-uncaptioned                      0
 - signed NSEA 改用 `clusterprofiler_enrichit_demo()`，与 N2 的离线夹具一致；
 - 每段结果后补 `head(as.data.frame(...))` 或对象的 print 方法，使页面真正显示结果。
 
-启用后暴露并修复的两处**执行期**问题：
+启用后暴露并修复的三处**执行期**问题：
 
 1. `classify_omics_pattern()` 默认 `by = "p.adjust"`，但 `enrichit::ora()` 的结果只有 `pvalue`；已显式传 `by = "pvalue"`。
 2. `harmonized_res` / `agg_strict` 是 `omics_aggregated`，**没有 `as.data.frame()` 方法**；改为直接 print。
+3. `aggregate_omics()` 的 Fisher/Brown 聚合 score 全为正，`gsea()` 默认 `scoreType = "std"` 会给出 warning，也与本书 foundations 章的 scoreType 规则冲突；已改为 `scoreType = "pos"`。
 
 输出块（`docs/*.html` 的 `cell-output`）：foundations 16、network 16、multiomics 18（此前全为 0）。
 
