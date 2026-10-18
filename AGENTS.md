@@ -159,6 +159,18 @@ GO / KEGG / WikiPathways / CellMarker / 自定义注释
 - `setReadable()` 主要改变展示，不应被误解为改变了统计检验。
 - GSON 文件应记录 source、species、key type、release/version 和访问日期。
 - PPI、外部数据库和 AI 都属于额外证据层，必须说明网络依赖、版本和失败模式。
+- 章节调用某个包的 `Suggests` 里的包时，必须在正文说明安装要求，并在 `.github/workflows/publish-book.yml` 的安装列表里显式列出。本地能跑不代表 CI 能跑：本地库通常累积了 `pak` 从不会单独安装的 `Suggests`。判定方法不是数 `.qmd` 里的 `library()` mentions，而是看**运行时可达性**（运行时可达的函数是否落在某个未安装的 `Suggests` 上）。
+
+## 6a. CI 依赖清单的维护规则（由 `f0e184f` 失败得出）
+
+`Publish Quarto Book` 只在 runner 上安装 workflow 里点名的包，因此 CI 依赖清单必须按“运行时可达”维护，而不是按“.qmd 里出现了多少次包名”维护。
+
+- **先本地复现再改**：把本地库里的目标包临时改名（例如 `mv ~/Rlib/BiasedUrn ~/Rlib/BiasedUrn.hidden`），重跑对应章节的 chunk，确认拿到与 CI **逐字相同**的报错后再动手；改完记得改名回去（`on.exit` 在 `Execution halted` 时**不会**执行，要手动恢复）。教训：直接下结论会把“少装一个包”误判成别的故障，也会漏掉真正的第二现场。
+- **两类包要分开处理**：
+  - `Imports`/`Depends`：装 `clusterProfiler` 时自动带入（如 `igraph`、`jsonlite`），**不用**也不该写进 workflow；
+  - `Suggests`：必须显式安装，否则 runner 上没有。`enrichit` 的 `BiasedUrn` 就属于这一类——只有 weighted ORA 会用到它，正文里既没有 `library(BiasedUrn)` 也没有 `BiasedUrn::`，文本搜索**看不见**它。
+- **三处都要改**：CRAN/Bioconductor 安装列表、`Verify required packages are loadable` 步骤（把遗漏变成 10 秒失败，而不是 21 分钟渲染后失败）、正文章节（读者本地会遇到同一个坑）。
+- **审计范围**：把每个包 `DESCRIPTION` 的 `Suggests` 与各章节 `eval` 为真的 chunk 引用的包做交叉比对；`eval: false` 的 chunk 和被注释掉的行**不进** CI 依赖清单。
 
 ## 7. 重构与交叉链接经验
 
