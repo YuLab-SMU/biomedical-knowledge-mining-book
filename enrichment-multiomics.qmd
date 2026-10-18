@@ -149,7 +149,7 @@ gsea_res <- gsea(
     gene_sets = omics_pathways,
     scoreType = "pos"   # Fisher/Brown aggregated scores are all positive
 )
-head(as.data.frame(gsea_res))
+head(as.data.frame(gsea_res)[, c("ID", "setSize", "enrichmentScore", "NES", "pvalue")])
 ```
 
 For **ORA**, which requires discrete gene lists, `enrichit` provides an adapter function `select_features_for_ora()`. It takes the aggregated object and a cutoff, and returns the selected `gene` list and background `universe`, perfectly bridging the gap between continuous multi-omics scores and traditional hypergeometric tests.
@@ -168,7 +168,7 @@ early_ora_res <- ora(
     universe = selected_ora_inputs$universe,
     gene_sets = omics_pathways
 )
-head(as.data.frame(early_ora_res))
+head(as.data.frame(early_ora_res)[, c("ID", "SetSize", "Count", "pvalue")])
 ```
 
 By decoupling ID mapping, statistical integration, and pathway enrichment, `enrichit` provides a clean, robust, and highly extensible pipeline for multi-omics functional analysis.

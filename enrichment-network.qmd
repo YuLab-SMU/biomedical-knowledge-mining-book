@@ -65,7 +65,7 @@ res_signed <- nsea(
     gene_sets = gene_sets,
     mode = "signed"
 )
-head(as.data.frame(res_signed))
+head(as.data.frame(res_signed)[, c("ID", "enrichmentScore", "NES", "pvalue", "p.adjust")])
 ```
 
 ### Multi-layer Network-based Enrichment (MNSEA)
@@ -121,7 +121,7 @@ mnsea_res <- mnsea(
   nPerm = 30,
   verbose = FALSE
 )
-head(as.data.frame(mnsea_res))
+head(as.data.frame(mnsea_res)[, c("ID", "NES", "pvalue", "setSize")])
 ```
 
 The same topology-aware engine can now be accessed from `clusterProfiler` using knowledge-base-aware wrappers. For example, the following high-level workflow reuses a single shared example object and performs GO- and KEGG-aware network enrichment without manually constructing the annotation backend.
@@ -161,8 +161,8 @@ kegg_nse <- nseKEGG(
   method = "sample",
   nPerm = 30
 )
-head(as.data.frame(go_nse))
-head(as.data.frame(kegg_nse))
+head(as.data.frame(go_nse)[, c("ID", "Description", "setSize", "NES", "pvalue", "p.adjust")])
+head(as.data.frame(kegg_nse)[, c("ID", "Description", "setSize", "NES", "pvalue", "p.adjust")])
 ```
 
 ### Explanation-ready Outputs for Multi-layer Results
@@ -241,8 +241,8 @@ res_wora <- ora(gene = de_genes,
 res_wgsea <- gsea(geneList = demo$geneList_signed,
                   gene_sets = gene_sets,
                   weight = w)
-head(as.data.frame(res_wora))
-head(as.data.frame(res_wgsea))
+head(as.data.frame(res_wora)[, c("ID", "SetSize", "Count", "pvalue")])
+head(as.data.frame(res_wgsea)[, c("ID", "setSize", "enrichmentScore", "NES", "pvalue")])
 ```
 
 ::: {.callout-warning}

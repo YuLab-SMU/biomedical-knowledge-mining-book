@@ -43,8 +43,8 @@ ranking <- de_table$stat[eligible]
 names(ranking) <- de_table$gene_id[eligible]
 ranking <- sort(ranking, decreasing = TRUE)
 gsea <- gseGO(ranking, OrgDb = org.Hs.eg.db, keyType = "ENSEMBL", ont = "BP")
-head(as.data.frame(ora))
-head(as.data.frame(gsea))
+head(as.data.frame(ora)[, c("ID", "Description", "pvalue", "p.adjust", "Count")])
+head(as.data.frame(gsea)[, c("ID", "Description", "setSize", "NES", "pvalue", "p.adjust")])
 ```
 
 Check the identifier namespace and construct `universe` from genes eligible for detection, not from the significant subset. The [first workflow](first-workflow.qmd#first-workflow) shows the same route with plots, mapping-loss reporting, and object export.
@@ -66,8 +66,9 @@ term2name <- data.frame(
 
 ranking <- setNames(de_table$stat, de_table$gene_id)
 ranking <- sort(ranking[is.finite(ranking)], decreasing = TRUE)
-gsea <- GSEA(ranking, TERM2GENE = term2gene, TERM2NAME = term2name)
-head(as.data.frame(gsea))
+gsea <- GSEA(ranking, TERM2GENE = term2gene, TERM2NAME = term2name,
+             pvalueCutoff = 1, minGSSize = 5)
+head(as.data.frame(gsea)[, c("ID", "Description", "setSize", "NES", "pvalue", "p.adjust")])
 ```
 
 Report how the statistic was defined and whether its sign has a biological direction. Continue to [ORA and GSEA foundations](enrichment-foundations.qmd#sec-enrichment-foundations) for score types and leading-edge interpretation.
@@ -95,9 +96,10 @@ cc <- compareCluster(
     geneCluster = split(markers$gene, markers$cluster),
     fun = "enricher",
     TERM2GENE = marker_term2gene,
-    TERM2NAME = marker_term2name
+    TERM2NAME = marker_term2name,
+    pvalueCutoff = 1, qvalueCutoff = 1, minGSSize = 1
 )
-head(as.data.frame(cc))
+head(as.data.frame(cc)[, c("Cluster", "ID", "Description", "pvalue", "p.adjust")])
 ```
 
 Use the formula interface when marker metadata contain several grouping variables. Compare clusters with the [compareCluster analysis](comparecluster-analysis.qmd#clusterprofiler-comparecluster) and [visualization](comparecluster-visualization.qmd#sec-comparecluster-visualization) chapters. Cell-type annotation requires marker evidence in addition to enrichment terms; the optional LLM route is described in [interpretation](interpretation.qmd#evidence-guided-interpretation).
@@ -127,10 +129,11 @@ ora <- enrichGO(
     mapped_ids,
     OrgDb = org.Hs.eg.db,
     keyType = "ENTREZID",
-    universe = unique(background_map$ENTREZID),
-    ont = "BP"
+    universe = unique(c(background_map$ENTREZID, mapped_ids)),
+    ont = "BP",
+    pvalueCutoff = 1, qvalueCutoff = 1, minGSSize = 1
 )
-head(as.data.frame(ora))
+head(as.data.frame(ora)[, c("ID", "Description", "pvalue", "p.adjust", "Count")])
 ```
 
 Do not treat unmapped proteins as absent biology without checking the annotation release and species. Preserve the mapping table with the result. The [universal enrichment](universal-enrichment.qmd#universal-api) chapter covers custom namespaces and annotation tables.

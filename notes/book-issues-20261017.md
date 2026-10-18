@@ -514,6 +514,8 @@ quarto-uncaptioned                      0
 
 验收：`grep -c '^```r$' recipes.qmd reproducible-report.qmd` → 0/0；`docs/recipes.html` output 10，`docs/reproducible-report.html` output 4；三章 render exit 0。
 
+**审计补记**：示例真正执行后，三处 recipe 在真实数据上返回空对象——chunk 2 的 `GSEA()` 默认 `pvalueCutoff=0.05` 没有显著集，chunk 3 的 3 个 marker 在 `compareCluster()` 下无富集，chunk 4 的 `enrichGO()` universe 不含 mapped ids。已分别放宽 cutoff、`minGSSize=1`，并把 `mapped_ids` 并入 universe；三处现在各出结果。N6/N7 的 `head(as.data.frame(...))` 同时改为只打印关键列，避免 `geneID`/`core_enrichment` 把页面拉宽。
+
 全量自检：七项全绿，`git diff --check` clean。
 
 ---
