@@ -2,11 +2,19 @@
 
 These short recipes start with a common input and point to the next analysis decision. The main chapters provide the statistical details and knowledge-source constraints.
 
+```{r include=FALSE, cache=FALSE}
+source("_common.R")
+suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+})
+```
+
 ## RNA-seq differential genes
 
 Use a thresholded differential-expression table for ORA when the cutoff is part of the study design. Keep the full signed statistic for GSEA as well. The canonical local example is `datasets/de_table.tsv`, generated from the Bioconductor `airway` data; its fields and regeneration command are recorded in `datasets/readme.md`. It uses `gene_id`, `log2FoldChange`, `stat`, and `padj` columns.
 
-```r
+```{r}
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
@@ -33,6 +41,8 @@ ranking <- de_table$stat[eligible]
 names(ranking) <- de_table$gene_id[eligible]
 ranking <- sort(ranking, decreasing = TRUE)
 gsea <- gseGO(ranking, OrgDb = org.Hs.eg.db, keyType = "ENSEMBL", ont = "BP")
+head(as.data.frame(ora))
+head(as.data.frame(gsea))
 ```
 
 Check the identifier namespace and construct `universe` from genes eligible for detection, not from the significant subset. The [first workflow](first-workflow.qmd#first-workflow) shows the same route with plots, mapping-loss reporting, and object export.
@@ -41,10 +51,21 @@ Check the identifier namespace and construct `universe` from genes eligible for 
 
 When a thresholded list is empty or unstable, use the complete ranking rather than relaxing the cutoff after looking at the enrichment output:
 
-```r
+```{r}
+ids <- de_table$gene_id[is.finite(de_table$stat)][1:40]
+term2gene <- data.frame(
+    term = rep(c("PathA", "PathB"), each = 20),
+    gene = ids
+)
+term2name <- data.frame(
+    term = c("PathA", "PathB"),
+    name = c("Path A (demo)", "Path B (demo)")
+)
+
 ranking <- setNames(de_table$stat, de_table$gene_id)
 ranking <- sort(ranking[is.finite(ranking)], decreasing = TRUE)
 gsea <- GSEA(ranking, TERM2GENE = term2gene, TERM2NAME = term2name)
+head(as.data.frame(gsea))
 ```
 
 Report how the statistic was defined and whether its sign has a biological direction. Continue to [ORA and GSEA foundations](enrichment-foundations.qmd#sec-enrichment-foundations) for score types and leading-edge interpretation.
@@ -53,18 +74,28 @@ Report how the statistic was defined and whether its sign has a biological direc
 
 For marker tables with one row per gene and cluster, retain the grouping column and run one enrichment analysis per cluster:
 
-```r
+```{r}
 markers <- data.frame(
     gene = c("G1", "G2", "G3"),
     cluster = c("T_cell", "T_cell", "B_cell")
 )
 
+marker_term2gene <- data.frame(
+    term = c("T_path", "T_path", "B_path"),
+    gene = c("G1", "G2", "G3")
+)
+marker_term2name <- data.frame(
+    term = c("T_path", "B_path"),
+    name = c("T-cell program (demo)", "B-cell program (demo)")
+)
+
 cc <- compareCluster(
     geneCluster = split(markers$gene, markers$cluster),
     fun = "enricher",
-    TERM2GENE = term2gene,
-    TERM2NAME = term2name
+    TERM2GENE = marker_term2gene,
+    TERM2NAME = marker_term2name
 )
+head(as.data.frame(cc))
 ```
 
 Use the formula interface when marker metadata contain several grouping variables. Compare clusters with the [compareCluster analysis](comparecluster-analysis.qmd#clusterprofiler-comparecluster) and [visualization](comparecluster-visualization.qmd#sec-comparecluster-visualization) chapters. Cell-type annotation requires marker evidence in addition to enrichment terms; the optional LLM route is described in [interpretation](interpretation.qmd#evidence-guided-interpretation).
@@ -73,7 +104,15 @@ Use the formula interface when marker metadata contain several grouping variable
 
 First map the identifier namespace, then keep the mapped and unmapped counts:
 
-```r
+```{r}
+proteins <- c("P04637", "P38398", "Q9Y6N7")
+background_map <- bitr(
+    AnnotationDbi::keys(org.Hs.eg.db, keytype = "UNIPROT")[1:500],
+    fromType = "UNIPROT",
+    toType = "ENTREZID",
+    OrgDb = org.Hs.eg.db
+)
+
 mapped <- bitr(
     proteins,
     fromType = "UNIPROT",
@@ -89,6 +128,7 @@ ora <- enrichGO(
     universe = unique(background_map$ENTREZID),
     ont = "BP"
 )
+head(as.data.frame(ora))
 ```
 
 Do not treat unmapped proteins as absent biology without checking the annotation release and species. Preserve the mapping table with the result. The [universal enrichment](universal-enrichment.qmd#universal-api) chapter covers custom namespaces and annotation tables.

@@ -2,6 +2,29 @@
 
 A report should preserve the inputs, decisions, result objects, figures, and software context needed to reconstruct the analysis. A printed result table alone is not enough.
 
+```{r include=FALSE, cache=FALSE}
+source("_common.R")
+suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+    library(enrichplot)
+    library(ggplot2)
+})
+
+data(geneList, package = "DOSE")
+selected <- names(geneList)[abs(geneList) > 2]
+universe <- names(geneList)
+ora <- enrichGO(selected, universe = universe, OrgDb = org.Hs.eg.db,
+                keyType = "ENTREZID", ont = "BP", readable = TRUE)
+gsea <- gseGO(geneList, OrgDb = org.Hs.eg.db, keyType = "ENTREZID", ont = "BP")
+p_ora_dot <- dotplot(ora, showCategory = 15)
+
+## The book build writes to a temporary directory so it does not dirty the
+## source tree; in a real project this would be `results/`.
+results_dir <- tempfile("book-results-")
+dir.create(results_dir, showWarnings = FALSE)
+```
+
 ## Record the analysis contract
 
 Keep the following with the report:
@@ -20,7 +43,7 @@ For external services, save the request parameters and returned table. For a liv
 
 Use canonical objects as the analysis record and derive tables and figures from them:
 
-```r
+```{r}
 saveRDS(
     list(
         ora = ora,
@@ -31,16 +54,21 @@ saveRDS(
             geneList = geneList
         )
     ),
-    file = "results/enrichment-objects.rds"
+    file = file.path(results_dir, "enrichment-objects.rds")
 )
 
 write.csv(
     as.data.frame(ora),
-    "results/ora-results.csv",
+    file.path(results_dir, "ora-results.csv"),
     row.names = FALSE
 )
 
-ggsave("figures/ora-dotplot.png", p_ora_dot, width = 8, height = 5, dpi = 300)
+ggsave(
+    file.path(results_dir, "ora-dotplot.png"),
+    p_ora_dot, width = 8, height = 5, dpi = 300
+)
+
+list.files(results_dir)
 ```
 
 Keep the object and the exported table under the same analysis identifier. A readable copy made with `setReadable()` is useful for inspection, but it should not replace the original object.
@@ -49,11 +77,12 @@ Keep the object and the exported table under the same analysis identifier. A rea
 
 Save package versions and the R session used to create the report:
 
-```r
+```{r}
 writeLines(
     capture.output(sessionInfo()),
-    "results/sessionInfo.txt"
+    file.path(results_dir, "sessionInfo.txt")
 )
+file.exists(file.path(results_dir, "sessionInfo.txt"))
 ```
 
 For a project that will be rerun, record the source commit, lockfile or environment specification, operating system, and any local database files. If a knowledge source is downloaded, keep its serialized copy or checksum alongside the analysis.

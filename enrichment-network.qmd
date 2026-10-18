@@ -2,9 +2,10 @@
 
 This chapter extends classical enrichment when interaction topology, propagation, or gene-level detection weights are part of the evidence model. It is separate from ordinary PPI visualization: the network enters the statistical ranking or weighting step before enrichment is tested.
 
-```{r include=FALSE}
-knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE)
 source("_common.R")
+suppressPackageStartupMessages({library(enrichit); library(igraph)})
 ```
 
 ## Network-based Set Enrichment Analysis (NSEA)
@@ -46,14 +47,23 @@ Historically, RWR mathematically only accepts non-negative energy. This means yo
 To solve this, `enrichit` introduces a dual-track propagation architecture (`mode = "signed"`). When you pass signed statistics (like `-log10(p) * sign(logFC)`), the algorithm automatically splits the input into up-regulated and down-regulated vectors. It runs two independent RWRs on the same network, and then subtracts the two diffused energy vectors to reconstruct a fully signed, network-aware score vector. This seamlessly bridges bidirectional network diffusion with dual-tail GSEA.
 
 ```{r}
-#| eval: false
-# Using signed statistics (e.g., -log10(p) * sign(logFC))
+#| label: nsea-signed-demo
+# Use the offline demo: signed statistics, network edges and gene sets share
+# one Entrez namespace. The full-STRING version above is the network-dependent
+# variant; this one runs in the book build.
+demo <- clusterprofiler_enrichit_demo()
+gene_sets <- split(demo$kegg_gson@gsid2gene$gene,
+                   demo$kegg_gson@gsid2gene$gsid)
+names(gene_sets) <- demo$kegg_gson@gsid2name$name[
+    match(names(gene_sets), demo$kegg_gson@gsid2name$gsid)]
+
 res_signed <- nsea(
-    geneList = signed_stats, 
-    network = net, 
-    gene_sets = pathways, 
+    geneList = demo$geneList_signed,
+    network = demo$network,
+    gene_sets = gene_sets,
     mode = "signed"
 )
+head(as.data.frame(res_signed))
 ```
 
 ### Multi-layer Network-based Enrichment (MNSEA)
@@ -63,7 +73,6 @@ Single-layer propagation is already useful, but real multi-omics systems are rar
 To address this, `enrichit` introduces **multi-layer NSEA** through `mnsea()`. The algorithm builds a supra-graph from layer-specific networks plus explicit inter-layer couplings, performs Random Walk with Restart on the combined topology, and then collapses layer-wise diffusion scores into a unified ranked vector for GSEA. In other words, it is still "propagate first, enrich later", but now the propagation itself respects the multi-layer structure.
 
 ```{r}
-#| eval: false
 # Small multi-layer example with RNA and Protein layers
 networks <- list(
   RNA = data.frame(
@@ -110,12 +119,12 @@ mnsea_res <- mnsea(
   nPerm = 30,
   verbose = FALSE
 )
+head(as.data.frame(mnsea_res))
 ```
 
 The same topology-aware engine can now be accessed from `clusterProfiler` using knowledge-base-aware wrappers. For example, the following high-level workflow reuses a single shared example object and performs GO- and KEGG-aware network enrichment without manually constructing the annotation backend.
 
 ```{r}
-#| eval: false
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
@@ -150,6 +159,8 @@ kegg_nse <- nseKEGG(
   method = "sample",
   nPerm = 30
 )
+head(as.data.frame(go_nse))
+head(as.data.frame(kegg_nse))
 ```
 
 ### Explanation-ready Outputs for Multi-layer Results
@@ -159,7 +170,6 @@ Once you start doing topology-aware enrichment, the next question is obvious: *w
 The `mnseaResult` object stores precomputed pathway-level and feature-level contribution caches, and also supports extracting a pathway-specific explanation subnetwork.
 
 ```{r}
-#| eval: false
 # Pathway-level contribution table
 pathway_tbl <- get_mnsea_contribution(
   mnsea_res,
@@ -178,6 +188,8 @@ subnet <- extract_mnsea_subnetwork(
   mnsea_res,
   pathway_id = pathway_tbl$ID[1]
 )
+pathway_tbl
+head(feature_tbl)
 ```
 
 ## Weighted Enrichment Analysis {#weighted-enrichment}
@@ -201,7 +213,6 @@ By passing a `weight` vector (e.g., network centrality), the model calculates an
 For GSEA, we seamlessly fuse your ranked statistics (like $\log FC$) with your external weights before passing them to the C++ engine. This amplifies the signals of core nodes while attenuating unreliable ones, without reinventing the wheel.
 
 ```{r}
-#| eval: false
 library(igraph)
 library(enrichit)
 
@@ -228,6 +239,8 @@ res_wora <- ora(gene = de_genes,
 res_wgsea <- gsea(geneList = demo$geneList_signed,
                   gene_sets = gene_sets,
                   weight = w)
+head(as.data.frame(res_wora))
+head(as.data.frame(res_wgsea))
 ```
 
 ::: {.callout-warning}

@@ -280,13 +280,16 @@ res <- interpret(edo, prior = my_priors, task = "annotation")
 
 `interpret_hierarchical()` accepts major- and minor-cluster enrichment objects together with a mapping. It constrains each minor-cluster interpretation to the supplied major-cluster context; the mapping itself must be checked against the experimental design.
 
-```r
+```{r}
 cluster_mapping <- c(
     "SubCluster1_1" = "MajorCluster1",
     "SubCluster1_2" = "MajorCluster1",
     "SubCluster2_1" = "MajorCluster2"
 )
+cluster_mapping
+```
 
+```r
 res_hier <- interpret_hierarchical(
     x_minor = enrich_minor,
     x_major = enrich_major,
@@ -327,8 +330,9 @@ supporting evidence.
 
 A weak context names only the assay:
 
-```r
+```{r}
 context <- "scRNA-seq of T cells"
+context
 ```
 
 A strong context answers six questions in one or two sentences:
@@ -344,7 +348,7 @@ A strong context answers six questions in one or two sentences:
 
 Written out, that is still only a few lines:
 
-```r
+```{r}
 context <- paste(
   "Human breast-cancer transcriptome (MAINZ cohort, bulk tumour tissue, 200",
   "samples). Genes are ranked by the log2 ratio of geometric-mean expression in",
@@ -353,6 +357,7 @@ context <- paste(
   "progression from grade I to grade III involves loss of epithelial",
   "differentiation and increased extracellular-matrix remodelling."
 )
+context
 ```
 
 Two rules of thumb follow. First, state the **direction of the contrast** --

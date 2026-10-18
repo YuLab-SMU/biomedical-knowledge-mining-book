@@ -2,9 +2,10 @@
 
 This chapter answers the first statistical decision: should a thresholded gene list be tested with over-representation analysis (ORA), or should the complete ranking be analyzed with GSEA? The examples retain the original algorithm labels so historical links remain meaningful.
 
-```{r include=FALSE}
-knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=FALSE)
+```{r include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE)
 source("_common.R")
+suppressPackageStartupMessages(library(enrichit))
 ```
 
 ## Over-Representation Analysis (ORA) {#ora-algorithm}
@@ -20,7 +21,6 @@ $$
 **Example:** Suppose we have 17,980 genes detected in a Microarray study and 57 genes were differentially expressed. From these, 2641 are annotated to gene set of interest. Among the differentially expressed genes, 28 belong to the gene set^[example adopted from <https://guangchuangyu.github.io/2012/04/enrichment-analysis/>]. 
 
 ```{r}
-#| eval: false
 #| label: enrichment-data
 d <- data.frame(DE_gene=c(28, 29), non_DE_gene=c(2613, 15310))
 row.names(d) <- c("In_category", "not_in_category")
@@ -32,7 +32,6 @@ The orientation of the contingency table matters here. `fisher.test()` with `alt
 Whether the gene set of interest is significantly over-represented in the differentially expressed genes can then be assessed using a hypergeometric distribution. This corresponds to a one-sided version of Fisher's exact test.
 
 ```{r}
-#| eval: false
 #| label: fisher-test
 fisher.test(d, alternative = "greater")
 ```
@@ -43,8 +42,9 @@ fisher.test(d, alternative = "greater")
 Since clusterProfiler 4.21.2 you are told: the enrichment functions warn that they will ignore a non-character `universe`, and `compareCluster()` raises that warning itself — it wraps each per-cluster call in `suppressMessages()`, which previously swallowed the message completely. Pass the IDs as character:
 
 ```{r}
-#| eval: false
+background_ids <- c("7157", "672", "675", "837", "4609")
 universe = as.character(background_ids)
+universe
 ```
 :::
 
@@ -66,7 +66,6 @@ There are three key elements of the GSEA method:
 We implemented the GSEA algorithm proposed by Subramanian [@subramanian_gene_2005]. `enrichit` offers a fast C++ implementation of GSEA. The default method (`method = "multilevel"`) uses an adaptive multi-level splitting Monte Carlo approach (derived from `fgsea` [@korotkevich_fast_2019]) to estimate low p-values efficiently with high accuracy. 
 
 ```{r}
-#| eval: false
 library(enrichit)
 
 # Generate synthetic ranked gene list
@@ -85,6 +84,7 @@ gsea_result <- gsea(
   gene_sets = gene_sets,
   method = "multilevel"
 )
+head(gsea_result)
 ```
 
 ::: {.callout-note}
@@ -111,7 +111,6 @@ With the usual signed metric (a log fold change or a signed correlation), the de
 
 ```{r}
 #| label: gsea-scoretype
-#| eval: false
 ## gene sets enriched at the top and at the bottom of the same ranking
 gsea(geneList, gene_sets, scoreType = "std")   # finds both
 gsea(geneList, gene_sets, scoreType = "pos")   # only the top set
@@ -122,8 +121,9 @@ The case that trips people up is a metric that has **no sign at all** — a scor
 
 ```{r}
 #| label: gsea-scoretype-pos
-#| eval: false
 ## all-positive evidence scores: higher = more associated
+evidence_score <- abs(geneList)
+names(evidence_score) <- names(geneList)
 gsea(evidence_score, gene_sets, scoreType = "pos")
 ```
 
