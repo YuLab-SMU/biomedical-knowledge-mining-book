@@ -186,7 +186,7 @@ Do not mix symbols and Entrez IDs in the same vector, and do not infer an identi
 | `gseaResult` | `dotplot()` | `gseaplot2()` for one term; `ridgeplot()` for several distributions |
 | `compareClusterResult` | `dotplot()` | `cnetplot()` or `treeplot()` for cross-group structure |
 
-These plotting methods expect the structured result object. If you only have a table exported by another program, recreate the equivalent analysis in `clusterProfiler` with the same gene sets, input IDs, and background before using the object-aware plots.
+These plotting methods expect the structured result object. If you only have a table exported by another program, import it first with `enrichplot::import_enrichr()`, `import_gprofiler2()`, `import_webgestalt()`, or `import_fgsea()` (or `as_enrichResult()` / `as_gseaResult()` when the full result columns are present), as described in [importing and visualizing results](enrichplot-import.qmd#sec-import-other-tools). Recreate the analysis in `clusterProfiler` only when the table lacks the universe or ranked list that the chosen route requires.
 
 ::: {.callout-warning}
 **Do not choose a route from the desired plot.** A visually attractive dot plot cannot turn a thresholded list into a ranked analysis, and a custom table cannot recover a missing universe. Decide the input contract and null question first; then select the function and visualization.

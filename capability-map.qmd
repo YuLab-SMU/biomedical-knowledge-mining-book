@@ -3,8 +3,8 @@
 This page is a navigation map for the biomedical knowledge-mining stack used in
 this book. It is organized four ways: **by task**, **by analytical layer**, **by
 package**, and **by typical input/output**. The links point to the existing
-chapters and anchors so that this page can serve as a cross-reference when it is
-added to the book navigation.
+chapters and anchors so that this page works as a cross-reference from anywhere
+in the book.
 
 ::: {.callout-note}
 This map separates **statistical computation**, **knowledge-base access**,
@@ -79,7 +79,7 @@ visualization -> optional, validated interpretation
 |---|---|---|---|---|
 | **`clusterProfiler`** | User-facing orchestration across biological knowledge bases; ID conversion; universal enrichment; comparison; result methods; high-level network-aware wrappers | `enrichGO()`, `gseGO()`, `enrichKEGG()`, `gseKEGG()`, `enricher()`, `GSEA()`, `compareCluster()`, `bitr()`, `nseGO()`, `nseKEGG()` | Yes, through domain APIs and delegated engines | Produces/consumes canonical enrichment objects; hands them to `enrichplot`, `dplyr`, PPI, or interpretation |
 | **`enrichit`** | Algorithm and result-object engine with minimal dependencies and fast implementations | `ora()`, `gsea()`, `nsea()`, `mnsea()`, weighted enrichment, `aggregate_omics()`, `aggregate_enrichment()`, `harmonize_ids()`, `bayes_enrich()`, `as_enrichResult()` | Yes; it is the computational backbone for classical, topology-aware, weighted, and multi-omics workflows | Returns engine results or canonical objects that `clusterProfiler` and `enrichplot` can use |
-| **`gson`** | Versionable Gene Set Object Notation container and multi-knowledge-base exchange format | `gson()`, `x[i]`, `write.gson()`, `read.gson()`, `write.gmt()`, `read.gmt()`, `validate_gson()`, `gsonList()`, `gson_union()`, `gson_url()`, `browseGS()`; ecosystem helpers such as `gson_KEGG(species = )`, `gson_WP(organism = )`, `gson_GO(OrgDb, keytype, ont)` | No; it stores term/gene/name/metadata mappings and validates them, but converts nothing | Supplies local, subset, merged, or parallel gene sets to `enricher()`, `GSEA()`, `ora_gson()`, `gsea_gson()`, `nseKEGG()`, or `godata()` |
+| **`gson`** | Versionable Gene Set Object Notation container and multi-knowledge-base exchange format | `gson()`, `x[i]`, `write.gson()`, `read.gson()`, `write.gmt()`, `read.gmt()`, `validate_gson()`, `gsonList()`, `gson_union()`, `gson_url()`, `browseGS()`; the knowledge readers `gson_KEGG()`, `gson_WP()`, `gson_GO()` are exported by `clusterProfiler`, not by `gson` | No; it stores term/gene/name/metadata mappings and validates them, but converts nothing | Supplies local, subset, merged, or parallel gene sets to `enricher()`, `GSEA()`, `ora_gson()`, `gsea_gson()`, `nseKEGG()` |
 | **`DOSE`** | Disease- and phenotype-oriented semantic similarity and enrichment; includes NCG workflows and demo data | `doSim()`, `geneSim()`, `clusterSim()`, `enrichDO()`, `gseDO()`, `enrichNCG()`, `gseNCG()` | Yes, for DO/HPO/MPO and NCG; it also provides similarity | Produces disease-aware result objects consumed by `enrichplot`, comparison, or optional interpretation |
 | **`ReactomePA`** | Reactome pathway domain adapter | `enrichPathway()`, `gsePathway()`, `viewPathway()` | Yes, Reactome ORA and GSEA | Produces Reactome result objects for `enrichplot`, comparison, and reporting |
 | **`meshes`** | MeSH annotation, semantic similarity, and enrichment across many species and MeSH categories | `meshdata()`, `meshSim()`, `geneSim()`, `enrichMeSH()`, `gseMeSH()` | Yes, MeSH ORA and GSEA | Produces MeSH semantic data and enrichment objects for `enrichplot` |
@@ -113,7 +113,7 @@ visualization -> optional, validated interpretation
   API-backed model and should be checked against the input terms, genes, ranked
   statistics, and any external PPI evidence before use.
 
-## 5. Index by typical input/output
+## 4. Index by typical input/output
 
 The table below is a compact routing guide. “Output” describes the object that
 should be preserved for the next step, rather than only the printed table.
@@ -142,7 +142,7 @@ should be preserved for the next step, rather than only the printed table.
 | Gene list or enrichment object | What interactions connect the genes or terms? | `clusterProfiler::getPPI()` and `ggtangle` | STRING-backed edge/node object and network plot | [PPI workflow](ppi.qmd#protein-protein-interaction-network) |
 | Enrichment result(s), optional context and fold changes | What mechanism, cell type, or phenotype is supported? | Optional `interpret()`/`interpret_agent()` through `aisdk` | Structured narrative, drivers, evidence, confidence, and possibly an inferred network | [AI interpretation](interpretation.qmd#evidence-guided-interpretation) |
 
-## 4. Reference routes
+## 5. Reference routes
 
 Use these pages for the details that do not belong in a task table:
 

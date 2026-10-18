@@ -153,7 +153,7 @@ Before running an enrichment function, verify:
 4. **Background:** Does the universe describe genes that could actually have been selected?
 5. **Object:** Are you retaining `enrichResult`, `gseaResult`, or `compareClusterResult` rather than only a printed table?
 
-The next chapter applies these contracts to one offline, end-to-end example.
+The [first complete workflow](first-workflow.qmd#first-workflow) applies these contracts to one offline, end-to-end example.
 
 ## Next steps
 

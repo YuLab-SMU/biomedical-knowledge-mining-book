@@ -147,6 +147,7 @@ The `r CRANpkg("gson")` package defines the `GSON` container. `gson_KEGG()` — 
 ```{r eval=FALSE}
 #| label: gson-kegg
 library(gson)
+library(clusterProfiler)   # gson_KEGG() is exported here
 # download KEGG data for human
 kk_gson <- gson_KEGG(species = "hsa")
 
