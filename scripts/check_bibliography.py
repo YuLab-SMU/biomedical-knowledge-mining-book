@@ -11,11 +11,13 @@ nav list, so this set of defects used to slip through a green CI:
     reads as given=Surname, family=Given, mis-attributing the work;
   * mojibake from a lost encoding (B?hm, K?lbl, T?rne) in a name or title;
   * empty fields and keys that only survive inside an HTML comment;
-  * the same key cited twice in one paragraph.
+  * the same key cited twice in one paragraph;
+  * an inline `https://doi.org/...` link in the prose (or, with --resolve, one
+    that doi.org does not know).
 
-Run from the repo root:  python3 scripts/check_bibliography.py [--root DIR]
+Run from the repo root:  python3 scripts/check_bibliography.py [--root DIR] [--resolve]
 Exit 1 when any ERROR-level finding exists. WARN findings are printed but do
-not fail. Standard library only, no network, no R.
+not fail. Standard library only; no network unless --resolve is given.
 """
 from pathlib import Path
 import argparse

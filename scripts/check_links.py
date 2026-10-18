@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check local Quarto links, anchors, and unfinished capability placeholders."""
+"""Check local Quarto links, anchors, chunk labels, and unfinished placeholders."""
 from pathlib import Path
 import argparse
 import html
