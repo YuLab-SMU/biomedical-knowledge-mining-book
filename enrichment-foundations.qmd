@@ -124,8 +124,7 @@ The case that trips people up is a metric that has **no sign at all** — a scor
 ```{r}
 #| label: gsea-scoretype-pos
 ## all-positive evidence scores: higher = more associated
-evidence_score <- abs(geneList)
-names(evidence_score) <- names(geneList)
+evidence_score <- sort(abs(geneList), decreasing = TRUE)
 gsea(evidence_score, gene_sets, scoreType = "pos")
 ```
 
