@@ -28,7 +28,7 @@
 
 去重后共 **19 项**（第 1–4 批 16 项，第 5 批新增 N14/N15/N16 三项；N13/N17/N18 与第 1 批重复计一次）。
 
-状态标记：第 1–4 批 ✅（2026-10-18，见文末修复记录）；第 5 批剩 N15/N16 未做。
+状态标记：全部 19 项 ✅（2026-10-18，见文末各批修复记录）。
 
 **第 1 批硬伤的共同形态值得单独记一句**：N1 会直接报错，而 N2 / N11 / N12 / N13 / N17(下半) / N18 **都不报错或只把手打输出当真**——加权静默退回不加权、`scale_fill_*` 对 emapplot 是空操作、`node_label="> 1"` 静默丢下调基因、水稻 keyType 案例把"支持"写成"不支持"、`subset()` 对 S4 静默走 default 分支、150→149 的归因写错但数字对。N11 尤其典型：示例的 low/high 正好等于默认调色板端点，所以它连"看起来变了"都自证了。**"能渲染、数字对得上"不等于"是对的"**——第 6 轮那条教训在内容层的复现。
 
@@ -436,6 +436,7 @@ git status: clean（本清单只建档，未改任何书稿文件）
 | 2026-10-18 | 第 2 批完成（N3/N4/N5/N5b）并顺手修 N14：DOI 改 2026、导入替代重跑、三处页面自述、capability 编号、`gson_KEGG` 归因；相关章节重渲染 exit 0。 |
 | 2026-10-18 | 第 3 批完成（N6/N7）：三个引擎章启用离线示例并打印结果（输出块 16/16/18），`recipes`/`reproducible-report` 的纯围栏改为可执行 chunk，`interpretation` 三处纯 R 改为 chunk；三章渲染 exit 0，七项自检全绿。 |
 | 2026-10-18 | 第 4 批完成（N8/N9/N10）：72 个旧式 chunk 选项统一为 `#|`，新增 `check_chunk_options.py` 并进 validate；`check_bibliography.py` 覆盖正文内联 DOI（`--resolve` 非阻塞步），去掉失效 RAP-DB 链接；重命名 7 个重复 `load-packages` label，`check_links.py` 增加 label 唯一性。 |
+| 2026-10-18 | 第 5 批完成（N15/N16）：KEGG `category`/`subcategory` 限定到 `enrichKEGG` 及其 module/topology 变体；size-filtering callout 按「GSEA / 有 universe 的 ORA / 无 universe 的 ORA」三种背景改写，`disease-enrichment` 的 `enrichDO` 段同步。三章重渲染 exit 0。**全部 19 项收口。** |
 
 ---
 
@@ -537,3 +538,13 @@ quarto-uncaptioned                      0
 - 当前全书 362 个 chunk，0 重复 label。
 
 验收：`check_chunk_options.py` PASS 362 chunks；`check_bibliography.py` PASS 27 entries / 10 inline DOIs；`check_links.py` PASS；受影响的 5 章（go-semantic-similarity、mesh-semantic-similarity、comparecluster-analysis、enrichment-foundations、recipes）重渲染均 exit 0，输出块 32/14/6/16/10。
+
+---
+
+# 2026-10-18 第 5 批（N15/N16）
+
+- **N15**：`category` / `subcategory` 只对 `enrichKEGG()` 及其 module/topology 变体成立；实测 `gseKEGG()` 的列是 `ID, Description, setSize, enrichmentScore, NES, pvalue, p.adjust, qvalue, rank, leading_edge, core_enrichment, log2err`，没有这两列。正文已改为限定表述。
+- **N16**：`enrichit:::ora_gson` 的 `extID` 在无 universe 时是全部注释基因（`geneSets <- lapply(geneSets, intersect, extID)`），因此 `maxGSSize` 回到按原始注释大小过滤；GSEA 与带 universe 的 ORA 才是按交集过滤。callout、`Tuning` 段两处、`disease-enrichment` 的 `enrichDO` 段都已按此改写。
+  验证：`enrichGO(ont="CC")` 无 universe 时 `GO:0005737` 在 `maxGSSize=500` 下消失、`=Inf` 下出现；`gseKEGG()` 的列名实测无 `category`。
+
+三章（go-enrichment / disease-enrichment / kegg-enrichment）重渲染 exit 0；七项自检全绿。
