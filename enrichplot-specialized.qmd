@@ -215,7 +215,8 @@ goplot(ego)
 
 The `plotGOgraph()` function is another option to visualize the GO topology.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 plotGOgraph(ego)
 ```
 

@@ -61,7 +61,8 @@ head(gene)
 <!--     # tidyr::unite("cellMarker", tissueType, cancerType, cellName, sep=", ")  -->
 
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: cellmarker-data-prep
 # not executed: it downloads an ~8 MB file, and the URL changes between
 # CellMarker releases (see the note below).
@@ -102,7 +103,8 @@ fails, download the file from the CellMarker download page by hand and run
 ### Cell Marker over-representation analysis {#cell-marker-ora}
 
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: cellmarker-ora
 x <- enricher(gene, TERM2GENE = cells)
 head(x)
@@ -110,7 +112,8 @@ head(x)
 
 ### Cell Marker gene set enrichment analysis {#cell-marker-gsea}
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: cellmarker-gsea
 y <- GSEA(geneList, TERM2GENE = cells)
 head(y)

@@ -98,7 +98,8 @@ On the basis of semantic similarity between DO terms, `r Biocpkg("DOSE")` can al
 
 `r Biocpkg("DOSE")` implemented `geneSim` to measure semantic similarities among genes.
 
-```{r warning=FALSE}
+```{r}
+#| warning: false
 #| label: dose-geneSim
 g1 <- c("84842", "2524", "10590", "3070", "91746")
 g2 <- c("84289", "6045", "56999", "9869")

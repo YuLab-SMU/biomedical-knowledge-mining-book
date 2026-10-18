@@ -41,7 +41,8 @@ de <- names(geneList)[abs(geneList) > 2]
 edo <- enrichDO(de)
 ```
 
-```{r eval=F}
+```{r}
+#| eval: false
 #| label: fig-barplot-eval-false
 library(enrichplot)
 barplot(edo, showCategory=20) 
@@ -49,7 +50,8 @@ barplot(edo, showCategory=20)
 
 Other variables that derived using `mutate` can also be used as bar height or color as demonstrated in @sec-mutate and @fig-Barplot.
 
-```{r eval=F}
+```{r}
+#| eval: false
 #| label: fig-mutate-barplot-eval-false
 library(clusterProfiler)
 
@@ -331,7 +333,8 @@ where $N$ is the total number of genes in the background distribution.
 
 We can easily visualize the **Rich Factor** using the formula interface.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: fig-rich-factor
 N <- 8007 # total number of genes in the background
 dotplot(edo, x = ~Count/(BgRatio * N))

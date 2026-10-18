@@ -2,7 +2,9 @@
 
 This chapter covers the integration layer between molecular measurements and enrichment backends. It separates feature-level aggregation, identifier harmonization, directional conflict handling, pathway-level late fusion, and contribution tracing so that the provenance of a combined result remains inspectable.
 
-```{r include=FALSE, cache=FALSE}
+```{r}
+#| include: false
+#| cache: false
 knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE)
 source("_common.R")
 suppressPackageStartupMessages(library(enrichit))

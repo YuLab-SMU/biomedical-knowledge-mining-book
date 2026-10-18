@@ -94,7 +94,8 @@ and the functions and their bundled datasets were removed in DOSE 4.7.0
 
 If you have code calling them, use the Disease Ontology route instead:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 ## over-representation
 x <- enrichDO(gene, ont = "HDO")
 

@@ -51,7 +51,8 @@ The `stat` parameter controls the geometry used to summarize the distributions. 
 ridgeplot(edo2)
 ```
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 ridgeplot(edo2, stat = "binline")
 ```
 

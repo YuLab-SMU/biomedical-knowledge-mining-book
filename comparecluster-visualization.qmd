@@ -2,7 +2,8 @@
 
 This chapter answers the presentation question: how can shared and condition-specific enrichment be shown without hiding the comparison structure? The examples use a locally reconstructed `compareClusterResult`; they do not depend on objects created by the analysis chapter.
 
-```{r include=FALSE}
+```{r}
+#| include: false
 #| message: false
 #| cache: false
 source("_common.R")
@@ -50,7 +51,8 @@ formula_res <- compareCluster(
 
 We can visualize the result using the `dotplot()` method. 
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: compare-dotplot
 dotplot(ck)
 dotplot(formula_res)

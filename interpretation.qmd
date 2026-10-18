@@ -5,7 +5,7 @@ Statistical enrichment results are evidence to inspect, not biological conclusio
 <a id="ai-assisted-biological-interpretation"></a>
 
 ```{r}
-#| label: load-packages
+#| label: load-packages-interpretation
 #| echo: false
 #| message: false
 #| cache: false

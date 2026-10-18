@@ -76,13 +76,14 @@ python3 scripts/check_navigation.py     # every root .qmd is in _quarto.yml
 python3 scripts/check_links.py          # internal links, anchors, generated HTML
 python3 scripts/check_bibliography.py   # duplicate/DOI/format checks on references.bib
 python3 scripts/check_package_macros.py # Biocpkg()/CRANpkg() against the registry
+python3 scripts/check_chunk_options.py  # one chunk-option syntax, no duplicates
 Rscript scripts/check_api_names.R       # `foo()` mentions vs real package exports
 Rscript scripts/check_versions.R        # version table vs the installed library
 python3 scripts/check_figure_sizes.py   # per-image payload size, read from docs/
 quarto render
 ```
 
-The first four are the offline source gate that `validate-book.yml` runs on every push and pull request; none of them reaches the network. `check_api_names.R` and `check_figure_sizes.py` run in `publish-book.yml` after the render, because both read its output or need the installed packages. `check_versions.R` is a **local** check only: it compares this table against the local baseline, and CI installs `github::YuLab-SMU/*` development versions that are documented above to differ from it, so running it in CI would fail on a difference that is intended.
+The first five are the offline source gate that `validate-book.yml` runs on every push and pull request; none of them reaches the network. `check_bibliography.py --resolve` additionally resolves the inline `doi.org` links written in `.qmd` prose; CI runs that as a non-blocking step, because publishers answer 401/403 to non-browser clients and a 403 is not evidence that a DOI is unregistered. `check_api_names.R` and `check_figure_sizes.py` run in `publish-book.yml` after the render, because both read its output or need the installed packages. `check_versions.R` is a **local** check only: it compares this table against the local baseline, and CI installs `github::YuLab-SMU/*` development versions that are documented above to differ from it, so running it in CI would fail on a difference that is intended.
 
 ## Figure payload size
 

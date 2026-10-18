@@ -13,7 +13,7 @@ Use this chapter after enrichment and before redundancy reduction, comparison, v
 
 
 ```{r}
-#| label: load-packages
+#| label: load-packages-result-objects
 #| echo: false
 #| message: false
 #| cache: false

@@ -12,7 +12,7 @@ Use this chapter after [result-object inspection](result-objects.qmd#clusterProf
 
 
 ```{r}
-#| label: load-packages
+#| label: load-packages-bayesian-term-selection
 #| echo: false
 #| message: false
 #| cache: false

@@ -50,7 +50,9 @@ keytypes(org.Hs.eg.db)
 ```
 
 We can translate from one type to other types.
-```{r message=FALSE, warning=TRUE}
+```{r}
+#| message: false
+#| warning: true
 library(clusterProfiler)
 ids <- bitr(x, fromType="SYMBOL", toType=c("UNIPROT", "ENSEMBL"), OrgDb="org.Hs.eg.db")
 head(ids)

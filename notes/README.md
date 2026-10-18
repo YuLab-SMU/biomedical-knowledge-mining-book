@@ -9,7 +9,7 @@ checked by `scripts/check_*.py`.
 | `todo.md` | Running list of issues and follow-up work collected from the GitHub issue tracker and elsewhere. |
 | `book-issues.md` | Audit log from the 2026-09-21 review pass. |
 | `book-issues-20261016.md` | Audit log of the pass that started 2026-10-16 against baseline `e9c4af3` and ran through 2026-10-17: four batches of issues plus two follow-up rounds, all closed and published. |
-| `book-issues-20261017.md` | Audit log of the pass against baseline `d59e5df`. 19 findings (N1–N18 + N5b), all outside the coverage of the seven self-checks, which were green at that commit. Batch 1 (N1/N2/N11/N12/N13/N17/N18) fixed 2026-10-18; batches 2–4 open. |
+| `book-issues-20261017.md` | Audit log of the pass against baseline `d59e5df`. 19 findings (N1–N18 + N5b), all outside the coverage of the seven self-checks that were green at that commit. Batches 1–4 fixed 2026-10-18; only the knowledge-connector items N15/N16 remain. |
 
 These audit logs are tracked, so the review history travels with the book source;
 `.gitignore` no longer lists them.

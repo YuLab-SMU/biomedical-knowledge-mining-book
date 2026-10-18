@@ -12,7 +12,7 @@ Use this chapter after a GO result has been checked; for the shared method overv
 
 
 ```{r}
-#| label: load-packages
+#| label: load-packages-go-semantic-similarity
 #| echo: false
 #| message: false
 #| cache: false
@@ -32,7 +32,8 @@ To measure semantic similarity, we need to prepare GO annotations including GO s
 `r Biocpkg("GOSemSim")` provides the `godata()` function to prepare semantic data to support measuring GO and gene similarity. It internally uses the `r Biocpkg("GO.db")` package to obtain GO structure and `OrgDb` for gene to GO mapping. 
 
 
-```{r godata}
+```{r}
+#| label: godata
 library(AnnotationDbi)
 library(GOSemSim)
 hsGO <- godata(annoDb = 'org.Hs.eg.db', ont="MF")
@@ -49,7 +50,8 @@ Bioconductor have already provided `OrgDb` for [about 20 species](http://biocond
 
 We can query `OrgDb` online via the `r Biocpkg("AnnotationHub")` package. For example:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: query-orgdb
 library(AnnotationHub)
 hub <- AnnotationHub()
@@ -68,7 +70,8 @@ Once we have `OrgDb`, we can build annotation data needed by `r Biocpkg("GOSemSi
 The `goSim()` function calculates semantic similarity between two GO terms, while the `mgoSim()` function calculates semantic similarity between two sets of GO terms.
 
 
-```{r gosemsim-gosim}
+```{r}
+#| label: gosemsim-gosim
 goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Jiang")
 goSim("GO:0004022", "GO:0005515", semData=hsGO, measure="Wang")
 go1 = c("GO:0004022","GO:0004024","GO:0004174")
@@ -111,7 +114,8 @@ The algorithm proceeds in two phases: topology-based clustering, followed by two
 
 TCSS is enabled by setting `processTCSS = TRUE` in `godata()`. The `cutoff` parameter controls the granularity of clustering:
 
-```{r gosemsim-tcss-basic}
+```{r}
+#| label: gosemsim-tcss-basic
 hsGO_tcss <- godata(annoDb = 'org.Hs.eg.db', ont = "BP", processTCSS = TRUE)
 
 # GO term similarity using TCSS: the more specific the shared ancestor, the higher the score
@@ -135,7 +139,8 @@ The default cutoff works reasonably well, but for a specific species or research
 
 `tcss_cutoff()` requires a `ppidata` data.frame with three columns: two protein IDs (character) and a logical label (`TRUE` for known interactions, `FALSE` for non-interactions). Here is an example using STRING data:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: tcss-cutoff-example
 library(org.Hs.eg.db)
 library(STRINGdb)
@@ -209,7 +214,8 @@ terms are also calculated by these combining methods.
 
 `r Biocpkg("GOSemSim")` provides `geneSim()` to calculate semantic similarity between two gene products, and `mgeneSim()` to calculate semantic similarity among multiple gene products.
 
-```{r gosemsim-genesim}
+```{r}
+#| label: gosemsim-genesim
 GOSemSim::geneSim("241", "251", semData=hsGO, measure="Wang", combine="BMA")
 mgeneSim(genes=c("835", "5261","241", "994"),
          semData=hsGO, measure="Wang",verbose=FALSE)
@@ -221,7 +227,8 @@ By default, `godata` function use `ENTREZID` as keytype, and the input ID type i
 
 Here as an example, we use `SYMBOL` as `keytype` and calculate semantic similarities among several genes by using their gene symbol as input.
 
-```{r gosemsim-mgeneSim}
+```{r}
+#| label: gosemsim-mgeneSim
 hsGO2 <- godata('org.Hs.eg.db', keytype = "SYMBOL", ont="MF", computeIC=FALSE) 
 genes <- c("CDC45", "MCM10", "CDC20", "NMU", "MMP1")
 mgeneSim(genes, semData=hsGO2, measure="Wang", combine="BMA", verbose=FALSE)
@@ -235,14 +242,16 @@ Users can also use [`clusterProfiler::bitr`](identifier-utilities.qmd#bitr) to t
 `r Biocpkg("GOSemSim")` also supports calculating semantic similarity between two gene clusters using `clusterSim()` function and measuring semantic similarity among multiple gene clusters using `mclusterSim()` function.
 
 
-```{r echo=FALSE}
+```{r}
+#| echo: false
 #| label: clusterSim-aliases
 clusterSim <- GOSemSim::clusterSim
 mclusterSim <- GOSemSim::mclusterSim
 ```
 
 
-```{r gosemsim-clusterSim}
+```{r}
+#| label: gosemsim-clusterSim
 gs1 <- c("835", "5261","241", "994", "514", "533")
 gs2 <- c("578","582", "400", "409", "411")
 clusterSim(gs1, gs2, semData=hsGO, measure="Wang", combine="BMA")
@@ -268,7 +277,8 @@ By default, `godata()` function only accepts a single `OrgDb` object, meaning it
 2. **Manual GO term mapping**: Extract GO annotations for orthologous genes and use `mgoSim()` directly
 3. **Future development**: A potential `merge()` function for combining `GOSemSimDATA` objects from multiple species
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: cross-species-sim
 # Example workflow for cross-species similarity using mgoSim
 # Extract GO terms for human gene using clusterProfiler

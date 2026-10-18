@@ -1,7 +1,7 @@
 # KEGG enrichment analysis {#clusterprofiler-kegg}
 
 ```{r}
-#| label: load-packages
+#| label: load-packages-kegg-enrichment
 #| echo: false
 #| message: false
 #| cache: false
@@ -64,7 +64,8 @@ Once the `organism` is determined, we need to know what gene ID types (`keyType`
 
 KEGG is a remote service that can fail transiently, so the calls in this chapter are wrapped in the `retry()` helper defined in `_common.R`; readers who prefer a single attempt can simply drop the wrapper in their own analysis.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: find-keyType
 # Try 'kegg' as keyType with a dummy gene
 retry(enrichKEGG(gene = "abc", organism = "dosa", keyType = "kegg"))
@@ -98,7 +99,8 @@ If your gene list uses a different ID type (e.g., `LOC4334374` or `LOC_Os01g0101
 
 For `LOC4334374`, you can use `AnnotationHub` to retrieve the rice `OrgDb` and convert symbols to Entrez IDs (which correspond to `osa` KEGG IDs).
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: id-conversion-ah
 library(AnnotationHub)
 ah <- AnnotationHub()
@@ -111,13 +113,14 @@ head(keys(oryza, keytype = "SYMBOL"))
 # ...
 ```
 
-For RAP-ID conversion (e.g., `LOC_Os01g01010.1` to `Os01t0100100-01`), you might need to download mapping files from the [Rice Annotation Project Database (RAP-DB)](https://rapdb.dna.affrc.go.jp/) or [Oryzabase](https://shigen.nig.ac.jp/rice/oryzabase/) and perform the conversion manually or using scripts.
+For RAP-ID conversion (e.g., `LOC_Os01g01010.1` to the matching `dosa` g-type ID such as `Os01g0100100`), download mapping files from [Oryzabase](https://shigen.nig.ac.jp/rice/oryzabase/) or RAP-DB and perform the conversion manually or with scripts. The RAP-DB host did not respond when this edition was checked in October 2026; Oryzabase was reachable, so use that mirror until RAP-DB returns.
 
 ### Perform Enrichment Analysis
 
 With the correct `organism`, `keyType`, and converted gene IDs, you can now run the analysis:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: enrichKEGG-rice
 # For osa (using Entrez IDs)
 kk <- retry(enrichKEGG(gene         = gene_list_entrez,
@@ -144,7 +147,8 @@ To address these issues, we provide two methods to perform KEGG analysis locally
 
 The `r CRANpkg("gson")` package defines the `GSON` container. `gson_KEGG()` — exported by `r Biocpkg("clusterProfiler")` — downloads the latest KEGG pathway and module data for a specific organism and stores it in a `GSON` object. This object contains all necessary information for enrichment analysis and can be saved to a file for offline use.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: gson-kegg
 library(gson)
 library(clusterProfiler)   # gson_KEGG() is exported here
@@ -166,7 +170,8 @@ In some server or cloud environments, direct access to the KEGG REST API may fai
 
 A practical workaround is to build the KEGG annotation on another machine that has normal access to KEGG, save it locally, and then reuse it on the target server. This is also a convenient way to freeze the KEGG version used in an analysis, which helps reproducibility.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: gson-kegg-offline-workaround
 ## on a machine that can access KEGG
 kk_gson <- gson_KEGG("hsa")
@@ -187,14 +192,16 @@ Another approach is to create a local `KEGG.db` package containing the KEGG data
 
 First, install `createKEGGdb` from GitHub:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: install-createKEGGdb
 remotes::install_github("YuLab-SMU/createKEGGdb")
 ```
 
 Then, use `create_kegg_db()` to download data and package it. You can specify one or more species, or even "all" to download data for all supported species.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: create-kegg-db
 library(createKEGGdb)
 # create KEGG.db for human and Arabidopsis
@@ -203,14 +210,16 @@ create_kegg_db(c("hsa", "ath"))
 
 This command will generate a `KEGG.db_1.0.tar.gz` file in the current directory. Install it as a standard R package:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: install-local-keggdb
 install.packages("KEGG.db_1.0.tar.gz", repos=NULL, type="source")
 ```
 
 Once installed, you can perform enrichment analysis using the local data by setting `use_internal_data = TRUE` in `enrichKEGG()`:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: enrichKEGG-internal
 library(KEGG.db)
 kk <- retry(enrichKEGG(gene         = gene,
@@ -474,7 +483,8 @@ Users can also use the `pathview()` function from the `r Biocpkg("pathview")` [@
 
 The following example illustrates how to visualize the "hsa04110" pathway, which was enriched in our previous analysis.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 #| label: pathview-example
 library("pathview")
 hsa04110 <- pathview(gene.data  = geneList,

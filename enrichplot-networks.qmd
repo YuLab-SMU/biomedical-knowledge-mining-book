@@ -304,21 +304,24 @@ Two things that are easy to get wrong here:
 
 **Colouring the clades.** Pass `group_color` a vector of colours, and it is used for both the clade labels and the highlight bars, so the two stay in sync:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 treeplot(edox2, showCategory = 20,
          group_color = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442"))
 ```
 
 **Wrapping the tip labels.** `label_format` controls the wrap length of the **clade** labels (the word-cloud summaries of each cluster), not the tip labels — passing it a number or a function will not change the terms along the tips:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 ## wraps the clade labels only
 treeplot(edox2, label_format = 15)
 ```
 
 The tip labels are taken straight from the `Description` of the enrichment result, so to wrap them you have to shorten the descriptions *before* building the tree. `pairwise_termsim()` names the similarity matrix from `Description`, and `treeplot()` labels the tips from that matrix, so wrapping at this stage propagates all the way through:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 edox_wrapped <- edox
 edox_wrapped@result$Description <- stringr::str_wrap(edox_wrapped@result$Description, width = 30)
 

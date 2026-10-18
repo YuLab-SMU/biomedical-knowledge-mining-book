@@ -216,14 +216,15 @@ PY
 
 ### 自检脚本
 
-`scripts/` 下有七个离线检查，都在 `REPRODUCIBILITY.md` 里有说明。改完正文至少跑一遍：
+`scripts/` 下有八个离线检查，都在 `REPRODUCIBILITY.md` 里有说明。改完正文至少跑一遍：
 
 | 脚本 | 抓什么 |
 |---|---|
 | `check_navigation.py` | 根目录 `.qmd` 是否都在 `_quarto.yml` |
-| `check_links.py` | 内部链接、锚点、跨文件锚点唯一性 |
-| `check_bibliography.py` | 重复 key、DOI 形态、作者名姓解析、mojibake |
+| `check_links.py` | 内部链接、锚点、跨文件锚点与 chunk label 唯一性 |
+| `check_bibliography.py` | 重复 key、DOI 形态（含正文内联 DOI）、作者名姓解析、mojibake |
 | `check_package_macros.py` | `Biocpkg()` / `CRANpkg()` 与归属表是否一致 |
+| `check_chunk_options.py` | chunk 选项只用 `#|` 行式，同一 chunk 不重复声明 |
 | `check_api_names.R` | 正文 `` `foo()` `` 是否真是某个包的导出函数 |
 | `check_versions.R` | `REPRODUCIBILITY.md` 版本表与本地已装版本是否一致（本地专用） |
 | `check_figure_sizes.py` | 单张图超过 4 MiB（需先 `quarto render`） |

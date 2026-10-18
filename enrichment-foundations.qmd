@@ -2,7 +2,9 @@
 
 This chapter answers the first statistical decision: should a thresholded gene list be tested with over-representation analysis (ORA), or should the complete ranking be analyzed with GSEA? The examples retain the original algorithm labels so historical links remain meaningful.
 
-```{r include=FALSE, cache=FALSE}
+```{r}
+#| include: false
+#| cache: false
 knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE)
 source("_common.R")
 suppressPackageStartupMessages(library(enrichit))

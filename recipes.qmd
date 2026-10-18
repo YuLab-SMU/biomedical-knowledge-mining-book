@@ -2,7 +2,9 @@
 
 These short recipes start with a common input and point to the next analysis decision. The main chapters provide the statistical details and knowledge-source constraints.
 
-```{r include=FALSE, cache=FALSE}
+```{r}
+#| include: false
+#| cache: false
 source("_common.R")
 suppressPackageStartupMessages({
     library(clusterProfiler)

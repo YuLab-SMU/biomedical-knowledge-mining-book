@@ -37,6 +37,15 @@ jobs:
       - name: Validate package macros against the registry
         run: python3 scripts/check_package_macros.py
 
+      - name: Validate chunk option syntax
+        run: python3 scripts/check_chunk_options.py
+
+      # doi.org is a network service; a publisher 403 or a transient timeout is
+      # not a source defect. Keep this informative without blocking the gate.
+      - name: Resolve inline DOIs (non-blocking)
+        continue-on-error: true
+        run: python3 scripts/check_bibliography.py --resolve
+
       # `git diff --check` alone is a no-op here: a push event checks out a clean
       # tree with no unstaged diff, so it used to pass without looking at anything.
       # Compare the commits the event actually introduces instead.

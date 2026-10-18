@@ -60,7 +60,8 @@ de <- names(geneList)[1:100]
 x <- enrichMeSH(de, MeSHDb = db, database='gendoo', category = 'C')
 ```
 
-```{r echo=FALSE}
+```{r}
+#| echo: false
 #| label: load-enrichMeSH-cache
 ## The result is read from cache/enrichMeSH.rds rather than recomputed: enrichMeSH()
 ## needs the full MeSHDb, which takes minutes to build. Rebuild with

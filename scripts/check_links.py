@@ -127,6 +127,21 @@ ROOT = args.root.resolve()
 qmd = sorted(ROOT.glob("*.qmd"))
 errors = check_documents(qmd)
 errors += check_anchor_uniqueness(qmd, load_compat(ROOT))
+
+# Chunk labels are book-wide identifiers too: knitr/Quarto resolve them across
+# the whole book, so two chapters reusing `load-packages` is the same latent
+# defect as a duplicate {#anchor}. Nothing references them with @ref today,
+# which is why the collision went unnoticed.
+label_owners = {}
+for path in qmd:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    for label in re.findall(r"#\|\s+label:\s*([A-Za-z0-9_.-]+)", text):
+        label_owners.setdefault(label, set()).add(path.name)
+for label, owners in sorted(label_owners.items()):
+    if len(owners) > 1:
+        errors.append(f"chunk label '{label}' is used in more than one file "
+                      f"({', '.join(sorted(owners))})")
+
 for path in qmd:
     if "TODO-" in path.read_text(encoding="utf-8", errors="replace"):
         errors.append(f"{path.name}: unfinished TODO anchor")

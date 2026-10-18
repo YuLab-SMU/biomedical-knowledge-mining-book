@@ -2,7 +2,9 @@
 
 This chapter extends classical enrichment when interaction topology, propagation, or gene-level detection weights are part of the evidence model. It is separate from ordinary PPI visualization: the network enters the statistical ranking or weighting step before enrichment is tested.
 
-```{r include=FALSE, cache=FALSE}
+```{r}
+#| include: false
+#| cache: false
 knitr::opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE)
 source("_common.R")
 suppressPackageStartupMessages({library(enrichit); library(igraph)})

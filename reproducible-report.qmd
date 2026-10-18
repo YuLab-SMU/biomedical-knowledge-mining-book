@@ -2,7 +2,9 @@
 
 A report should preserve the inputs, decisions, result objects, figures, and software context needed to reconstruct the analysis. A printed result table alone is not enough.
 
-```{r include=FALSE, cache=FALSE}
+```{r}
+#| include: false
+#| cache: false
 source("_common.R")
 suppressPackageStartupMessages({
     library(clusterProfiler)

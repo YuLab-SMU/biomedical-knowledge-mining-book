@@ -25,6 +25,8 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 
 DOI_RE = re.compile(r"^10\.[0-9]{4,9}/")
+# Inline DOI links in prose: https://doi.org/10.xxxx/...
+INLINE_DOI_RE = re.compile(r"https?://(?:dx\.)?doi\.org/([^\s\)\]\"'<>]+)")
 # A citation key is `@key` standing on its own. The lookbehind rejects S4 slot
 # access, which always glues an identifier to the `@` (`res@result`, `x@keytype`).
 CITE_RE = re.compile(r"(?<![A-Za-z0-9_.\-])@([A-Za-z][A-Za-z0-9_.\-]*)")
@@ -212,6 +214,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--root", type=Path, default=ROOT,
                     help="repository root to check (default: parent of scripts/)")
+    ap.add_argument("--resolve", action="store_true",
+                    help="also resolve each inline doi.org link (network)")
     args = ap.parse_args()
     root = Path(args.root).resolve()
 
@@ -307,6 +311,38 @@ def main():
     for key in sorted(bib_keys - set(cited)):
         warnings.append(f"references.bib: entry '{key}' is never cited in prose")
 
+    # (9) inline doi.org links in the prose. references.bib is checked above;
+    # a DOI written directly in a .qmd is invisible to that pass.
+    inline = {}
+    for path in qmd_paths:
+        raw_text = path.read_text(encoding="utf-8", errors="replace")
+        for link in INLINE_DOI_RE.findall(raw_text):
+            doi = link.rstrip(".,;")
+            inline.setdefault(doi, set()).add(path.name)
+            if not DOI_RE.match(doi):
+                errors.append(f"{path.name}: inline DOI '{doi}' is not a DOI")
+    if args.resolve:
+        import urllib.error
+        import urllib.request
+        for doi in sorted(inline):
+            url = "https://doi.org/" + doi
+            try:
+                with urllib.request.urlopen(url, timeout=15) as response:
+                    if response.status >= 400:
+                        errors.append(f"inline DOI '{doi}' returned HTTP "
+                                      f"{response.status} from {url}")
+            except urllib.error.HTTPError as exc:
+                if exc.code == 404:
+                    errors.append(f"inline DOI '{doi}' is not registered "
+                                  f"(HTTP 404 from {url})")
+                else:
+                    # Publishers behind doi.org frequently answer 401/403 to
+                    # non-browser clients; that says nothing about registration.
+                    warnings.append(f"could not verify inline DOI '{doi}' "
+                                    f"(HTTP {exc.code} from {url})")
+            except Exception as exc:  # network is not part of the source gate
+                warnings.append(f"could not resolve inline DOI '{doi}' ({exc})")
+
     for msg in errors:
         print(f"ERROR: {msg}", file=sys.stderr)
     for msg in warnings:
@@ -319,7 +355,7 @@ def main():
 
     print(f"bibliography check passed: {len(entries)} entries, 0 errors "
           f"({len(warnings)} warnings, {len(cited)} keys cited, "
-          f"{len(qmd_paths)} QMD files)")
+          f"{len(inline)} inline DOI(s), {len(qmd_paths)} QMD files)")
 
 
 if __name__ == "__main__":

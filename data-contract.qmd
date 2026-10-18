@@ -106,7 +106,8 @@ The gene IDs in `TERM2GENE`, the selected gene vector, and the universe must use
 
 Custom tables are consumed locally:
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 library(clusterProfiler)
 custom_ora <- enricher(
   gene = selected,
@@ -134,7 +135,8 @@ custom_gsea <- GSEA(
 
 Convert a result to a data frame when exporting or joining it with another table, but keep the original object for visualization. A bare table of pathway statistics does not contain enough information for functions such as `cnetplot()` or `gseaplot2()` to reconstruct gene–term membership.
 
-```{r eval=FALSE}
+```{r}
+#| eval: false
 ora_table <- as.data.frame(ora_result)
 gsea_table <- as.data.frame(gsea_result)
 write.csv(ora_table, "ora-results.csv", row.names = FALSE)

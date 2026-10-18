@@ -28,7 +28,7 @@
 
 去重后共 **19 项**（第 1–4 批 16 项，第 5 批新增 N14/N15/N16 三项；N13/N17/N18 与第 1 批重复计一次）。
 
-状态标记：第 1 批 ✅（2026-10-18，见文末修复记录）；第 2–4 批 ⬜ 未开始。
+状态标记：第 1–4 批 ✅（2026-10-18，见文末修复记录）；第 5 批剩 N15/N16 未做。
 
 **第 1 批硬伤的共同形态值得单独记一句**：N1 会直接报错，而 N2 / N11 / N12 / N13 / N17(下半) / N18 **都不报错或只把手打输出当真**——加权静默退回不加权、`scale_fill_*` 对 emapplot 是空操作、`node_label="> 1"` 静默丢下调基因、水稻 keyType 案例把"支持"写成"不支持"、`subset()` 对 S4 静默走 default 分支、150→149 的归因写错但数字对。N11 尤其典型：示例的 low/high 正好等于默认调色板端点，所以它连"看起来变了"都自证了。**"能渲染、数字对得上"不等于"是对的"**——第 6 轮那条教训在内容层的复现。
 
@@ -433,6 +433,9 @@ git status: clean（本清单只建档，未改任何书稿文件）
 | 2026-10-17 | 订正两处**我自己的**误判并留档：(a) N5b 初稿曾判定 `nseKEGG()` 不接受 GSON——错，`.prepare_nse_kegg_data()` 有 `inherits(organism,"GSON")` 显式分支，能力不在签名里；据此记下"参数名审计不能外推到参数能力"。(b) N6 初稿"18/21 可离线"低估为……实为 19/21（我把 `subnet` 里的 `net` 误读成网络调用）。另补：`_common.R:317` 已有命名空间全程对齐的离线夹具 `clusterprofiler_enrichit_demo()`，且同一段 `nseGO()` 在 `go-enrichment.qmd` 已真跑出表——N6 的"跑不动"理由不成立。 |
 | 2026-10-17 | viz 评审子代理报"正在写报告"即中断、未落盘；但其留在 `/tmp/audit/` 的 30+ 个验证脚本（O1–O4/P1/Q1/R2）暴露出两条未交付线索。主代理**自行复跑**并确认，新增 **N11**（emapplot 节点色在 colour 不在 fill；`:414/:419` 示例为空操作，边界：`pie=` 的 compareCluster 分支确实用 fill，故 comparecluster-visualization.qmd:219 正确）与 **N12**（`node_label="> 1"` 是带符号过滤，非绝对值；由 `"< -1"` 命中 −2.44 反证）。第 1 批由 2 条增至 4 条；第 5 批并入后共 19 项。 |
 | 2026-10-18 | 第 1 批完成（N1/N2/N11/N12/N13/N17/N18），另修 N18b（cached chunk 里的 `library()` 导致内联 `length(peaks)` 返回 1）。六个章节重渲染均 exit 0；七项自检全绿；`quarto-uncaptioned` 0。 |
+| 2026-10-18 | 第 2 批完成（N3/N4/N5/N5b）并顺手修 N14：DOI 改 2026、导入替代重跑、三处页面自述、capability 编号、`gson_KEGG` 归因；相关章节重渲染 exit 0。 |
+| 2026-10-18 | 第 3 批完成（N6/N7）：三个引擎章启用离线示例并打印结果（输出块 16/16/18），`recipes`/`reproducible-report` 的纯围栏改为可执行 chunk，`interpretation` 三处纯 R 改为 chunk；三章渲染 exit 0，七项自检全绿。 |
+| 2026-10-18 | 第 4 批完成（N8/N9/N10）：72 个旧式 chunk 选项统一为 `#|`，新增 `check_chunk_options.py` 并进 validate；`check_bibliography.py` 覆盖正文内联 DOI（`--resolve` 非阻塞步），去掉失效 RAP-DB 链接；重命名 7 个重复 `load-packages` label，`check_links.py` 增加 label 唯一性。 |
 
 ---
 
@@ -466,3 +469,71 @@ quarto-uncaptioned                      0
 ```
 
 > N18b 的教训与 AGENTS §7「每个 QMD 必须独立加载包」同源：包的加载若只发生在 cached chunk，缓存命中时不会重放；内联代码随后在未注册 S4 方法的环境里算 `length()`，得到的是 1 而不是 150。凡是「cache 命中 + 内联访问 S4 对象」的章节都要检查这一条。
+
+---
+
+# 2026-10-18 第 2–3 批修复记录
+
+## 第 2 批（N3/N4/N5/N5b，附 N14）
+
+| 条目 | 改动 | 验证 |
+|---|---|---|
+| N3 | `index.qmd` 的 DOI `2025` → `2026` | doi.org：2025 版本 404，2026 版本 200；渲染后页面链接为 2026 |
+| N4 | `choose-a-route.qmd` 主句改为先 `import_*()`/`as_*Result()`，重跑降为兜底 | 与 `enrichplot-import.qmd` 的导入链一致 |
+| N5a | `04-visualization.qmd` 不再说兼容页包含 plotting API，改为指向六个任务章 | 兼容页本身无示例 |
+| N5b | `data-contract.qmd` "The next chapter" → 指向 `first-workflow` | `_quarto.yml` Part 0 顺序已核对 |
+| N5c | `capability-map.qmd` 删「when it is added to the book navigation」 | 该页本来就在导航 |
+| N5d | `capability-map.qmd` 的 4/5 节号互换 | 现为 1–6 顺序 |
+| N5b/N14 | gson 行删 `godata()`，并注明 `gson_KEGG()`/`gson_WP()`/`gson_GO()` 由 `clusterProfiler` 导出；`kegg-enrichment.qmd` 示例补 `library(clusterProfiler)` | `getNamespaceExports` 已核；纯净 `gson` 会话不再依赖上文残留 |
+
+六章 `quarto render` 均 exit 0。
+
+## 第 3 批（N6/N7）
+
+### N6 三个引擎章
+
+- 三章 setup 的 `eval=FALSE` → `eval=TRUE`，并加 `cache=FALSE`，避免 cache 命中时跳过包加载；
+- 只保留 `enrichment-network.qmd` 的 full-STRING `get_ppi_network()` 块为 `eval:false`；
+- signed NSEA 改用 `clusterprofiler_enrichit_demo()`，与 N2 的离线夹具一致；
+- 每段结果后补 `head(as.data.frame(...))` 或对象的 print 方法，使页面真正显示结果。
+
+启用后暴露并修复的两处**执行期**问题：
+
+1. `classify_omics_pattern()` 默认 `by = "p.adjust"`，但 `enrichit::ora()` 的结果只有 `pvalue`；已显式传 `by = "pvalue"`。
+2. `harmonized_res` / `agg_strict` 是 `omics_aggregated`，**没有 `as.data.frame()` 方法**；改为直接 print。
+
+输出块（`docs/*.html` 的 `cell-output`）：foundations 16、network 16、multiomics 18（此前全为 0）。
+
+### N7 纯围栏
+
+- `recipes.qmd` 4/4 → 可执行 chunk；补了 `term2gene`/`term2name`、marker 专用 terms、`proteins`/`background_map`；
+- `reproducible-report.qmd` 2/2 → 可执行 chunk；对象保存到 `tempfile()` 目录，构建不再创建 `results/`；
+- `interpretation.qmd` 3 处纯 R（`cluster_mapping`、两个 `context`）→ chunk；其余 LLM 示例保留围栏。
+
+验收：`grep -c '^```r$' recipes.qmd reproducible-report.qmd` → 0/0；`docs/recipes.html` output 10，`docs/reproducible-report.html` output 4；三章 render exit 0。
+
+全量自检：七项全绿，`git diff --check` clean。
+
+---
+
+# 2026-10-18 第 4 批修复记录
+
+## N8 chunk 选项两套语法
+
+- 25 个文件里的 **72 个**旧式围栏选项（`{r eval=FALSE}` / `include=FALSE` / `cache=TRUE` / 无 `=` 的 label）全部转成 `#|` 行式；转换是机械的，label 与选项值逐一核对；
+- 新增 `scripts/check_chunk_options.py`：chunk 头必须为空、同一 chunk 内 `#|` 键不得重复；
+- 加进 `validate-book.yml` 与 `REPRODUCIBILITY.md` 的离线门（现在五个 Python 门 + 一个非阻塞 DOI resolve 步），AGENTS §8 更新为八个检查。
+
+## N9 正文内联 DOI
+
+- `check_bibliography.py` 新增正文 `https://doi.org/…` 提取与形态检查（本轮 10 条，全部在 `index.qmd`）；
+- 新增 `--resolve`：404 记为 error，401/403/超时记为 warning（publisher 反爬，不能当成未注册）；CI 以 `continue-on-error: true` 运行；
+- 去掉失效的 RAP-DB 链接（`rapdb.dna.affrc.go.jp` 直连/代理均 000），保留可达的 Oryzabase（200），并把 RAP-ID 示例改成 KEGG `dosa` 实际使用的 g 型 ID `Os01g0100100`。
+
+## N10 chunk label 跨章重复
+
+- `load-packages` 在 7 章重复 → 改为 `load-packages-<chapter>`；
+- `check_links.py` 增加跨文件 chunk label 唯一性检查（与 `{#anchor}` 同一处理）；
+- 当前全书 362 个 chunk，0 重复 label。
+
+验收：`check_chunk_options.py` PASS 362 chunks；`check_bibliography.py` PASS 27 entries / 10 inline DOIs；`check_links.py` PASS；受影响的 5 章（go-semantic-similarity、mesh-semantic-similarity、comparecluster-analysis、enrichment-foundations、recipes）重渲染均 exit 0，输出块 32/14/6/16/10。

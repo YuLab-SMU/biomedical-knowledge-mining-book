@@ -28,7 +28,8 @@ library(clusterProfiler)
 
 Supported organisms can be listed with `get_wp_organisms()`. This query is network-backed, so it is disabled during the routine book build; run it explicitly when refreshing the supported-organism list.
 
-```{r get-wp-organisms}
+```{r}
+#| label: get-wp-organisms
 #| eval: false
 library(clusterProfiler)
 get_wp_organisms()
