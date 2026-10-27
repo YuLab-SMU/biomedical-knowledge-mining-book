@@ -2,6 +2,15 @@
 
 Enrichment functions are easiest to use when the input has an explicit **data contract**: what one element represents, which identifier namespace it uses, and what population is eligible for testing. The same contract also explains why `clusterProfiler` and `enrichplot` return several related S4 classes.
 
+```{r}
+#| label: load-packages-data-contract
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+```
+
 ## The five objects to keep separate
 
 | Object | What it represents | Typical R form | Used by |
@@ -75,6 +84,67 @@ stopifnot(all(selected %in% universe))
 Pass the universe as character IDs. A numeric vector such as `as.numeric(universe)` is not the same contract: enrichment functions match identifiers as strings, so coercing IDs to numbers can discard the background and silently change the test. Also remove duplicated IDs before analysis.
 
 The universe affects the expected overlap and therefore the p-value. Record how it was constructed, the identifier type, and any filtering rule alongside the result.
+
+### What ORA actually uses as the background {#ora-background-intersection}
+
+Passing `universe` does not put the vector you passed into the contingency table. ORA engine `r CRANpkg("enrichit")` intersects it with the genes that the supplied annotation actually covers:
+
+```text
+N = length(universe ∩ annotated genes)      # BgRatio denominator
+n = length(selected  ∩ universe)            # GeneRatio denominator
+```
+
+where *annotated genes* are the distinct gene IDs present in the term-to-gene mapping — the `OrgDb` annotation for `enrichGO()`, the `TERM2GENE` table for `enricher()`. The background is therefore set by **annotation coverage**, not by the length of the vector you supplied.
+
+This is deliberate, and it matters most when annotation is incomplete. A transcriptome universe of 23,761 genes in which only 17,800 carry GO terms gives a denominator of 17,800, not 23,761; an assembly with poor annotation coverage can shrink it much further. The reported `BgRatio` says which number was used, and the `enrichResult` keeps the same restricted set in its `universe` slot:
+
+```{r}
+library(clusterProfiler)
+data(geneList, package = "DOSE")
+geneList <- sort(geneList, decreasing = TRUE)
+entrez_universe <- names(geneList)
+selected_entrez <- names(geneList)[geneList > 0]
+
+go_bp <- enrichGO(selected_entrez,
+                  OrgDb        = "org.Hs.eg.db",
+                  keyType      = "ENTREZID",
+                  ont          = "BP",
+                  universe     = entrez_universe,
+                  pvalueCutoff = 1,
+                  qvalueCutoff = 1)
+
+cat("universe supplied:", length(unique(entrez_universe)), "\n")
+cat("BgRatio reported :", go_bp@result$BgRatio[1], "\n")
+cat("object @universe :", length(go_bp@universe), "\n")
+stopifnot(length(go_bp@universe) <= length(unique(entrez_universe)))
+```
+
+When the restricted denominator is not the comparison you want — *e.g.* you are asking whether terms are enriched among the annotated genes of a fully measured genome, and the annotation gap should stay in the denominator — switch the engine out of the default before the call:
+
+```{r}
+old_opt <- options(enrichment_force_universe = TRUE)
+go_bp_forced <- enrichGO(selected_entrez,
+                         OrgDb        = "org.Hs.eg.db",
+                         keyType      = "ENTREZID",
+                         ont          = "BP",
+                         universe     = entrez_universe,
+                         pvalueCutoff = 1,
+                         qvalueCutoff = 1)
+options(old_opt)
+
+cat("unrestricted BgRatio :", go_bp_forced@result$BgRatio[1], "\n")
+cat("unrestricted @universe:", length(go_bp_forced@universe), "\n")
+```
+
+::: {.callout-warning}
+**The two settings answer different questions, so do not mix their outputs.**
+
+*Default (`enrichment_force_universe = FALSE`)* asks whether a term is over-represented among **the annotated genes measured in this experiment**. It is the right default when the annotation cannot see part of your universe: an unannotated gene is not eligible for any term, so counting it only dilutes every term by the same factor.
+
+*`options(enrichment_force_universe = TRUE)`* asks whether a term is over-represented in the **whole population you supplied**, and charges the annotation gap to the term. Use it when the universe is a complete, curated gene list — a whole genome, a curated gene panel — and an unannotated gene should count as "not in this term".
+
+Record the setting with the result. The same data and the same `universe` give different p-values under the two options, and only the reported `BgRatio` denominator tells you which one produced a table you are looking at. The option is a session-level switch read by the engine at call time: set it around the call and restore it afterwards, as above, because leaving it on changes every later ORA in the session.
+:::
 
 ## TERM2GENE and TERM2NAME: a custom annotation contract
 
