@@ -2,7 +2,9 @@
 
 An enrichment result says which pathways moved. It does not say what moved them. The natural next question — "which regulator drives this programme?" — is the one [regulator enrichment](regulator-enrichment.qmd#regulator-enrichment) answers by finding transcription-factor target sets that overlap the gene list. This chapter takes a different route, because that one was measured and did not hold up.
 
-The alternative is to stop asking an enrichment result to name a regulator, and instead test a candidate against it. Give the function a driver you suspect, and it asks a measurable question: if this gene drives the programme, knocking it down should move these pathway members. That question has a wrong answer, which is what makes it worth asking.
+The alternative is to stop asking an enrichment result to name a regulator, and instead test a candidate against it. Give the function a driver you suspect, and it asks a measurable question: if this gene drives the programme, knocking it down should move these pathway members.
+
+The question has a wrong answer, which is what makes it worth asking. It does not have a unique right answer, and the chapter says so below rather than at the end: a knockdown that moves the pathway is consistent with driving it, and is also what several unrelated knockdowns do.
 
 ```{r}
 #| echo: false
@@ -68,6 +70,30 @@ Both an `enrichResult` and a `gseaResult` are accepted, and so is the `$pathways
 
 Level A requires two cell lines because one is not enough. In an earlier measurement, three of four supported drivers stopped being supported when a second cell line was used, and the effect size flipped sign. A grade that means "one dataset said so" is too weak to build a claim on.
 
+### What level A does not establish
+
+Level A is the strongest grade here, and it is weaker than it looks. On the hypoxia pilot, thirty
+knockdowns sampled from the database were tested against the same pathway: **four of them also
+reached level A**, and all four are essential genes — a splicing factor, an RNA helicase, a
+Polycomb component, an RNA-processing factor. Knocking those down disrupts transcription broadly,
+so a twelve- or thirty-member pathway shifts with them.
+
+So an A row means the pathway moved under this knockdown, in the right direction, in at least two
+cell lines. It does **not** mean this driver is the one responsible, and it does not separate the
+driver from a general perturbation.
+
+Three attempts to sharpen it were measured and none worked. Requiring a larger effect size does
+separate the true driver on the hypoxia data — HIF1A at 0.89 against a background maximum of 0.78
+— but the threshold that would do it also discards softer true positives elsewhere. Dividing by
+the knockdown's transcriptome-wide impact made the ranking worse, because a strong true knockdown
+also disturbs the transcriptome. Restricting the pathway to its core members let the same
+essential genes through.
+
+What the grade is genuinely good at is **exclusion**. In the same twelve-driver test, five
+unrelated factors came back `direction-conflict` — they push the pathway further the way it is
+already running — and that verdict was right every time. Treat A as "worth following up", and
+treat a conflict or a thin reason as the more informative outcome.
+
 Every row also carries a `reason`, and the reason is where the honest information lives. `single-cell-line` says the evidence is real but thin. `direction-conflict` says the driver moves the pathway the way it is already going, which reads as repression rather than drive. `too-small` says the pathway had too few members to test. `no-test-completed` says the calls failed, so nothing was tested at all.
 
 That distinction is not cosmetic. Without it, an all-`C` table reads the same whether the answer is "tested and refuted" or "the network was down".
@@ -122,7 +148,11 @@ nine <- read.delim("cache/pathway-mechanism-nine.tsv")
 nine %>% select(condition, driver, cell_lines_available, A, top_reason) %>% head(9)
 ```
 
-The four that work — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver being the direct mediator of that programme.
+The four that reach level A — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver known independently to mediate that programme.
+
+That last clause carries the weight. These four were chosen because the answer was already known, so
+they show the method agrees with established biology when the driver is right. They are not evidence
+that it would have picked the same driver unaided, and the specificity result above is why.
 
 The five that fail each lack a different requirement:
 
