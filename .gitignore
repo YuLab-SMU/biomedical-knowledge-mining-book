@@ -16,6 +16,13 @@ biomedicalKnowledge_files
 site_libs/
 hplot-review/
 
+# Versioned MSigDB C3 GMT files (TFT and MIR) fetched by
+# regulator-enrichment.qmd. Each render fetches them once when absent, so they
+# are a cache rather than an input: the release string in that chapter, not the
+# local copy, decides which version an analysis used.
+/cache/c3.tft.*.gmt
+/cache/c3.mir.*.gmt
+
 # Download artifact of the Enrichr example in identifier-utilities.qmd. The
 # chunk writes it to a temporary directory now; this keeps an already-present
 # copy from showing up as an untracked file.

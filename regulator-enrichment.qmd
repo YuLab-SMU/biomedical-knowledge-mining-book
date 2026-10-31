@@ -1,0 +1,580 @@
+# Upstream regulator and participant enrichment {#regulator-enrichment}
+
+```{r}
+#| label: regulator-enrichment-setup
+#| echo: false
+#| message: false
+#| warning: false
+#| cache: false
+
+source("_common.R")
+suppressPackageStartupMessages({
+    library(clusterProfiler)
+    library(org.Hs.eg.db)
+    library(enrichplot)
+})
+```
+
+Every other chapter in this part enriches a gene list **against** a description of what those genes do: a GO term, a pathway, a disease, a cell type. The statistical engine is the same ORA or GSEA test each time. What changes here is the direction of the knowledge. The tested collections no longer describe the genes; they describe the genes' **upstream participants** — the transcription factor that binds their promoters, the microRNA whose seed is in their 3' UTR, the perturbagen that produces them.
+
+```text
+gene list (downstream evidence)
+        ↓  ORA / GSEA against regulator→target collections
+enriched collection
+        ↓  read the name as a regulator, not as a function
+candidate upstream regulator  →  a mechanism to propose, not a mechanism proven
+```
+
+A pathway result says "these genes act together". A regulator result says "something upstream of these genes may be switched on", which is the shape of a mechanistic hypothesis rather than a description of the genes that were found. That difference is worth a chapter of its own, because it is the cheapest route from a differential-expression table to a testable claim about what drives it.
+
+## Chapter overview
+
+| Aspect | Regulator and participant enrichment |
+|---|---|
+| **Questions** | Which upstream regulators, complexes, perturbagens, or source states could produce this gene list? |
+| **Input** | A thresholded symbol vector, or a named numeric ranking, plus a collection whose terms are regulators, in the same namespace. |
+| **Methods** | ORA or GSEA with `enricher()` / `GSEA()`; direction read from the ranking and from the selected genes' fold changes. |
+| **Main functions** | `read.gmt()`, `enricher()`, `GSEA()`; the results are ordinary `enrichResult` / `gseaResult` objects. |
+| **Output** | Terms that name regulators, a gene→regulator inversion, and a cross-evidence concordance table. |
+| **Main limitations** | Enrichment cannot separate a driver from a co-regulated consequence; the collection's construction prior decides much of the answer; the result is a hypothesis to be tested, not a mechanism. |
+
+## A gene set does not have to be a pathway
+
+The gene sets tested here are still two-column tables: collection identifier, then target gene. What changes is what the identifier denotes.
+
+| Collection kind | Identifier is | Enrichment answers | Typical source |
+|---|---|---|---|
+| Pathway / ontology | A function or process | What do these genes do? | The other chapters of this part |
+| TF targets | A transcription factor | Which TF's targets are over-represented? | MSigDB C3 `TFT` (GTRD and motif sets), ReMap, ChIP-Atlas, ChEA3 [@keenan_chea3_2019] |
+| miRNA targets | A microRNA | Which miRNA's targets are over-represented? | MSigDB C3 `MIR` (miRDB-derived), miRTarBase, TargetScan |
+| Protein complex / module | A complex or co-regulated module | Which complex or module? | CORUM, hu.MAP, STRING clusters |
+| Perturbagen | A drug, a genetic perturbation, a knocked-out gene | Which perturbation reproduces this signature? | MSigDB C2 `CGP`, C6, C9 CRISPR screens |
+| Cell state / tissue | A cell type, a source tissue, a culture state | Which cell state does this signature resemble? | MSigDB C8 cell-type signatures, C4 `CGN` |
+
+The last three rows are declarations about the **collection**, not about the tested genes. A cell-state result means the signature resembles that state — which in a bulk sample may be a composition change rather than a program switched on inside the measured cells — and the [cell-type annotation example](interpretation.qmd) is a worked use of the same idea.
+
+::: {.callout-note}
+## One namespace per comparison
+
+This chapter keeps everything in HGNC **gene symbols**, because regulator collections are built from symbols: the MSigDB GMT files ship symbols, miRDB and GTRD publish symbols, and [genomic coordination enrichment](chipseeker-enrichment.qmd#chipseeker-enrichment) also produces symbols from peaks. Testing symbols against symbol-built sets costs nothing in mapping. Testing Entrez IDs against them costs a conversion, and the loss appears as a smaller universe rather than as an error.
+
+The general rule is in the [data contract](data-contract.qmd#data-contract): convert identifiers once, at the input boundary, and then carry the converted universe with the converted list.
+:::
+
+## Regulator collections from MSigDB
+
+The Molecular Signatures Database [@castanza_msigdb_2023] collection C3 holds the two regulator-oriented subcollections used here:
+
+* **C3 `TFT`** — predicted and ChIP-supported transcription factor targets, the collection that makes "which transcription factor?" a hypergeometric question. In the release used here it mixes 504 GTRD-derived sets named `<TF>_TARGET_GENES` with 610 motif-derived sets that carry the motif in the name (`TGANTCA_AP1_C`), the motif plus a quality tier (`SRV_Q6`), or name only the factor (`HNF3_Q6`).
+* **C3 `MIR`** — microRNA targets. Seed-level sets are named after the miRNA (`MIR23C`, `MIR1277_5P`); coarse sets carry a motif shared by several miRNAs (`MIR23A_3P_MIR23B_3P`).
+
+The book reads the versioned GMT files that Broad publishes, the same files the MSigDB website distributes, and caches them locally. Depending on a package that downloads a release at render time would make the numbers in this chapter change without a commit.
+
+```{r}
+#| label: regulator-read-gmt
+#| message: false
+
+## Parse a GMT file into the two tables enricher()/GSEA() accept.
+## GMT layout: set name <TAB> source URL <TAB> member 1 <TAB> member 2 ...
+read_gmt <- function(path) {
+    lines <- readLines(path)
+    parts <- strsplit(lines[nzchar(lines)], "\t", fixed = TRUE)
+    TERM2GENE <- do.call(rbind, lapply(parts, function(x) {
+        data.frame(term = x[1], gene = x[-c(1, 2)], stringsAsFactors = FALSE)
+    }))
+    TERM2NAME <- data.frame(
+        term = vapply(parts, `[`, "", 1),
+        name = vapply(parts, `[`, "", 1),
+        stringsAsFactors = FALSE
+    )
+    list(TERM2GENE = unique(TERM2GENE), TERM2NAME = TERM2NAME)
+}
+
+## Collections are fetched once into cache/; bump this string to refresh.
+msigdb_release <- "2026.2.Hs"
+
+fetch_gmt <- function(label, file) {
+    path <- file.path("cache", file)
+    if (!file.exists(path)) {
+        dir.create("cache", showWarnings = FALSE)
+        url <- paste0(
+            "https://data.broadinstitute.org/gsea-msigdb/msigdb/release/",
+            msigdb_release, "/", file
+        )
+        if (!identical(download.file(url, path, quiet = TRUE), 0L)) {
+            stop("could not download ", url)
+        }
+    }
+    message(label, ": ", file, " (", msigdb_release, ")")
+    read_gmt(path)
+}
+
+tft <- fetch_gmt("C3 TFT", "c3.tft.v2026.2.Hs.symbols.gmt")
+mir <- fetch_gmt("C3 MIR", "c3.mir.v2026.2.Hs.symbols.gmt")
+
+c(tf_sets = length(unique(tft$TERM2GENE$term)),
+  mir_sets = length(unique(mir$TERM2GENE$term)))
+```
+
+## The airway list, in symbols
+
+The input continues the dexamethasone example from [the first workflow](first-workflow.qmd#first-workflow): integrated Ensembl IDs from `datasets/de_table.tsv`, an adjusted-p-value and fold-change selection rule, and the DESeq2 Wald statistic as the ranking. Two things change before testing. The identifiers become symbols, and the universe becomes the **surviving symbol set** rather than the original Ensembl set, because a universe under the wrong namespace silently changes the hypergeometric test.
+
+```{r}
+#| label: regulator-inputs
+#| message: false
+
+de_table <- read.delim(
+    "datasets/de_table.tsv",
+    stringsAsFactors = FALSE,
+    check.names = FALSE
+)
+
+eligible <- is.finite(de_table$stat) &
+    de_table$gene_id %in% AnnotationDbi::keys(org.Hs.eg.db, keytype = "ENSEMBL")
+
+selected_ensembl <- de_table$gene_id[
+    eligible & !is.na(de_table$padj) &
+        de_table$padj < 0.05 & abs(de_table$log2FoldChange) >= 1
+]
+ranking_ensembl <- de_table$stat[eligible]
+names(ranking_ensembl) <- de_table$gene_id[eligible]
+ranking_ensembl <- sort(ranking_ensembl, decreasing = TRUE)
+
+## ENSEMBL -> SYMBOL, keeping one Ensembl ID per symbol
+ensembl2symbol <- bitr(
+    de_table$gene_id[eligible], "ENSEMBL", "SYMBOL", org.Hs.eg.db,
+    drop = TRUE
+)
+ensembl2symbol <- ensembl2symbol[!duplicated(ensembl2symbol$SYMBOL), ]
+
+universe <- ensembl2symbol$SYMBOL
+selected <- ensembl2symbol$SYMBOL[ensembl2symbol$ENSEMBL %in% selected_ensembl]
+
+## Per-gene statistics aligned to the surviving symbol set
+gene_lfc  <- setNames(de_table$log2FoldChange, de_table$gene_id)[ensembl2symbol$ENSEMBL]
+gene_padj <- setNames(de_table$padj, de_table$gene_id)[ensembl2symbol$ENSEMBL]
+names(gene_lfc) <- names(gene_padj) <- ensembl2symbol$SYMBOL
+
+ranked <- ranking_ensembl[match(ensembl2symbol$ENSEMBL, names(ranking_ensembl))]
+names(ranked) <- ensembl2symbol$SYMBOL
+ranked <- sort(ranked[!is.na(ranked)], decreasing = TRUE)
+
+c(symbols_tested = length(universe), selected = length(selected),
+  ranked = length(ranked))
+```
+
+The conversion collapses a few symbols that share several Ensembl IDs; `symbols_tested` is therefore the denominator every test below uses, and it is the number that should be quoted next to the collector's count of annotated genes.
+
+## Which transcription factor's targets are enriched?
+
+`enricher()` and `GSEA()` take the collection unchanged. The only difference from a pathway chapter is how the resulting `ID` should be read: as a regulator.
+
+```{r}
+#| label: regulator-tf-ora
+#| message: false
+#| warning: false
+
+tf_ora <- enricher(
+    selected,
+    universe   = universe,
+    TERM2GENE  = tft$TERM2GENE,
+    TERM2NAME  = tft$TERM2NAME,
+    minGSSize  = 5,
+    maxGSSize  = Inf,
+    pvalueCutoff = 1,
+    qvalueCutoff = 1
+)
+
+tf_ora_table <- as.data.frame(tf_ora)
+tf_ora_table <- tf_ora_table[!is.na(tf_ora_table$ID), ]
+
+c(sets_tested = nrow(tf_ora_table),
+  padj_below_05 = sum(tf_ora_table$p.adjust < 0.05))
+```
+
+`maxGSSize = Inf` is not a detail. The default upper bound of 500 genes drops the largest TF target sets, and those are exactly the promiscuous regulators whose over-representation is the most informative — in this collection the GTRD sets alone run from 5 to 2000 targets, with a median of about 280. With `universe` supplied, `enricher()` filters on the observed overlap, so a large set is no longer penalised for being large in the annotation.
+
+```{r}
+#| label: regulator-tf-ora-top
+#| message: false
+#| warning: false
+
+tf_top <- tf_ora_table[order(tf_ora_table$p.adjust), ]
+tf_top[seq_len(8), c("ID", "GeneRatio", "BgRatio", "FoldEnrichment", "p.adjust")]
+```
+
+Two shapes in that table deserve a comment before any biology is read into it, and both are failures of the tested collection rather than of the data — the diagnostic habit that general enrichment protocols keep returning to [@reimand_pathway_2019]. Several of the top rows are motif-only labels (`TGGAAA_NFAT_Q4_01`, `TGANTCA_AP1_C`), and the single most significant row is `AACTTT_UNKNOWN` — a motif whose factor is not even named. A motif-only or unnamed result is a **consensus sequence**, and a consensus sequence shared across many promoters is over-represented in any large coherent gene list. It is a configuration to follow up, not a regulator to report.
+
+The second shape is less obvious and more costly. The collection's largest sets — `HES2_TARGET_GENES` has 1483 targets, nearly 7% of the tested universe — are over-represented simply because an eighth of the transcriptome belongs to them. Both failures are the same disease as the RiboGene problem that [weighted enrichment](enrichment-network.qmd#weighted-enrichment) was built for, and the same remedies apply: keep the set size in view, and prefer a method that penalises a large annotation tail.
+
+## From a regulator to a gene-level hypothesis
+
+The result is a ranking over collections, which is not how an experiment is designed. The complementary view is over genes: for each selected gene, which enriched regulators could explain it? The information is already in `TERM2GENE`, so the inversion is a reshape, not a new test.
+
+```{r}
+#| label: regulator-inversion
+#| message: false
+#| warning: false
+
+## Two naming conventions coexist in C3 TFT, and each needs its own rule:
+##   GTRD sets:  '<TF>_TARGET_GENES'          -> drop the suffix
+##   motif sets: '[motif_]FFF_Qn', 'FFF_C'    -> drop the motif and the tier
+## Note that '-$' alone would not be enough for names like 'AP1_Q4_01',
+## where the quality tier itself carries an index.
+tft_regulator <- function(label) {
+    tf <- sub("_TARGET_GENES$", "", label)
+    tf <- sub("_[CQ][0-9A-Z]*_[0-9]+$", "", tf)   # SRF_C, HNF3_Q6, AP1_Q4_01
+    tf <- sub("_[CQ][0-9]+$", "", tf)             # AP1_Q4
+    sub("^[ACGTUN]+_", "", tf)                    # TGANTCA_AP1 -> AP1
+}
+
+set_label <- data.frame(
+    term = unique(tf_ora_table$ID),
+    stringsAsFactors = FALSE
+)
+set_label$regulator <- tft_regulator(set_label$term)
+
+significant <- set_label$term[
+    tf_ora_table$p.adjust[match(set_label$term, tf_ora_table$ID)] < 0.05
+]
+label_of <- setNames(set_label$regulator, set_label$term)
+
+edge <- unique(data.frame(
+    gene      = tft$TERM2GENE$gene,
+    term      = tft$TERM2GENE$term,
+    stringsAsFactors = FALSE
+))
+edge <- edge[edge$term %in% significant, ]
+edge$regulator <- label_of[edge$term]
+
+## genes in the selected list that at least one significant regulator covers
+covered <- intersect(selected, edge$gene)
+c(selected = length(selected), covered_by_regulator = length(covered),
+  uncovered = length(setdiff(selected, covered)))
+```
+
+`uncovered` is the control on the whole analysis. With a collection this broad most selected genes are covered — the notable exceptions here are uncharacterised transcripts and a few long non-coding RNAs, whose promoters or UTRs are not in any target annotation. If the uncovered fraction is large in your own data, the proposed regulators account for a minority of the evidence, and the result should be stated that way rather than as "the mechanism".
+
+The inversion also exposes the number a regulator-level p-value hides: how many regulators claim the same gene. Keep in mind that this count comes from the target collection, not from the data: in the current collection the median gene is claimed by several factors and the extreme gene by more than a hundred. Computing it for a handful of strongly changed genes is enough to see the shape of the answer.
+
+```{r}
+#| label: regulator-competition
+#| message: false
+
+## A few strongly changed, functionally annotated genes, to read the table.
+illustrative <- c("ALOX15B", "ZBTB16", "STEAP4", "ANGPTL7", "FKBP5", "DUSP1")
+candidates <- edge[edge$gene %in% illustrative, ]
+
+data.frame(
+    gene       = illustrative,
+    log2FC     = signif(gene_lfc[illustrative], 3),
+    regulator_n = vapply(illustrative,
+        function(g) length(unique(candidates$regulator[candidates$gene == g])), 0L),
+    top_regulators = vapply(illustrative, function(g) {
+        r <- unique(candidates$regulator[candidates$gene == g])
+        r <- r[order(tf_ora_table$p.adjust[match(r, label_of)])][seq_len(min(3, length(r)))]
+        paste(r, collapse = ", ")
+    }, "")
+)
+```
+
+Every gene draws a different set, and for most of them the leading labels are the anonymous motifs discussed above — `UNKNOWN`, `AP4`, `TATA_01`. That is the honest arithmetic of the method: a single gene list is usually compatible with dozens of upstream explanations, and the useful output is a short list of **named** regulators that recur and that carry independent support, not the one row with the smallest p-value.
+
+`ALOX15B` — the single largest fold change in the whole list, a known glucocorticoid-responsive gene — has no regulator in the collection at all: its `regulator_n` is zero. A gene that is dramatically regulated but absent from every target set is a reminder that regulator coverage is not driven by effect size, and that a top-of-the-list gene can still be invisible to this analysis.
+
+## Direction: which way does the regulator act?
+
+An unsigned over-representation test answers "is this regulator's target set over-represented?" It cannot answer in which direction. For proposing a mechanism the direction matters, and the same data supplies it two ways.
+
+The first is to split the selection by sign and run the test at each end, against the full universe. On a treatment-versus-contrast comparison this answers a different and often more useful question: which regulators' targets sit in the induced half, and which sit in the repressed half.
+
+The two universal pitfalls of a split test apply here in full: the universe stays the same on both sides (never the half-list itself), and the two sides are correlated through the genes that passed neither threshold. Reporting an induced-side result and a repressed-side result together is a joint statement of two tests, so if either side is quoted as confirmatory, both should carry a multiplicity correction.
+
+```{r}
+#| label: regulator-directional-ora
+#| message: false
+#| warning: false
+
+selected_up   <- universe[gene_lfc >=  1 & gene_padj  < 0.05]
+selected_down <- universe[gene_lfc <= -1 & gene_padj  < 0.05]
+
+directional_ora <- function(genes, side) {
+    res <- enricher(genes, universe = universe,
+                    TERM2GENE = tft$TERM2GENE, TERM2NAME = tft$TERM2NAME,
+                    minGSSize = 5, maxGSSize = Inf,
+                    pvalueCutoff = 1, qvalueCutoff = 1)
+    d <- as.data.frame(res)
+    data.frame(term = d$ID, padj = d$p.adjust, side = side, stringsAsFactors = FALSE)
+}
+
+directional <- rbind(
+    directional_ora(selected_up, "up"),
+    directional_ora(selected_down, "down")
+)
+directional <- directional[!is.na(directional$term), ]
+
+by_side <- reshape(
+    directional[, c("term", "side", "padj")],
+    idvar = "term", timevar = "side", direction = "wide"
+)
+names(by_side) <- sub("^padj\\.", "", names(by_side))
+by_side$regulator <- label_of[by_side$term]
+
+verdict <- function(up, down) {
+    up <- if (length(up) == 0) NA_real_ else up
+    down <- if (length(down) == 0) NA_real_ else down
+    out <- character(length(up))
+    out[] <- "neither"
+    out[!is.na(up) & up <= 0.05 & (is.na(down) | down > 0.05)] <- "up only"
+    out[!is.na(down) & down <= 0.05 & (is.na(up) | up > 0.05)] <- "down only"
+    out[!is.na(up) & !is.na(down) & up <= 0.05 & down <= 0.05] <- "both"
+    out
+}
+by_side$direction <- verdict(by_side$up, by_side$down)
+
+table(by_side$direction)
+```
+
+Split by sign, the answer becomes actionable. A regulator significant at the induced end is a candidate activator of the response; one significant only at the repressed end is a candidate repressor. A regulator significant at **both** ends is the interesting and awkward case: either its target set is broad enough that half of it moves with any large perturbation — the same "usual suspects" failure that [weighted enrichment](enrichment-network.qmd#weighted-enrichment) exists to correct — or it genuinely has targets on both sides.
+
+```{r}
+#| label: regulator-direction-table
+#| message: false
+
+by_side <- by_side[order(pmin(by_side$up, by_side$down, na.rm = TRUE)), ]
+by_side[seq_len(10), c("term", "regulator", "up", "down", "direction")]
+```
+
+The second route to direction uses the ranking rather than the threshold: GSEA on the signed statistic gives a `NES` whose sign says whether the regulator's targets sit at the top (activator candidate) or the bottom (repressor candidate).
+
+```{r}
+#| label: regulator-tf-gsea
+#| message: false
+#| warning: false
+
+tf_gsea <- GSEA(
+    ranked,
+    TERM2GENE   = tft$TERM2GENE,
+    TERM2NAME   = tft$TERM2NAME,
+    minGSSize   = 5,
+    maxGSSize   = Inf,
+    pvalueCutoff = 1,
+    eps         = 0
+)
+
+tf_gsea_table <- as.data.frame(tf_gsea)
+tf_gsea_table <- tf_gsea_table[!is.na(tf_gsea_table$ID), ]
+tf_gsea_table <- tf_gsea_table[order(tf_gsea_table$p.adjust), ]
+
+tf_gsea_table[seq_len(8), c("ID", "setSize", "NES", "p.adjust")]
+```
+
+::: {.callout-warning}
+## A small `NES` is not a weak regulator
+
+A transcription factor with a thousand targets spreads its signal across the whole ranking, so its `NES` stays small even when it dominates the response. What the test measures is a shift in the target set's position, not a fold change. Report `NES` together with `setSize` and the number of selected members, and read a small but highly significant `NES` as "broad, consistent shift" rather than "minor effect".
+:::
+
+## microRNA targets
+
+The miRNA subcollection is used identically. The aggregation is one step coarser — a coarse set covers several seeds — and the evidence is one step weaker: miRDB-derived sets are **predicted** target sets, not measured interactions, so a miRNA result is a statement about the 3' UTR repertoire of the gene list rather than about a measured binding event.
+
+```{r}
+#| label: regulator-mir-ora
+#| message: false
+#| warning: false
+
+mir_ora <- enricher(
+    selected,
+    universe   = universe,
+    TERM2GENE  = mir$TERM2GENE,
+    TERM2NAME  = mir$TERM2NAME,
+    minGSSize  = 5,
+    maxGSSize  = Inf,
+    pvalueCutoff = 1,
+    qvalueCutoff = 1
+)
+
+mir_table <- as.data.frame(mir_ora)
+mir_table <- mir_table[!is.na(mir_table$ID), ]
+mir_table <- mir_table[order(mir_table$p.adjust), ]
+mir_table[seq_len(6), c("ID", "GeneRatio", "FoldEnrichment", "p.adjust")]
+```
+
+If an established miRNA result is missing, the usual suspects are, in order: the collection's prediction model, the 3' UTR annotation the collection was built from, and the 3' bias of the quantification — 3' poly-A libraries under-represent exactly the region the prediction relies on.
+
+## The same question answered by published studies
+
+The value of this direction is that it can be checked against conclusions reached by other means. Dexamethasone treatment of airway smooth muscle is unusually well characterised, so a regulator analysis should reproduce known glucocorticoid biology rather than invent new biology on the first run. One of the most consistently reported findings in that system is that glucocorticoids **inhibit FOXO transcriptional activity**, and that FOXO target genes are consequently found induced in the treated samples.
+
+```{r}
+#| label: regulator-published-check
+#| message: false
+#| warning: false
+
+## Accept a regulator label or an exact set name: GTRD-only factors carry an
+## index from '<TF>_TARGET_GENES', motif factors a quality tier.
+regulator_padj <- function(regulator, side) {
+    rows <- by_side[by_side$regulator == regulator |
+                    startsWith(by_side$regulator, paste0(regulator, "_")), ]
+    if (nrow(rows) == 0) return(NA_real_)
+    min(rows[[side]], na.rm = TRUE)
+}
+
+## 'MYC' is included as an inert control: nothing in this system predicts it.
+published <- c("FOXO1", "FOXO3", "CEBPB", "MYC")
+data.frame(
+    regulator      = published,
+    padj_induced   = vapply(published, regulator_padj, 0, "up"),
+    padj_repressed = vapply(published, regulator_padj, 0, "down")
+)
+```
+
+Read the table against the biological statement, not against the p-values.
+
+* `FOXO3`'s target sets are significant in the **induced** genes. Read at face value, that proposes FOXO activity as a *driver* of the induced program; the published relationship is the reverse — FOXOs are inhibited, and their targets rise as a **consequence**.
+* `FOXO1` is borderline on the induced side and reaches 0.05 only on the repressed side, so a reader reporting whichever side is convenient would describe a different regulator entirely.
+* `CEBPB` is significant on the induced side; `MYC` is significant on neither. Neither factor has a special claim on this system, which is the point: without an external statement, a top row cannot be distinguished from a coincidence in a collection of a thousand sets.
+
+The mechanism is a feedback loop that an over-representation test cannot see: repressing FOXO *activity* raises the transcript level of FOXO target genes, and a transcript-level test observes only the latter. That blind spot can be probed without new data, by asking whether the glucocorticoid-response genes that are **not** FOXO targets are induced just as strongly. If the induction is a glucocorticoid effect that happens to overlap FOXO's target repertoire, the non-target genes should carry it too.
+
+```{r}
+#| label: regulator-independent-check
+#| message: false
+
+## The FOXO sets that actually exist in this collection, at the regulator
+## label level used throughout this chapter.
+foxo_sets  <- unique(c("FOXO1_01", "FOXO1_02", "FOXO3_01", "FOXO4_TARGET_GENES"))
+foxo_genes <- unique(tft$TERM2GENE$gene[tft$TERM2GENE$term %in% foxo_sets])
+
+## Genes the glucocorticoid literature reports as directly induced in airway
+## smooth muscle, minus anything in a FOXO target set.
+glucocorticoid_response <- c(
+    "FKBP5", "TSC22D3", "DUSP1", "PER1", "KLF15",
+    "CRISPLD2", "SPARCL1", "ZBTB16", "STEAP4"
+)
+response_only <- setdiff(glucocorticoid_response, foxo_genes)
+
+c(
+    glucocorticoid_genes   = length(glucocorticoid_response),
+    foxo_targets_in_sets   = length(foxo_genes),
+    without_foxo_signature = length(response_only),
+    induced_in_selected    = sum(response_only %in% selected_up),
+    above_1_log2FC         = sum(gene_lfc[response_only] >= 1, na.rm = TRUE),
+    log2FC_median          = round(median(gene_lfc[response_only]), 2)
+)
+```
+
+Every non-FOXO glucocorticoid gene in that shortlist is induced in this same experiment, with a median change above four log2 units. The induction therefore does not need FOXO at all: it is the direct transcriptional response of the receptor, and the overlap with FOXO's target repertoire is a property of the collection, not a finding about the cells. That is the sharpest available demonstration of what a regulator result can and cannot say:
+
+> Enrichment of a regulator's target set tells you where that regulator's fingerprint sits in the gene list. It does not tell you why, and it cannot tell whether the regulator is causing that pattern or merely consistent with it.
+
+## Combining independent regulator evidence
+
+A regulator proposed by one test is a hypothesis; the same regulator proposed by independent evidence is a candidate mechanism. The practical question is not "which p-value is smallest" but "which regulator survives a change of evidence type".
+
+```{r}
+#| label: regulator-concordance
+#| message: false
+
+ora_padj  <- vapply(by_side$regulator, regulator_padj, 0, "up")
+gsea_padj <- tapply(
+    tf_gsea_table$p.adjust,
+    label_of[tf_gsea_table$ID],
+    min
+)
+```
+
+The two tests share the input list and the collection, so they are not independent samples — but they ask different questions, and their disagreement is informative. Over shared regulators the rank correlation of the two p-values is low:
+
+```{r}
+#| label: regulator-concordance-cor
+#| message: false
+
+shared <- intersect(names(ora_padj), names(gsea_padj))
+shared <- shared[!is.na(ora_padj[shared]) & !is.na(gsea_padj[shared])]
+
+c(shared_regulators = length(shared),
+  spearman_padj = round(cor(-log10(ora_padj[shared]),
+                            -log10(gsea_padj[shared]),
+                            method = "spearman"), 3))
+```
+
+That number, comfortably below one, is why a regulator should never be reported on the strength of a single test. ORA asks whether the **selected** list is unusually enriched; GSEA asks whether the **whole ranking** is shifted toward that regulator. A regulator that appears in both answers has survived two different definitions of the evidence, which is a stronger claim than a smaller p-value from either.
+
+Writing the two tests into one verdict per regulator makes the disagreement concrete. Here only a minority of regulators reach the 0.05 threshold in both tests; most are supported by one definition of the evidence only.
+
+```{r}
+#| label: regulator-verdict
+#| message: false
+
+verdict_of <- function(ora, gsea) {
+    ora <- c(ora)[1]; gsea <- c(gsea)[1]
+    if (is.na(ora) || is.na(gsea)) return("one test only")
+    if (ora <= 0.05 && gsea <= 0.05) return("both, below 0.05")
+    if (ora <= 0.25 && gsea <= 0.25) return("both, below 0.25")
+    if (ora <= 0.25) return("ORA only")
+    "GSEA only"
+}
+
+verdict <- mapply(
+    verdict_of,
+    ora_padj[shared], gsea_padj[shared],
+    USE.NAMES = TRUE
+)
+
+table(verdict)
+```
+
+Only a small minority reach 0.05 in both. The large "GSEA only" group is expected rather than alarming: those regulators have a fingerprint spread across the whole ranking without being concentrated in the selected list, which is exactly what a broad regulator looks like under a threshold. It is also the group where a p-value must not be read as "the regulator is active in the treatment arm" — a shifted GSEA signature can come from a handful of strongly co-regulated genes at one end of the list.
+
+Only combine tests multiplicatively if you are willing to assert they are independent. These two are not. Reserve any cross-evidence FDR step for genuinely independent sources: motif occurrence in the underlying sequences, ChIP support for the factor in the relevant cell type, or an experimental perturbation.
+
+## A second regulator axis: motifs from sequences
+
+The collections above summarise regulation as a target set. The other common route asks the question directly from sequences: which motifs occur more often than expected in the promoters or peaks that produced the gene list. That is not an enrichment against a knowledge collection; it is a background model over sequences, and tools such as rGREAT, `motifbreakR`, chromVAR or HOMER answer it without any `TERM2GENE` table.
+
+In this book the natural producer of such sequences is [ChIPseeker](chipseeker-enrichment.qmd#chipseeker-enrichment), which maps peaks to genes. When the gene list reaching this chapter came from peaks, the motif fraction of the MSigDB collection and the sequence-level motif result should agree; when they disagree, the disagreement localises to one of the two routes — usually a different cell type, a different background, or a different definition of the promoter window.
+
+## Checks before believing a regulator
+
+| What to check | Why it invalidates the answer | Where to look |
+|---|---|---|
+| Namespace | Symbol sets tested with Entrez input return nothing, or a wrong universe | `symbols_tested`; [data contract](data-contract.qmd#data-contract) |
+| `maxGSSize` | Large target sets dropped, promiscuous regulators under-reported | `sets_tested` |
+| Unnamed or motif-only sets | A consensus sequence is over-represented in any broad gene list | The top rows of `tf_top` |
+| Collection assembly prior | GTRD sets depend on ChIP experiments and cell lines; miRDB sets are predicted | The collection's own documentation |
+| Redundancy | One factor reported as five discoveries across tiers and motifs | `label_of`; [collapsing a collection](#regulator-redundancy) |
+| Coverage | A mechanism that explains a minority of the list | `uncovered` |
+| Direction | The regulator sits upstream of the pattern, not downstream | `by_side$direction` and the FOXO check |
+| Causality | Enrichment cannot rank a driver above a co-regulated consequence | Independent evidence only |
+
+## Collapsing a collection before reporting it {#regulator-redundancy}
+
+Regulator collections are redundant by construction: one factor appears as a GTRD set, as a legacy motif set, and as a quality-tiered variant. Reporting them as separate findings inflates the count of "regulators found" and hides the agreement between them. The `set_label` table built above is the minimal collapse; two refinements are worth the effort.
+
+The first keeps the evidence type, because agreement between a ChIP-derived set and a motif-derived set for the same factor is itself a result:
+
+```{r}
+#| label: regulator-partition
+#| message: false
+
+## GTRD-derived sets are '<TF>_TARGET_GENES'; the rest are motif-derived.
+tft_kind <- ifelse(grepl("_TARGET_GENES$", tf_ora_table$ID),
+                   "ChIP-derived (GTRD)", "motif-derived")
+table(kind = tft_kind)
+
+## and the number of distinct regulator labels the collection collapses to
+length(unique(set_label$regulator))
+```
+
+The second is the one this book already documents for ontology results: if the target sets themselves cluster, treat the regulators' target sets as terms and apply [semantic similarity](semantic-similarity.qmd#semantic-similarity-overview), or run a redundancy reduction on the result object the way [`simplify()`](go-enrichment.qmd#clusterprofiler-go) does for GO. Both answer the same question — how many distinct stories is this really — and the [Bayesian term selection](bayesian-term-selection.qmd) chapter offers a third route.
+
+## Next steps
+
+* The result object is an ordinary `enrichResult` / `gseaResult`: continue with [result manipulation](result-objects.qmd#clusterProfiler-dplyr) and [summary plots](enrichplot-summary.qmd#sec-visualization-summary) without special handling.
+* Run the same collection for each condition with [`compareCluster()`](comparecluster-analysis.qmd#clusterprofiler-comparecluster); the question becomes "which condition activates which regulator".
+* To draw regulators and pathways in one figure while keeping their provenance separate, package the sources as [GSON](gson.qmd#sec-gson).
+* To turn a concordant regulator into a written claim, use [evidence-guided interpretation](interpretation.qmd) and keep the regulator, the evidence type, and the direction explicit in the prompt.
+* For the statistical assumptions shared with every chapter of this part, return to [ORA and GSEA](enrichment-foundations.qmd#ora-vs-gsea).

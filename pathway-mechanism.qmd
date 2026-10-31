@@ -1,0 +1,147 @@
+# Pathway-level mechanism evidence {#pathway-mechanism}
+
+An enrichment result says which pathways moved. It does not say what moved them. The natural next question — "which regulator drives this programme?" — is the one [regulator enrichment](regulator-enrichment.qmd#regulator-enrichment) answers by finding transcription-factor target sets that overlap the gene list. This chapter takes a different route, because that one was measured and did not hold up.
+
+The alternative is to stop asking an enrichment result to name a regulator, and instead test a candidate against it. Give the function a driver you suspect, and it asks a measurable question: if this gene drives the programme, knocking it down should move these pathway members. That question has a wrong answer, which is what makes it worth asking.
+
+```{r}
+#| echo: false
+#| message: false
+#| cache: false
+
+source("_common.R")
+library(clusterProfiler)
+library(org.Hs.eg.db)
+```
+
+## Why the regulator route was set aside
+
+Asking an enrichment result which regulator explains a gene list means ranking candidate regulators. That ranking was benchmarked and it does not separate the answers from the background.
+
+Two measurements decided it. First, the *admission gate*: across a scored benchmark, only about **21%** of the entities that could be tested were admitted at all, rising to **55%** when the regulator collections were pooled into a union. Second — and this is the one that matters — the correct answer's rank lift was **1.75** against a baseline of 1, with the pooled union scoring **0.92** on one benchmark set. A lift below 1 means the true regulator ranked no better than chance.
+
+That is not an implementation defect. `C3:TFT` answers "which genes does this factor bind". Asking it "which factor regulates this programme" is a different question, and the collection does not carry the information needed to answer it.
+
+The failure is also structural: a large fraction of the input genes are not transcription factors at all, and no target-set library will place the right factor first when the competitive set contains dozens of plausible ones separated by small margins.
+
+So this chapter's function does not rank. It tests. The candidate comes from the caller — from domain knowledge, from a regulator result worth following up, or from a hypothesis a reviewer asked about.
+
+## The shape of an answer
+
+The output is one row per pathway, carrying four things: the pathway, how its members moved, a grade, and a sentence.
+
+The sentence is the point. It is written so that a perturbation experiment could contradict it:
+
+> If ARNT drives this programme, knocking it down should move these 33 members; D27804 does (padj 1e-10) and 4 cell lines agree.
+
+A statement that nothing could refute is not a mechanism claim, so the function refuses to produce one.
+
+## Two inputs, and why the candidate is one of them
+
+```{r}
+#| label: pathway-mechanism-inputs
+#| message: false
+
+## Input one: an ordinary enrichResult from any enrich*() function. It supplies
+## the pathways and their members.
+##
+## Input two: named log2 fold changes. They supply direction, and are used when
+## the enrichment result does not carry a direction of its own.
+signed_example <- c(HIF1A = 2.1, VEGFA = 3.4, CA9 = 4.1, SLC2A1 = 3.0, PGK1 = 2.6)
+
+## Input three: the candidate drivers. These come from the caller, never from a
+## ranking inside the function.
+drivers_example <- c("HIF1A", "ARNT")
+
+list(signed = length(signed_example), drivers = drivers_example)
+```
+
+Both an `enrichResult` and a `gseaResult` are accepted, and so is the `$pathways` table from an [`evidence()`](interpretation.qmd) bundle. Direction is taken from the result when it carries one — a `gseaResult`'s `NES`, or a supplied `pathway_direction` — and only falls back to the members' majority when the result is silent. That fallback matters, because support computed from members whose direction was itself derived from those members proves nothing; the function tracks which case applies and will not grade a pathway B on evidence it manufactured.
+
+## Reading the grades
+
+| Grade | What it means | `verdict` |
+|---|---|---|
+| **A** | A knockdown moves the pathway the right way, in **at least two cell lines** | `perturbation-supported` |
+| **B** | Evidence exists but is capped | `direction-conflict`, `single-dataset`, `coherent-untested`, `coherent-refuted` |
+| **C** | No usable evidence | see `reason` |
+
+Level A requires two cell lines because one is not enough. In an earlier measurement, three of four supported drivers stopped being supported when a second cell line was used, and the effect size flipped sign. A grade that means "one dataset said so" is too weak to build a claim on.
+
+Every row also carries a `reason`, and the reason is where the honest information lives. `single-cell-line` says the evidence is real but thin. `direction-conflict` says the driver moves the pathway the way it is already going, which reads as repression rather than drive. `too-small` says the pathway had too few members to test. `no-test-completed` says the calls failed, so nothing was tested at all.
+
+That distinction is not cosmetic. Without it, an all-`C` table reads the same whether the answer is "tested and refuted" or "the network was down".
+
+## The hypoxia pilot
+
+```{r}
+#| label: pathway-mechanism-pilot
+#| message: false
+
+## A cached run: the calls go to GPSAdb over the network, so the table is stored
+## and read here. Set PATHWAY_MECHANISM_LIVE=1 to recompute.
+pilot <- read.delim("cache/pathway-mechanism-hypoxia.tsv")
+
+library(dplyr)
+pilot %>%
+  filter(level == "A") %>%
+  select(pathway, driver, cell_line, es, padj, n_cell_lines_supported) %>%
+  head(6)
+```
+
+The tumour in this dataset is a pancreatic line, and no HIF-family knockdown in the database comes from that line, so the input experiment and the evidence are independent by construction. What comes back is the biology the field would expect: `response to hypoxia` on ARNT, `cellular response to hypoxia` on HIF1A, `vasculature development` and `pyruvate metabolic process` on HIF1A, each with a negative effect size — knocking the factor down pulls the programme back, which is what an activator should do.
+
+## Where it works, and where it does not
+
+Nine condition–perturbation pairs were run end to end. Four produce level-A grades, five produce none, and the reasons for the five are more informative than the success rate.
+
+```{r}
+#| label: pathway-mechanism-nine
+#| message: false
+
+nine <- read.delim("cache/pathway-mechanism-nine.tsv")
+nine %>% select(condition, driver, cell_lines_available, A, top_reason) %>% head(9)
+```
+
+The four that work — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver being the direct mediator of that programme.
+
+The five that fail each lack a different requirement:
+
+| Failure | Datasets | Cause |
+|---|---|---|
+| Driver has one cell line | airway, GSE286890 | Level A needs two; a data-supply limit, not a method limit |
+| Too few differentially expressed genes | MCF-7 knockout, GSE285498 | Pathways of two members cannot establish direction or be tested |
+| Condition produces no concentrated signal | GSE311462 | 550 up-regulated genes spread across no enriched pathway |
+
+A useful reading of one failure: dexamethasone and a GR knockdown both push extracellular-matrix genes **up**, so the driver moves the pathway the way it already runs. Whether that is real repression or a tissue difference — the GR knockdown available is from a kidney line, not airway — cannot be settled from this evidence, and the function declines to call it support rather than guessing.
+
+## What it takes to run
+
+Three conditions have to hold at once, and the measurements above are what fixes them:
+
+* The condition experiment concentrates its response — dozens of enriched pathways, not hundreds of scattered genes.
+* The driver has knockdown data from at least two cell lines, or level A is unreachable by construction.
+* The pathways are large enough for the test to produce a p-value, which in practice means roughly a dozen members.
+
+The function warns when a run cannot reach level A for a structural reason, because otherwise the output is silent about it:
+
+```
+Warning: Level A is unreachable: `GR` (1) has knockdown data in a single cell
+line, and level A requires two. Results here cannot exceed B.
+```
+
+A run costs network calls proportional to pathways times drivers times datasets. On the hypoxia data, 25 pathways took 96 calls and about a minute; 60 took 210 calls and about three minutes. Results are memoised by the dataset and member set, which helps when pathways share members and not otherwise, so `max_pathways` is worth setting deliberately.
+
+## What this does not establish
+
+The function tests a candidate. It does not discover one, and it should not be read as evidence that the named driver is the *only* driver, or even the most important one. It reports that the data are consistent with a claim and grades how strong that consistency is.
+
+A second endpoint was implemented and then removed. The plan was to corroborate each pathway against an independent annotation source. Three attempts were made: PPI density said nothing (hypoxia pathway members had 67 edges against a null median of 67, because a GO term is not a protein complex); Reactome member overlap picked IL-4/IL-13 signalling as the counterpart of every hypoxia pathway, which shares HIF1A and glycolytic genes but is not the same pathway; and the official GO-to-Reactome cross-reference covered only 8% of pathways and dropped to zero once Reactome became the pathway source. Rather than keep a column that was constant and empty, it was removed — a permanent "no signal" reads as a check that ran, when what happened is that no usable second source was found.
+
+That is the honest state of it: a cheap second source for pathway-level mechanism does not exist in the resources tried.
+
+## Next steps
+
+* For the regulator-centred route and its measured limits, see [regulator enrichment](regulator-enrichment.qmd#regulator-enrichment).
+* To turn a graded row into prose, [evidence-guided interpretation](interpretation.qmd) takes the same claim and keeps the driver, evidence type and direction explicit.
+* For the gene-set collections an enrichment result comes from, return to [GO](go-enrichment.qmd#clusterprofiler-go), [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg) and [Reactome](reactome-enrichment.qmd).

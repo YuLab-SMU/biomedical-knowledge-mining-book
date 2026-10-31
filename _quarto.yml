@@ -41,6 +41,7 @@ book:
       chapters:
         - gson.qmd
         - go-enrichment.qmd
+        - regulator-enrichment.qmd
         - kegg-enrichment.qmd
         - reactome-enrichment.qmd
         - disease-enrichment.qmd
@@ -59,6 +60,7 @@ book:
         - mesh-semantic-similarity.qmd
         - bayesian-term-selection.qmd
         - ppi.qmd
+        - pathway-mechanism.qmd
 
     - part: 04-visualization.qmd
       chapters:

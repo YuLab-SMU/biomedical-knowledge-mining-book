@@ -2,11 +2,21 @@
 
 This part treats GO, KEGG, Reactome, disease, MeSH, pathway collections, and custom annotations as knowledge sources for one common analysis system. The analysis engine from Part 1 remains the same while the vocabulary, annotation coverage, update schedule, and biological interpretation change.
 
+## A gene set is not necessarily a pathway {-}
+
+The collections tested in this part split into two kinds, and the difference is what the analysis is allowed to conclude:
+
+* **Descriptive collections** — GO terms, pathways, disease and MeSH concepts — answer *what these genes do* or *what they are associated with*. The answer describes the input.
+* **Pointing collections** — transcription factor targets, microRNA targets, protein complexes, drugs, cell-type signatures — answer *which upstream participant or state could have produced these genes*. The answer proposes a mechanism to be tested.
+
+Both are run with the same `enricher()` or `GSEA()` call, and both return the same result object; only the reading of a term changes. [Upstream regulator and participant enrichment](regulator-enrichment.qmd#regulator-enrichment) is the chapter for the second kind, and is the route to take when the goal is a hypothesis about what drives the list rather than a description of it.
+
 ## How to choose a knowledge source {-}
 
 | Need | Start with |
 |---|---|
 | Broad ontology-based functional coverage | [GO](go-enrichment.qmd#clusterprofiler-go) |
+| A hypothesis about the upstream regulator, complex, drug, or cell state behind the list | [Regulator and participant enrichment](regulator-enrichment.qmd#regulator-enrichment) |
 | Curated pathways, modules, or compounds | [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg) or [Reactome](reactome-enrichment.qmd#reactomepa) |
 | Disease or phenotype concepts | [Disease enrichment](disease-enrichment.qmd#dose-enrichment) |
 | Literature-oriented biomedical concepts | [MeSH](mesh-enrichment.qmd#meshes-enrichment) |

@@ -55,3 +55,17 @@ packageVersion("meshes")
 - The MeSH release changes enough to alter the enriched term lists.
 
 After regenerating, update the provenance rows above if any of them moved.
+## Downloaded MSigDB collections (not committed)
+
+`regulator-enrichment.qmd` fetches the versioned C3 GMT files into this
+directory on first render and git-ignores them:
+
+```text
+c3.tft.v2026.2.Hs.symbols.gmt     transcription factor targets
+c3.mir.v2026.2.Hs.symbols.gmt     microRNA targets
+```
+
+They are a network cache rather than an input. The release decides which
+collections an analysis used, and it is the literal `msigdb_release` string in
+that chapter; delete the two files and re-render to fetch the same release
+again, or bump the string for a new one.

@@ -57,6 +57,8 @@ Rscript scripts/make_airway_de_table.R
 
 The generated table is committed so ordinary book rendering does not require the `airway` package or a DESeq2 rerun. If the source package or analysis design changes, regenerate the table, review its schema and row count, and update `datasets/readme.md`.
 
+`regulator-enrichment.qmd` is the one chapter whose knowledge source is not an R package. It reads the versioned MSigDB C3 GMT files (`c3.tft` and `c3.mir`) published at `https://data.broadinstitute.org/gsea-msigdb/msigdb/release/<release>/`. The release is a literal string in the chapter (`msigdb_release <- "2026.2.Hs"`), the downloaded files are cached under `cache/` and git-ignored, and the chapter fetches them once when absent. A CI runner therefore starts from the network; bumping the release string is what changes the collections, and it should be a deliberate commit rather than a side effect of a render.
+
 The three committed MeSH objects under `cache/` were built with `meshes` 1.39.3 from the human AnnotationHub record `AH122129` (MeSH v011, 2026). That is deliberately a different `meshes` version from the 1.39.1 in the table above: the caches were generated once and are loaded from disk by both MeSH chapters, because rebuilding them needs an AnnotationHub download plus a `meshdata()` call that runs for minutes. The build loads objects rather than re-deriving them; it does not exercise 1.39.3 code paths.
 
 The package now bundles the NLM descriptor-name map needed because current MeSHDb records expose gene/MeSH mappings but no `MESHTERM` column. Regenerate the caches, and update this paragraph plus `cache/README.md`, whenever the annual NLM descriptor release changes or the `meshes` / `GOSemSim` version changes:
