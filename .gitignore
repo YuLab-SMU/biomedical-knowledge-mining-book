@@ -22,6 +22,10 @@ hplot-review/
 # local copy, decides which version an analysis used.
 /cache/c3.tft.*.gmt
 /cache/c3.mir.*.gmt
+# The fetch helper writes a sibling .meta beside each download; without this the
+# pair shows up as untracked noise after every render.
+/cache/c3.tft.*.gmt.meta
+/cache/c3.mir.*.gmt.meta
 
 # Download artifact of the Enrichr example in identifier-utilities.qmd. The
 # chunk writes it to a temporary directory now; this keeps an already-present
