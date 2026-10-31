@@ -107,6 +107,21 @@ ggplot(g) %<+% d +
 
 This visualization allows you to simultaneously see the interaction structure (from STRING) and the functional state (up/down-regulation) of the genes, providing a more comprehensive view of the biological context.
 
+## Reading an edge as evidence
+
+`getPPI(output = "data.frame")` returns the STRING score channels separately, and they are
+not interchangeable. `escore` is experimental evidence, `dscore` is database curation,
+`tscore` is text mining, and `ascore` is co-expression.
+
+One column should not be used at all. **`pscore` reads 0 even for well-established physical
+interactions** — a TP53–MDM2 pair with `escore` 0.999 still reports `pscore` 0 — so a network
+filtered or ranked on `pscore` discards real edges while appearing to rank them.
+
+The practical rule: an edge backed by `escore >= 0.4` or `dscore >= 0.4` is worth reporting as
+supporting evidence, anything else is a hypothesis about a connection. No network edge reaches
+the top grade in [pathway-level mechanism evidence](pathway-mechanism.qmd#pathway-mechanism),
+because a recorded interaction is not a perturbation result.
+
 ## Next steps
 
 - Map selected genes or terms into [gene–term and evidence networks](enrichplot-networks.qmd#sec-visualization-networks).

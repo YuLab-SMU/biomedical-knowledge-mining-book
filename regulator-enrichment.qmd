@@ -34,7 +34,7 @@ A pathway result says "these genes act together". A regulator result says "somet
 | **Questions** | Which upstream regulators, complexes, perturbagens, or source states could produce this gene list? |
 | **Input** | A thresholded symbol vector, or a named numeric ranking, plus a collection whose terms are regulators, in the same namespace. |
 | **Methods** | ORA or GSEA with `enricher()` / `GSEA()`; direction read from the ranking and from the selected genes' fold changes. |
-| **Main functions** | `read.gmt()`, `enricher()`, `GSEA()`; the results are ordinary `enrichResult` / `gseaResult` objects. |
+| **Main functions** | `enricher()`, `GSEA()`; the GMT is parsed by a small helper defined in this chapter, and the results are ordinary `enrichResult` / `gseaResult` objects. |
 | **Output** | Terms that name regulators, a gene→regulator inversion, and a cross-evidence concordance table. |
 | **Main limitations** | Enrichment cannot separate a driver from a co-regulated consequence; the collection's construction prior decides much of the answer; the result is a hypothesis to be tested, not a mechanism. |
 

@@ -72,6 +72,25 @@ Every row also carries a `reason`, and the reason is where the honest informatio
 
 That distinction is not cosmetic. Without it, an all-`C` table reads the same whether the answer is "tested and refuted" or "the network was down".
 
+## Looked and found nothing is not the same as not looked
+
+The `reason` column exists for one distinction that most write-ups lose:
+
+* **looked, and it is not there** — this is evidence. The source does not explain these genes.
+* **did not look, or could not test** — this is not evidence. Nothing has been ruled out.
+
+The function keeps the two apart deliberately. `no-members` means the pathway's genes are
+absent from the differential table, which is a real absence. `no-test-completed` means the
+calls failed, so the question was never put. `too-small` means the pathway had too few
+members for the test to run at all. Only `not-significant` means a test ran and came back
+negative.
+
+A sentence that reports "no evidence for X" without saying which of these it means has not
+said anything. This is also what makes the structural warnings worth having: when nothing
+reaches level A because a driver has a single cell line, saying so is the difference between
+"the driver has no support" and "the driver could not be assessed". The first is a finding;
+the second is an absence of one.
+
 ## The hypoxia pilot
 
 ```{r}
