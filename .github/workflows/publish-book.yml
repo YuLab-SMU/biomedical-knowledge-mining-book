@@ -21,7 +21,13 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    # Pin the image rather than follow `ubuntu-latest`. GitHub began moving the
+    # label to Ubuntu 26 in October 2026, and on that image pak's automatic
+    # sysreqs installation stalls in apt for an hour or more with no output.
+    # The R library, the system libraries and the Quarto version are all
+    # validated against 24.04, so an unannounced image swap changes the build
+    # environment without changing anything in this repository.
+    runs-on: ubuntu-24.04
     
     steps:
       - name: Checkout repository
