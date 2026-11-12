@@ -1,0 +1,5 @@
+"comparison"	"held_value"	"common_pathways"	"removed_pathways"	"added_pathways"	"changed_grade"	"changed_verdict"	"changed_reason"	"note"
+"code baseline -> fixed (same cap)"	"5-2"	75	0	0	0	0	5	"no grade/verdict change; reason fixes STAT1 coverage diagnosis"
+"code baseline -> fixed (same cap)"	"8-4"	120	0	0	0	0	8	"no grade/verdict change; reason fixes STAT1 coverage diagnosis"
+"cap 8/4 -> 5/2 (same code)"	"baseline"	75	45	0	3	3	3	"3 common pathways A -> B; 45 rows removed"
+"cap 8/4 -> 5/2 (same code)"	"fixed"	75	45	0	3	3	3	"3 common pathways A -> B; 45 rows removed"

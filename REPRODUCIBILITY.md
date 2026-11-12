@@ -42,6 +42,12 @@ The book follows the current R/Bioconductor and package releases rather than fre
 | `org.Hs.eg.db` | 3.23.1 |
 | `org.Mm.eg.db` | 3.23.0 |
 
+The mechanism chapter reads cached ledger tables (`cache/pathway-mechanism-*.tsv`)
+produced with development version 4.21.5.005 from frozen perturbation responses.
+They are data files, not executable calls against the installed `clusterProfiler`,
+so the chapter remains buildable in the table's environment while the provenance
+of the evidence states stays explicit.
+
 When R, Bioconductor, or a core package release changes, update the dependencies in the build environment, rerun the full book and validation checks, regenerate `de_table.tsv` only if the documented airway/DESeq2 source or design changes, and refresh this table with the new `sessionInfo()` output. `scripts/check_versions.R` fails while any row disagrees with the installed library, so a stale table is caught rather than drifting silently. For a release build, record:
 
 ```r

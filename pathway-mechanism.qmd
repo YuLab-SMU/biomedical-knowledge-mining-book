@@ -14,53 +14,83 @@ The question has a wrong answer, which is what makes it worth asking. It does no
 source("_common.R")
 library(clusterProfiler)
 library(org.Hs.eg.db)
+library(dplyr)
 ```
 
-## Why the regulator route was set aside
+## Why this chapter tests rather than ranks
 
-Asking an enrichment result which regulator explains a gene list means ranking candidate regulators. That ranking was benchmarked and it does not separate the answers from the background.
+Asking an enrichment result which regulator explains a gene list means ranking candidate regulators. Two candidate-ranking routes were benchmarked, and neither separates the answers from the background.
 
-Two measurements decided it. First, the *admission gate*: across a scored benchmark, only about **21%** of the entities that could be tested were admitted at all, rising to **55%** when the regulator collections were pooled into a union. Second — and this is the one that matters — the correct answer's rank lift was **1.75** against a baseline of 1, with the pooled union scoring **0.92** on one benchmark set. A lift below 1 means the true regulator ranked no better than chance.
+The first is the regulator-collection route documented in [regulator enrichment](regulator-enrichment.qmd#regulator-enrichment). In an earlier benchmark of transcription-factor collections, the *admission gate* admitted only about **21%** of the entities that could be tested, rising to **55%** when the collections were pooled into a union. More importantly, the correct answer's rank lift was **1.75** against a baseline of 1; the pooled union scored **0.92** on one benchmark set. A lift below 1 means the true regulator ranked no better than chance.
 
-That is not an implementation defect. `C3:TFT` answers "which genes does this factor bind". Asking it "which factor regulates this programme" is a different question, and the collection does not carry the information needed to answer it.
+The second is the signed target-network ranking used by the discovery gate. Its audit is frozen: 17 condition–perturbation profiles, the same signed score, no size weighting, no rank-dependent choice. All 17 declared labels are scorable, so the denominator is the full corpus rather than a convenient subset. The signed top-1 candidate matched the condition-declared driver in **6/17**, top-5 in **10/17**, and top-10 in **13/17**.
 
-The failure is also structural: a large fraction of the input genes are not transcription factors at all, and no target-set library will place the right factor first when the competitive set contains dozens of plausible ones separated by small margins.
+That is better than chance and still not identification. The labels themselves are condition-informed, not exhaustive causal gold standards: a nonmatching transcription factor can be a real parallel or downstream response factor. And repeated studies are present — three profiles share one accession and two share another — so the seventeen are not seventeen independent biological replicates.
 
-So this chapter's function does not rank. It tests. The candidate comes from the caller — from domain knowledge, from a regulator result worth following up, or from a hypothesis a reviewer asked about.
+The failure is also structural. A large fraction of the input genes are not transcription factors at all, and no target-set library will place the right factor first when the competitive set contains dozens of plausible ones separated by small margins. So this chapter's function does not rank. It tests. The candidate comes from the caller — from domain knowledge, from a regulator result worth following up, or from a hypothesis a reviewer asked about.
 
 ## The shape of an answer
 
-The output is one row per pathway, carrying four things: the pathway, how its members moved, a grade, and a sentence.
+The output is one row per pathway. Six things travel with that row:
 
-The sentence is the point. It is written so that a perturbation experiment could contradict it:
+* the pathway, its direction and its member count;
+* an **evidence state** — support, conflict, mixed, undetermined or noncomputable;
+* an **availability** label and an **incomplete** flag;
+* the attempted/computable denominator and the counts behind it;
+* the legacy grade (A, B or C) and its reason;
+* a statement written so that a perturbation experiment could contradict it.
 
-> If ARNT drives this programme, knocking it down should move these 33 members; D27804 does (padj 1e-10) and 4 cell lines agree.
+The sentence is the point:
+
+> If HIF1A drives this programme, knocking it down should move these 33 members; D23437 does (padj 2.1e-08) and 3 cell lines agree.
 
 A statement that nothing could refute is not a mechanism claim, so the function refuses to produce one.
 
-## Two inputs, and why the candidate is one of them
+## Read the evidence state before the grade
 
-```{r}
-#| label: pathway-mechanism-inputs
-#| message: false
+The state is computed from **every retained candidate/dataset test for that pathway**, not from the best row and not from the grade.
 
-## Input one: an ordinary enrichResult from any enrich*() function. It supplies
-## the pathways and their members.
-##
-## Input two: named log2 fold changes. They supply direction, and are used when
-## the enrichment result does not carry a direction of its own.
-signed_example <- c(HIF1A = 2.1, VEGFA = 3.4, CA9 = 4.1, SLC2A1 = 3.0, PGK1 = 2.6)
+| State | What it means |
+|---|---|
+| **support** | at least one supporting test and no conflicting test |
+| **conflict** | at least one conflicting test and no supporting test |
+| **mixed** | both supporting and conflicting tests |
+| **undetermined** | tests ran, but none was significant in either direction |
+| **noncomputable** | only unusable statistics; nothing was tested |
 
-## Input three: the candidate drivers. These come from the caller, never from a
-## ranking inside the function.
-drivers_example <- c("HIF1A", "ARNT")
+The retained tests live in the `perturbation_tests` attribute and keep one row per pathway, driver, dataset and cell line. The printed table shows the best row per pathway; the state does not. A pathway can therefore be `support` while its grade is B, because the member-support floor failed; and a pathway can be `undetermined` while its grade is C, because the tests ran and came back nonsignificant rather than missing.
 
-list(signed = length(signed_example), drivers = drivers_example)
-```
+The grade is not the evidence. The evidence is not the grade.
 
-Both an `enrichResult` and a `gseaResult` are accepted, and so is the `$pathways` table from an [`evidence()`](interpretation.qmd) bundle. Direction is taken from the result when it carries one — a `gseaResult`'s `NES`, or a supplied `pathway_direction` — and only falls back to the members' majority when the result is silent. That fallback matters, because support computed from members whose direction was itself derived from those members proves nothing; the function tracks which case applies and will not grade a pathway B on evidence it manufactured.
+### Availability is a separate question
 
-## Reading the grades
+| `availability` | What happened |
+|---|---|
+| `available` | the retained tests are present and complete |
+| `partial` | some tests failed, some lookups were empty or failed, or the ledger contains an unrecognised state |
+| `failed` | tests were attempted and every one failed |
+| `unknown` | a ledger exists but its status values cannot be interpreted |
+| `missing-ledger` | no ledger is attached; the grade cannot be converted into an evidence state |
+| `lookup-unavailable` | the dataset lookup failed, so coverage is unknown |
+| `unqueried` | a driver was requested but never looked up |
+| `no-dataset` | the lookup succeeded and found no usable dataset |
+| `not-tested` | no test was attempted and no lookup explains why |
+
+`incomplete` is `TRUE` whenever availability is not `available` or at least one test is noncomputable. Counts are reported alongside: `n_attempted`, `n_computable`, `n_support`, `n_conflict`, `n_nonsignificant`, `n_noncomputable` and `n_failed`.
+
+Three distinctions do the work:
+
+* a **missing ledger** is not a support claim. Without the retained tests, an A grade cannot be turned into `support`;
+* **noncomputable** is not **nonsignificant**. A test that produced no usable statistic has not been run in the sense that would let it count as negative evidence;
+* a **failed lookup** is not an **empty database**. "Could not ask" and "asked and found nothing" are different statements.
+
+Support may coexist with a failed member-support floor. That is why support is not a grading pass, and why the report keeps the legacy grade visible as a secondary field rather than replacing it.
+
+### The report carries the same states
+
+`mechanism_report()` applies the same ledger-derived states to its per-pathway verdicts and adds a candidate-level table (`candidate_evidence`). Each candidate row keeps its support, conflict, nonsignificant, noncomputable and attempted counts, together with an assessment of `support-only`, `conflict-only`, `mixed` or `no-significant-support`. The report's availability and incomplete flags come from the retained ledger too, so a report cannot claim support that the tests do not contain. The cached tables in this chapter were produced with development version 4.21.5.005; the book's build environment is listed in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+## The legacy grades, and what they add
 
 | Grade | What it means | `verdict` |
 |---|---|---|
@@ -70,33 +100,15 @@ Both an `enrichResult` and a `gseaResult` are accepted, and so is the `$pathways
 
 Level A requires two cell lines because one is not enough. In an earlier measurement, three of four supported drivers stopped being supported when a second cell line was used, and the effect size flipped sign. A grade that means "one dataset said so" is too weak to build a claim on.
 
-### What level A does not establish
+### What support and level A do not establish
 
-Level A is the strongest grade here, and it is weaker than it looks. On the hypoxia pilot, thirty
-knockdowns sampled from the database were tested against the same pathway: **four of them also
-reached level A**, and all four are essential genes — a splicing factor, an RNA helicase, a
-Polycomb component, an RNA-processing factor. Knocking those down disrupts transcription broadly,
-so a twelve- or thirty-member pathway shifts with them.
+On the hypoxia pilot, thirty knockdowns sampled from the database were tested against the same pathway: **four of them also reached level A**, and all four are essential genes — a splicing factor, an RNA helicase, a Polycomb component, an RNA-processing factor. Knocking those down disrupts transcription broadly, so a twelve- or thirty-member pathway shifts with them.
 
-So an A row means the pathway moved under this knockdown, in the right direction, in at least two
-cell lines. It does **not** mean this driver is the one responsible, and it does not separate the
-driver from a general perturbation.
+So a support row means the pathway moved under this knockdown, in the right direction, in at least the reported cell lines. It does **not** mean this driver is the one responsible, and it does not separate the driver from a general perturbation. The same caveat applies when the state is `mixed`: both support and conflict are real observations, and neither settles the causal question.
 
-Three attempts to sharpen it were measured and none worked. Requiring a larger effect size does
-separate the true driver on the hypoxia data — HIF1A at 0.89 against a background maximum of 0.78
-— but the threshold that would do it also discards softer true positives elsewhere. Dividing by
-the knockdown's transcriptome-wide impact made the ranking worse, because a strong true knockdown
-also disturbs the transcriptome. Restricting the pathway to its core members let the same
-essential genes through.
+Three attempts to sharpen it were measured and none worked. Requiring a larger effect size does separate the true driver on the hypoxia data — HIF1A at 0.89 against a background maximum of 0.78 — but the threshold that would do it also discards softer true positives elsewhere. Dividing by the knockdown's transcriptome-wide impact made the ranking worse, because a strong true knockdown also disturbs the transcriptome. Restricting the pathway to its core members let the same essential genes through.
 
-What the grade is genuinely good at is **exclusion**. In the same twelve-driver test, five
-unrelated factors came back `direction-conflict` — they push the pathway further the way it is
-already running — and that verdict was right every time. Treat A as "worth following up", and
-treat a conflict or a thin reason as the more informative outcome.
-
-Every row also carries a `reason`, and the reason is where the honest information lives. `single-cell-line` says the evidence is real but thin. `direction-conflict` says the driver moves the pathway the way it is already going, which reads as repression rather than drive. `too-small` says the pathway had too few members to test. `no-test-completed` says the calls failed, so nothing was tested at all.
-
-That distinction is not cosmetic. Without it, an all-`C` table reads the same whether the answer is "tested and refuted" or "the network was down".
+What the evidence is genuinely good at is **exclusion**. In the same twelve-driver test, five unrelated factors came back `direction-conflict` — they push the pathway further the way it is already running — and that verdict was right every time. Treat support as "worth following up", and treat a conflict or a thin reason as the more informative outcome.
 
 ## Looked and found nothing is not the same as not looked
 
@@ -105,54 +117,104 @@ The `reason` column exists for one distinction that most write-ups lose:
 * **looked, and it is not there** — this is evidence. The source does not explain these genes.
 * **did not look, or could not test** — this is not evidence. Nothing has been ruled out.
 
-The function keeps the two apart deliberately. `no-members` means the pathway's genes are
-absent from the differential table, which is a real absence. `no-test-completed` means the
-calls failed, so the question was never put. `too-small` means the pathway had too few
-members for the test to run at all. Only `not-significant` means a test ran and came back
-negative.
+The function keeps the two apart deliberately. `no-members` means the pathway's genes are absent from the differential table, which is a real absence. `no-test-completed` means the calls failed, so the question was never put. `too-small` means the pathway had too few members for the test to run at all. Only `not-significant` means a test ran and came back negative.
 
-A sentence that reports "no evidence for X" without saying which of these it means has not
-said anything. This is also what makes the structural warnings worth having: when nothing
-reaches level A because a driver has a single cell line, saying so is the difference between
-"the driver has no support" and "the driver could not be assessed". The first is a finding;
-the second is an absence of one.
+A sentence that reports "no evidence for X" without saying which of these it means has not said anything. This is also what makes the structural warnings worth having: when nothing reaches level A because a driver has a single cell line, saying so is the difference between "the driver has no support" and "the driver could not be assessed". The first is a finding; the second is an absence of one.
 
-## The hypoxia pilot
+## The hypoxia run
 
 ```{r}
 #| label: pathway-mechanism-pilot
 #| message: false
 
 ## A cached run: the calls go to GPSAdb over the network, so the table is stored
-## and read here. Set PATHWAY_MECHANISM_LIVE=1 to recompute.
+## and read here. It is the fixed implementation at 8 pathways / 4 datasets,
+## with the condition-declared driver HIF1A and all 17 inputs retained upstream.
 pilot <- read.delim("cache/pathway-mechanism-hypoxia.tsv")
 
-library(dplyr)
 pilot %>%
-  filter(level == "A") %>%
-  select(pathway, driver, cell_line, es, padj, n_cell_lines_supported) %>%
-  head(6)
+  mutate(evidence = sprintf("%d/%d/%d", n_support, n_conflict, n_nonsignificant)) %>%
+  select(pathway, state = evidence_status, evidence, n_attempted, level) %>%
+  head(8) %>%
+  knitr::kable(col.names = c("pathway", "state", "support/conflict/NS",
+                             "tested", "legacy grade"))
 ```
 
-The tumour in this dataset is a pancreatic line, and no HIF-family knockdown in the database comes from that line, so the input experiment and the evidence are independent by construction. What comes back is the biology the field would expect: `response to hypoxia` on ARNT, `cellular response to hypoxia` on HIF1A, `vasculature development` and `pyruvate metabolic process` on HIF1A, each with a negative effect size — knocking the factor down pulls the programme back, which is what an activator should do.
+Eight pathways come back: seven are `support`, one is `undetermined`, and none is `mixed` or `conflict`. Two rows show why the state is not the grade. `vasculature development` is graded **B** but its ledger is `support` — the evidence is real and the grade is capped because only one cell line supports it. `muscle cell proliferation` is graded **C** but is `undetermined`, not `noncomputable`: four tests ran and came back nonsignificant, which is different from never having tested.
+
+The tumour in this dataset is a pancreatic line, and no HIF-family knockdown in the database comes from that line, so the input experiment and the evidence are independent by construction. What comes back is the biology the field would expect: `response to hypoxia` on HIF1A, `cellular response to hypoxia` on HIF1A, and `pyruvate metabolic process` on HIF1A, each with a negative effect size — knocking the factor down pulls the programme back, which is what an activator should do.
+
+## Does the code change the conclusion? A frozen paired comparison
+
+The .005 development branch changed how evidence is assembled and reported, so the obvious question is whether the conclusions moved with it. Live service responses cannot answer that: rerunning the same query is not the same observation. The comparison therefore froze the responses first.
+
+The design crossed two factors:
+
+* **implementation**: the historical source at `978eaba` and the fixed source at `fe7c060`;
+* **cap**: 8 pathways / 4 datasets and 5 pathways / 2 datasets.
+
+Every condition was run on the same 17 profiles, all retained in the denominator — 15 graded and two with no enriched pathway. Each exact request (same driver, same gene vector, same dataset) reused the first retained response for that snapshot, and replay was offline. The final snapshot contains **235 unique requests** — 13 dataset lookups and 222 perturbation tests — with **0 request failures** and **57 noncomputable test responses**. Those 57 stay in the record as noncomputable; they are not silently dropped or counted as negative.
+
+```{r}
+#| label: pathway-mechanism-contrasts
+#| message: false
+
+contrasts <- read.delim("cache/pathway-mechanism-contrasts.tsv")
+contrasts %>%
+  mutate(contrast = paste(ifelse(grepl("^code", comparison), "code", "cap"),
+                          held_value)) %>%
+  select(contrast, common = common_pathways, removed = removed_pathways,
+         A_to_B = changed_grade, verdict = changed_verdict, reason = changed_reason) %>%
+  knitr::kable()
+```
+
+At a fixed cap, the two implementations agree: **zero grade changes and zero verdict changes** across 120 common pathways at 8/4 and 75 at 5/2. The reason column does change — eight rows at 8/4 and five at 5/2 — and all of them are the same story: STAT1 previously came back `no-dataset`, and the fixed implementation records the real tests it found, which are nonsignificant. That corrects a false statement about the database. It does not turn STAT1 into a supported candidate.
+
+The cap comparison is less comfortable. Holding the implementation fixed and shrinking 8/4 to 5/2 removes 45 pathway rows; among the 75 that remain, **3 change from A to B**. Their best rows are unchanged; what disappears is the additional supporting context that made two-cell-line replication. Three other hypoxia rows switch their best dataset and statistics but stay at A. The contrast changes both the pathway cap and the dataset cap, so it does not estimate either one separately.
+
+A single profile shows why the full ledger matters:
+
+```{r}
+#| label: pathway-mechanism-smad3
+#| message: false
+
+smad3 <- read.delim("cache/pathway-mechanism-smad3.tsv")
+smad3 %>%
+  filter(status != "not-significant") %>%
+  select(cap, pathway, dataset, status) %>%
+  head(14) %>%
+  knitr::kable()
+```
+
+At 8/4 the SMAD3 ledger holds **2 support and 7 conflict** rows; at 5/2 it holds **0 support and 5 conflict**. The two supporting rows have negative effect sizes (−0.62 and −0.57), the conflicting rows positive values (0.49–0.60). The best row at both caps is a conflicting dataset, so a table that showed only the best row would hide the two supporting observations entirely. This is mixed evidence, not a confirmed driver, and it is exactly the case the old grade-only table could not display.
+
+Across the fixed implementation's full ledger, 8/4 retains 328 pathway/dataset outcomes — 75 support, 15 conflict, 122 nonsignificant and 116 noncomputable — and 5/2 retains 135 — 41, 12, 41 and 41. The number of profiles with any support falls from **9/17 to 8/17**; profiles with any conflict stay at **3/17**. A historical implementation has no retained full ledger, so those cells are `NA`, not zero.
+
+None of this measures accuracy. The code comparison includes the lookup and dataset-selection policy, because that is part of the implementation; the cap comparison changes the evidence population; and the corpus is reused. What the experiment does establish is narrower and still useful: the reporting fix did not move the grades on these inputs, the coverage diagnosis for STAT1 was wrong, and the cap decides how much supporting and conflicting evidence is visible.
+
+## What the fixed audit says about ranking and modules
+
+The frozen audit behind the discovery gate is worth reading alongside the paired run, because it keeps the same denominator throughout.
+
+```{r}
+#| label: pathway-mechanism-audit
+#| message: false
+
+audit <- read.delim("cache/pathway-mechanism-audit.tsv")
+knitr::kable(audit[, c("endpoint", "value")])
+```
+
+The signed top-1 rate is 6/17. A module is the signed top-1 plus its direct Jaccard neighbours at 0.10, restricted to that profile's historical top-five candidate set; it is not transitive clustering and not a search over the whole network. Its label coverage is **7/17** against a size-matched random expectation of **6.5/17**, with mean set size **1.882**. The labels sit inside the top-five shortlist for 10/17 profiles; restricting the denominator to those ten would make the same coverage look like 7/10, which is why the full corpus is the reported denominator.
+
+The set is larger than the singleton, so coverage rises a little. That is **set coverage, not PPV, not calibrated confidence, and not an independent module test**. A target-overlap neighbourhood is not evidence that its members are indistinguishable in every cell line, and it is not evidence that the true driver lies inside it. The threshold was explored on this same corpus historically; fixing it now does not make it independent.
+
+These limits do not disappear because the ledger is now more informative. They are why the chapter tests a named candidate instead of reporting a ranked answer.
 
 ## Where it works, and where it does not
 
-Nine condition–perturbation pairs were run end to end. Four produce level-A grades, five produce none, and the reasons for the five are more informative than the success rate.
+Nine condition–perturbation pairs were run end to end in an earlier pilot. Four reached level A — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — and they come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver known independently to mediate that programme.
 
-```{r}
-#| label: pathway-mechanism-nine
-#| message: false
-
-nine <- read.delim("cache/pathway-mechanism-nine.tsv")
-nine %>% select(condition, driver, cell_lines_available, A, top_reason) %>% head(9)
-```
-
-The four that reach level A — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver known independently to mediate that programme.
-
-That last clause carries the weight. These four were chosen because the answer was already known, so
-they show the method agrees with established biology when the driver is right. They are not evidence
-that it would have picked the same driver unaided, and the specificity result above is why.
+That last clause carries the weight. These four were chosen because the answer was already known, so they show the method agrees with established biology when the driver is right. They are not evidence that it would have picked the same driver unaided, and the ranking and specificity results above are why.
 
 The five that fail each lack a different requirement:
 
@@ -175,7 +237,7 @@ Three conditions have to hold at once, and the measurements above are what fixes
 The function warns when a run cannot reach level A for a structural reason, because otherwise the output is silent about it:
 
 ```
-Warning: Level A is unreachable: `GR` (1) has knockdown data in a single cell
+Warning: Level A is unreachable: `GR` (1) has perturbation data in a single cell
 line, and level A requires two. Results here cannot exceed B.
 ```
 
@@ -187,10 +249,23 @@ The function tests a candidate. It does not discover one, and it should not be r
 
 A second endpoint was implemented and then removed. The plan was to corroborate each pathway against an independent annotation source. Three attempts were made: PPI density said nothing (hypoxia pathway members had 67 edges against a null median of 67, because a GO term is not a protein complex); Reactome member overlap picked IL-4/IL-13 signalling as the counterpart of every hypoxia pathway, which shares HIF1A and glycolytic genes but is not the same pathway; and the official GO-to-Reactome cross-reference covered only 8% of pathways and dropped to zero once Reactome became the pathway source. Rather than keep a column that was constant and empty, it was removed — a permanent "no signal" reads as a check that ran, when what happened is that no usable second source was found.
 
-That is the honest state of it: a cheap second source for pathway-level mechanism does not exist in the resources tried.
+No external accuracy, causal adjudication or independent validation was performed. The evidence states are a presentation of retained tests, not a new statistical test; A/B/C grading and the discovery score are unchanged. The paired comparison and the fixed audit are development evidence on a reused corpus, not a benchmark of biological truth. That is the honest state of it.
+
+## The gate sequence
+
+The functions form one sequence, and each answers a different question. Keeping them separate is what stops a ranking from being read as a verdict.
+
+| Gate | Function | Question it answers |
+|---|---|---|
+| Preflight | `mechanism_preflight()` | Can this input and context support an attribution claim at all? |
+| Discovery | signed target-network ranking | Which candidates are worth testing? A ranking, not identification. |
+| Verification | `pathway_evidence()` | Does a named candidate move the pathway, and what is the evidence state? |
+| Report | `mechanism_report()` | What is the candidate-level support, conflict and coverage gap? |
+
+The preflight gate reports input and coverage limits; passing it permits attribution work but does not make the inference correct. The discovery ranking retains its target-count disclosure and remains a proposal, not a verdict. The verification gate tests the caller's candidate. The report gate carries the states, counts and gaps into one table without collapsing them into a pass label. `adjudicate()` and [evidence-guided interpretation](interpretation.qmd) sit on the regulator-centred line and keep their own evidence types; the two lines are not merged into a single score.
 
 ## Next steps
 
 * For the regulator-centred route and its measured limits, see [regulator enrichment](regulator-enrichment.qmd#regulator-enrichment).
 * To turn a graded row into prose, [evidence-guided interpretation](interpretation.qmd) takes the same claim and keeps the driver, evidence type and direction explicit.
-* For the gene-set collections an enrichment result comes from, return to [GO](go-enrichment.qmd#clusterprofiler-go), [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg) and [Reactome](reactome-enrichment.qmd).
+* For the gene-set collections an enrichment result comes from, return to [GO](go-enrichment.qmd#clusterprofiler-go), [KEGG](kegg-enrichment.qmd#clusterprofiler-kegg) and [Reactome](reactome-enrichment.qmd#reactomepa).

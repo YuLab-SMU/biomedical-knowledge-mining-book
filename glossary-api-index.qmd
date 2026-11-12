@@ -19,6 +19,8 @@ Use this page when the question is “what does this term mean?”, “which fun
 | **Leading edge / core enrichment** | The genes contributing most directly to a GSEA signal. |
 | **GSON** | A versionable knowledge-resource container; it stores gene sets and metadata, not a new statistical test. |
 | **NES** | Normalized enrichment score; interpret its sign together with the ranking direction and the gene-set context. |
+| **Evidence state** | `support`, `conflict`, `mixed`, `undetermined` or `noncomputable`, derived from every retained candidate/dataset test for a pathway. It is not the grade. |
+| **Legacy grade** | The A/B/C field retained for compatibility. It encodes a support floor and reason; it does not replace the evidence state or identify a unique driver. |
 | **Semantic similarity** | A similarity measure between terms, genes, or gene clusters based on ontology or annotation structure. |
 
 ## Function index by task
@@ -40,6 +42,7 @@ Use this page when the question is “what does this term mean?”, “which fun
 | Organize terms | `pairwise_termsim()`, `simplify()`, `bayes_enrich()` | Reduced or selected term sets with traceable criteria. |
 | Inspect result objects | `as.data.frame()`, `geneInCategory()`, `setReadable()` | Exportable tables or readable display copies; retain the original object. |
 | Visualize results | `dotplot()`, `barplot()`, `cnetplot()`, `emapplot()`, `treeplot()`, `gseaplot2()`, `hplot()` | Summary, network, semantic, or GSEA figures. |
+| Test a named candidate driver | `pathway_evidence()`, `mechanism_report()` | A pathway table with evidence state, availability, attempted/computable counts and a falsifiable statement; keep the retained `perturbation_tests` ledger. |
 | Interpret evidence | `interpret()`, `interpret_agent()`, `interpret_hierarchical()` | Structured draft reports; validate claims against the input evidence. |
 | Preserve the record | `saveRDS()`, `sessionInfo()`, `BiocManager::version()` | Reproducible objects, software context, and provenance. |
 

@@ -15,6 +15,6 @@ Start with [identifier and result utilities](identifier-utilities.qmd#useful-uti
 - [Disease Ontology similarity](do-semantic-similarity.qmd#DOSE-semantic-similarity);
 - [MeSH similarity](mesh-semantic-similarity.qmd#sec-meshes-semantic-similarity).
 
-For redundant enrichment terms, compare [semantic simplification](go-enrichment.qmd#clusterprofiler-go) with [Bayesian term selection](bayesian-term-selection.qmd#sec-bayes-enrich). For gene-level support and interaction context, continue to [PPI and evidence networks](ppi.qmd#protein-protein-interaction-network).
+For redundant enrichment terms, compare [semantic simplification](go-enrichment.qmd#clusterprofiler-go) with [Bayesian term selection](bayesian-term-selection.qmd#sec-bayes-enrich). For gene-level support and interaction context, continue to [PPI and evidence networks](ppi.qmd#protein-protein-interaction-network). When the question is no longer which terms moved but whether a specific driver moves them, [pathway-level mechanism evidence](pathway-mechanism.qmd#pathway-mechanism) tests a named candidate and reports support, conflict and coverage separately from the legacy grade.
 
 The goal is not to make a result smaller at any cost. The goal is to make the evidence traceable: every retained theme should still point back to its terms, genes, input ranking, knowledge source, and analysis parameters.

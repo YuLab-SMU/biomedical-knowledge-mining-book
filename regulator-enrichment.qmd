@@ -577,4 +577,5 @@ The second is the one this book already documents for ontology results: if the t
 * Run the same collection for each condition with [`compareCluster()`](comparecluster-analysis.qmd#clusterprofiler-comparecluster); the question becomes "which condition activates which regulator".
 * To draw regulators and pathways in one figure while keeping their provenance separate, package the sources as [GSON](gson.qmd#sec-gson).
 * To turn a concordant regulator into a written claim, use [evidence-guided interpretation](interpretation.qmd) and keep the regulator, the evidence type, and the direction explicit in the prompt.
+* When the question is whether a named regulator actually moves the pathway, stop ranking and test it with [pathway-level mechanism evidence](pathway-mechanism.qmd#pathway-mechanism); the chapter separates support, conflict and coverage from the legacy grade.
 * For the statistical assumptions shared with every chapter of this part, return to [ORA and GSEA](enrichment-foundations.qmd#ora-vs-gsea).

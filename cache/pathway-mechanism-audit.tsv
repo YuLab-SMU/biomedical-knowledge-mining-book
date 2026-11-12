@@ -1,0 +1,8 @@
+"endpoint"	"value"	"note"
+"signed hit@1"	"6/17"	"full 17-profile denominator"
+"signed hit@5"	"10/17"	"full 17-profile denominator"
+"signed hit@10"	"13/17"	"full 17-profile denominator"
+"module label coverage"	"7/17"	"top-1 plus its 0.10-Jaccard neighbours"
+"size-matched random expectation"	"6.5/17"	"same top-1, same set size"
+"mean module size"	"1.882"	"not independent modules"
+"labels inside top-5 shortlist"	"10/17"	"restricting to these would inflate the denominator"

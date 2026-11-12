@@ -12,6 +12,7 @@ Start with the shape of the evidence, not with the function name. The route dete
 | Several groups with a gene-level statistic | Which ranked profiles differ across groups? | **Compare GSEA profiles** | `compareCluster(..., fun = "gseGO")` | `compareClusterResult` |
 | A custom term-to-gene membership table | Test a local or private gene-set collection | **Custom ORA/GSEA** | `enricher()` or `GSEA()` with `TERM2GENE` | `enrichResult` or `gseaResult` |
 | A gene list and a collection of regulator→target sets | Which upstream regulator could explain the list? | **Regulator enrichment** | `enricher()` or `GSEA()` with a TF/miRNA target collection | `enrichResult` or `gseaResult` |
+| An enrichment result and one named candidate driver | Does perturbing this driver move the pathway, and what is the evidence state? | **Pathway-level mechanism** | `pathway_evidence()`; `mechanism_report()` for candidate detail | `pathway_evidence` table with evidence state, coverage and a legacy grade |
 | Genomic intervals or peaks rather than genes | Which genes and functions are associated with regions? | **Annotate first** | `ChIPseeker`/annotation, then an enrichment route | Depends on downstream route |
 | Gene symbols, Ensembl IDs, or another namespace | Run one of the routes above | **Map and validate IDs** | `bitr()`, `keytypes()`, `select()` | Same as selected route |
 

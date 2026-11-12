@@ -56,6 +56,7 @@ The common objects passed between these layers are deliberately simple: a vector
 | Several possible analysis designs | [Choose a route](choose-a-route.qmd) | Should I use ORA, GSEA, `compareCluster`, network, or custom enrichment? |
 | Several biological databases | [GSON knowledge packaging](gson.qmd) | How can I combine knowledge sources without changing the statistical engine? |
 | An existing enrichment result | [Organize and integrate evidence](03-evidence-integration.qmd) | How do I reduce redundancy, compare terms, and find supporting genes? |
+| A named candidate driver and a pathway result | [Pathway-level mechanism evidence](pathway-mechanism.qmd) | Does perturbing this driver move the pathway, and what do support, conflict and coverage actually say? |
 | A figure or report to make | [Visualize and communicate results](04-visualization.qmd) | Which plot answers which biological question? |
 | A package or function name | [Package and capability map](capability-map.qmd) | Where does this function fit in the system? |
 
