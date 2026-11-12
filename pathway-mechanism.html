@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Guangchuang Yu">
+
+<title>27&nbsp; Pathway-level mechanism evidence – Biomedical Knowledge Mining Toolkit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-visualization.html" rel="next">
+<link href="./ppi.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6508b1f30742097208258cf9a2e21801.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-evidence-integration.html">Organize and integrate evidence</a></li><li class="breadcrumb-item"><a href="./pathway-mechanism.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Pathway-level mechanism evidence</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Site">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Biomedical Knowledge Mining Toolkit</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./00-start-here.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Start here: from data to a first result</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section: Start here: from data to a first result">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The first complete workflow: ORA, GSEA, and plots</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-contract.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data contracts for enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./choose-a-route.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Choose an enrichment route</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./01-analysis-engines.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Choose the analysis engine</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section: Choose the analysis engine">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Enrichment Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Enrichment foundations: ORA and GSEA</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-network.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Network-aware and weighted enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichment-multiomics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Multi-omics enrichment integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Comparing biological themes from multiple gene lists</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./02-knowledge-sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Connect biological knowledge</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section: Connect biological knowledge">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">GSON: the knowledge representation and exchange layer</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">GO enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regulator-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Upstream regulator and participant enrichment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kegg-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">KEGG enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reactome-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Reactome enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./disease-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Disease enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">MeSH enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./universal-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Universal enrichment analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-databases.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Analysis with Other Knowledge Bases</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chipseeker-enrichment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Functional enrichment analysis of genomic coordinations</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./03-evidence-integration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Organize and integrate evidence</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section: Organize and integrate evidence">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./identifier-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Preparing and inspecting biological identifiers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./result-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Manipulating enrichment result objects</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Semantic Similarity Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./go-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">GO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./do-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">DO semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mesh-semantic-similarity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">MeSH semantic similarity analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesian-term-selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Bayesian term selection for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ppi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathway-mechanism.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Pathway-level mechanism evidence</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./04-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-5-label">Visualize and communicate results</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-controls="quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section: Visualize and communicate results">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-5" aria-labelledby="quarto-sidebar-section-5-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Visualization of functional enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Common summary plots for enrichment results</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-networks.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Gene–term and term–term networks</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-gsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">GSEA and distribution views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-comparison.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Compare functional profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./comparecluster-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Visualizing compared enrichment profiles</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-specialized.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Publication-ready and specialized views</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./enrichplot-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Import and visualize results from other tools</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./05-interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-6-label">Interpret and report biological evidence</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-controls="quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section: Interpret and report biological evidence">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-6" aria-labelledby="quarto-sidebar-section-6-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation-reading.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">How to read an enrichment result</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpretation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Evidence-guided biological interpretation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-report.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">From analysis to a reproducible report</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./06-recipes-reference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text" id="quarto-sidebar-section-7-label">Recipes and reference</span></a>
+            <button type="button" class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-controls="quarto-sidebar-section-7" aria-expanded="true" aria-label="Toggle section: Recipes and reference">
+              <i class="bi bi-chevron-right ms-2" aria-hidden="true"></i>
+            </button> 
+      </div>
+      <ul id="quarto-sidebar-section-7" aria-labelledby="quarto-sidebar-section-7-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recipes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">39</span>&nbsp; <span class="chapter-title">Task recipes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./leading-edge-nonmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">40</span>&nbsp; <span class="chapter-title">Recipes: leading-edge analysis and non-model organisms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">41</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./capability-map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">42</span>&nbsp; <span class="chapter-title">Package and capability map</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary-api-index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">43</span>&nbsp; <span class="chapter-title">Glossary, function index, and citations</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Appendix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-this-chapter-tests-rather-than-ranks" id="toc-why-this-chapter-tests-rather-than-ranks" class="nav-link active" data-scroll-target="#why-this-chapter-tests-rather-than-ranks"><span class="header-section-number">27.1</span> Why this chapter tests rather than ranks</a></li>
+  <li><a href="#the-shape-of-an-answer" id="toc-the-shape-of-an-answer" class="nav-link" data-scroll-target="#the-shape-of-an-answer"><span class="header-section-number">27.2</span> The shape of an answer</a></li>
+  <li><a href="#read-the-evidence-state-before-the-grade" id="toc-read-the-evidence-state-before-the-grade" class="nav-link" data-scroll-target="#read-the-evidence-state-before-the-grade"><span class="header-section-number">27.3</span> Read the evidence state before the grade</a>
+  <ul class="collapse">
+  <li><a href="#availability-is-a-separate-question" id="toc-availability-is-a-separate-question" class="nav-link" data-scroll-target="#availability-is-a-separate-question"><span class="header-section-number">27.3.1</span> Availability is a separate question</a></li>
+  <li><a href="#the-report-carries-the-same-states" id="toc-the-report-carries-the-same-states" class="nav-link" data-scroll-target="#the-report-carries-the-same-states"><span class="header-section-number">27.3.2</span> The report carries the same states</a></li>
+  </ul></li>
+  <li><a href="#the-legacy-grades-and-what-they-add" id="toc-the-legacy-grades-and-what-they-add" class="nav-link" data-scroll-target="#the-legacy-grades-and-what-they-add"><span class="header-section-number">27.4</span> The legacy grades, and what they add</a>
+  <ul class="collapse">
+  <li><a href="#what-support-and-level-a-do-not-establish" id="toc-what-support-and-level-a-do-not-establish" class="nav-link" data-scroll-target="#what-support-and-level-a-do-not-establish"><span class="header-section-number">27.4.1</span> What support and level A do not establish</a></li>
+  </ul></li>
+  <li><a href="#looked-and-found-nothing-is-not-the-same-as-not-looked" id="toc-looked-and-found-nothing-is-not-the-same-as-not-looked" class="nav-link" data-scroll-target="#looked-and-found-nothing-is-not-the-same-as-not-looked"><span class="header-section-number">27.5</span> Looked and found nothing is not the same as not looked</a></li>
+  <li><a href="#the-hypoxia-run" id="toc-the-hypoxia-run" class="nav-link" data-scroll-target="#the-hypoxia-run"><span class="header-section-number">27.6</span> The hypoxia run</a></li>
+  <li><a href="#does-the-code-change-the-conclusion-a-frozen-paired-comparison" id="toc-does-the-code-change-the-conclusion-a-frozen-paired-comparison" class="nav-link" data-scroll-target="#does-the-code-change-the-conclusion-a-frozen-paired-comparison"><span class="header-section-number">27.7</span> Does the code change the conclusion? A frozen paired comparison</a></li>
+  <li><a href="#what-the-fixed-audit-says-about-ranking-and-modules" id="toc-what-the-fixed-audit-says-about-ranking-and-modules" class="nav-link" data-scroll-target="#what-the-fixed-audit-says-about-ranking-and-modules"><span class="header-section-number">27.8</span> What the fixed audit says about ranking and modules</a></li>
+  <li><a href="#where-it-works-and-where-it-does-not" id="toc-where-it-works-and-where-it-does-not" class="nav-link" data-scroll-target="#where-it-works-and-where-it-does-not"><span class="header-section-number">27.9</span> Where it works, and where it does not</a></li>
+  <li><a href="#what-it-takes-to-run" id="toc-what-it-takes-to-run" class="nav-link" data-scroll-target="#what-it-takes-to-run"><span class="header-section-number">27.10</span> What it takes to run</a></li>
+  <li><a href="#what-this-does-not-establish" id="toc-what-this-does-not-establish" class="nav-link" data-scroll-target="#what-this-does-not-establish"><span class="header-section-number">27.11</span> What this does not establish</a></li>
+  <li><a href="#the-gate-sequence" id="toc-the-gate-sequence" class="nav-link" data-scroll-target="#the-gate-sequence"><span class="header-section-number">27.12</span> The gate sequence</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps"><span class="header-section-number">27.13</span> Next steps</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/master/pathway-mechanism.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-evidence-integration.html">Organize and integrate evidence</a></li><li class="breadcrumb-item"><a href="./pathway-mechanism.html"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Pathway-level mechanism evidence</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="pathway-mechanism" class="quarto-section-identifier"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Pathway-level mechanism evidence</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>An enrichment result says which pathways moved. It does not say what moved them. The natural next question — “which regulator drives this programme?” — is the one <a href="./regulator-enrichment.html#regulator-enrichment">regulator enrichment</a> answers by finding transcription-factor target sets that overlap the gene list. This chapter takes a different route, because that one was measured and did not hold up.</p>
+<p>The alternative is to stop asking an enrichment result to name a regulator, and instead test a candidate against it. Give the function a driver you suspect, and it asks a measurable question: if this gene drives the programme, knocking it down should move these pathway members.</p>
+<p>The question has a wrong answer, which is what makes it worth asking. It does not have a unique right answer, and the chapter says so below rather than at the end: a knockdown that moves the pathway is consistent with driving it, and is also what several unrelated knockdowns do.</p>
+<section id="why-this-chapter-tests-rather-than-ranks" class="level2" data-number="27.1">
+<h2 data-number="27.1" class="anchored" data-anchor-id="why-this-chapter-tests-rather-than-ranks"><span class="header-section-number">27.1</span> Why this chapter tests rather than ranks</h2>
+<p>Asking an enrichment result which regulator explains a gene list means ranking candidate regulators. Two candidate-ranking routes were benchmarked, and neither separates the answers from the background.</p>
+<p>The first is the regulator-collection route documented in <a href="./regulator-enrichment.html#regulator-enrichment">regulator enrichment</a>. In an earlier benchmark of transcription-factor collections, the <em>admission gate</em> admitted only about <strong>21%</strong> of the entities that could be tested, rising to <strong>55%</strong> when the collections were pooled into a union. More importantly, the correct answer’s rank lift was <strong>1.75</strong> against a baseline of 1; the pooled union scored <strong>0.92</strong> on one benchmark set. A lift below 1 means the true regulator ranked no better than chance.</p>
+<p>The second is the signed target-network ranking used by the discovery gate. Its audit is frozen: 17 condition–perturbation profiles, the same signed score, no size weighting, no rank-dependent choice. All 17 declared labels are scorable, so the denominator is the full corpus rather than a convenient subset. The signed top-1 candidate matched the condition-declared driver in <strong>6/17</strong>, top-5 in <strong>10/17</strong>, and top-10 in <strong>13/17</strong>.</p>
+<p>That is better than chance and still not identification. The labels themselves are condition-informed, not exhaustive causal gold standards: a nonmatching transcription factor can be a real parallel or downstream response factor. And repeated studies are present — three profiles share one accession and two share another — so the seventeen are not seventeen independent biological replicates.</p>
+<p>The failure is also structural. A large fraction of the input genes are not transcription factors at all, and no target-set library will place the right factor first when the competitive set contains dozens of plausible ones separated by small margins. So this chapter’s function does not rank. It tests. The candidate comes from the caller — from domain knowledge, from a regulator result worth following up, or from a hypothesis a reviewer asked about.</p>
+</section>
+<section id="the-shape-of-an-answer" class="level2" data-number="27.2">
+<h2 data-number="27.2" class="anchored" data-anchor-id="the-shape-of-an-answer"><span class="header-section-number">27.2</span> The shape of an answer</h2>
+<p>The output is one row per pathway. Six things travel with that row:</p>
+<ul>
+<li>the pathway, its direction and its member count;</li>
+<li>an <strong>evidence state</strong> — support, conflict, mixed, undetermined or noncomputable;</li>
+<li>an <strong>availability</strong> label and an <strong>incomplete</strong> flag;</li>
+<li>the attempted/computable denominator and the counts behind it;</li>
+<li>the legacy grade (A, B or C) and its reason;</li>
+<li>a statement written so that a perturbation experiment could contradict it.</li>
+</ul>
+<p>The sentence is the point:</p>
+<blockquote class="blockquote">
+<p>If HIF1A drives this programme, knocking it down should move these 33 members; D23437 does (padj 2.1e-08) and 3 cell lines agree.</p>
+</blockquote>
+<p>A statement that nothing could refute is not a mechanism claim, so the function refuses to produce one.</p>
+</section>
+<section id="read-the-evidence-state-before-the-grade" class="level2" data-number="27.3">
+<h2 data-number="27.3" class="anchored" data-anchor-id="read-the-evidence-state-before-the-grade"><span class="header-section-number">27.3</span> Read the evidence state before the grade</h2>
+<p>The state is computed from <strong>every retained candidate/dataset test for that pathway</strong>, not from the best row and not from the grade.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>State</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>support</strong></td>
+<td>at least one supporting test and no conflicting test</td>
+</tr>
+<tr class="even">
+<td><strong>conflict</strong></td>
+<td>at least one conflicting test and no supporting test</td>
+</tr>
+<tr class="odd">
+<td><strong>mixed</strong></td>
+<td>both supporting and conflicting tests</td>
+</tr>
+<tr class="even">
+<td><strong>undetermined</strong></td>
+<td>tests ran, but none was significant in either direction</td>
+</tr>
+<tr class="odd">
+<td><strong>noncomputable</strong></td>
+<td>only unusable statistics; nothing was tested</td>
+</tr>
+</tbody>
+</table>
+<p>The retained tests live in the <code>perturbation_tests</code> attribute and keep one row per pathway, driver, dataset and cell line. The printed table shows the best row per pathway; the state does not. A pathway can therefore be <code>support</code> while its grade is B, because the member-support floor failed; and a pathway can be <code>undetermined</code> while its grade is C, because the tests ran and came back nonsignificant rather than missing.</p>
+<p>The grade is not the evidence. The evidence is not the grade.</p>
+<section id="availability-is-a-separate-question" class="level3" data-number="27.3.1">
+<h3 data-number="27.3.1" class="anchored" data-anchor-id="availability-is-a-separate-question"><span class="header-section-number">27.3.1</span> Availability is a separate question</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>availability</code></th>
+<th>What happened</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>available</code></td>
+<td>the retained tests are present and complete</td>
+</tr>
+<tr class="even">
+<td><code>partial</code></td>
+<td>some tests failed, some lookups were empty or failed, or the ledger contains an unrecognised state</td>
+</tr>
+<tr class="odd">
+<td><code>failed</code></td>
+<td>tests were attempted and every one failed</td>
+</tr>
+<tr class="even">
+<td><code>unknown</code></td>
+<td>a ledger exists but its status values cannot be interpreted</td>
+</tr>
+<tr class="odd">
+<td><code>missing-ledger</code></td>
+<td>no ledger is attached; the grade cannot be converted into an evidence state</td>
+</tr>
+<tr class="even">
+<td><code>lookup-unavailable</code></td>
+<td>the dataset lookup failed, so coverage is unknown</td>
+</tr>
+<tr class="odd">
+<td><code>unqueried</code></td>
+<td>a driver was requested but never looked up</td>
+</tr>
+<tr class="even">
+<td><code>no-dataset</code></td>
+<td>the lookup succeeded and found no usable dataset</td>
+</tr>
+<tr class="odd">
+<td><code>not-tested</code></td>
+<td>no test was attempted and no lookup explains why</td>
+</tr>
+</tbody>
+</table>
+<p><code>incomplete</code> is <code>TRUE</code> whenever availability is not <code>available</code> or at least one test is noncomputable. Counts are reported alongside: <code>n_attempted</code>, <code>n_computable</code>, <code>n_support</code>, <code>n_conflict</code>, <code>n_nonsignificant</code>, <code>n_noncomputable</code> and <code>n_failed</code>.</p>
+<p>Three distinctions do the work:</p>
+<ul>
+<li>a <strong>missing ledger</strong> is not a support claim. Without the retained tests, an A grade cannot be turned into <code>support</code>;</li>
+<li><strong>noncomputable</strong> is not <strong>nonsignificant</strong>. A test that produced no usable statistic has not been run in the sense that would let it count as negative evidence;</li>
+<li>a <strong>failed lookup</strong> is not an <strong>empty database</strong>. “Could not ask” and “asked and found nothing” are different statements.</li>
+</ul>
+<p>Support may coexist with a failed member-support floor. That is why support is not a grading pass, and why the report keeps the legacy grade visible as a secondary field rather than replacing it.</p>
+</section>
+<section id="the-report-carries-the-same-states" class="level3" data-number="27.3.2">
+<h3 data-number="27.3.2" class="anchored" data-anchor-id="the-report-carries-the-same-states"><span class="header-section-number">27.3.2</span> The report carries the same states</h3>
+<p><code>mechanism_report()</code> applies the same ledger-derived states to its per-pathway verdicts and adds a candidate-level table (<code>candidate_evidence</code>). Each candidate row keeps its support, conflict, nonsignificant, noncomputable and attempted counts, together with an assessment of <code>support-only</code>, <code>conflict-only</code>, <code>mixed</code> or <code>no-significant-support</code>. The report’s availability and incomplete flags come from the retained ledger too, so a report cannot claim support that the tests do not contain. The cached tables in this chapter were produced with development version 4.21.5.005; the book’s build environment is listed in <a href="REPRODUCIBILITY.md">REPRODUCIBILITY.md</a>.</p>
+</section>
+</section>
+<section id="the-legacy-grades-and-what-they-add" class="level2" data-number="27.4">
+<h2 data-number="27.4" class="anchored" data-anchor-id="the-legacy-grades-and-what-they-add"><span class="header-section-number">27.4</span> The legacy grades, and what they add</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Grade</th>
+<th>What it means</th>
+<th><code>verdict</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>A</strong></td>
+<td>A knockdown moves the pathway the right way, in <strong>at least two cell lines</strong></td>
+<td><code>perturbation-supported</code></td>
+</tr>
+<tr class="even">
+<td><strong>B</strong></td>
+<td>Evidence exists but is capped</td>
+<td><code>direction-conflict</code>, <code>single-dataset</code>, <code>coherent-untested</code>, <code>coherent-refuted</code></td>
+</tr>
+<tr class="odd">
+<td><strong>C</strong></td>
+<td>No usable evidence</td>
+<td>see <code>reason</code></td>
+</tr>
+</tbody>
+</table>
+<p>Level A requires two cell lines because one is not enough. In an earlier measurement, three of four supported drivers stopped being supported when a second cell line was used, and the effect size flipped sign. A grade that means “one dataset said so” is too weak to build a claim on.</p>
+<section id="what-support-and-level-a-do-not-establish" class="level3" data-number="27.4.1">
+<h3 data-number="27.4.1" class="anchored" data-anchor-id="what-support-and-level-a-do-not-establish"><span class="header-section-number">27.4.1</span> What support and level A do not establish</h3>
+<p>On the hypoxia pilot, thirty knockdowns sampled from the database were tested against the same pathway: <strong>four of them also reached level A</strong>, and all four are essential genes — a splicing factor, an RNA helicase, a Polycomb component, an RNA-processing factor. Knocking those down disrupts transcription broadly, so a twelve- or thirty-member pathway shifts with them.</p>
+<p>So a support row means the pathway moved under this knockdown, in the right direction, in at least the reported cell lines. It does <strong>not</strong> mean this driver is the one responsible, and it does not separate the driver from a general perturbation. The same caveat applies when the state is <code>mixed</code>: both support and conflict are real observations, and neither settles the causal question.</p>
+<p>Three attempts to sharpen it were measured and none worked. Requiring a larger effect size does separate the true driver on the hypoxia data — HIF1A at 0.89 against a background maximum of 0.78 — but the threshold that would do it also discards softer true positives elsewhere. Dividing by the knockdown’s transcriptome-wide impact made the ranking worse, because a strong true knockdown also disturbs the transcriptome. Restricting the pathway to its core members let the same essential genes through.</p>
+<p>What the evidence is genuinely good at is <strong>exclusion</strong>. In the same twelve-driver test, five unrelated factors came back <code>direction-conflict</code> — they push the pathway further the way it is already running — and that verdict was right every time. Treat support as “worth following up”, and treat a conflict or a thin reason as the more informative outcome.</p>
+</section>
+</section>
+<section id="looked-and-found-nothing-is-not-the-same-as-not-looked" class="level2" data-number="27.5">
+<h2 data-number="27.5" class="anchored" data-anchor-id="looked-and-found-nothing-is-not-the-same-as-not-looked"><span class="header-section-number">27.5</span> Looked and found nothing is not the same as not looked</h2>
+<p>The <code>reason</code> column exists for one distinction that most write-ups lose:</p>
+<ul>
+<li><strong>looked, and it is not there</strong> — this is evidence. The source does not explain these genes.</li>
+<li><strong>did not look, or could not test</strong> — this is not evidence. Nothing has been ruled out.</li>
+</ul>
+<p>The function keeps the two apart deliberately. <code>no-members</code> means the pathway’s genes are absent from the differential table, which is a real absence. <code>no-test-completed</code> means the calls failed, so the question was never put. <code>too-small</code> means the pathway had too few members for the test to run at all. Only <code>not-significant</code> means a test ran and came back negative.</p>
+<p>A sentence that reports “no evidence for X” without saying which of these it means has not said anything. This is also what makes the structural warnings worth having: when nothing reaches level A because a driver has a single cell line, saying so is the difference between “the driver has no support” and “the driver could not be assessed”. The first is a finding; the second is an absence of one.</p>
+</section>
+<section id="the-hypoxia-run" class="level2" data-number="27.6">
+<h2 data-number="27.6" class="anchored" data-anchor-id="the-hypoxia-run"><span class="header-section-number">27.6</span> The hypoxia run</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## A cached run: the calls go to GPSAdb over the network, so the table is stored</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## and read here. It is the fixed implementation at 8 pathways / 4 datasets,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## with the condition-declared driver HIF1A and all 17 inputs retained upstream.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pilot <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"cache/pathway-mechanism-hypoxia.tsv"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pilot <span class="sc">%&gt;%</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">evidence =</span> <span class="fu">sprintf</span>(<span class="st">"%d/%d/%d"</span>, n_support, n_conflict, n_nonsignificant)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(pathway, <span class="at">state =</span> evidence_status, evidence, n_attempted, level) <span class="sc">%&gt;%</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">8</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"pathway"</span>, <span class="st">"state"</span>, <span class="st">"support/conflict/NS"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"tested"</span>, <span class="st">"legacy grade"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 45%">
+<col style="width: 13%">
+<col style="width: 20%">
+<col style="width: 7%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">pathway</th>
+<th style="text-align: left;">state</th>
+<th style="text-align: left;">support/conflict/NS</th>
+<th style="text-align: right;">tested</th>
+<th style="text-align: left;">legacy grade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">response to hypoxia</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">3/0/1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">response to decreased oxygen levels</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">3/0/1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">response to oxygen levels</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">3/0/1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cellular response to hypoxia</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">2/0/2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cellular response to decreased oxygen levels</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">2/0/2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cellular response to oxygen levels</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">2/0/2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">vasculature development</td>
+<td style="text-align: left;">support</td>
+<td style="text-align: left;">1/0/3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">B</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">muscle cell proliferation</td>
+<td style="text-align: left;">undetermined</td>
+<td style="text-align: left;">0/0/4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">C</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Eight pathways come back: seven are <code>support</code>, one is <code>undetermined</code>, and none is <code>mixed</code> or <code>conflict</code>. Two rows show why the state is not the grade. <code>vasculature development</code> is graded <strong>B</strong> but its ledger is <code>support</code> — the evidence is real and the grade is capped because only one cell line supports it. <code>muscle cell proliferation</code> is graded <strong>C</strong> but is <code>undetermined</code>, not <code>noncomputable</code>: four tests ran and came back nonsignificant, which is different from never having tested.</p>
+<p>The tumour in this dataset is a pancreatic line, and no HIF-family knockdown in the database comes from that line, so the input experiment and the evidence are independent by construction. What comes back is the biology the field would expect: <code>response to hypoxia</code> on HIF1A, <code>cellular response to hypoxia</code> on HIF1A, and <code>pyruvate metabolic process</code> on HIF1A, each with a negative effect size — knocking the factor down pulls the programme back, which is what an activator should do.</p>
+</section>
+<section id="does-the-code-change-the-conclusion-a-frozen-paired-comparison" class="level2" data-number="27.7">
+<h2 data-number="27.7" class="anchored" data-anchor-id="does-the-code-change-the-conclusion-a-frozen-paired-comparison"><span class="header-section-number">27.7</span> Does the code change the conclusion? A frozen paired comparison</h2>
+<p>The .005 development branch changed how evidence is assembled and reported, so the obvious question is whether the conclusions moved with it. Live service responses cannot answer that: rerunning the same query is not the same observation. The comparison therefore froze the responses first.</p>
+<p>The design crossed two factors:</p>
+<ul>
+<li><strong>implementation</strong>: the historical source at <code>978eaba</code> and the fixed source at <code>fe7c060</code>;</li>
+<li><strong>cap</strong>: 8 pathways / 4 datasets and 5 pathways / 2 datasets.</li>
+</ul>
+<p>Every condition was run on the same 17 profiles, all retained in the denominator — 15 graded and two with no enriched pathway. Each exact request (same driver, same gene vector, same dataset) reused the first retained response for that snapshot, and replay was offline. The final snapshot contains <strong>235 unique requests</strong> — 13 dataset lookups and 222 perturbation tests — with <strong>0 request failures</strong> and <strong>57 noncomputable test responses</strong>. Those 57 stay in the record as noncomputable; they are not silently dropped or counted as negative.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>contrasts <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"cache/pathway-mechanism-contrasts.tsv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>contrasts <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">contrast =</span> <span class="fu">paste</span>(<span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">"^code"</span>, comparison), <span class="st">"code"</span>, <span class="st">"cap"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                          held_value)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(contrast, <span class="at">common =</span> common_pathways, <span class="at">removed =</span> removed_pathways,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">A_to_B =</span> changed_grade, <span class="at">verdict =</span> changed_verdict, <span class="at">reason =</span> changed_reason) <span class="sc">%&gt;%</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">contrast</th>
+<th style="text-align: right;">common</th>
+<th style="text-align: right;">removed</th>
+<th style="text-align: right;">A_to_B</th>
+<th style="text-align: right;">verdict</th>
+<th style="text-align: right;">reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">code 5-2</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">code 8-4</td>
+<td style="text-align: right;">120</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cap baseline</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cap fixed</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>At a fixed cap, the two implementations agree: <strong>zero grade changes and zero verdict changes</strong> across 120 common pathways at 8/4 and 75 at 5/2. The reason column does change — eight rows at 8/4 and five at 5/2 — and all of them are the same story: STAT1 previously came back <code>no-dataset</code>, and the fixed implementation records the real tests it found, which are nonsignificant. That corrects a false statement about the database. It does not turn STAT1 into a supported candidate.</p>
+<p>The cap comparison is less comfortable. Holding the implementation fixed and shrinking 8/4 to 5/2 removes 45 pathway rows; among the 75 that remain, <strong>3 change from A to B</strong>. Their best rows are unchanged; what disappears is the additional supporting context that made two-cell-line replication. Three other hypoxia rows switch their best dataset and statistics but stay at A. The contrast changes both the pathway cap and the dataset cap, so it does not estimate either one separately.</p>
+<p>A single profile shows why the full ledger matters:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>smad3 <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"cache/pathway-mechanism-smad3.tsv"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>smad3 <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(status <span class="sc">!=</span> <span class="st">"not-significant"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cap, pathway, dataset, status) <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">14</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 71%">
+<col style="width: 10%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cap</th>
+<th style="text-align: left;">pathway</th>
+<th style="text-align: left;">dataset</th>
+<th style="text-align: left;">status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">external encapsulating structure organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">extracellular matrix organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">extracellular structure organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">skeletal system development</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">skeletal system development</td>
+<td style="text-align: left;">D21580</td>
+<td style="text-align: left;">supports</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">tissue morphogenesis</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">tissue morphogenesis</td>
+<td style="text-align: left;">D21580</td>
+<td style="text-align: left;">supports</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">heart development</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">8-4</td>
+<td style="text-align: left;">cell morphogenesis involved in neuron differentiation</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5-2</td>
+<td style="text-align: left;">external encapsulating structure organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5-2</td>
+<td style="text-align: left;">extracellular matrix organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5-2</td>
+<td style="text-align: left;">extracellular structure organization</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5-2</td>
+<td style="text-align: left;">skeletal system development</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">5-2</td>
+<td style="text-align: left;">tissue morphogenesis</td>
+<td style="text-align: left;">D24948</td>
+<td style="text-align: left;">conflicts</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>At 8/4 the SMAD3 ledger holds <strong>2 support and 7 conflict</strong> rows; at 5/2 it holds <strong>0 support and 5 conflict</strong>. The two supporting rows have negative effect sizes (−0.62 and −0.57), the conflicting rows positive values (0.49–0.60). The best row at both caps is a conflicting dataset, so a table that showed only the best row would hide the two supporting observations entirely. This is mixed evidence, not a confirmed driver, and it is exactly the case the old grade-only table could not display.</p>
+<p>Across the fixed implementation’s full ledger, 8/4 retains 328 pathway/dataset outcomes — 75 support, 15 conflict, 122 nonsignificant and 116 noncomputable — and 5/2 retains 135 — 41, 12, 41 and 41. The number of profiles with any support falls from <strong>9/17 to 8/17</strong>; profiles with any conflict stay at <strong>3/17</strong>. A historical implementation has no retained full ledger, so those cells are <code>NA</code>, not zero.</p>
+<p>None of this measures accuracy. The code comparison includes the lookup and dataset-selection policy, because that is part of the implementation; the cap comparison changes the evidence population; and the corpus is reused. What the experiment does establish is narrower and still useful: the reporting fix did not move the grades on these inputs, the coverage diagnosis for STAT1 was wrong, and the cap decides how much supporting and conflicting evidence is visible.</p>
+</section>
+<section id="what-the-fixed-audit-says-about-ranking-and-modules" class="level2" data-number="27.8">
+<h2 data-number="27.8" class="anchored" data-anchor-id="what-the-fixed-audit-says-about-ranking-and-modules"><span class="header-section-number">27.8</span> What the fixed audit says about ranking and modules</h2>
+<p>The frozen audit behind the discovery gate is worth reading alongside the paired run, because it keeps the same denominator throughout.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>audit <span class="ot">&lt;-</span> <span class="fu">read.delim</span>(<span class="st">"cache/pathway-mechanism-audit.tsv"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(audit[, <span class="fu">c</span>(<span class="st">"endpoint"</span>, <span class="st">"value"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">endpoint</th>
+<th style="text-align: left;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">signed hit@1</td>
+<td style="text-align: left;">6/17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">signed hit@5</td>
+<td style="text-align: left;">10/17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">signed hit@10</td>
+<td style="text-align: left;">13/17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">module label coverage</td>
+<td style="text-align: left;">7/17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">size-matched random expectation</td>
+<td style="text-align: left;">6.5/17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mean module size</td>
+<td style="text-align: left;">1.882</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">labels inside top-5 shortlist</td>
+<td style="text-align: left;">10/17</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The signed top-1 rate is 6/17. A module is the signed top-1 plus its direct Jaccard neighbours at 0.10, restricted to that profile’s historical top-five candidate set; it is not transitive clustering and not a search over the whole network. Its label coverage is <strong>7/17</strong> against a size-matched random expectation of <strong>6.5/17</strong>, with mean set size <strong>1.882</strong>. The labels sit inside the top-five shortlist for 10/17 profiles; restricting the denominator to those ten would make the same coverage look like 7/10, which is why the full corpus is the reported denominator.</p>
+<p>The set is larger than the singleton, so coverage rises a little. That is <strong>set coverage, not PPV, not calibrated confidence, and not an independent module test</strong>. A target-overlap neighbourhood is not evidence that its members are indistinguishable in every cell line, and it is not evidence that the true driver lies inside it. The threshold was explored on this same corpus historically; fixing it now does not make it independent.</p>
+<p>These limits do not disappear because the ledger is now more informative. They are why the chapter tests a named candidate instead of reporting a ranked answer.</p>
+</section>
+<section id="where-it-works-and-where-it-does-not" class="level2" data-number="27.9">
+<h2 data-number="27.9" class="anchored" data-anchor-id="where-it-works-and-where-it-does-not"><span class="header-section-number">27.9</span> Where it works, and where it does not</h2>
+<p>Nine condition–perturbation pairs were run end to end in an earlier pilot. Four reached level A — hypoxia, sulforaphane with NRF2, DHT with AR, IL-6 with STAT3 — and they come from four different transcription-factor families: bHLH-PAS, CNC-bZIP, a nuclear receptor, and STAT. The family is not what decides it. What those four share is a single clear stimulus producing a single concentrated transcriptional programme, with the driver known independently to mediate that programme.</p>
+<p>That last clause carries the weight. These four were chosen because the answer was already known, so they show the method agrees with established biology when the driver is right. They are not evidence that it would have picked the same driver unaided, and the ranking and specificity results above are why.</p>
+<p>The five that fail each lack a different requirement:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Failure</th>
+<th>Datasets</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Driver has one cell line</td>
+<td>airway, GSE286890</td>
+<td>Level A needs two; a data-supply limit, not a method limit</td>
+</tr>
+<tr class="even">
+<td>Too few differentially expressed genes</td>
+<td>MCF-7 knockout, GSE285498</td>
+<td>Pathways of two members cannot establish direction or be tested</td>
+</tr>
+<tr class="odd">
+<td>Condition produces no concentrated signal</td>
+<td>GSE311462</td>
+<td>550 up-regulated genes spread across no enriched pathway</td>
+</tr>
+</tbody>
+</table>
+<p>A useful reading of one failure: dexamethasone and a GR knockdown both push extracellular-matrix genes <strong>up</strong>, so the driver moves the pathway the way it already runs. Whether that is real repression or a tissue difference — the GR knockdown available is from a kidney line, not airway — cannot be settled from this evidence, and the function declines to call it support rather than guessing.</p>
+</section>
+<section id="what-it-takes-to-run" class="level2" data-number="27.10">
+<h2 data-number="27.10" class="anchored" data-anchor-id="what-it-takes-to-run"><span class="header-section-number">27.10</span> What it takes to run</h2>
+<p>Three conditions have to hold at once, and the measurements above are what fixes them:</p>
+<ul>
+<li>The condition experiment concentrates its response — dozens of enriched pathways, not hundreds of scattered genes.</li>
+<li>The driver has knockdown data from at least two cell lines, or level A is unreachable by construction.</li>
+<li>The pathways are large enough for the test to produce a p-value, which in practice means roughly a dozen members.</li>
+</ul>
+<p>The function warns when a run cannot reach level A for a structural reason, because otherwise the output is silent about it:</p>
+<pre><code>Warning: Level A is unreachable: `GR` (1) has perturbation data in a single cell
+line, and level A requires two. Results here cannot exceed B.</code></pre>
+<p>A run costs network calls proportional to pathways times drivers times datasets. On the hypoxia data, 25 pathways took 96 calls and about a minute; 60 took 210 calls and about three minutes. Results are memoised by the dataset and member set, which helps when pathways share members and not otherwise, so <code>max_pathways</code> is worth setting deliberately.</p>
+</section>
+<section id="what-this-does-not-establish" class="level2" data-number="27.11">
+<h2 data-number="27.11" class="anchored" data-anchor-id="what-this-does-not-establish"><span class="header-section-number">27.11</span> What this does not establish</h2>
+<p>The function tests a candidate. It does not discover one, and it should not be read as evidence that the named driver is the <em>only</em> driver, or even the most important one. It reports that the data are consistent with a claim and grades how strong that consistency is.</p>
+<p>A second endpoint was implemented and then removed. The plan was to corroborate each pathway against an independent annotation source. Three attempts were made: PPI density said nothing (hypoxia pathway members had 67 edges against a null median of 67, because a GO term is not a protein complex); Reactome member overlap picked IL-4/IL-13 signalling as the counterpart of every hypoxia pathway, which shares HIF1A and glycolytic genes but is not the same pathway; and the official GO-to-Reactome cross-reference covered only 8% of pathways and dropped to zero once Reactome became the pathway source. Rather than keep a column that was constant and empty, it was removed — a permanent “no signal” reads as a check that ran, when what happened is that no usable second source was found.</p>
+<p>No external accuracy, causal adjudication or independent validation was performed. The evidence states are a presentation of retained tests, not a new statistical test; A/B/C grading and the discovery score are unchanged. The paired comparison and the fixed audit are development evidence on a reused corpus, not a benchmark of biological truth. That is the honest state of it.</p>
+</section>
+<section id="the-gate-sequence" class="level2" data-number="27.12">
+<h2 data-number="27.12" class="anchored" data-anchor-id="the-gate-sequence"><span class="header-section-number">27.12</span> The gate sequence</h2>
+<p>The functions form one sequence, and each answers a different question. Keeping them separate is what stops a ranking from being read as a verdict.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Gate</th>
+<th>Function</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Preflight</td>
+<td><code>mechanism_preflight()</code></td>
+<td>Can this input and context support an attribution claim at all?</td>
+</tr>
+<tr class="even">
+<td>Discovery</td>
+<td>signed target-network ranking</td>
+<td>Which candidates are worth testing? A ranking, not identification.</td>
+</tr>
+<tr class="odd">
+<td>Verification</td>
+<td><code>pathway_evidence()</code></td>
+<td>Does a named candidate move the pathway, and what is the evidence state?</td>
+</tr>
+<tr class="even">
+<td>Report</td>
+<td><code>mechanism_report()</code></td>
+<td>What is the candidate-level support, conflict and coverage gap?</td>
+</tr>
+</tbody>
+</table>
+<p>The preflight gate reports input and coverage limits; passing it permits attribution work but does not make the inference correct. The discovery ranking retains its target-count disclosure and remains a proposal, not a verdict. The verification gate tests the caller’s candidate. The report gate carries the states, counts and gaps into one table without collapsing them into a pass label. <code>adjudicate()</code> and <a href="./interpretation.html">evidence-guided interpretation</a> sit on the regulator-centred line and keep their own evidence types; the two lines are not merged into a single score.</p>
+</section>
+<section id="next-steps" class="level2" data-number="27.13">
+<h2 data-number="27.13" class="anchored" data-anchor-id="next-steps"><span class="header-section-number">27.13</span> Next steps</h2>
+<ul>
+<li>For the regulator-centred route and its measured limits, see <a href="./regulator-enrichment.html#regulator-enrichment">regulator enrichment</a>.</li>
+<li>To turn a graded row into prose, <a href="./interpretation.html">evidence-guided interpretation</a> takes the same claim and keeps the driver, evidence type and direction explicit.</li>
+<li>For the gene-set collections an enrichment result comes from, return to <a href="./go-enrichment.html#clusterprofiler-go">GO</a>, <a href="./kegg-enrichment.html#clusterprofiler-kegg">KEGG</a> and <a href="./reactome-enrichment.html#reactomepa">Reactome</a>.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/yulab-smu\.top\/biomedical-knowledge-mining-book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
+  <div class="nav-page nav-page-previous">
+      <a href="./ppi.html" class="pagination-link" aria-label="PPI and evidence networks">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">PPI and evidence networks</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-visualization.html" class="pagination-link" aria-label="Visualize and communicate results">
+        <span class="nav-page-text">Visualize and communicate results</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Biomedical Knowledge Mining Toolkit was written by Guangchuang Yu.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/edit/master/pathway-mechanism.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/YuLab-SMU/biomedical-knowledge-mining-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
