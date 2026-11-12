@@ -154,7 +154,8 @@ jobs:
             "MeSHDbi",
             "biomaRt",
             "fgsea",
-            "pathview"
+            "pathview",
+            "ggtree"
           ), ask = FALSE, update = FALSE)'
 
       - name: Verify required packages are loadable
@@ -166,7 +167,7 @@ jobs:
         run: |
           Rscript -e 'required <- c(
             "org.Hs.eg.db", "fgsea", "GO.db", "ChIPseeker", "MeSHDbi", "biomaRt", "pathview",
-            "R.utils", "ggarchery", "europepmc", "ggstar", "ggrepel", "ggupset", "ggridges",
+            "ggtree", "R.utils", "ggarchery", "europepmc", "ggstar", "ggrepel", "ggupset", "ggridges",
             "ggplotify", "httr2", "dotenv", "msigdbr", "ggplot2", "dplyr", "stringr", "forcats",
             "BiasedUrn"
           ); missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing packages: ", paste(missing, collapse = ", "))'
@@ -206,11 +207,21 @@ jobs:
           # Transient network failures during installation have been
           # the main cause of failed weekly builds.
           retry() { for i in 1 2 3; do "$@" && return 0; echo "retry $i"; sleep 30; done; return 1; }
+          # ggtree is deliberately NOT installed from GitHub here. Since the
+          # 2026-11-12 version bump, ggtree devel imports `offspring_bulk` from
+          # tidytree, but no published tidytree exports it: CRAN 0.4.8 and
+          # tidytree's own GitHub master both lack the symbol, so the source
+          # build stops with "object 'offspring_bulk' is not exported by
+          # 'namespace:tidytree'". The Bioconductor release ggtree installed in
+          # the previous step builds against the published tidytree and is what
+          # this book's validation baseline uses. Once tidytree exports the
+          # symbol, `github::YuLab-SMU/ggtree` can return to this list.
+          # enrichplot imports ggtree, so pak still keeps a compatible release
+          # version installed for it.
           retry Rscript -e 'options(Ncpus = 1); pak::pkg_install(c(
             "github::YuLab-SMU/enrichit",
             "github::YuLab-SMU/DOSE",
             "github::YuLab-SMU/enrichplot",
-            "github::YuLab-SMU/ggtree",
             "github::YuLab-SMU/ggtreeExtra"
           ))'
 
