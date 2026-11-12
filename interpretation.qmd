@@ -45,10 +45,9 @@ interpret_failed <- function(res) {
 }
 
 annotation_failed <- function(res) {
-    is.null(res$cell_type) ||
-        is.null(res$confidence) ||
-        is.null(res$reasoning) ||
-        identical(res$confidence, "None")
+    interpret_failed(res) ||
+        is.null(res$conclusion) ||
+        !nzchar(as.character(res$conclusion))
 }
 ```
 
@@ -103,13 +102,14 @@ if (interpret_failed(res)) {
 cat(render_interpretation_blocks(res), sep = "\n")
 ```
 
-### Tasks and Inputs
+### Entry points and inputs
 
-`interpret()` supports three tasks:
+The question decides which entry point to use; all four return a model-written draft that still has to be checked against the result object:
 
-+ **`task = "interpretation"`**: organize enrichment evidence into a biological narrative;
-+ **`task = "annotation"`**: combine marker genes and enrichment terms for cell-type annotation;
-+ **`task = "phenotyping"`**: propose a state or phenotype label for a group.
++ **`interpret()`** organizes enrichment evidence into a biological narrative;
++ **`interpret_agent()`** runs the Cleaner–Detective–Storyteller pipeline and returns `conclusion`, the answer to the question posed in `context`; `prior` makes it check another tool's label, and `review = TRUE` adds an audit agent;
++ **`interpret_hierarchical()`** labels minor clusters while constraining them to the supplied major-cluster context;
++ **`interpret_dialogue()`** continues the conversation interactively.
 
 The input can be one result object, a list of compatible objects, or a `compareCluster` result processed by cluster. For example, `list(go_res, kegg_res)` combines compatible knowledge sources, while a `compareCluster` result returns one report per cluster. The returned fields are structured so that reports can be checked, compared, and rendered consistently.
 
@@ -117,7 +117,7 @@ For single-cell data, the marker table can come from `Seurat::FindAllMarkers()` 
 
 ### Cell Type Annotation
 
-The cell-type example reads the local `datasets/Cell_marker_Human.xlsx` marker table, builds four marker profiles, runs `compareCluster()` with `enricher()`, and passes the result to `interpret(task = "annotation")` when `DEEPSEEK_API_KEY` is available.
+The cell-type example reads the local `datasets/Cell_marker_Human.xlsx` marker table, builds four marker profiles, runs `compareCluster()` with `enricher()`, and asks `interpret_agent()` which cell type each cluster most likely is — the question goes in `context`, and the answer comes back as `conclusion` — when `DEEPSEEK_API_KEY` is available.
 
 ```{r}
 #| eval: !expr has_ai
@@ -175,15 +175,15 @@ cell_marker_enrichment <- compareCluster(
     maxGSSize = 500
 )
 
-annotation_reports <- interpret(
+annotation_reports <- interpret_agent(
     cell_marker_enrichment,
-    task = "annotation",
     context = paste(
         "Human single-cell marker panels. Each cluster is a compact set of",
         "top marker genes and was tested against the local CellMarker database.",
+        "Which cell type does each cluster most likely correspond to?",
         "Use the enrichment terms as supporting evidence, but prefer markers",
-        "that distinguish closely related cell types. Return a concise label",
-        "and explain which supplied markers and cell-marker terms support it."
+        "that distinguish closely related cell types, and explain which",
+        "supplied markers and cell-marker terms support the label."
     ),
     n_pathways = 12,
     max_tokens = 4096,
@@ -261,7 +261,6 @@ gene_list <- c("CD8A" = 2.5, "PDCD1" = 1.8, "GZMB" = 3.2)
 
 res <- interpret(
     edo,
-    task = "interpretation",
     add_ppi = TRUE,
     gene_fold_change = gene_list
 )
@@ -274,8 +273,13 @@ For cell-type annotation, `prior` supplies an existing label for comparison. The
 ```{r}
 #| label: interpret-prior-knowledge
 #| eval: false
-my_priors <- c("Cluster1" = "T cells")
-res <- interpret(edo, prior = my_priors, task = "annotation")
+my_priors <- c("T_cell" = "T cells")
+res <- interpret_agent(
+    edo,
+    prior = my_priors,
+    context = "Which cell type does each cluster most likely correspond to?"
+)
+res$prior_verdict
 ```
 
 `interpret_hierarchical()` accepts major- and minor-cluster enrichment objects together with a mapping. It constrains each minor-cluster interpretation to the supplied major-cluster context; the mapping itself must be checked against the experimental design.
