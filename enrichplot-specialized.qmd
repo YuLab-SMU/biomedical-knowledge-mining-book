@@ -159,6 +159,8 @@ volplot(edo)
 
 ```{r}
 #| label: fig-hplot
+#| fig-format: png
+#| fig-dpi: 150
 #| fig-width: 16
 #| fig-height: 14
 #| fig-scap: |
